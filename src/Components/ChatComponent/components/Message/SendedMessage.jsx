@@ -68,12 +68,12 @@ export const SendedMessage = ({
     if (msg.seen_by_client_id != null) {
       return MESSAGES_STATUS.SEEN;
     }
-    
+
     // Если есть messageStatus (сообщения из CRM) - используем его
     if (msg.messageStatus) {
       return msg.messageStatus;
     }
-    
+
     // Если есть message_status (сообщения из API) - конвертируем его
     if (msg.message_status) {
       switch (msg.message_status) {
@@ -85,7 +85,7 @@ export const SendedMessage = ({
           return MESSAGES_STATUS.SUCCESS;
       }
     }
-    
+
     // По умолчанию - SUCCESS
     return MESSAGES_STATUS.SUCCESS;
   };
