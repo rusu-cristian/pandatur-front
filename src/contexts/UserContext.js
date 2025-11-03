@@ -112,8 +112,9 @@ export const UserProvider = ({ children }) => {
       const currentPathname = currentLocation.pathname;
       const currentSearch = currentLocation.search;
 
-      // если уже на нужном path — не делать navigate
+      // если уже на странице авторизации — перенаправляем на /leads
       if (currentPathname === "/auth") {
+        navigateRef.current("/leads", { replace: true });
         setAuthLoading(false);
         return;
       }

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { Button, Flex, TextInput, Title, Box, Text, Stack } from "@mantine/core";
 import { api } from "../../api";
@@ -22,7 +21,6 @@ export const Login = ({ onLoginSuccess }) => {
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("error"); // "success" или "error"
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
   const isMobile = useMobile();
 
   const handleInputChange = (e) => {
@@ -67,7 +65,7 @@ export const Login = ({ onLoginSuccess }) => {
 
       if (isLogin) {
         setCookieToken(token);
-        navigate("/leads");
+        // Navigate будет выполнен в UserContext после успешной проверки авторизации
       }
     } catch (error) {
       setMessage(showServerError(error));
