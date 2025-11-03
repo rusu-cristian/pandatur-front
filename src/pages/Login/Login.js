@@ -15,7 +15,7 @@ const setCookieToken = (token) => {
   });
 };
 
-export const Login = ({ onLoginSuccess }) => {
+export const Login = () => {
   const [form, setForm] = useState({ email: "", username: "", password: "" });
   const [isLogin, setIsLogin] = useState(true);
   const [message, setMessage] = useState("");
@@ -96,7 +96,7 @@ export const Login = ({ onLoginSuccess }) => {
             alt="Panda Tur Logo"
             className="login-panda-logo"
           />
-          
+
           <Title
             order={1}
             ta="center"
