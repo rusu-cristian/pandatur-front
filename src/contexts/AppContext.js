@@ -45,14 +45,14 @@ export const AppProvider = ({ children }) => {
   const [isChatFiltered, setIsChatFiltered] = useState(false);
   const [currentChatFilters, setCurrentChatFilters] = useState({});
   const requestIdRef = useRef(0);
-  
+
   // Hash map для быстрого доступа к тикетам по ID
   const ticketsMap = useRef(new Map());
   const chatFilteredTicketsMap = useRef(new Map());
-  
+
   // Для отслеживания обработанных message_id (чтобы не дублировать счётчик при обновлении сообщений)
   const processedMessageIds = useRef(new Set());
-  
+
   // Вспомогательные функции для работы с hash map
   const updateTicketsMap = (ticketsArray) => {
     ticketsMap.current.clear();
@@ -60,22 +60,22 @@ export const AppProvider = ({ children }) => {
       ticketsMap.current.set(ticket.id, ticket);
     });
   };
-  
+
   const updateChatFilteredTicketsMap = (ticketsArray) => {
     chatFilteredTicketsMap.current.clear();
     ticketsArray.forEach(ticket => {
       chatFilteredTicketsMap.current.set(ticket.id, ticket);
     });
   };
-  
+
   const getTicketById = (ticketId) => {
     return ticketsMap.current.get(ticketId);
   };
-  
+
   const getChatFilteredTicketById = (ticketId) => {
     return chatFilteredTicketsMap.current.get(ticketId);
   };
-  
+
   // Универсальная функция для получения тикета с учетом фильтров
   const getTicketByIdWithFilters = (ticketId, isFiltered) => {
     if (isFiltered) {
@@ -83,7 +83,7 @@ export const AppProvider = ({ children }) => {
     }
     return getTicketById(ticketId);
   };
-  
+
   // Получаем данные всех пользователей
   const { technicians } = useGetTechniciansList();
 
@@ -139,11 +139,11 @@ export const AppProvider = ({ children }) => {
       setTickets((prev) => {
         // Создаем Set существующих ID для быстрой проверки
         const existingIds = new Set(prev.map(t => t.id));
-        
+
         // Добавляем только новые тикеты (без дубликатов)
         const newTickets = processedTickets.filter(t => !existingIds.has(t.id));
         const updated = [...prev, ...newTickets];
-        
+
         // Синхронизируем hash map
         updateTicketsMap(updated);
         return updated;
@@ -168,7 +168,7 @@ export const AppProvider = ({ children }) => {
     setSpinnerTickets(true);
     setTickets([]);
     setUnreadCount(0);
-    
+
     // Очищаем hash map
     ticketsMap.current.clear();
 
@@ -180,7 +180,7 @@ export const AppProvider = ({ children }) => {
     setChatFilteredTickets([]);
     setIsChatFiltered(true);
     setCurrentChatFilters(filters); // Сохраняем текущие фильтры
-    
+
     // Очищаем hash map для отфильтрованных тикетов
     chatFilteredTicketsMap.current.clear();
 
@@ -199,11 +199,11 @@ export const AppProvider = ({ children }) => {
         setChatFilteredTickets((prev) => {
           // Создаем Set существующих ID для быстрой проверки
           const existingIds = new Set(prev.map(t => t.id));
-          
+
           // Добавляем только новые тикеты (без дубликатов)
           const newTickets = normalized.filter(t => !existingIds.has(t.id));
           const updated = [...prev, ...newTickets];
-          
+
           // Синхронизируем hash map
           updateChatFilteredTicketsMap(updated);
           return updated;
@@ -233,7 +233,7 @@ export const AppProvider = ({ children }) => {
   // Функция для проверки соответствия тикета примененным фильтрам
   const doesTicketMatchFilters = useCallback((ticket, filters) => {
     if (!filters || Object.keys(filters).length === 0) return true;
-    
+
     // Проверяем workflow
     if (filters.workflow) {
       const workflowFilter = Array.isArray(filters.workflow) ? filters.workflow : [filters.workflow];
@@ -241,7 +241,7 @@ export const AppProvider = ({ children }) => {
         return false;
       }
     }
-    
+
     // Проверяем action_needed
     if (filters.action_needed !== undefined) {
       const ticketActionNeeded = Boolean(ticket.action_needed);
@@ -250,7 +250,7 @@ export const AppProvider = ({ children }) => {
         return false;
       }
     }
-    
+
     // Проверяем technician_id
     if (filters.technician_id) {
       const technicianFilter = Array.isArray(filters.technician_id) ? filters.technician_id : [filters.technician_id];
@@ -258,7 +258,7 @@ export const AppProvider = ({ children }) => {
         return false;
       }
     }
-    
+
     // Проверяем priority
     if (filters.priority) {
       const priorityFilter = Array.isArray(filters.priority) ? filters.priority : [filters.priority];
@@ -266,7 +266,7 @@ export const AppProvider = ({ children }) => {
         return false;
       }
     }
-    
+
     // Проверяем group_title
     if (filters.group_title) {
       const groupFilter = Array.isArray(filters.group_title) ? filters.group_title : [filters.group_title];
@@ -274,40 +274,40 @@ export const AppProvider = ({ children }) => {
         return false;
       }
     }
-    
+
     // Проверяем unseen (наличие непрочитанных сообщений)
     if (filters.unseen === "true") {
       if (!ticket.unseen_count || ticket.unseen_count === 0) {
         return false;
       }
     }
-    
+
     // Проверяем last_message_author (0 - клиент, 1 - пользователь)
     if (filters.last_message_author) {
       const authorFilter = Array.isArray(filters.last_message_author) ? filters.last_message_author : [filters.last_message_author];
-      
+
       // 0 означает клиент - проверяем, что последнее сообщение от клиента
       if (authorFilter.includes(0)) {
         const lastSenderId = ticket.last_message_sender_id;
-        
+
         // Если last_message_sender_id не установлен, считаем что сообщение от клиента (для совместимости)
         if (lastSenderId === undefined || lastSenderId === null) {
           return true;
         }
-        
+
         // Проверяем, является ли отправитель клиентом (не система и не техник)
         const senderId = Number(lastSenderId);
-        
+
         // sender_id = 1 - система, не клиент
         if (senderId === 1) {
           return false;
         }
-        
+
         // Проверяем, что sender_id не совпадает с userId (не техник)
         if (String(senderId) === String(userId)) {
           return false;
         }
-        
+
         // Проверяем, что отправитель является одним из клиентов тикета
         if (ticket.clients && ticket.clients.length > 0) {
           const clientIds = ticket.clients.map(client => Number(client.id));
@@ -317,7 +317,7 @@ export const AppProvider = ({ children }) => {
         }
       }
     }
-    
+
     return true;
   }, [userId]);
 
@@ -381,13 +381,13 @@ export const AppProvider = ({ children }) => {
       if (!isMatchingGroup) {
         // Используем hash map для быстрого поиска O(1)
         const existingTicket = getTicketById(ticketId);
-        
+
         if (existingTicket) {
           // Уменьшаем счётчик непрочитанных на старое значение unseen_count
           if (existingTicket.unseen_count > 0) {
             setUnreadCount((prevCount) => Math.max(0, prevCount - existingTicket.unseen_count));
           }
-          
+
           // Удаляем из hash map и массива
           ticketsMap.current.delete(ticketId);
           setTickets((prev) => prev.filter((t) => t.id !== ticketId));
@@ -412,7 +412,7 @@ export const AppProvider = ({ children }) => {
       // Обновляем или добавляем тикет в основной список
       setTickets((prev) => {
         const exists = getTicketById(ticketId);
-        
+
         if (exists) {
           // Обновляем существующий тикет - используем все данные из сервера
           const updated = prev.map((t) => (t.id === ticketId ? normalizedTicket : t));
@@ -429,7 +429,7 @@ export const AppProvider = ({ children }) => {
       // Обновляем или добавляем тикет в отфильтрованном списке
       setChatFilteredTickets((prev) => {
         const exists = getChatFilteredTicketById(ticketId);
-        
+
         // Проверяем, соответствует ли тикет текущим фильтрам
         if (isChatFiltered && Object.keys(currentChatFilters).length > 0) {
           if (!doesTicketMatchFilters(normalizedTicket, currentChatFilters)) {
@@ -441,7 +441,7 @@ export const AppProvider = ({ children }) => {
             return prev;
           }
         }
-        
+
         if (exists) {
           // Обновляем существующий тикет
           const updated = prev.map((t) => (t.id === ticketId ? normalizedTicket : t));
@@ -463,10 +463,10 @@ export const AppProvider = ({ children }) => {
       if (diff !== 0) {
         setUnreadCount((prev) => Math.max(0, prev + diff));
       }
-      
+
       // Отправляем событие для обновления personalInfo в useFetchTicketChat
-      window.dispatchEvent(new CustomEvent('ticketUpdated', { 
-        detail: { ticketId } 
+      window.dispatchEvent(new CustomEvent('ticketUpdated', {
+        detail: { ticketId }
       }));
     } catch (error) {
       enqueueSnackbar(showServerError(error), { variant: "error" });
@@ -480,14 +480,14 @@ export const AppProvider = ({ children }) => {
 
         // Сообщение считается от другого пользователя, если sender_id не совпадает с текущим userId и это не система (id=1)
         const isFromAnotherUser = String(sender_id) !== String(userId) && String(sender_id) !== "1";
-        
+
         // Проверяем, было ли это сообщение уже обработано
         // Для звонков: первое событие - создание звонка, второе - обновление с URL записи
         const isNewMessage = message_id ? !processedMessageIds.current.has(message_id) : true;
-        
+
         if (message_id && isNewMessage) {
           processedMessageIds.current.add(message_id);
-          
+
           // Очистка старых ID (храним последние 1000)
           if (processedMessageIds.current.size > 1000) {
             const iterator = processedMessageIds.current.values();
@@ -503,7 +503,7 @@ export const AppProvider = ({ children }) => {
         setTickets((prev) => {
           // Используем hash map для быстрого поиска O(1)
           const existingTicket = getTicketById(ticket_id);
-          
+
           if (!existingTicket) {
             return prev; // Тикет не найден
           }
@@ -520,7 +520,7 @@ export const AppProvider = ({ children }) => {
           // Обновляем hash map
           ticketsMap.current.set(ticket_id, updatedTicket);
 
-          return prev.map((ticket) => 
+          return prev.map((ticket) =>
             ticket.id === ticket_id ? updatedTicket : ticket
           );
         });
@@ -528,10 +528,10 @@ export const AppProvider = ({ children }) => {
         setChatFilteredTickets((prev) => {
           // Используем hash map для быстрого поиска O(1)
           const existingTicket = getChatFilteredTicketById(ticket_id);
-          
+
           // Получаем тикет из основного списка, если его нет в отфильтрованном
           const ticketFromMain = existingTicket || getTicketById(ticket_id);
-          
+
           if (!ticketFromMain) {
             return prev; // Тикет не найден ни в одном списке
           }
@@ -548,7 +548,7 @@ export const AppProvider = ({ children }) => {
           // Проверяем, соответствует ли обновленный тикет текущим фильтрам чата
           if (isChatFiltered && Object.keys(currentChatFilters).length > 0) {
             const matchesFilters = doesTicketMatchFilters(updatedTicket, currentChatFilters);
-            
+
             if (!matchesFilters) {
               // Тикет больше не соответствует фильтрам - удаляем его
               if (existingTicket) {
@@ -557,12 +557,12 @@ export const AppProvider = ({ children }) => {
               }
               return prev;
             }
-            
+
             // Тикет соответствует фильтрам
             if (existingTicket) {
               // Обновляем существующий тикет
               chatFilteredTicketsMap.current.set(ticket_id, updatedTicket);
-              return prev.map((ticket) => 
+              return prev.map((ticket) =>
                 ticket.id === ticket_id ? updatedTicket : ticket
               );
             } else {
@@ -570,7 +570,7 @@ export const AppProvider = ({ children }) => {
               const alreadyInArray = prev.some(t => t.id === ticket_id);
               if (alreadyInArray) {
                 chatFilteredTicketsMap.current.set(ticket_id, updatedTicket);
-                return prev.map((ticket) => 
+                return prev.map((ticket) =>
                   ticket.id === ticket_id ? updatedTicket : ticket
                 );
               }
@@ -578,15 +578,15 @@ export const AppProvider = ({ children }) => {
               return [updatedTicket, ...prev];
             }
           }
-          
+
           // Если фильтры не активны, просто обновляем существующий тикет или игнорируем
           if (existingTicket) {
             chatFilteredTicketsMap.current.set(ticket_id, updatedTicket);
-            return prev.map((ticket) => 
+            return prev.map((ticket) =>
               ticket.id === ticket_id ? updatedTicket : ticket
             );
           }
-          
+
           return prev;
         });
 
@@ -594,10 +594,10 @@ export const AppProvider = ({ children }) => {
         // ТОЛЬКО для сообщений от других пользователей, системы или звонков
         // Сообщения от текущего пользователя уже добавлены при отправке через API
         const shouldSendToMessagesContext = isFromAnotherUser || String(sender_id) === "1" || mtype === MEDIA_TYPE.CALL;
-        
+
         if (shouldSendToMessagesContext) {
-          window.dispatchEvent(new CustomEvent('newMessageFromSocket', { 
-            detail: message.data 
+          window.dispatchEvent(new CustomEvent('newMessageFromSocket', {
+            detail: message.data
           }));
         }
 
@@ -605,10 +605,19 @@ export const AppProvider = ({ children }) => {
       }
 
       case TYPE_SOCKET_EVENTS.SEEN: {
-        // ВАЖНО: unseen_count теперь всегда приходит через TICKET_UPDATE от сервера
-        // Это событие больше не обрабатывается, так как сервер отправит обновленный тикет
-        // с актуальным unseen_count через TICKET_UPDATE
-        // Ничего не делаем - просто игнорируем событие
+        const { ticket_id, client_id } = message.data || {};
+
+        // Проверяем наличие обязательных полей
+        if (!ticket_id) {
+          break;
+        }
+
+        // Отправляем событие для обновления статусов сообщений в MessagesContext
+        // Это означает, что клиент прочитал сообщения в этом тикете
+        window.dispatchEvent(new CustomEvent('messagesSeenByClient', {
+          detail: { ticket_id, client_id }
+        }));
+
         break;
       }
 
@@ -672,12 +681,12 @@ export const AppProvider = ({ children }) => {
         if (Array.isArray(ticketsList) && ticketsList.length > 0) {
           ticketsList.forEach((ticketData) => {
             const { id, technician_id, workflow } = ticketData;
-            
+
             if (!id) return;
 
             // Проверяем, совпадает ли technician_id с текущим userId (для не-админов)
             const isResponsible = String(technician_id) === String(userId);
-            
+
             // Проверяем, входит ли workflow в список доступных пользователю
             const isWorkflowAllowed = Array.isArray(workflowOptions) && workflowOptions.includes(workflow);
 
@@ -696,20 +705,20 @@ export const AppProvider = ({ children }) => {
               // Условия не выполнены - удаляем тикет из списка
               // Используем hash map для быстрого поиска O(1)
               const removedTicket = getTicketById(id);
-              
+
               if (removedTicket?.unseen_count > 0) {
                 setUnreadCount((prev) => Math.max(0, prev - removedTicket.unseen_count));
               }
-              
+
               // Удаляем из hash map
               ticketsMap.current.delete(id);
               chatFilteredTicketsMap.current.delete(id);
-              
+
               setTickets((prev) => prev.filter((t) => t.id !== id));
               setChatFilteredTickets((prev) => prev.filter((t) => t.id !== id));
             }
           });
-        } 
+        }
         // Старый формат с ticket_ids или ticket_id (без проверки technician_id)
         else {
           const idsRaw = Array.isArray(ticket_ids)
@@ -828,7 +837,7 @@ export const AppProvider = ({ children }) => {
 
       return () => clearInterval(interval);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [groupTitleForApi, workflowOptions]);
 
   return (
@@ -863,10 +872,10 @@ export const AppProvider = ({ children }) => {
         currentChatFilters,
         setCurrentChatFilters,
         doesTicketMatchFilters,
-        
+
         // technicians
         technicians,
-        
+
         // utils
         getTicketById,
         getChatFilteredTicketById,

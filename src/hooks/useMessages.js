@@ -157,6 +157,28 @@ export const useMessages = () => {
     );
   }, []);
 
+  const markMessagesAsSeen = useCallback((ticketId) => {
+    setMessages((prevMessages) =>
+      prevMessages.map((msg) => {
+        // Обновляем статус только для сообщений:
+        // 1. Принадлежащих указанному тикету
+        // 2. Отправленных текущим пользователем
+        // 3. Имеющих статус SUCCESS (отправлено успешно)
+        if (
+          Number(msg.ticket_id) === Number(ticketId) &&
+          Number(msg.sender_id) === Number(userId) &&
+          (msg.messageStatus === "SUCCESS" || msg.message_status === "SENT")
+        ) {
+          return {
+            ...msg,
+            messageStatus: "SEEN",
+          };
+        }
+        return msg;
+      })
+    );
+  }, [userId]);
+
   useEffect(() => {
     if (!onEvent || !offEvent) return;
 
@@ -185,10 +207,11 @@ export const useMessages = () => {
       markMessageRead,
       updateMessage,
       markMessageSeen,
+      markMessagesAsSeen,
       setMessages,
       setLogs,
       setNotes,
     }),
-    [messages, logs, notes, lastMessage, mediaFiles, loading, getUserMessages, markMessageRead, updateMessage, markMessageSeen]
+    [messages, logs, notes, lastMessage, mediaFiles, loading, getUserMessages, markMessageRead, updateMessage, markMessageSeen, markMessagesAsSeen]
   );
 };

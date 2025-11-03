@@ -17,6 +17,7 @@ const MESSAGE_STATUS_ICONS = {
   [MESSAGES_STATUS.PENDING]: <IoMdCheckmark size={24} style={{ color: "var(--crm-ui-kit-palette-text-secondary-dark)" }} />,
   [MESSAGES_STATUS.ERROR]: <CiWarning size={24} style={{ color: "var(--mantine-color-red-6)", }} />,
   [MESSAGES_STATUS.SUCCESS]: <IoCheckmarkDoneSharp size={24} style={{ color: "var(--crm-ui-kit-palette-link-primary)" }} />,
+  [MESSAGES_STATUS.SEEN]: <IoCheckmarkDoneSharp size={24} style={{ color: "var(--mantine-color-blue-6)" }} />,
 };
 
 export const SendedMessage = ({
@@ -63,6 +64,11 @@ export const SendedMessage = ({
 
   // Определяем статус сообщения для отображения иконки
   const getMessageStatus = () => {
+    // Если клиент прочитал сообщение (seen_by_client_id заполнен), показываем SEEN
+    if (msg.seen_by_client_id != null) {
+      return MESSAGES_STATUS.SEEN;
+    }
+    
     // Если есть messageStatus (сообщения из CRM) - используем его
     if (msg.messageStatus) {
       return msg.messageStatus;

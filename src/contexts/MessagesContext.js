@@ -91,6 +91,22 @@ export const MessagesProvider = ({ children }) => {
     };
   }, [handleIncomingMessage]);
 
+  // Обрабатываем событие "seen" от клиента - обновляем статусы сообщений
+  useEffect(() => {
+    const handleMessagesSeenByClient = (event) => {
+      const { ticket_id } = event.detail || {};
+      if (ticket_id && messagesRef.current.markMessagesAsSeen) {
+        messagesRef.current.markMessagesAsSeen(ticket_id);
+      }
+    };
+
+    window.addEventListener('messagesSeenByClient', handleMessagesSeenByClient);
+    
+    return () => {
+      window.removeEventListener('messagesSeenByClient', handleMessagesSeenByClient);
+    };
+  }, []); // Пустой массив зависимостей, так как используем useRef
+
   return (
     <MessagesContext.Provider value={messages}>
       {children}
