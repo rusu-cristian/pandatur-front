@@ -15,8 +15,8 @@ export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const navigate = useNavigate();
-  const [sessionLoading, setSessionLoading] = useState(true);
-  const sessionFetchedRef = useRef(false); // Флаг для отслеживания, был ли вызван fetchSession
+  const [authLoading, setAuthLoading] = useState(true);
+  const authCheckedRef = useRef(false); // Флаг для отслеживания, была ли проверка авторизации
   const [userId, setUserId] = useState(() => {
     const savedUserId = localStorage.getItem("user_id");
     return savedUserId ? Number(savedUserId) : null;
@@ -78,7 +78,7 @@ export const UserProvider = ({ children }) => {
     setSurname(null);
   }, []);
 
-  // Сохраняем стабильные ссылки на функции для использования в fetchSession
+  // Сохраняем стабильные ссылки на функции для использования в checkAuth
   const navigateRef = useRef(navigate);
   const handleLogoutRef = useRef(handleLogout);
   const enqueueSnackbarRef = useRef(enqueueSnackbar);
@@ -88,10 +88,10 @@ export const UserProvider = ({ children }) => {
   handleLogoutRef.current = handleLogout;
   enqueueSnackbarRef.current = enqueueSnackbar;
 
-  // Проверка сессии (встроенная логика из Session компонента)
+  // Проверка авторизации: получаем данные пользователя и роли
   // Используем useRef для хранения функции без зависимостей, чтобы избежать циклов
-  const fetchSessionRef = useRef();
-  fetchSessionRef.current = async () => {
+  const checkAuthRef = useRef();
+  checkAuthRef.current = async () => {
     try {
       const data = await api.auth.roles();
 
@@ -114,34 +114,34 @@ export const UserProvider = ({ children }) => {
 
       // если уже на нужном path — не делать navigate
       if (currentPathname === "/auth") {
-        setSessionLoading(false);
+        setAuthLoading(false);
         return;
       }
 
       // остаёмся на текущем пути с сохранением query-параметров
       // Используем replace: true чтобы не создавать новую запись в истории
       navigateRef.current(`${currentPathname}${currentSearch}`, { replace: true });
-      setSessionLoading(false);
+      setAuthLoading(false);
     } catch (error) {
       navigateRef.current("/auth");
       handleLogoutRef.current();
       enqueueSnackbarRef.current(showServerError(error), { variant: "error" });
-      setSessionLoading(false);
+      setAuthLoading(false);
     }
   };
 
-  // Проверяем сессию ТОЛЬКО ОДИН РАЗ при монтировании
+  // Проверяем авторизацию ТОЛЬКО ОДИН РАЗ при монтировании
   useEffect(() => {
-    // Если уже вызывали - пропускаем
-    if (sessionFetchedRef.current) return;
+    // Если уже проверяли - пропускаем
+    if (authCheckedRef.current) return;
     
     const token = Cookies.get("jwt");
     if (token) {
-      sessionFetchedRef.current = true;
-      fetchSessionRef.current();
+      authCheckedRef.current = true;
+      checkAuthRef.current();
     } else {
-      setSessionLoading(false);
-      sessionFetchedRef.current = true;
+      setAuthLoading(false);
+      authCheckedRef.current = true;
     }
     // Вызываем только один раз при монтировании
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -283,7 +283,7 @@ export const UserProvider = ({ children }) => {
         user,
       }}
     >
-      {sessionLoading ? <LoadingOverlay /> : children}
+      {authLoading ? <LoadingOverlay /> : children}
     </UserContext.Provider>
   );
 };
