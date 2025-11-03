@@ -14,7 +14,7 @@ export const auth = {
   },
 
   session: async () => {
-    const { data } = await baseAxios.get("/session")
+    const { data } = await baseAxios.get("/api/session")
 
     return data
   },

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import { useSnackbar } from "notistack";
 import { Button, Flex, TextInput, Title, Box, Text, Stack } from "@mantine/core";
 import { api } from "../../api";
 import { showServerError } from "../../Components/utils/showServerError";
@@ -10,9 +9,10 @@ import "./Login.css";
 
 const setCookieToken = (token) => {
   Cookies.set("jwt", token, {
-    secure: true,
-    sameSite: "None",
+    secure: window.location.protocol === "https:",
+    sameSite: "Lax",
     expires: 1,
+    path: "/",
   });
 };
 
