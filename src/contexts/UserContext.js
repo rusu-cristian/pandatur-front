@@ -93,7 +93,7 @@ export const UserProvider = ({ children }) => {
   const fetchSessionRef = useRef();
   fetchSessionRef.current = async () => {
     try {
-      const data = await api.auth.session();
+      const data = await api.auth.roles();
 
       // Проверяем роль пользователя
       if (data.roles && data.roles.includes("ROLE_USER")) {

@@ -13,8 +13,8 @@ export const auth = {
     return data
   },
 
-  session: async () => {
-    const { data } = await baseAxios.get("/api/session")
+  roles: async () => {
+    const { data } = await baseAxios.get("/api/roles")
 
     return data
   },
