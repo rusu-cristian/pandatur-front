@@ -28,7 +28,8 @@ function App() {
 
   useEffect(() => {
     if (!JWT_TOKEN) {
-      navigate(publicPaths.includes(pathname) ? pathname : "/auth");
+      if (!pathname.endsWith("/auth"))
+        navigate(publicPaths.includes(pathname) ? pathname : "/auth");
     }
   }, [navigate, pathname, publicPaths]);
 
