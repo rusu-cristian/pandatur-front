@@ -1,14 +1,16 @@
-import { Flex, Text, Image, Box } from "@mantine/core";
+import { Flex, Text, Image, Box, Tooltip } from "@mantine/core";
 import { CiWarning } from "react-icons/ci";
 import { FaHeadphones } from "react-icons/fa6";
 import { IoMdCheckmark } from "react-icons/io";
 import { IoCheckmarkDoneSharp } from "react-icons/io5";
+import { IoInformationCircleOutline } from "react-icons/io5";
 import { renderContent } from "../../renderContent";
 import { HH_mm, MEDIA_TYPE, DEFAULT_PHOTO } from "../../../../app-constants";
 import { parseServerDate, MESSAGES_STATUS, getFullName } from "../../../utils";
 import { Call } from "./Call";
 import { socialMediaIcons } from "../../../utils";
 import { parseCallParticipants } from "../../../utils/callUtils";
+import { getPageById } from "../../../../constants/webhookPagesConfig";
 import "./Message.css";
 
 const DEFAULT_SENDER_NAME = "Panda Tur";
@@ -83,6 +85,10 @@ export const SendedMessage = ({
 
   const messageStatus = getMessageStatus();
 
+  // Получаем информацию о страницах для tooltip
+  const fromPage = msg.from_reference ? getPageById(msg.from_reference) : null;
+  const toPage = msg.to_reference ? getPageById(msg.to_reference) : null;
+
   if (isCall) {
     const participants = parseCallParticipants(
       msg.call_metadata,
@@ -140,6 +146,38 @@ export const SendedMessage = ({
                 <Text size="sm">
                   {parseServerDate(msg.time_sent).format(HH_mm)}
                 </Text>
+
+                {(msg.from_reference || msg.to_reference) && (
+                  <Tooltip
+                    label={
+                      <Box>
+                        {fromPage && (
+                          <Text size="xs">From: {fromPage.page_name} ({fromPage.page_id})</Text>
+                        )}
+                        {!fromPage && msg.from_reference && (
+                          <Text size="xs">From: {msg.from_reference}</Text>
+                        )}
+                        {toPage && (
+                          <Text size="xs">To: {toPage.page_name} ({toPage.page_id})</Text>
+                        )}
+                        {!toPage && msg.to_reference && (
+                          <Text size="xs">To: {msg.to_reference}</Text>
+                        )}
+                      </Box>
+                    }
+                    withArrow
+                  >
+                    <Box
+                      style={{
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <IoInformationCircleOutline size={18} style={{ color: "var(--crm-ui-kit-palette-text-secondary-dark)" }} />
+                    </Box>
+                  </Tooltip>
+                )}
               </Flex>
             </Flex>
           </Flex>

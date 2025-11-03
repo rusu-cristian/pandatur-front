@@ -1,4 +1,4 @@
-import { Flex, Text, Image, Box } from "@mantine/core";
+import { Flex, Text, Image, Box, Tooltip } from "@mantine/core";
 import { DEFAULT_PHOTO, HH_mm, MEDIA_TYPE } from "../../../../app-constants";
 import {
   getFullName,
@@ -8,6 +8,8 @@ import {
 import { renderContent } from "../../renderContent";
 import { Call } from "./Call";
 import { parseCallParticipants } from "../../../utils/callUtils";
+import { IoInformationCircleOutline } from "react-icons/io5";
+import { getPageById } from "../../../../constants/webhookPagesConfig";
 
 export const ReceivedMessage = ({ personalInfo, msg, technicians = [] }) => {
   const clients = personalInfo?.clients || [];
@@ -73,6 +75,10 @@ export const ReceivedMessage = ({ personalInfo, msg, technicians = [] }) => {
 
   const clientPhoto = getClientPhoto();
 
+  // Получаем информацию о страницах для tooltip
+  const fromPage = msg.from_reference ? getPageById(msg.from_reference) : null;
+  const toPage = msg.to_reference ? getPageById(msg.to_reference) : null;
+
   return (
     <Flex w="100%">
       <Flex w="90%" direction="column" className="chat-message received" style={{
@@ -102,9 +108,43 @@ export const ReceivedMessage = ({ personalInfo, msg, technicians = [] }) => {
             <Box mt="xs">
               {renderContent(msg)}
             </Box>
-            <Text size="sm" ta="end" style={{ color: "var(--crm-ui-kit-palette-text-secondary-dark)" }}>
-              {parseServerDate(msg.time_sent).format(HH_mm)}
-            </Text>
+            <Flex justify="end" align="center" gap={4}>
+              <Text size="sm" style={{ color: "var(--crm-ui-kit-palette-text-secondary-dark)" }}>
+                {parseServerDate(msg.time_sent).format(HH_mm)}
+              </Text>
+              {(msg.from_reference || msg.to_reference || msg.seen_by_user_id) && (
+                <Tooltip
+                  label={
+                    <Box>
+                      {fromPage && (
+                        <Text size="xs">From: {fromPage.page_name} ({fromPage.page_id})</Text>
+                      )}
+                      {!fromPage && msg.from_reference && (
+                        <Text size="xs">From: {msg.from_reference}</Text>
+                      )}
+                      {toPage && (
+                        <Text size="xs">To: {toPage.page_name} ({toPage.page_id})</Text>
+                      )}
+                      {!toPage && msg.to_reference && (
+                        <Text size="xs">To: {msg.to_reference}</Text>
+                      )}
+                      <Text size="xs">Seen by user ID: {msg.seen_by_user_id ?? "null"}</Text>
+                    </Box>
+                  }
+                  withArrow
+                >
+                  <Box
+                    style={{
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <IoInformationCircleOutline size={18} style={{ color: "var(--crm-ui-kit-palette-text-secondary-dark)" }} />
+                  </Box>
+                </Tooltip>
+              )}
+            </Flex>
           </Flex>
         </Flex>
       </Flex>
