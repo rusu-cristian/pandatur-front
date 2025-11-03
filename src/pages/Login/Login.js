@@ -68,8 +68,6 @@ export const Login = ({ onLoginSuccess }) => {
       if (isLogin) {
         setCookieToken(token);
         navigate("/leads");
-
-        window.location.reload();
       }
     } catch (error) {
       setMessage(showServerError(error));

@@ -179,6 +179,28 @@ export const UserProvider = ({ children }) => {
       : localStorage.removeItem("user_roles");
   }, [userRoles]);
 
+  // Отслеживаем удаление токена и очищаем состояние
+  useEffect(() => {
+    const checkTokenAndClear = () => {
+      const token = Cookies.get("jwt");
+      if (!token && userId) {
+        // Токен удален, но состояние еще не очищено
+        setUserId(null);
+        setName(null);
+        setSurname(null);
+        setUserRoles([]);
+        setUserGroups([]);
+        setTechnician(null);
+      }
+    };
+
+    checkTokenAndClear();
+    const interval = setInterval(checkTokenAndClear, 1000);
+
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const fetchRolesAndGroups = async () => {
     setIsLoadingRoles(true);
     try {

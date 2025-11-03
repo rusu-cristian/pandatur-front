@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { useNavigate, useLocation } from "react-router-dom";
 import { SnackbarProvider } from "notistack";
@@ -18,20 +18,32 @@ import "./App.css";
 
 dayjs.extend(customParseFormat);
 
-const JWT_TOKEN = Cookies.get("jwt");
-
 function App() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const [jwtToken, setJwtToken] = useState(() => Cookies.get("jwt"));
 
   const publicPaths = publicRoutes.map(({ path }) => path);
 
+  // Слушаем изменения JWT токена
   useEffect(() => {
-    if (!JWT_TOKEN) {
+    const checkToken = () => {
+      setJwtToken(Cookies.get("jwt"));
+    };
+
+    // Проверяем при монтировании и настраиваем периодическую проверку
+    checkToken();
+    const interval = setInterval(checkToken, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (!jwtToken) {
       if (!pathname.endsWith("/auth"))
         navigate(publicPaths.includes(pathname) ? pathname : "/auth");
     }
-  }, [navigate, pathname, publicPaths]);
+  }, [navigate, pathname, publicPaths, jwtToken]);
 
   return (
     <MantineProvider>
@@ -41,7 +53,7 @@ function App() {
           maxSnack={5}
           anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         >
-          {JWT_TOKEN ? (
+          {jwtToken ? (
             <AppProviders>
               <AppLayout>
                 <PrivateRoutes />
