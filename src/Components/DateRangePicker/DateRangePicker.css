@@ -1,0 +1,234 @@
+/* Стили для react-datepicker с поддержкой темной и светлой темы */
+
+/* Стили для поля ввода */
+.DateRangePicker .react-datepicker__input-container input {
+    background-color: var(--crm-ui-kit-palette-background-primary);
+    color: var(--crm-ui-kit-palette-text-primary);
+    border: 1px solid var(--crm-ui-kit-palette-border-default);
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 250px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.DateRangePicker .react-datepicker__input-container input::placeholder {
+    color: var(--crm-ui-kit-palette-placeholder-primary);
+}
+
+.DateRangePicker .react-datepicker__input-container input:focus {
+    outline: none;
+    border-color: var(--crm-ui-kit-palette-link-primary);
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1);
+}
+
+.DateRangePicker .react-datepicker__input-container input:hover {
+    border-color: var(--crm-ui-kit-palette-border-primary);
+}
+
+/* Стили для календаря */
+.react-datepicker {
+    font-family: inherit;
+    background-color: var(--crm-ui-kit-palette-background-primary);
+    border: 1px solid var(--crm-ui-kit-palette-border-default);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.react-datepicker__header {
+    background-color: var(--crm-ui-kit-palette-background-primary);
+    border-bottom: 1px solid var(--crm-ui-kit-palette-border-default);
+    padding-top: 12px;
+}
+
+.react-datepicker__current-month {
+    color: var(--crm-ui-kit-palette-text-primary);
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* Навигация (стрелки) */
+.react-datepicker__navigation {
+    top: 12px;
+}
+
+.react-datepicker__navigation-icon::before {
+    border-color: var(--crm-ui-kit-palette-text-primary);
+}
+
+.react-datepicker__navigation:hover *::before {
+    border-color: var(--crm-ui-kit-palette-link-primary);
+}
+
+/* Дни недели */
+.react-datepicker__day-names {
+    margin-bottom: 4px;
+}
+
+.react-datepicker__day-name {
+    color: var(--crm-ui-kit-palette-text-primary);
+    font-weight: 500;
+    font-size: 12px;
+}
+
+/* Дни месяца */
+.react-datepicker__day {
+    color: black;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.react-datepicker__day:hover {
+    background-color: var(--crm-ui-kit-palette-surface-hover-background-color);
+    border-radius: 4px;
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--in-selecting-range,
+.react-datepicker__day--in-range {
+    background-color: var(--crm-ui-kit-palette-link-primary);
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.react-datepicker__day--selected:hover,
+.react-datepicker__day--in-selecting-range:hover,
+.react-datepicker__day--in-range:hover {
+    background-color: var(--crm-ui-kit-palette-link-hover-primary);
+}
+
+/* Начало и конец диапазона */
+.react-datepicker__day--range-start,
+.react-datepicker__day--range-end {
+    background-color: var(--crm-ui-kit-palette-button-active-background);
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.react-datepicker__day--range-start:hover,
+.react-datepicker__day--range-end:hover {
+    background-color: var(--crm-ui-kit-palette-link-hover-primary);
+}
+
+/* Сегодня */
+.react-datepicker__day--today {
+    font-weight: 600;
+    border: 1px solid var(--crm-ui-kit-palette-link-primary);
+}
+
+/* Отключенные дни */
+.react-datepicker__day--disabled {
+    color: var(--crm-ui-kit-palette-text-secondary-light);
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.react-datepicker__day--disabled:hover {
+    background-color: transparent;
+}
+
+/* Дни вне текущего месяца */
+.react-datepicker__day--outside-month {
+    color: var(--crm-ui-kit-palette-text-secondary-light);
+    opacity: 0.5;
+}
+
+/* Кнопка очистки */
+.react-datepicker__close-icon {
+    color: var(--crm-ui-kit-palette-text-secondary-light);
+}
+
+.react-datepicker__close-icon:hover {
+    color: var(--crm-ui-kit-palette-text-primary);
+}
+
+.react-datepicker__close-icon::after {
+    background-color: var(--crm-ui-kit-palette-text-secondary-light);
+}
+
+.react-datepicker__close-icon:hover::after {
+    background-color: var(--crm-ui-kit-palette-text-primary);
+}
+
+/* Кастомный треугольник (если используется popper) */
+.react-datepicker__triangle {
+    border-bottom-color: var(--crm-ui-kit-palette-background-primary);
+}
+
+.react-datepicker__triangle::before {
+    border-bottom-color: var(--crm-ui-kit-palette-border-default);
+}
+
+/* Время (если используется) */
+.react-datepicker__time-container {
+    border-left: 1px solid var(--crm-ui-kit-palette-border-default);
+}
+
+.react-datepicker__time-container .react-datepicker__time {
+    background-color: var(--crm-ui-kit-palette-background-primary);
+}
+
+.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box {
+    border-bottom-left-radius: 8px;
+}
+
+.react-datepicker__time-list-item {
+    color: var(--crm-ui-kit-palette-text-primary);
+}
+
+.react-datepicker__time-list-item:hover {
+    background-color: var(--crm-ui-kit-palette-surface-hover-background-color);
+}
+
+.react-datepicker__time-list-item--selected {
+    background-color: var(--crm-ui-kit-palette-link-primary);
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* Годы и месяцы (выпадающие списки) */
+.react-datepicker__year-dropdown,
+.react-datepicker__month-dropdown,
+.react-datepicker__month-year-dropdown {
+    background-color: var(--crm-ui-kit-palette-background-primary);
+    border: 1px solid var(--crm-ui-kit-palette-border-default);
+}
+
+.react-datepicker__year-option,
+.react-datepicker__month-option {
+    color: var(--crm-ui-kit-palette-text-primary);
+}
+
+.react-datepicker__year-option:hover,
+.react-datepicker__month-option:hover {
+    background-color: var(--crm-ui-kit-palette-surface-hover-background-color);
+}
+
+.react-datepicker__year-option--selected,
+.react-datepicker__month-option--selected {
+    background-color: var(--crm-ui-kit-palette-link-primary);
+    color: #ffffff;
+}
+
+/* Скроллбар в выпадающих списках */
+.react-datepicker__time-list::-webkit-scrollbar,
+.react-datepicker__year-dropdown-container--scrollable .react-datepicker__year-dropdown::-webkit-scrollbar {
+    width: 8px;
+}
+
+.react-datepicker__time-list::-webkit-scrollbar-track,
+.react-datepicker__year-dropdown-container--scrollable .react-datepicker__year-dropdown::-webkit-scrollbar-track {
+    background: var(--crm-ui-kit-palette-background-default);
+    border-radius: 4px;
+}
+
+.react-datepicker__time-list::-webkit-scrollbar-thumb,
+.react-datepicker__year-dropdown-container--scrollable .react-datepicker__year-dropdown::-webkit-scrollbar-track {
+    background: var(--crm-ui-kit-palette-scrollbar-thumb-background);
+    border-radius: 4px;
+}
+
+.react-datepicker__time-list::-webkit-scrollbar-thumb:hover,
+.react-datepicker__year-dropdown-container--scrollable .react-datepicker__year-dropdown::-webkit-scrollbar-thumb:hover {
+    background: var(--crm-ui-kit-palette-text-secondary-light);
+}

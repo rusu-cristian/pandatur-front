@@ -1,9 +1,8 @@
 import { useMemo, useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { Button, Group, MultiSelect, Modal, Stack, Box } from "@mantine/core";
-import { DatePickerInput } from "@mantine/dates";
+import { DateRangePicker } from "../../DateRangePicker";
 import { getLanguageByKey } from "../../utils";
-import { YYYY_MM_DD } from "../../../app-constants";
 import { useGetTechniciansList, useUserPermissions } from "../../../hooks";
 import { formatMultiSelectData, getGroupUserMap } from "../../utils/multiSelectUtils";
 import { user } from "../../../api/user";
@@ -297,13 +296,11 @@ export const Filter = ({
                 >
                   {getLanguageByKey("ieri")}
                 </Button>
-                <DatePickerInput
-                  clearable
-                  type="range"
+                <DateRangePicker
                   value={dateRange}
-                  onChange={(val) => setDateRange(val || [])}
-                  valueFormat={YYYY_MM_DD}
+                  onChange={setDateRange}
                   placeholder={getLanguageByKey("Selectează o dată")}
+                  dateFormat="yyyy-MM-dd"
                 />
               </Group>
             )}
