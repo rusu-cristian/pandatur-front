@@ -8,8 +8,13 @@ import { showServerError } from "../../Components/utils/showServerError";
 import { useMobile } from "../../hooks";
 import "./Login.css";
 
-const setCookieToken = (token) => {
-  Cookies.set("jwt", token, {
+const setCookieToken = (token,sessionId) => {
+  Cookies.set("jwt", token,  {
+    secure: true,
+    sameSite: "None",
+    expires: 1,
+  });
+  Cookies.set("SESSION_ID", sessionId, {
     secure: true,
     sameSite: "None",
     expires: 1,
@@ -60,13 +65,13 @@ export const Login = ({ onLoginSuccess }) => {
 
     try {
       const response = await request(data);
-      const { token, message } = response;
+      const { token, session_id, message } = response;
 
       setMessage(message || "Success!");
       setMessageType("success");
 
       if (isLogin) {
-        setCookieToken(token);
+        setCookieToken(token, session_id);
         navigate("/leads");
 
         window.location.reload();

@@ -82,7 +82,7 @@ export const UserProvider = ({ children }) => {
   const navigateRef = useRef(navigate);
   const handleLogoutRef = useRef(handleLogout);
   const enqueueSnackbarRef = useRef(enqueueSnackbar);
-  
+
   // Обновляем ссылки при изменении
   navigateRef.current = navigate;
   handleLogoutRef.current = handleLogout;
@@ -134,7 +134,7 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     // Если уже вызывали - пропускаем
     if (sessionFetchedRef.current) return;
-    
+
     const token = Cookies.get("jwt");
     if (token) {
       sessionFetchedRef.current = true;
@@ -205,13 +205,13 @@ export const UserProvider = ({ children }) => {
       setUserRoles(rawRoles);
       setUserGroups(myGroups);
       setTechnician(me || null);
-      
+
       // Обновляем имя и фамилию из новой структуры данных
       if (me) {
         setName(me.name || null);
         setSurname(me.surname || null);
       }
-      
+
       localStorage.setItem("user_roles", JSON.stringify(rawRoles));
     } catch (error) {
       console.error("error get data users", error.message);
