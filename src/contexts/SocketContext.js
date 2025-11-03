@@ -2,6 +2,7 @@ import React, { createContext, useEffect, useRef, useState, useCallback } from "
 import { useSnackbar } from "notistack";
 import { TYPE_SOCKET_EVENTS } from "@app-constants";
 import { getLanguageByKey } from "@utils";
+import Cookies from "js-cookie";
 
 export const SocketContext = createContext();
 
@@ -11,6 +12,9 @@ export const SocketProvider = ({ children }) => {
   const socketRef = useRef(null);
   const [val, setVal] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
+  
+  // Отслеживаем JWT токен для управления подключением к сокету
+  const [jwtToken, setJwtToken] = useState(() => Cookies.get("jwt"));
 
   const reconnectAttempts = useRef(0);
   const maxReconnectAttempts = 3;
@@ -110,11 +114,42 @@ export const SocketProvider = ({ children }) => {
     sendJSON(TYPE_SOCKET_EVENTS.SEEN, { ticket_id: ticketId, sender_id: userId });
   }, [sendJSON]);
 
+  // Отслеживаем изменения JWT токена
+  useEffect(() => {
+    const checkToken = () => {
+      setJwtToken(Cookies.get("jwt"));
+    };
+    
+    checkToken();
+    const interval = setInterval(checkToken, 1000);
+    
+    return () => clearInterval(interval);
+  }, []);
+
   useEffect(() => {
     let socket;
     let reconnectTimer;
 
+    // Не подключаемся если нет JWT токена
+    if (!jwtToken) {
+      // Закрываем сокет если он был открыт
+      if (socketRef.current) {
+        socketRef.current.close();
+      }
+      return;
+    }
+
     const connect = () => {
+      // Проверяем наличие токена перед подключением
+      const currentToken = Cookies.get("jwt");
+      if (!currentToken) {
+        // Токен удален, закрываем сокет
+        if (socketRef.current) {
+          socketRef.current.close();
+        }
+        return;
+      }
+
       if (reconnectAttempts.current >= maxReconnectAttempts) {
         enqueueSnackbar(getLanguageByKey("socketMaxReconnectReached"), { variant: "warning" });
         return;
@@ -167,6 +202,14 @@ export const SocketProvider = ({ children }) => {
       socket.onclose = () => {
         setIsConnected(false);
         stopPingPong();
+        
+        // Проверяем наличие токена перед попыткой переподключения
+        const currentToken = Cookies.get("jwt");
+        if (!currentToken) {
+          // Токен удален, прекращаем попытки переподключения
+          return;
+        }
+        
         reconnectAttempts.current += 1;
         reconnectTimer = setTimeout(connect, reconnectDelay);
       };
@@ -178,7 +221,7 @@ export const SocketProvider = ({ children }) => {
       try { socket && socket.close(); } catch { }
       clearTimeout(reconnectTimer);
     };
-  }, [enqueueSnackbar, emit, startPingPong, stopPingPong]); // Добавляем зависимости
+  }, [enqueueSnackbar, emit, startPingPong, stopPingPong, jwtToken]); // Добавляем jwtToken в зависимости
 
   return (
     <SocketContext.Provider
