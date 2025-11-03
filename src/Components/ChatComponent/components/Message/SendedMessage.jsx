@@ -28,15 +28,6 @@ export const SendedMessage = ({
 }) => {
 
   const isCall = msg.mtype === MEDIA_TYPE.CALL;
-  const clients = personalInfo.clients || [];
-
-  const findClientByPhone = (phone) =>
-    clients.find((c) => String(c?.id?.phone) === String(phone));
-
-  const findTechnicianBySip = (sip) =>
-    technicians.find(
-      (t) => !String(t.value).startsWith("__group__") && t.sipuni_id === String(sip)
-    );
 
   const findTechnicianById = (id) =>
     technicians.find(
