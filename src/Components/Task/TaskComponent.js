@@ -64,6 +64,7 @@ const TaskComponent = ({
         ...appliedFilters,
         page: currentPage,
         sort_by: "scheduled_time",
+        paginated: false
       });
 
       setTasks?.(Array.isArray(res?.data) ? res.data : []);
@@ -138,16 +139,16 @@ const TaskComponent = ({
                     </Tooltip>
                   ),
                 },
-                {
-                  value: "list",
-                  label: (
-                    <Tooltip label={translations["listView"][language]}>
-                      <span>
-                        <FaList size={16} />
-                      </span>
-                    </Tooltip>
-                  ),
-                }
+                // {
+                //   value: "list",
+                //   label: (
+                //     <Tooltip label={translations["listView"][language]}>
+                //       <span>
+                //         <FaList size={16} />
+                //       </span>
+                //     </Tooltip>
+                //   ),
+                // }
               ]}
             />
             <TextInput
