@@ -10,13 +10,13 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_id: "110499316273706",
       page_name: "Panda Tur Chisinau",
       type: "facebook",
-      group_title: ["MD", "HR", "Marketing", "Individual groups", "Business groups", "Franchise", "Agency"]
+      group_title: ["MD", "HR", "Marketing", "IndividualGroups", "BusinessGroups", "Franchise", "Agency"]
     },
     {
       page_id: "583828601488213",
       page_name: "Oferte Pandatur",
       type: "facebook",
-      group_title: ["MD", "HR", "Marketing", "Individual groups", "Business groups", "Franchise", "Agency"]
+      group_title: ["MD", "HR", "Marketing", "IndividualGroups", "BusinessGroups", "Franchise", "Agency"]
     },
     {
       page_id: "671031122758947",
