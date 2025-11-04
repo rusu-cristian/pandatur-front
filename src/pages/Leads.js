@@ -327,6 +327,33 @@ export const Leads = () => {
   // доступные groupTitle в Select
   const groupTitleSelectData = groupTitleOptions.filter((o) => accessibleGroupTitles.includes(o.value));
 
+  // Загрузка сохраненного значения groupTitle из localStorage при инициализации
+  // ВАЖНО: всегда проверяем значение из localStorage против списка доступных прав
+  useEffect(() => {
+    if (accessibleGroupTitles.length > 0 && !customGroupTitle) {
+      const savedGroupTitle = localStorage.getItem("leads_last_group_title");
+      // Безопасность: проверяем, что сохраненное значение доступно по правам
+      if (savedGroupTitle && accessibleGroupTitles.includes(savedGroupTitle)) {
+        setCustomGroupTitle(savedGroupTitle);
+      } else if (savedGroupTitle) {
+        // Если сохраненное значение больше не доступно по правам - очищаем localStorage
+        localStorage.removeItem("leads_last_group_title");
+      }
+    }
+  }, [accessibleGroupTitles, customGroupTitle, setCustomGroupTitle]);
+
+  // Дополнительная проверка: если текущий customGroupTitle стал недоступен по правам
+  useEffect(() => {
+    if (customGroupTitle && accessibleGroupTitles.length > 0) {
+      // Безопасность: проверяем, что текущее значение все еще доступно по правам
+      if (!accessibleGroupTitles.includes(customGroupTitle)) {
+        // Если права изменились и текущее значение больше не доступно - сбрасываем
+        setCustomGroupTitle(null);
+        localStorage.removeItem("leads_last_group_title");
+      }
+    }
+  }, [accessibleGroupTitles, customGroupTitle, setCustomGroupTitle]);
+
   // закрытие чата
   const closeChatModal = () => {
     setIsChatOpen(false);
@@ -423,7 +450,24 @@ export const Leads = () => {
                 value={customGroupTitle ?? groupTitleForApi}
                 data={groupTitleSelectData}
                 onChange={(val) => {
-                  setCustomGroupTitle(val);
+                  // Безопасность: всегда проверяем значение против списка доступных прав
+                  if (val) {
+                    // Если значение указано - проверяем доступность по правам
+                    if (accessibleGroupTitles.includes(val)) {
+                      setCustomGroupTitle(val);
+                      // Сохранение выбранного значения в localStorage только если оно доступно по правам
+                      localStorage.setItem("leads_last_group_title", val);
+                    } else {
+                      // Если значение не доступно по правам - игнорируем и не устанавливаем
+                      return;
+                    }
+                  } else {
+                    // Если val === null, сбрасываем
+                    setCustomGroupTitle(null);
+                    localStorage.removeItem("leads_last_group_title");
+                  }
+
+                  // Сброс фильтров и состояния при успешном изменении
                   if (viewMode === VIEW_MODE.LIST) {
                     setCurrentPage(1);
                     setHardTicketFilters({});
