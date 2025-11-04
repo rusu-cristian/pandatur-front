@@ -365,6 +365,7 @@ const ModalIntervals = ({
                           type="time"
                           label={translations["Start"][language]}
                           value={interval.start}
+                          disabled={true}
                           onChange={(e) => {
                             const updated = [...intervals];
                             updated[index].start = e.target.value;
@@ -378,6 +379,7 @@ const ModalIntervals = ({
                           type="time"
                           label={translations["End"][language]}
                           value={interval.end}
+                          disabled={true}
                           onChange={(e) => {
                             const updated = [...intervals];
                             updated[index].end = e.target.value;
