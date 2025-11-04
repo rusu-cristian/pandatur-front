@@ -3342,10 +3342,35 @@ export const translations = {
     RU: "Купили (прошлые годы)",
     EN: "Purchased (previous years)",
   },
+  "КУПИЛИ (предыдущие года)": {
+    RO: "Au cumpărat (ani anteriori)",
+    RU: "КУПИЛИ (предыдущие года)",
+    EN: "Purchased (previous years)",
+  },
   "Купил (текущий год)": {
     RO: "A cumpărat (an curent)",
     RU: "Купил (текущий год)",
     EN: "Purchased (current year)",
+  },
+  "Cumpărat (ani anteriori)": {
+    RO: "Cumpărat (ani anteriori)",
+    RU: "Купили (прошлые годы)",
+    EN: "Purchased (previous years)",
+  },
+  "Cumpărat (anul curent)": {
+    RO: "Cumpărat (anul curent)",
+    RU: "Купил (текущий год)",
+    EN: "Purchased (current year)",
+  },
+  "Primit": {
+    RO: "Primit",
+    RU: "Получено",
+    EN: "Received",
+  },
+  "Nou": {
+    RO: "Nou",
+    RU: "Новый",
+    EN: "New",
   },
   "Бронирования": {
     RO: "Rezervări",
