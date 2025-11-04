@@ -50,7 +50,7 @@ export const LogFilterModal = ({ opened, onClose, filters = {}, onApply }) => {
             type: filters.type || [],
             ip_address: filters.ip_address || "",
             timestamp_from: filters.timestamp_from || null,
-            timestamp_until: filters.timestamp_until || null,
+            timestamp_to: filters.timestamp_to || null,
             data_changes_key: filters.data_changes?.key || "",
             data_changes_before: filters.data_changes?.before_value || "",
             data_changes_after: filters.data_changes?.after_value || "",
@@ -65,12 +65,12 @@ export const LogFilterModal = ({ opened, onClose, filters = {}, onApply }) => {
         if (values.event.length) attributes.event = values.event;
         if (values.type.length) attributes.type = values.type;
         if (values.ip_address) attributes.ip_address = values.ip_address;
-        if (values.timestamp_from || values.timestamp_until) {
+        if (values.timestamp_to || values.timestamp_to) {
             attributes.timestamp = {};
             if (values.timestamp_from)
                 attributes.timestamp.from = dayjs(values.timestamp_from).format("DD-MM-YYYY");
-            if (values.timestamp_until)
-                attributes.timestamp.until = dayjs(values.timestamp_until).format("DD-MM-YYYY");
+            if (values.timestamp_to)
+                attributes.timestamp.to = dayjs(values.timestamp_to).format("DD-MM-YYYY");
         }
         if (values.data_changes_key) {
             attributes.data_changes = { key: values.data_changes_key };
@@ -166,7 +166,7 @@ export const LogFilterModal = ({ opened, onClose, filters = {}, onApply }) => {
                         <DatePickerInput
                             label={getLanguageByKey("Date to")}
                             placeholder={getLanguageByKey("End date")}
-                            {...form.getInputProps("timestamp_until")}
+                            {...form.getInputProps("timestamp_to")}
                             valueFormat="DD-MM-YYYY"
                             style={{ flex: 1 }}
                             clearable
