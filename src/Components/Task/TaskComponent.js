@@ -164,9 +164,25 @@ const TaskComponent = ({
   const hasActiveFilters = currentFilters
     ? Object.entries(currentFilters).some(([key, value]) => {
       if (key === "created_for") {
-        return JSON.stringify(value) !== JSON.stringify([String(currentUserId)]);
+        const defaultCreatedFor = [String(currentUserId)];
+        const filterCreatedFor = Array.isArray(value) ? value : [];
+        return JSON.stringify(filterCreatedFor.sort()) !== JSON.stringify(defaultCreatedFor.sort());
       }
-      return value && value.length > 0;
+      
+      // Проверка для массивов
+      if (Array.isArray(value)) {
+        return value.length > 0;
+      }
+      
+      // Проверка для булевых значений (status)
+      if (typeof value === "boolean") {
+        // status: false - это значение по умолчанию, не считается активным фильтром
+        // status: true - это активный фильтр
+        return value === true;
+      }
+      
+      // Проверка для других значений
+      return value !== null && value !== undefined && value !== "";
     })
     : false;
 

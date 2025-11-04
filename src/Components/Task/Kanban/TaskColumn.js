@@ -31,9 +31,44 @@ const wrapperColumn = forwardRef(({ style, ...rest }, ref) => (
 
 wrapperColumn.displayName = 'TaskColumnWrapper';
 
+// Компонент элемента списка с виртуализацией
+const CardItem = memo(({ index, style, task, deadline, now, onEdit, setRowHeight }) => {
+    const rowRef = useRef(null);
+
+    useEffect(() => {
+        if (rowRef.current && task?.id) {
+            // clientHeight автоматически включает все дочерние элементы с их margin'ами
+            const height = rowRef.current.clientHeight;
+            if (height > 0) {
+                setRowHeight(task.id, index, height);
+            }
+        }
+    }, [index, task?.id, setRowHeight]);
+
+    if (!task || !deadline || !deadline.isValid()) {
+        return null;
+    }
+
+    return (
+        <div style={style}>
+            <div ref={rowRef}>
+                <TaskCard
+                    task={task}
+                    deadline={deadline}
+                    now={now}
+                    onClick={onEdit}
+                />
+            </div>
+        </div>
+    );
+});
+
+CardItem.displayName = 'TaskCardItem';
+
 const TaskColumn = ({ titleKey, tasksList, now, onEdit, columnType }) => {
     const columnRef = useRef(null);
     const listRef = useRef(null);
+    // Храним высоты по ID задачи, а не по индексу для более стабильной работы
     const rowHeights = useRef({});
     const [columnHeight, setColumnHeight] = useState(500);
     
@@ -82,11 +117,11 @@ const TaskColumn = ({ titleKey, tasksList, now, onEdit, columnType }) => {
         });
     }, [tasksList]);
 
-    // Функция для установки высоты строки
-    const setRowHeight = useCallback((index, size) => {
+    // Функция для установки высоты строки (по ID задачи)
+    const setRowHeight = useCallback((taskId, index, size) => {
         // Обновляем только если высота изменилась
-        if (rowHeights.current[index] !== size) {
-            rowHeights.current[index] = size;
+        if (rowHeights.current[taskId] !== size) {
+            rowHeights.current[taskId] = size;
             // Сбрасываем кеш только с текущего индекса
             if (listRef.current) {
                 listRef.current.resetAfterIndex(index, false);
@@ -94,46 +129,46 @@ const TaskColumn = ({ titleKey, tasksList, now, onEdit, columnType }) => {
         }
     }, []);
 
-    // Компонент элемента списка с виртуализацией
-    const CardItem = memo(({ index, style }) => {
-        const rowRef = useRef(null);
-        const task = validTasks[index];
-        const deadline = parseTaskDate(task?.scheduled_time);
-
-        useEffect(() => {
-            if (rowRef.current && task) {
-                // clientHeight автоматически включает все дочерние элементы с их margin'ами
-                const height = rowRef.current.clientHeight;
-                if (height > 0) {
-                    setRowHeight(index, height);
-                }
+    // Очищаем кеш высот для удаленных задач
+    useEffect(() => {
+        const validTaskIds = new Set(validTasks.map(t => t.id));
+        // Удаляем высоты для задач, которых больше нет в списке
+        Object.keys(rowHeights.current).forEach(taskId => {
+            if (!validTaskIds.has(parseInt(taskId))) {
+                delete rowHeights.current[taskId];
             }
-        }, [index, task?.id, setRowHeight]);
-
-        if (!task || !deadline || !deadline.isValid()) {
-            return null;
+        });
+        if (listRef.current) {
+            listRef.current.resetAfterIndex(0);
         }
-
-        return (
-            <div style={style}>
-                <div ref={rowRef}>
-                    <TaskCard
-                        task={task}
-                        deadline={deadline}
-                        now={now}
-                        onClick={onEdit}
-                    />
-                </div>
-            </div>
-        );
-    });
-
-    CardItem.displayName = 'TaskCardItem';
+    }, [validTasks]);
 
     // Получаем высоту строки или возвращаем дефолтную
     const getItemSize = useCallback((index) => {
-        return rowHeights.current[index] || DEFAULT_TASK_CARD_HEIGHT;
-    }, []);
+        const task = validTasks[index];
+        if (task?.id && rowHeights.current[task.id]) {
+            return rowHeights.current[task.id];
+        }
+        return DEFAULT_TASK_CARD_HEIGHT;
+    }, [validTasks]);
+
+    // Рендер-функция для элементов списка
+    const renderCardItem = useCallback(({ index, style }) => {
+        const task = validTasks[index];
+        const deadline = parseTaskDate(task?.scheduled_time);
+        
+        return (
+            <CardItem
+                index={index}
+                style={style}
+                task={task}
+                deadline={deadline}
+                now={now}
+                onEdit={onEdit}
+                setRowHeight={setRowHeight}
+            />
+        );
+    }, [validTasks, now, onEdit, setRowHeight]);
 
     return (
         <div className={`task-column ${columnType}`} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -173,7 +208,7 @@ const TaskColumn = ({ titleKey, tasksList, now, onEdit, columnType }) => {
                         innerElementType={wrapperColumn}
                         overscanCount={2}
                     >
-                        {CardItem}
+                        {renderCardItem}
                     </VariableSizeList>
                 )}
             </div>
