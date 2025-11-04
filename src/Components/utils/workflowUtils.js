@@ -91,6 +91,7 @@ export const workflowOptionsFranchiseRascani = [
 
 export const workflowOptionsFranchiseOrhei = [
     "Interesat",
+    "De prelucrat",
     "Luat în lucru",
     "Ofertă trimisă",
     "Aprobat cu client",
@@ -100,6 +101,17 @@ export const workflowOptionsFranchiseOrhei = [
 ];
 
 export const workflowOptionsFranchiseCantemir = [
+    "Interesat",
+    "De prelucrat",
+    "Luat în lucru",
+    "Ofertă trimisă",
+    "Aprobat cu client",
+    "Contract încheiat",
+    "Realizat cu succes",
+    "Închis și nerealizat"
+];
+
+export const workflowOptionsFranchiseGlodeni = [
     "Interesat",
     "Luat în lucru",
     "Ofertă trimisă",
@@ -129,6 +141,7 @@ export const workflowOptionsHR = [
 
 export const workflowOptionsFranchisePandaTur = [
     "Interesat",
+    "De prelucrat",
     "Luat în lucru",
     "Ofertă trimisă",
     "Aprobat cu client",
@@ -180,7 +193,6 @@ export const workflowOptionsLimitedFiliale = [
     "Închis și nerealizat"
 ];
 export const workflowOptionsLimitedFranchiseRascani = [
-    // "Interesat",
     "Apel de intrare",
     "De prelucrat",
     "Luat în lucru",
@@ -231,6 +243,17 @@ export const workflowOptionsLimitedBusinessGroups = [
 ];
 
 export const workflowOptionsLimitedFranchiseOrhei = [
+    "De prelucrat",
+    "Luat în lucru",
+    "Ofertă trimisă",
+    "Aprobat cu client",
+    "Contract încheiat",
+    "Realizat cu succes",
+    "Închis și nerealizat"
+];
+
+export const workflowOptionsLimitedFranchiseGlodeni = [
+    "De prelucrat",
     "Luat în lucru",
     "Ofertă trimisă",
     "Aprobat cu client",
@@ -240,6 +263,7 @@ export const workflowOptionsLimitedFranchiseOrhei = [
 ];
 
 export const workflowOptionsLimitedFranchiseCantemir = [
+    "De prelucrat",
     "Luat în lucru",
     "Ofertă trimisă",
     "Aprobat cu client",
@@ -249,6 +273,7 @@ export const workflowOptionsLimitedFranchiseCantemir = [
 ];
 
 export const workflowOptionsLimitedSalesUA = [
+    "De prelucrat",
     "Luat în lucru",
     "Ofertă trimisă",
     "Aprobat cu client",
@@ -265,6 +290,7 @@ export const workflowOptionsLimitedHR = [
 ];
 
 export const workflowOptionsLimitedFranchisePandaTur = [
+    "De prelucrat",
     "Luat în lucru",
     "Ofertă trimisă",
     "Aprobat cu client",
