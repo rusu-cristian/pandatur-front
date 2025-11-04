@@ -82,18 +82,28 @@ export const ChatInput = ({
   // Получаем список page_id для выбранной платформы, отфильтрованный по group_title тикета
   const pageIdOptions = useMemo(() => {
     if (!selectedPlatform) return [];
-    
+
     const pages = getPagesByType(selectedPlatform);
-    
+
     // Фильтруем страницы по group_title тикета
-    const filteredPages = groupTitle 
-      ? pages.filter(page => page.group_title === groupTitle)
+    const filteredPages = groupTitle
+      ? pages.filter(page => {
+        if (Array.isArray(page.group_title)) {
+          return page.group_title.includes(groupTitle);
+        }
+        return page.group_title === groupTitle;
+      })
       : pages;
-    
-    return filteredPages.map(page => ({
-      value: page.page_id,
-      label: `${page.page_name} (${page.group_title})`
-    }));
+
+    return filteredPages.map(page => {
+      const groupTitleLabel = Array.isArray(page.group_title)
+        ? page.group_title.join(', ')
+        : page.group_title;
+      return {
+        value: page.page_id,
+        label: `${page.page_name}`
+      };
+    });
   }, [selectedPlatform, groupTitle]);
 
   // Получаем actionNeeded всегда из тикета из AppContext
@@ -172,7 +182,7 @@ export const ChatInput = ({
   const buildBasePayload = () => {
     // Извлекаем только ID клиента из составного ключа (например, "4492-5843" -> "4492")
     const clientId = currentClient?.value ? currentClient.value.split('-')[0] : null;
-    
+
     return {
       page_id: selectedPageId,
       platform: selectedPlatform,
@@ -185,7 +195,7 @@ export const ChatInput = ({
 
   const handleMarkAsRead = async () => {
     if (!ticketId) return;
-    
+
     try {
       // Отправляем CONNECT через сокет
       if (socketRef?.current?.readyState === WebSocket.OPEN) {
@@ -195,13 +205,13 @@ export const ChatInput = ({
         };
         socketRef.current.send(JSON.stringify(connectPayload));
       }
-      
+
       // Отправляем seen через API (вместо WebSocket)
-      await api.messages.send.markSeen({ 
-        ticket_id: ticketId, 
-        user_id: userId 
+      await api.messages.send.markSeen({
+        ticket_id: ticketId,
+        user_id: userId
       });
-      
+
       // Локально обновляем UI
       markMessagesAsRead(ticketId, unseenCount);
     } catch (error) {
@@ -354,7 +364,7 @@ export const ChatInput = ({
                         }
                       }}
                     />
-                    
+
                     {/* 2. Template select */}
                     <Select
                       searchable
@@ -379,7 +389,7 @@ export const ChatInput = ({
                       }}
                     />
                   </Flex>
-                  
+
                   {/* Второй ряд: User pick number + Void select */}
                   <Flex gap="md" w="100%">
                     {/* 3. User pick number (contact) */}
@@ -401,7 +411,7 @@ export const ChatInput = ({
                         }
                       }}
                     />
-                    
+
                     {/* 4. Page ID select */}
                     <Select
                       searchable
@@ -471,9 +481,9 @@ export const ChatInput = ({
                   {getLanguageByKey("Trimite")}
                 </Button>
 
-                <Button 
-                  onClick={clearState} 
-                  variant="default" 
+                <Button
+                  onClick={clearState}
+                  variant="default"
                   color="gray"
                   styles={{
                     root: {

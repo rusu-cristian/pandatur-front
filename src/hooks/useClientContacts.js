@@ -43,7 +43,12 @@ function computePlatformOptionsFromBlocks(platformBlocks) {
 function selectPageIdByMessage(platform, messagePageId, groupTitle) {
   if (!platform) return null;
   const allPages = getPagesByType(platform) || [];
-  const filtered = groupTitle ? allPages.filter((p) => p.group_title === groupTitle) : allPages;
+  const filtered = groupTitle ? allPages.filter((p) => {
+    if (Array.isArray(p.group_title)) {
+      return p.group_title.includes(groupTitle);
+    }
+    return p.group_title === groupTitle;
+  }) : allPages;
   if (!filtered.length) return null;
   return filtered.some((p) => p.page_id === messagePageId) ? messagePageId : filtered[0].page_id;
 }
@@ -226,7 +231,12 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
 
     if (!nextPageId) {
       const all = getPagesByType(selectedPlatform) || [];
-      const filtered = groupTitle ? all.filter((p) => p.group_title === groupTitle) : all;
+      const filtered = groupTitle ? all.filter((p) => {
+        if (Array.isArray(p.group_title)) {
+          return p.group_title.includes(groupTitle);
+        }
+        return p.group_title === groupTitle;
+      }) : all;
       nextPageId = filtered[0]?.page_id || null;
     }
 

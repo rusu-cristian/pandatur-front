@@ -269,9 +269,14 @@ export const ChatMessages = ({
                 if (!selectedClient.payload) return;
                 
                 // Получаем page_id из конфигурации по платформе и group_title тикета
+                // Если group_title это массив, берем первое значение
+                const groupTitle = Array.isArray(personalInfo?.group_title) 
+                  ? personalInfo.group_title[0] 
+                  : personalInfo?.group_title;
+                
                 const pandaPageId = getPageIdByPlatformAndGroup(
                   selectedClient.payload.platform,
-                  personalInfo?.group_title
+                  groupTitle
                 );
                 
                 sendMessage({

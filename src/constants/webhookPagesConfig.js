@@ -363,7 +363,12 @@ export const getPagesByType = (type) => {
 
 export const getPagesByGroupTitle = (groupTitle) => {
   const allPages = Object.values(WEBHOOK_PAGES_CONFIG).flat();
-  return allPages.filter(page => page.group_title === groupTitle);
+  return allPages.filter(page => {
+    if (Array.isArray(page.group_title)) {
+      return page.group_title.includes(groupTitle);
+    }
+    return page.group_title === groupTitle;
+  });
 };
 
 export const getPageById = (pageId) => {
@@ -373,7 +378,13 @@ export const getPageById = (pageId) => {
 
 export const getGroupTitles = () => {
   const allPages = Object.values(WEBHOOK_PAGES_CONFIG).flat();
-  const uniqueGroups = [...new Set(allPages.map(page => page.group_title))];
+  const allGroups = allPages.flatMap(page => {
+    if (Array.isArray(page.group_title)) {
+      return page.group_title;
+    }
+    return [page.group_title];
+  });
+  const uniqueGroups = [...new Set(allGroups)];
   return uniqueGroups.sort();
 };
 
@@ -389,6 +400,11 @@ export const getPageIdByPlatformAndGroup = (platform, groupTitle) => {
   else return null;
 
   const pages = WEBHOOK_PAGES_CONFIG[key] || [];
-  const page = pages.find(p => p.group_title === groupTitle);
+  const page = pages.find(p => {
+    if (Array.isArray(p.group_title)) {
+      return p.group_title.includes(groupTitle);
+    }
+    return p.group_title === groupTitle;
+  });
   return page?.page_id || null;
 };
