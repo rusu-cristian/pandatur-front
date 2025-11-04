@@ -51,9 +51,10 @@
 
 .task-list-scroll-area {
   flex: 1;
-  overflow-y: auto;
+  overflow: hidden;
   padding: 8px;
   max-height: calc(133vh - 200px);
+  min-height: 0;
 }
 
 .task-column.overdue .task-column-header {

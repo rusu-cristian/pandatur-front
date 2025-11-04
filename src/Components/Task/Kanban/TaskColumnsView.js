@@ -22,30 +22,21 @@ const groupTasksByDate = (tasks) => {
         tomorrow: [],
     };
 
-    console.log("Группировка задач:", tasks.length, "задач");
-
     tasks.forEach((task) => {
         const deadline = parseTaskDate(task.scheduled_time);
         if (!deadline || !deadline.isValid()) {
-            console.log("Не удалось распарсить дату для задачи:", task.id, task.scheduled_time);
             return;
         }
 
-        console.log("Задача:", task.id, "Дедлайн:", deadline.format(), "Сейчас:", now.format());
-
         if (deadline.isBefore(now, "day")) {
             grouped.overdue.push(task);
-            console.log("Добавлено в просроченные:", task.id);
         } else if (deadline.isSame(now, "day")) {
             grouped.today.push(task);
-            console.log("Добавлено в сегодня:", task.id);
         } else {
             grouped.tomorrow.push(task);
-            console.log("Добавлено в завтра:", task.id);
         }
     });
 
-    console.log("Результат группировки:", grouped);
     return { grouped, now };
 };
 
