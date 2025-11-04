@@ -7,8 +7,86 @@ export const WEBHOOK_PAGES_CONFIG = {
       group_title: "MD"
     },
     {
+      page_id: "142678122441525",
+      page_name: "Panda Tur MD",
+      type: "facebook",
+      group_title: "HR"
+    },
+    {
+      page_id: "142678122441525",
+      page_name: "Panda Tur MD",
+      type: "facebook",
+      group_title: "Marketing"
+    },
+    {
+      page_id: "142678122441525",
+      page_name: "Panda Tur MD",
+      type: "facebook",
+      group_title: "Individual groups"
+    },
+    {
+      page_id: "142678122441525",
+      page_name: "Panda Tur MD",
+      type: "facebook",
+      group_title: "Business groups"
+    },
+    {
+      page_id: "142678122441525",
+      page_name: "Panda Tur MD",
+      type: "facebook",
+      group_title: "Franchise"
+    },
+    {
+      page_id: "142678122441525",
+      page_name: "Panda Tur MD",
+      type: "facebook",
+      group_title: "Agency"
+    },
+    {
       page_id: "110499316273706",
       page_name: "Panda Tur Chisinau",
+      type: "facebook",
+      group_title: "MD"
+    },
+    {
+      page_id: "110499316273706",
+      page_name: "Panda Tur Chisinau",
+      type: "facebook",
+      group_title: "HR"
+    },
+    {
+      page_id: "110499316273706",
+      page_name: "Panda Tur Chisinau",
+      type: "facebook",
+      group_title: "Marketing"
+    },
+    {
+      page_id: "110499316273706",
+      page_name: "Panda Tur Chisinau",
+      type: "facebook",
+      group_title: "Individual groups"
+    },
+    {
+      page_id: "110499316273706",
+      page_name: "Panda Tur Chisinau",
+      type: "facebook",
+      group_title: "Business groups"
+    },
+    {
+      page_id: "110499316273706",
+      page_name: "Panda Tur Chisinau",
+      type: "facebook",
+      group_title: "Franchise"
+    },
+    {
+      page_id: "110499316273706",
+      page_name: "Panda Tur Chisinau",
+      type: "facebook",
+      group_title: "Agency"
+    },
+    {
+      page_id: "583828601488213",
+      page_name: "Oferte Pandatur",
       type: "facebook",
       group_title: "MD"
     },
@@ -16,7 +94,37 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_id: "583828601488213",
       page_name: "Oferte Pandatur",
       type: "facebook",
-      group_title: "MD"
+      group_title: "HR"
+    },
+    {
+      page_id: "583828601488213",
+      page_name: "Oferte Pandatur",
+      type: "facebook",
+      group_title: "Marketing"
+    },
+    {
+      page_id: "583828601488213",
+      page_name: "Oferte Pandatur",
+      type: "facebook",
+      group_title: "Individual groups"
+    },
+    {
+      page_id: "583828601488213",
+      page_name: "Oferte Pandatur",
+      type: "facebook",
+      group_title: "Business groups"
+    },
+    {
+      page_id: "583828601488213",
+      page_name: "Oferte Pandatur",
+      type: "facebook",
+      group_title: "Franchise"
+    },
+    {
+      page_id: "583828601488213",
+      page_name: "Oferte Pandatur",
+      type: "facebook",
+      group_title: "Agency"
     },
     {
       page_id: "671031122758947",
@@ -135,10 +243,82 @@ export const WEBHOOK_PAGES_CONFIG = {
       group_title: "MD"
     },
     {
+      page_id: "17841474040991649",
+      page_name: "Panda Tur MD",
+      type: "instagram",
+      group_title: "HR"
+    },
+    {
+      page_id: "17841474040991649",
+      page_name: "Panda Tur MD",
+      type: "instagram",
+      group_title: "Marketing"
+    },
+    {
+      page_id: "17841474040991649",
+      page_name: "Panda Tur MD",
+      type: "instagram",
+      group_title: "Individual groups"
+    },
+    {
+      page_id: "17841474040991649",
+      page_name: "Panda Tur MD",
+      type: "instagram",
+      group_title: "Business groups"
+    },
+    {
+      page_id: "17841474040991649",
+      page_name: "Panda Tur MD",
+      type: "instagram",
+      group_title: "Franchise"
+    },
+    {
+      page_id: "17841474040991649",
+      page_name: "Panda Tur MD",
+      type: "instagram",
+      group_title: "Agency"
+    },
+    {
       page_id: "17841473358875325",
       page_name: "Oferte Pandatur",
       type: "instagram",
       group_title: "MD"
+    },
+    {
+      page_id: "17841473358875325",
+      page_name: "Oferte Pandatur",
+      type: "instagram",
+      group_title: "HR"
+    },
+    {
+      page_id: "17841473358875325",
+      page_name: "Oferte Pandatur",
+      type: "instagram",
+      group_title: "Marketing"
+    },
+    {
+      page_id: "17841473358875325",
+      page_name: "Oferte Pandatur",
+      type: "instagram",
+      group_title: "Individual groups"
+    },
+    {
+      page_id: "17841473358875325",
+      page_name: "Oferte Pandatur",
+      type: "instagram",
+      group_title: "Business groups"
+    },
+    {
+      page_id: "17841473358875325",
+      page_name: "Oferte Pandatur",
+      type: "instagram",
+      group_title: "Franchise"
+    },
+    {
+      page_id: "17841473358875325",
+      page_name: "Oferte Pandatur",
+      type: "instagram",
+      group_title: "Agency"
     },
     {
       page_id: "17841475266910359",
@@ -233,10 +413,82 @@ export const WEBHOOK_PAGES_CONFIG = {
       group_title: "MD"
     },
     {
+      page_id: "37360991919",
+      page_name: "Chisinau - 37360991919",
+      type: "phone",
+      group_title: "HR"
+    },
+    {
+      page_id: "37360991919",
+      page_name: "Chisinau - 37360991919",
+      type: "phone",
+      group_title: "Marketing"
+    },
+    {
+      page_id: "37360991919",
+      page_name: "Chisinau - 37360991919",
+      type: "phone",
+      group_title: "Individual groups"
+    },
+    {
+      page_id: "37360991919",
+      page_name: "Chisinau - 37360991919",
+      type: "phone",
+      group_title: "Business groups"
+    },
+    {
+      page_id: "37360991919",
+      page_name: "Chisinau - 37360991919",
+      type: "phone",
+      group_title: "Franchise"
+    },
+    {
+      page_id: "37360991919",
+      page_name: "Chisinau - 37360991919",
+      type: "phone",
+      group_title: "Agency"
+    },
+    {
       page_id: "37369440400",
       page_name: "Chisinau - 37369440400",
       type: "phone",
       group_title: "MD"
+    },
+    {
+      page_id: "37369440400",
+      page_name: "Chisinau - 37369440400",
+      type: "phone",
+      group_title: "HR"
+    },
+    {
+      page_id: "37369440400",
+      page_name: "Chisinau - 37369440400",
+      type: "phone",
+      group_title: "Marketing"
+    },
+    {
+      page_id: "37369440400",
+      page_name: "Chisinau - 37369440400",
+      type: "phone",
+      group_title: "Individual groups"
+    },
+    {
+      page_id: "37369440400",
+      page_name: "Chisinau - 37369440400",
+      type: "phone",
+      group_title: "Business groups"
+    },
+    {
+      page_id: "37369440400",
+      page_name: "Chisinau - 37369440400",
+      type: "phone",
+      group_title: "Franchise"
+    },
+    {
+      page_id: "37369440400",
+      page_name: "Chisinau - 37369440400",
+      type: "phone",
+      group_title: "Agency"
     },
     {
       page_id: "37361161919",
@@ -283,6 +535,42 @@ export const WEBHOOK_PAGES_CONFIG = {
       group_title: "MD"
     },
     {
+      page_id: "37360991919",
+      page_name: "Chisinau - 37360991919",
+      type: "phone",
+      group_title: "HR"
+    },
+    {
+      page_id: "37360991919",
+      page_name: "Chisinau - 37360991919",
+      type: "phone",
+      group_title: "Marketing"
+    },
+    {
+      page_id: "37360991919",
+      page_name: "Chisinau - 37360991919",
+      type: "phone",
+      group_title: "Individual groups"
+    },
+    {
+      page_id: "37360991919",
+      page_name: "Chisinau - 37360991919",
+      type: "phone",
+      group_title: "Business groups"
+    },
+    {
+      page_id: "37360991919",
+      page_name: "Chisinau - 37360991919",
+      type: "phone",
+      group_title: "Franchise"
+    },
+    {
+      page_id: "37360991919",
+      page_name: "Chisinau - 37360991919",
+      type: "phone",
+      group_title: "Agency"
+    },
+    {
       page_id: "37361161919",
       page_name: "Rascani - 37361161919",
       type: "phone",
@@ -313,6 +601,42 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_name: "Chisinau - viber-bot-pandatur",
       type: "viber-bot",
       group_title: "MD"
+    },
+    {
+      page_id: "viber-bot-pandatur",
+      page_name: "Chisinau - viber-bot-pandatur",
+      type: "viber-bot",
+      group_title: "HR"
+    },
+    {
+      page_id: "viber-bot-pandatur",
+      page_name: "Chisinau - viber-bot-pandatur",
+      type: "viber-bot",
+      group_title: "Marketing"
+    },
+    {
+      page_id: "viber-bot-pandatur",
+      page_name: "Chisinau - viber-bot-pandatur",
+      type: "viber-bot",
+      group_title: "Individual groups"
+    },
+    {
+      page_id: "viber-bot-pandatur",
+      page_name: "Chisinau - viber-bot-pandatur",
+      type: "viber-bot",
+      group_title: "Business groups"
+    },
+    {
+      page_id: "viber-bot-pandatur",
+      page_name: "Chisinau - viber-bot-pandatur",
+      type: "viber-bot",
+      group_title: "Franchise"
+    },
+    {
+      page_id: "viber-bot-pandatur",
+      page_name: "Chisinau - viber-bot-pandatur",
+      type: "viber-bot",
+      group_title: "Agency"
     }
   ],
   telegrams: [
@@ -321,6 +645,42 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_name: "Chisinau - 37360991919",
       type: "telegram",
       group_title: "MD"
+    },
+    {
+      page_id: "37360991919",
+      page_name: "Chisinau - 37360991919",
+      type: "telegram",
+      group_title: "HR"
+    },
+    {
+      page_id: "37360991919",
+      page_name: "Chisinau - 37360991919",
+      type: "telegram",
+      group_title: "Marketing"
+    },
+    {
+      page_id: "37360991919",
+      page_name: "Chisinau - 37360991919",
+      type: "telegram",
+      group_title: "Individual groups"
+    },
+    {
+      page_id: "37360991919",
+      page_name: "Chisinau - 37360991919",
+      type: "telegram",
+      group_title: "Business groups"
+    },
+    {
+      page_id: "37360991919",
+      page_name: "Chisinau - 37360991919",
+      type: "telegram",
+      group_title: "Franchise"
+    },
+    {
+      page_id: "37360991919",
+      page_name: "Chisinau - 37360991919",
+      type: "telegram",
+      group_title: "Agency"
     },
     // {
     //   page_id: "37360361919",
