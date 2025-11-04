@@ -43,7 +43,7 @@ const TaskComponent = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [viewMode, setViewMode] = useState("list");
+  const [viewMode, setViewMode] = useState("columns");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [filterModalOpen, setFilterModalOpen] = useState(false);
@@ -127,16 +127,7 @@ const TaskComponent = ({
               value={viewMode}
               onChange={setViewMode}
               data={[
-                {
-                  value: "list",
-                  label: (
-                    <Tooltip label={translations["listView"][language]}>
-                      <span>
-                        <FaList size={16} />
-                      </span>
-                    </Tooltip>
-                  ),
-                },
+
                 {
                   value: "columns",
                   label: (
@@ -147,6 +138,16 @@ const TaskComponent = ({
                     </Tooltip>
                   ),
                 },
+                {
+                  value: "list",
+                  label: (
+                    <Tooltip label={translations["listView"][language]}>
+                      <span>
+                        <FaList size={16} />
+                      </span>
+                    </Tooltip>
+                  ),
+                }
               ]}
             />
             <TextInput
