@@ -128,7 +128,6 @@ const TaskComponent = ({
               value={viewMode}
               onChange={setViewMode}
               data={[
-
                 {
                   value: "columns",
                   label: (
