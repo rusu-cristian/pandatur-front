@@ -329,27 +329,39 @@ export const Leads = () => {
 
   // Загрузка сохраненного значения groupTitle из localStorage при инициализации
   // ВАЖНО: всегда проверяем значение из localStorage против списка доступных прав
+  // Если недоступно - сохраняем первое доступное значение
   useEffect(() => {
     if (accessibleGroupTitles.length > 0 && !customGroupTitle) {
       const savedGroupTitle = localStorage.getItem("leads_last_group_title");
       // Безопасность: проверяем, что сохраненное значение доступно по правам
       if (savedGroupTitle && accessibleGroupTitles.includes(savedGroupTitle)) {
         setCustomGroupTitle(savedGroupTitle);
-      } else if (savedGroupTitle) {
-        // Если сохраненное значение больше не доступно по правам - очищаем localStorage
-        localStorage.removeItem("leads_last_group_title");
+      } else {
+        // Если сохраненное значение недоступно - устанавливаем и сохраняем первое доступное
+        const firstAccessible = accessibleGroupTitles[0];
+        if (firstAccessible) {
+          setCustomGroupTitle(firstAccessible);
+          localStorage.setItem("leads_last_group_title", firstAccessible);
+        }
       }
     }
   }, [accessibleGroupTitles, customGroupTitle, setCustomGroupTitle]);
 
   // Дополнительная проверка: если текущий customGroupTitle стал недоступен по правам
+  // Устанавливаем и сохраняем первое доступное значение
   useEffect(() => {
     if (customGroupTitle && accessibleGroupTitles.length > 0) {
       // Безопасность: проверяем, что текущее значение все еще доступно по правам
       if (!accessibleGroupTitles.includes(customGroupTitle)) {
-        // Если права изменились и текущее значение больше не доступно - сбрасываем
-        setCustomGroupTitle(null);
-        localStorage.removeItem("leads_last_group_title");
+        // Если права изменились и текущее значение больше не доступно - устанавливаем первое доступное
+        const firstAccessible = accessibleGroupTitles[0];
+        if (firstAccessible) {
+          setCustomGroupTitle(firstAccessible);
+          localStorage.setItem("leads_last_group_title", firstAccessible);
+        } else {
+          setCustomGroupTitle(null);
+          localStorage.removeItem("leads_last_group_title");
+        }
       }
     }
   }, [accessibleGroupTitles, customGroupTitle, setCustomGroupTitle]);
@@ -451,23 +463,32 @@ export const Leads = () => {
                 data={groupTitleSelectData}
                 onChange={(val) => {
                   // Безопасность: всегда проверяем значение против списка доступных прав
+                  let valueToSet = null;
+                  
                   if (val) {
                     // Если значение указано - проверяем доступность по правам
                     if (accessibleGroupTitles.includes(val)) {
-                      setCustomGroupTitle(val);
-                      // Сохранение выбранного значения в localStorage только если оно доступно по правам
-                      localStorage.setItem("leads_last_group_title", val);
+                      // Если доступно - используем его
+                      valueToSet = val;
                     } else {
-                      // Если значение не доступно по правам - игнорируем и не устанавливаем
-                      return;
+                      // Если значение не доступно по правам - используем первое доступное
+                      valueToSet = accessibleGroupTitles[0] || null;
                     }
                   } else {
                     // Если val === null, сбрасываем
+                    valueToSet = null;
+                  }
+
+                  // Устанавливаем и сохраняем значение (только если есть доступ)
+                  if (valueToSet && accessibleGroupTitles.includes(valueToSet)) {
+                    setCustomGroupTitle(valueToSet);
+                    localStorage.setItem("leads_last_group_title", valueToSet);
+                  } else {
                     setCustomGroupTitle(null);
                     localStorage.removeItem("leads_last_group_title");
                   }
 
-                  // Сброс фильтров и состояния при успешном изменении
+                  // Сброс фильтров и состояния при изменении
                   if (viewMode === VIEW_MODE.LIST) {
                     setCurrentPage(1);
                     setHardTicketFilters({});
