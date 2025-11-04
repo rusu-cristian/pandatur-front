@@ -1,5 +1,4 @@
 export const workflowOptionsSalesMD = [
-    // "GPT",
     "Interesat",
     "Apel de intrare",
     "De prelucrat",
@@ -14,7 +13,6 @@ export const workflowOptionsSalesMD = [
 ];
 
 export const workflowOptionsSalesRO = [
-    // "GPT",
     "Interesat",
     "De prelucrat",
     "Luat în lucru",
@@ -28,6 +26,7 @@ export const workflowOptionsSalesRO = [
 
 export const workflowOptionsFiliale = [
     "Interesat",
+    "De prelucrat",
     "Luat în lucru",
     "Ofertă trimisă",
     "Aprobat cu client",
@@ -42,18 +41,23 @@ export const workflowOptionsAgency = [
     "Contract",
     "Creat Cont In sistem",
     "Rezervari",
+    "Realizat cu succes",
+    "Închis și nerealizat"
 ];
 
 export const workflowOptionsGreenCard = [
-    "В работе GC",
-    "Сбор данных",
-    "Купили (прошлые годы)",
-    "Купил (текущий год)",
-    "Бронирования",
+    "În lucru GC",
+    "Colectare date",
+    "Cumpărat (ani anteriori)",
+    "Cumpărat (anul curent)",
+    "Rezervări",
+    "Realizat cu succes",
+    "Închis și nerealizat"
 ];
 
 export const workflowOptionsIndividualGroups = [
     "Interesat",
+    "De prelucrat",
     "Luat în lucru",
     "Ofertă trimisă",
     "Aprobat cu client",
@@ -64,6 +68,7 @@ export const workflowOptionsIndividualGroups = [
 
 export const workflowOptionsBusinessGroups = [
     "Interesat",
+    "De prelucrat",
     "Luat în lucru",
     "Ofertă trimisă",
     "Aprobat cu client",
@@ -106,6 +111,7 @@ export const workflowOptionsFranchiseCantemir = [
 
 export const workflowOptionsSalesUA = [
     "Interesat",
+    "De prelucrat",
     "Luat în lucru",
     "Ofertă trimisă",
     "Aprobat cu client",
@@ -115,10 +121,10 @@ export const workflowOptionsSalesUA = [
 ];
 
 export const workflowOptionsHR = [
-    "Incoming",
-    "New!!!",
-    "+",
-    "-"
+    "Primit",
+    "Nou",
+    "Realizat cu succes",
+    "Închis și nerealizat"
 ];
 
 export const workflowOptionsFranchisePandaTur = [
@@ -132,11 +138,12 @@ export const workflowOptionsFranchisePandaTur = [
 ];
 
 export const workflowOptionsMarketing = [
-    "Incoming",
-    "New!!!",
-    "+",
-    "-"
+    "Primit",
+    "Nou",
+    "Realizat cu succes",
+    "Închis și nerealizat"
 ];
+
 // limited
 
 export const workflowOptionsLimitedSalesMD = [
@@ -164,6 +171,7 @@ export const workflowOptionsLimitedSalesRO = [
 ];
 
 export const workflowOptionsLimitedFiliale = [
+    "De prelucrat",
     "Luat în lucru",
     "Ofertă trimisă",
     "Aprobat cu client",
@@ -189,6 +197,8 @@ export const workflowOptionsLimitedAgency = [
     "Contract",
     "Creat Cont In sistem",
     "Rezervari",
+    "Realizat cu succes",
+    "Închis și nerealizat"
 ];
 
 export const workflowOptionsLimitedGreenCard = [
@@ -197,8 +207,11 @@ export const workflowOptionsLimitedGreenCard = [
     "КУПИЛИ (предыдущие года)",
     "Купил (текущий год)",
     "Rezervari",
+    "Realizat cu succes",
+    "Închis și nerealizat"
 ];
 export const workflowOptionsLimitedIndividualGroups = [
+    "De prelucrat",
     "Luat în lucru",
     "Ofertă trimisă",
     "Aprobat cu client",
@@ -208,6 +221,7 @@ export const workflowOptionsLimitedIndividualGroups = [
 ];
 
 export const workflowOptionsLimitedBusinessGroups = [
+    "De prelucrat",
     "Luat în lucru",
     "Ofertă trimisă",
     "Aprobat cu client",
@@ -244,10 +258,10 @@ export const workflowOptionsLimitedSalesUA = [
 ];
 
 export const workflowOptionsLimitedHR = [
-    "Incoming",
-    "New!!!",
-    "+",
-    "-"
+    "Primit",
+    "Nou",
+    "Realizat cu succes",
+    "Închis și nerealizat"
 ];
 
 export const workflowOptionsLimitedFranchisePandaTur = [
@@ -260,10 +274,10 @@ export const workflowOptionsLimitedFranchisePandaTur = [
 ];
 
 export const workflowOptionsLimitedMarketing = [
-    "Incoming",
-    "New!!!",
-    "+",
-    "-"
+    "Primit",
+    "Nou",
+    "Realizat cu succes",
+    "Închis și nerealizat"
 ];
 
 export const workflowOptionsByGroupTitle = {
