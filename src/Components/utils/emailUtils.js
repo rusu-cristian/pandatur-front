@@ -1,21 +1,24 @@
 // Карта email адресов по воронкам (group_title)
 export const groupEmailsMap = {
-  // Основные воронки
+
   "MD": ["oferte@pandatur.md"],
-  "RO": ["oferte@pandatour.ro"],
   
+  "RO": ["oferte@pandatour.ro"],
+
+  "IndividualGroups": ["explorix.moldova@gmail.com"],
+
   // Филиалы
   "Filiale": [
     "balti@pandatur.md",
-    "falesti@pandatur.md", 
+    "falesti@pandatur.md",
     "ungheni@pandatur.md",
     "calarasi@pandatur.md",
     "cahul@pandatur.md"
   ],
-  
+
   // Green Card
   "GreenCard": ["greencard@pandatur.md"],
-  
+
   // Франшизы
   "FranchiseEdinet": ["edinet@pandatour.md"],
   "FranchiseDrochia": ["drochia@pandatour.md"],

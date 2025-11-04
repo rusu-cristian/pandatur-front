@@ -31,60 +31,97 @@ const language = localStorage.getItem("language") || "RO";
 const TaskComponent = ({
   updateTaskCount = () => { },
   userId,
-  tasks = [],
-  setTasks,
+  tasks = [], // Используется для обратной совместимости, но не напрямую
+  setTasks, // Используется для обратной совместимости, но не напрямую
   setFetchTasksRef,
 }) => {
   const { userId: currentUserId } = useUser();
   const { accessibleGroupTitles, workflowOptions } = useContext(AppContext);
 
-  const [filters, setFilters] = useState(null);
+  // Отдельные фильтры для kanban и list
+  const [kanbanFilters, setKanbanFilters] = useState(null);
+  const [listFilters, setListFilters] = useState(null);
+  
+  // Отдельные массивы задач
+  const [kanbanTasks, setKanbanTasks] = useState([]);
+  const [listTasks, setListTasks] = useState([]);
+  
+  // Пагинация только для list
+  const [listCurrentPage, setListCurrentPage] = useState(1);
+  const [listTotalPages, setListTotalPages] = useState(1);
+  
   const [searchInput, setSearchInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const [viewMode, setViewMode] = useState("columns");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [filterModalOpen, setFilterModalOpen] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
+  // Получаем текущие фильтры и задачи в зависимости от viewMode
+  const currentFilters = viewMode === "columns" ? kanbanFilters : listFilters;
+  const currentTasks = viewMode === "columns" ? kanbanTasks : listTasks;
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setSearchQuery(searchInput);
-      setCurrentPage(1);
+      if (viewMode === "list") {
+        setListCurrentPage(1);
+      }
     }, 500);
     return () => clearTimeout(timer);
-  }, [searchInput]);
+  }, [searchInput, viewMode]);
 
-  const fetchTasks = async (appliedFilters = filters) => {
+  // Загрузка задач для kanban (paginated: false)
+  const fetchKanbanTasks = async (appliedFilters = kanbanFilters) => {
     if (!appliedFilters) return;
     try {
       const res = await api.task.filterTasks({
         ...appliedFilters,
-        page: currentPage,
+        page: 1,
         sort_by: "scheduled_time",
         paginated: false
       });
 
-      setTasks?.(Array.isArray(res?.data) ? res.data : []);
-      setTotalPages(res?.pagination?.total_pages || 1);
+      setKanbanTasks(Array.isArray(res?.data) ? res.data : []);
       updateTaskCount();
     } catch (error) {
-      console.error("error upload tasks", error);
-      setTasks([]);
+      console.error("error upload kanban tasks", error);
+      setKanbanTasks([]);
       enqueueSnackbar(showServerError(error), { variant: "error" });
     }
   };
 
-  useEffect(() => {
-    if (setFetchTasksRef) setFetchTasksRef(fetchTasks);
-  }, [setFetchTasksRef, fetchTasks]);
+  // Загрузка задач для list (paginated: true)
+  const fetchListTasks = async (appliedFilters = listFilters) => {
+    if (!appliedFilters) return;
+    try {
+      const res = await api.task.filterTasks({
+        ...appliedFilters,
+        page: listCurrentPage,
+        sort_by: "scheduled_time",
+        paginated: true
+      });
 
-  useEffect(() => {
-    fetchTasks();
-  }, [filters, currentPage]);
+      setListTasks(Array.isArray(res?.data) ? res.data : []);
+      setListTotalPages(res?.pagination?.total_pages || 1);
+      updateTaskCount();
+    } catch (error) {
+      console.error("error upload list tasks", error);
+      setListTasks([]);
+      enqueueSnackbar(showServerError(error), { variant: "error" });
+    }
+  };
 
+  // Обновляем setFetchTasksRef при изменении viewMode
+  useEffect(() => {
+    if (setFetchTasksRef) {
+      const fetchFunction = viewMode === "columns" ? fetchKanbanTasks : fetchListTasks;
+      setFetchTasksRef(fetchFunction);
+    }
+  }, [setFetchTasksRef, viewMode, kanbanFilters, listFilters, listCurrentPage]);
+
+  // Инициализация фильтров по умолчанию
   useEffect(() => {
     const defaultFilters = {
       created_for: [String(currentUserId)],
@@ -92,16 +129,40 @@ const TaskComponent = ({
       workflows: workflowOptions,
       status: false,
     };
-    setFilters(defaultFilters);
+    
+    if (!kanbanFilters) {
+      setKanbanFilters(defaultFilters);
+    }
+    if (!listFilters) {
+      setListFilters(defaultFilters);
+    }
   }, [currentUserId, accessibleGroupTitles, workflowOptions]);
+
+  // Загрузка данных при изменении фильтров или страницы
+  useEffect(() => {
+    if (viewMode === "columns" && kanbanFilters) {
+      fetchKanbanTasks();
+    } else if (viewMode === "list" && listFilters) {
+      fetchListTasks();
+    }
+  }, [kanbanFilters, listFilters, listCurrentPage, viewMode]);
 
   const openEditTask = (task) => {
     setSelectedTask(task);
     setIsModalOpen(true);
   };
 
-  const hasActiveFilters = filters
-    ? Object.entries(filters).some(([key, value]) => {
+  // Общая функция для обновления задач после создания/редактирования
+  const handleTaskUpdate = () => {
+    if (viewMode === "columns") {
+      fetchKanbanTasks();
+    } else {
+      fetchListTasks();
+    }
+  };
+
+  const hasActiveFilters = currentFilters
+    ? Object.entries(currentFilters).some(([key, value]) => {
       if (key === "created_for") {
         return JSON.stringify(value) !== JSON.stringify([String(currentUserId)]);
       }
@@ -113,7 +174,7 @@ const TaskComponent = ({
     <Box h="100%" p="20px" style={{ display: 'flex', flexDirection: 'column' }}>
       <PageHeader
         title={translations["Tasks"][language]}
-        count={tasks.length}
+        count={currentTasks.length}
         extraInfo={
           <Group gap="sm">
             <ActionIcon
@@ -138,16 +199,16 @@ const TaskComponent = ({
                     </Tooltip>
                   ),
                 },
-                // {
-                //   value: "list",
-                //   label: (
-                //     <Tooltip label={translations["listView"][language]}>
-                //       <span>
-                //         <FaList size={16} />
-                //       </span>
-                //     </Tooltip>
-                //   ),
-                // }
+                {
+                  value: "list",
+                  label: (
+                    <Tooltip label={translations["listView"][language]}>
+                      <span>
+                        <FaList size={16} />
+                      </span>
+                    </Tooltip>
+                  ),
+                },
               ]}
             />
             <TextInput
@@ -172,17 +233,17 @@ const TaskComponent = ({
       <Box style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
         {viewMode === "list" ? (
           <TaskList
-            tasks={tasks}
+            tasks={listTasks}
             searchQuery={searchQuery}
             openEditTask={openEditTask}
-            fetchTasks={fetchTasks}
+            fetchTasks={fetchListTasks}
           />
         ) : (
-          <TaskColumnsView tasks={tasks} onEdit={openEditTask} searchQuery={searchQuery} />
+          <TaskColumnsView tasks={kanbanTasks} onEdit={openEditTask} searchQuery={searchQuery} />
         )}
       </Box>
 
-      {viewMode === "list" && totalPages > 1 && (
+      {viewMode === "list" && listTotalPages > 1 && (
         <Flex
           pt={24}
           pb={24}
@@ -194,9 +255,9 @@ const TaskComponent = ({
           }}
         >
           <Pagination
-            total={totalPages}
-            value={currentPage}
-            onChange={setCurrentPage}
+            total={listTotalPages}
+            value={listCurrentPage}
+            onChange={setListCurrentPage}
           />
         </Flex>
       )}
@@ -204,7 +265,7 @@ const TaskComponent = ({
       <TaskModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        fetchTasks={fetchTasks}
+        fetchTasks={handleTaskUpdate}
         selectedTask={selectedTask}
         defaultCreatedBy={userId}
       />
@@ -212,10 +273,14 @@ const TaskComponent = ({
       <TaskFilterModal
         opened={filterModalOpen}
         onClose={() => setFilterModalOpen(false)}
-        filters={filters || {}}
+        filters={currentFilters || {}}
         onApply={(newFilters) => {
-          setFilters(newFilters);
-          setCurrentPage(1);
+          if (viewMode === "columns") {
+            setKanbanFilters(newFilters);
+          } else {
+            setListFilters(newFilters);
+            setListCurrentPage(1);
+          }
         }}
       />
     </Box>
