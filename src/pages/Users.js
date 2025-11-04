@@ -96,7 +96,8 @@ export const Users = () => {
   }, [loadUsers]);
 
   const filtered = useMemo(() => {
-    const term = search.toLowerCase();
+    const term = search.toLowerCase().trim();
+    const searchWords = term.split(/\s+/).filter(word => word.length > 0);
     const filtersSafe = {
       group: filters.group || [],
       role: filters.role || [],
@@ -106,11 +107,31 @@ export const Users = () => {
     };
 
     return users.filter((user) => {
-      const matchesSearch =
-        user.name.toLowerCase().includes(term) ||
-        user.surname.toLowerCase().includes(term) ||
-        user.username.toLowerCase().includes(term) ||
-        (user.email && user.email.toLowerCase().includes(term));
+      let matchesSearch;
+      
+      // Если поисковый запрос пустой, показываем всех пользователей
+      if (!term) {
+        matchesSearch = true;
+      } else {
+        // Создаем комбинированную строку из всех полей пользователя
+        const userFullText = [
+          user.name || "",
+          user.surname || "",
+          user.username || "",
+          user.email || "",
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+
+        // Если поиск состоит из нескольких слов, проверяем что все слова найдены
+        if (searchWords.length > 1) {
+          matchesSearch = searchWords.every(word => userFullText.includes(word));
+        } else {
+          // Для одного слова ищем в любом поле
+          matchesSearch = userFullText.includes(term);
+        }
+      }
 
       const matchesGroup =
         filtersSafe.group.length === 0 ||
