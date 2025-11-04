@@ -4933,4 +4933,9 @@ export const translations = {
     RU: "-",
     EN: "-",
   },
+  "TooLongMessages": {
+    RO: "Mesajul este prea lung. Maximul este de 999 caractere.",
+    RU: "Сообщение слишком длинное. Максимум 999 символов.",
+    EN: "The message is too long. Maximum is 999 characters.",
+  },
 };

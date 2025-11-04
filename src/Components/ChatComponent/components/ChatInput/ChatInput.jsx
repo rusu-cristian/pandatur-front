@@ -17,6 +17,7 @@ import { createPortal } from "react-dom";
 import EmojiPicker from "emoji-picker-react";
 import { LuSmile, LuStickyNote } from "react-icons/lu";
 import { RiAttachment2 } from "react-icons/ri";
+import { useSnackbar } from "notistack";
 import { getLanguageByKey } from "../../../utils";
 import { getEmailsByGroupTitle } from "../../../utils/emailUtils";
 import { templateOptions } from "../../../../FormOptions";
@@ -59,11 +60,13 @@ export const ChatInput = ({
 
   const [attachments, setAttachments] = useState([]);
   const textAreaRef = useRef(null);
+  const warningShownRef = useRef(false);
 
   const { uploadFile } = useUploadMediaFile();
   const { userId } = useUser();
   const { socketRef } = useSocket();
   const { markMessagesAsRead, getTicketById } = useApp();
+  const { enqueueSnackbar } = useSnackbar();
 
   // Получаем данные о воронке и email адресах
   const groupTitle = personalInfo?.group_title || "";
@@ -177,6 +180,23 @@ export const ChatInput = ({
     setMessage("");
     setAttachments([]);
     setTemplate(null);
+    warningShownRef.current = false;
+  };
+
+  const handleMessageChange = (e) => {
+    const newValue = e.target.value;
+    setMessage(newValue);
+    
+    // Показываем уведомление только один раз при превышении лимита
+    if (newValue.length > 999 && !warningShownRef.current) {
+      warningShownRef.current = true;
+      enqueueSnackbar(getLanguageByKey("TooLongMessages"), {
+        variant: "warning",
+      });
+    } else if (newValue.length <= 999) {
+      // Сбрасываем флаг, если длина вернулась в норму
+      warningShownRef.current = false;
+    }
   };
 
   const buildBasePayload = () => {
@@ -225,6 +245,10 @@ export const ChatInput = ({
     const hasFiles = attachments.length > 0;
 
     if (!hasText && !hasFiles) return;
+
+    if (message.length > 999) {
+      return;
+    }
 
     try {
       // Отправляем каждый медиа файл отдельным сообщением
@@ -445,7 +469,7 @@ export const ChatInput = ({
               w="100%"
               mb="xs"
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={handleMessageChange}
               placeholder={getLanguageByKey("Introduceți mesaj")}
               onPaste={handlePaste}
               onDragEnter={(e) => {
@@ -472,7 +496,8 @@ export const ChatInput = ({
                   disabled={
                     (!message.trim() && attachments.length === 0) ||
                     !currentClient?.payload ||
-                    currentClient.payload.platform === "sipuni"
+                    currentClient.payload.platform === "sipuni" ||
+                    message.length > 999
                   }
                   variant="filled"
                   onClick={sendMessage}
