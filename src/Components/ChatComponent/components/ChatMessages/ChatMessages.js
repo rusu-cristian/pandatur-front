@@ -11,7 +11,6 @@ import TaskListOverlay from "../../../Task/TaskListOverlay";
 import { GroupedMessages } from "../GroupedMessages";
 import { InlineNoteComposer } from "../../../InlineNoteComposer";
 import { TicketParticipants } from "../../../TicketParticipants";
-import { getPageIdByPlatformAndGroup } from "../../../../constants/webhookPagesConfig";
 import "./ChatMessages.css";
 
 const getSendedMessage = (msj, currentMsj, statusMessage) => {
@@ -39,16 +38,7 @@ const getSendedMessage = (msj, currentMsj, statusMessage) => {
 
 export const ChatMessages = ({
   ticketId,
-  selectedClient,
   personalInfo,
-  platformOptions,
-  selectedPlatform,
-  changePlatform,
-  contactOptions,
-  changeContact,
-  selectedPageId,
-  changePageId,
-  loading,
   technicians,
   unseenCount = 0,
 }) => {
@@ -250,45 +240,18 @@ export const ChatMessages = ({
 
           <div style={{ flexShrink: 0 }}>
             <ChatInput
-              loading={loading}
-              id={ticketId}
-              platformOptions={platformOptions}
-              selectedPlatform={selectedPlatform}
-              changePlatform={changePlatform}
-              contactOptions={contactOptions}
-              changeContact={changeContact}
-              selectedPageId={selectedPageId}
-              changePageId={changePageId}
               ticketId={ticketId}
               unseenCount={unseenCount}
-              currentClient={selectedClient}
               personalInfo={personalInfo}
               onCreateTask={() => setCreatingTask(true)}
               onToggleNoteComposer={handleToggleNoteComposer}
               onSendMessage={(value) => {
-                if (!selectedClient.payload) return;
-                
-                // Получаем page_id из конфигурации по платформе и group_title тикета
-                // Если group_title это массив, берем первое значение
-                const groupTitle = Array.isArray(personalInfo?.group_title) 
-                  ? personalInfo.group_title[0] 
-                  : personalInfo?.group_title;
-                
-                const pandaPageId = getPageIdByPlatformAndGroup(
-                  selectedClient.payload.platform,
-                  groupTitle
-                );
-                
+                // Все проверки теперь выполняются в ChatInput.buildBasePayload()
+                // Здесь просто передаем данные в sendMessage
                 sendMessage({
-                  sender_id: Number(userId),
-                  client_id: selectedClient.payload.client_id,
-                  platform: selectedClient.payload.platform,
-                  page_id: pandaPageId, // page_id Panda из конфигурации
-                  contact_value: selectedClient.payload.contact_value, // ID клиента (куда отправляем)
-                  ticket_id: ticketId,
+                  ...value,
                   time_sent: dayjs().format(YYYY_MM_DD_HH_mm_ss),
                   messageStatus: MESSAGES_STATUS.PENDING,
-                  ...value,
                 });
               }}
             />

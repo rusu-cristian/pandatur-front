@@ -21,7 +21,7 @@ import { useSnackbar } from "notistack";
 import { getLanguageByKey } from "../../../utils";
 import { getEmailsByGroupTitle } from "../../../utils/emailUtils";
 import { templateOptions } from "../../../../FormOptions";
-import { useUploadMediaFile } from "../../../../hooks";
+import { useUploadMediaFile, useClientContacts, useMessagesContext } from "../../../../hooks";
 import { getMediaType } from "../../renderContent";
 import { useApp, useSocket, useUser } from "@hooks";
 import Can from "../../../CanComponent/Can";
@@ -35,15 +35,6 @@ import "./ChatInput.css";
 export const ChatInput = ({
   onSendMessage,
   onHandleFileSelect,
-  platformOptions,
-  selectedPlatform,
-  changePlatform,
-  contactOptions,
-  changeContact,
-  selectedPageId,
-  changePageId,
-  currentClient,
-  loading,
   onCreateTask,
   ticketId,
   unseenCount,
@@ -67,10 +58,50 @@ export const ChatInput = ({
   const { socketRef } = useSocket();
   const { markMessagesAsRead, getTicketById } = useApp();
   const { enqueueSnackbar } = useSnackbar();
+  const { messages } = useMessagesContext();
 
   // Получаем данные о воронке и email адресах
   const groupTitle = personalInfo?.group_title || "";
   const fromEmails = getEmailsByGroupTitle(groupTitle);
+
+  // Получаем последнее сообщение для автоматического выбора платформы и контакта
+  const lastMessage = useMemo(() => {
+    if (!messages || messages.length === 0 || !ticketId) {
+      return null;
+    }
+
+    // Фильтруем сообщения только для текущего тикета и исключаем sipuni/mail
+    const currentTicketMessages = messages.filter(msg => {
+      const platform = msg.platform?.toLowerCase();
+      return msg.ticket_id === ticketId && platform !== 'sipuni' && platform !== 'mail';
+    });
+
+    if (currentTicketMessages.length === 0) {
+      return null;
+    }
+
+    // Сортируем по времени и берем последнее
+    const sortedMessages = [...currentTicketMessages].sort((a, b) => {
+      const timeA = new Date(a.time_sent || a.created_at || 0);
+      const timeB = new Date(b.time_sent || b.created_at || 0);
+      return timeB - timeA; // От новых к старым
+    });
+
+    return sortedMessages[0];
+  }, [messages, ticketId]);
+
+  // Получаем данные о контактах напрямую из хука
+  const {
+    platformOptions,
+    selectedPlatform,
+    changePlatform,
+    contactOptions,
+    changeContact,
+    selectedClient: currentClient,
+    selectedPageId,
+    changePageId,
+    loading,
+  } = useClientContacts(ticketId, lastMessage, groupTitle);
 
   // Функция для рендеринга опций с иконками
   const renderPlatformOption = ({ option }) => (
@@ -98,15 +129,10 @@ export const ChatInput = ({
       })
       : pages;
 
-    return filteredPages.map(page => {
-      const groupTitleLabel = Array.isArray(page.group_title)
-        ? page.group_title.join(', ')
-        : page.group_title;
-      return {
-        value: page.page_id,
-        label: `${page.page_name}`
-      };
-    });
+    return filteredPages.map(page => ({
+      value: page.page_id,
+      label: `${page.page_name}`
+    }));
   }, [selectedPlatform, groupTitle]);
 
   // Получаем actionNeeded всегда из тикета из AppContext
@@ -200,8 +226,18 @@ export const ChatInput = ({
   };
 
   const buildBasePayload = () => {
+    // Проверка актуальности: убеждаемся, что currentClient соответствует текущему ticketId
+    if (!currentClient?.payload) {
+      throw new Error("Client not selected");
+    }
+
     // Извлекаем только ID клиента из составного ключа (например, "4492-5843" -> "4492")
     const clientId = currentClient?.value ? currentClient.value.split('-')[0] : null;
+
+    // Дополнительная проверка: если client_id не извлечен, выбрасываем ошибку
+    if (!clientId || clientId === "x") {
+      throw new Error("Invalid client ID");
+    }
 
     return {
       page_id: selectedPageId,
@@ -250,6 +286,36 @@ export const ChatInput = ({
       return;
     }
 
+    // Проверка актуальности перед отправкой
+    if (!currentClient?.payload) {
+      enqueueSnackbar(getLanguageByKey("Selectează contact") || "Please select a contact", {
+        variant: "error",
+      });
+      return;
+    }
+
+    // Проверка, что платформа и контакт соответствуют текущему тикету
+    if (!selectedPlatform || !ticketId) {
+      enqueueSnackbar(getLanguageByKey("Invalid ticket or platform") || "Invalid ticket or platform", {
+        variant: "error",
+      });
+      return;
+    }
+
+    // Дополнительная проверка: убеждаемся, что selectedClient присутствует в contactOptions
+    // Это гарантирует, что контакт актуален для текущего тикета
+    const isClientValid = contactOptions?.some(
+      (option) => option.value === currentClient?.value
+    );
+    if (!isClientValid) {
+      enqueueSnackbar(
+        getLanguageByKey("Contact is not available for this ticket") || 
+        "Contact is not available for this ticket",
+        { variant: "error" }
+      );
+      return;
+    }
+
     try {
       // Отправляем каждый медиа файл отдельным сообщением
       for (const att of attachments) {
@@ -278,7 +344,10 @@ export const ChatInput = ({
       await handleMarkAsRead();
       clearState();
     } catch (e) {
-      // Failed to send message
+      enqueueSnackbar(
+        e?.message || getLanguageByKey("Failed to send message") || "Failed to send message",
+        { variant: "error" }
+      );
     }
   };
 

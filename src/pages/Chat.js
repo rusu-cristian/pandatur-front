@@ -55,15 +55,7 @@ export const Chat = () => {
   }, [messages, ticketId]);
 
   const {
-    platformOptions,
-    selectedPlatform,
-    changePlatform,
-    contactOptions,
-    changeContact,
     selectedClient,
-    selectedPageId,
-    changePageId,
-    loading,
     updateClientData,
   } = useClientContacts(ticketId, lastMessage, currentTicket?.group_title);
 
@@ -95,16 +87,7 @@ export const Chat = () => {
 
             <ChatMessages
               ticketId={ticketId}
-              selectedClient={selectedClient}
               personalInfo={currentTicket}
-              platformOptions={platformOptions}
-              selectedPlatform={selectedPlatform}
-              changePlatform={changePlatform}
-              contactOptions={contactOptions}
-              changeContact={changeContact}
-              selectedPageId={selectedPageId}
-              changePageId={changePageId}
-              loading={loading}
               technicians={technicians}
               unseenCount={currentTicket?.unseen_count || 0}
             />
