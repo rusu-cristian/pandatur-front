@@ -2651,6 +2651,11 @@ export const translations = {
     RU: "Задачи на завтра",
     EN: "Tomorrow's Tasks"
   },
+  "futureTasks": {
+    RO: "Taskuri în viitor",
+    RU: "Задачи в будущем",
+    EN: "Future Tasks"
+  },
   "noTasks": {
     RO: "Nu sunt taskuri",
     RU: "Нет задач",

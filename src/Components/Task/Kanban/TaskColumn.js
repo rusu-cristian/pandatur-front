@@ -98,17 +98,6 @@ const TaskColumn = ({ titleKey, tasksList, now, onEdit, columnType }) => {
         };
     }, []);
 
-    const getColumnConfig = (key) => {
-        const configs = {
-            overdue: { icon: "⚠️", title: "Просроченные" },
-            today: { icon: "📅", title: "Сегодня" },
-            tomorrow: { icon: "⏰", title: "Завтра" }
-        };
-        return configs[key] || { icon: "📋", title: "Задачи" };
-    };
-
-    const config = getColumnConfig(columnType);
-
     // Мемоизируем отфильтрованные задачи с валидными датами
     const validTasks = useMemo(() => {
         return tasksList.filter(task => {
@@ -175,7 +164,7 @@ const TaskColumn = ({ titleKey, tasksList, now, onEdit, columnType }) => {
             {/* Заголовок колонки */}
             <div className="task-column-header">
                 <h3 className="task-column-title">
-                    {config.icon} {translations[titleKey][language]}
+                    {translations[titleKey][language]}
                     <span className="task-count">
                         {validTasks.length}
                     </span>

@@ -36,6 +36,11 @@
   border-color: #3b82f6;
 }
 
+.task-column.future {
+  background: rgba(107, 114, 128, 0.1);
+  border-color: #6b7280;
+}
+
 .task-column:hover {
   border-color: var(--crm-ui-kit-palette-link-primary);
   box-shadow: 0 4px 12px var(--crm-ui-kit-palette-box-shadow-default);
@@ -72,6 +77,11 @@
   border-bottom-color: #3b82f6;
 }
 
+.task-column.future .task-column-header {
+  background: rgba(107, 114, 128, 0.15);
+  border-bottom-color: #6b7280;
+}
+
 .task-column-title {
   font-size: 16px;
   font-weight: 700;
@@ -103,6 +113,10 @@
   background: #3182ce;
 }
 
+.task-column.future .task-count {
+  background: #6b7280;
+}
+
 .task-card {
   margin: 12px;
   padding: 16px;
@@ -131,6 +145,10 @@
 }
 
 .task-card-tomorrow {
+  background: var(--crm-ui-kit-palette-background-primary) !important;
+}
+
+.task-card-future {
   background: var(--crm-ui-kit-palette-background-primary) !important;
 }
 

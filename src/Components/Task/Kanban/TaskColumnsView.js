@@ -12,14 +12,16 @@ const parseTaskDate = (dateString) => {
   return parsed.isValid() ? parsed : null;
 };
 
-const TASK_GROUPS = ["overdue", "today", "tomorrow"];
+const TASK_GROUPS = ["overdue", "today", "tomorrow", "future"];
 
 const groupTasksByDate = (tasks) => {
     const now = dayjs();
+    const tomorrow = now.add(1, "day");
     const grouped = {
         overdue: [],
         today: [],
         tomorrow: [],
+        future: [],
     };
 
     tasks.forEach((task) => {
@@ -32,8 +34,10 @@ const groupTasksByDate = (tasks) => {
             grouped.overdue.push(task);
         } else if (deadline.isSame(now, "day")) {
             grouped.today.push(task);
-        } else {
+        } else if (deadline.isSame(tomorrow, "day")) {
             grouped.tomorrow.push(task);
+        } else {
+            grouped.future.push(task);
         }
     });
 
