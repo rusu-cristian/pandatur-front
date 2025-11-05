@@ -347,6 +347,14 @@ export const AppProvider = ({ children }) => {
     // eslint-disable-next-line
   }, [groupTitleForApi, workflowOptions, lightTicketFilters]);
 
+  // При изменении groupTitleForApi сбрасываем чат фильтры
+  useEffect(() => {
+    if (groupTitleForApi) {
+      // Сбрасываем фильтры чата при изменении группы
+      resetChatFilters();
+    }
+  }, [groupTitleForApi]);
+
   usePathnameWatcher((pathname) => {
     const isLeadsListView = pathname === "/leads";
     const urlType = getLeadsUrlType();

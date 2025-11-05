@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { Flex, ActionIcon, Box } from "@mantine/core";
@@ -10,7 +10,12 @@ import { ChatMessages } from "../Components/ChatComponent/components/ChatMessage
 import Can from "@components/CanComponent/Can";
 
 export const Chat = () => {
-  const { tickets, isChatFiltered, getTicketByIdWithFilters } = useApp();
+  const { 
+    isChatFiltered, 
+    getTicketByIdWithFilters, 
+    fetchSingleTicket, 
+    groupTitleForApi 
+  } = useApp();
   const { messages } = useMessagesContext();
   const { ticketId: ticketIdParam } = useParams();
   const ticketId = useMemo(() => {
@@ -25,6 +30,19 @@ export const Chat = () => {
     // Используем новую функцию для получения тикета с учетом фильтров
     return getTicketByIdWithFilters(ticketId, isChatFiltered);
   }, [ticketId, isChatFiltered, getTicketByIdWithFilters]);
+
+  // ВАЖНО: При изменении group_title или открытии по прямой ссылке
+  // запрашиваем актуальный тикет из новой группы
+  useEffect(() => {
+    if (!ticketId) return;
+    
+    const ticketIdNum = Number(ticketId);
+    if (!ticketIdNum) return;
+    
+    // Запрашиваем актуальный тикет при изменении группы
+    // fetchSingleTicket из AppContext правильно обновит тикет
+    fetchSingleTicket(ticketIdNum);
+  }, [ticketId, fetchSingleTicket, groupTitleForApi]);
 
   // Получаем последнее сообщение по времени для автоматического выбора платформы и контакта
   const lastMessage = useMemo(() => {
