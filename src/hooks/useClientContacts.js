@@ -72,8 +72,9 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
   const [selectedPageId, setSelectedPageId] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const abortRef = useRef(null);
   const mountedRef = useRef(true);
+  const currentTicketIdRef = useRef(null);
+  
   useEffect(() => {
     mountedRef.current = true;
     return () => { mountedRef.current = false; };
@@ -145,16 +146,19 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
   /** Загрузка ticketData */
   const fetchClientContacts = useCallback(async () => {
     if (!ticketId) return;
-    if (abortRef.current) abortRef.current.abort();
-    const controller = new AbortController();
-    abortRef.current = controller;
+
+    // Фиксируем ticketId для текущего запроса
+    const requestTicketId = ticketId;
+    currentTicketIdRef.current = requestTicketId;
 
     setLoading(true);
     try {
-      const response = await api.users.getUsersClientContactsByPlatform(ticketId, null, {
-        signal: controller.signal,
-      });
-      if (controller.signal.aborted || !mountedRef.current) return;
+      const response = await api.users.getUsersClientContactsByPlatform(requestTicketId, null);
+      
+      // Проверяем актуальность: запрос устарел, если ticketId изменился
+      if (!mountedRef.current || currentTicketIdRef.current !== requestTicketId) {
+        return;
+      }
 
       startTransition(() => {
         setTicketData(response);
@@ -164,31 +168,36 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
         setSelectedPageId(null);
       });
     } catch (error) {
-      if (error?.name !== "AbortError") {
+      // Показываем ошибку только если запрос актуален
+      if (mountedRef.current && currentTicketIdRef.current === requestTicketId) {
         enqueueSnackbar(showServerError(error), { variant: "error" });
       }
     } finally {
-      if (!controller.signal.aborted && mountedRef.current) setLoading(false);
+      // Обновляем loading только если запрос актуален
+      if (mountedRef.current && currentTicketIdRef.current === requestTicketId) {
+        setLoading(false);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ticketId]);
 
-  /** Рефетч по ticketId (+ cleanup) */
+  /** Рефетч по ticketId */
   useEffect(() => {
     if (!ticketId) return;
     debug("ticketId changed → refetch + local reset", ticketId);
 
+    // Обновляем ref сразу, чтобы этапы автовыбора не сработали на старых данных
+    currentTicketIdRef.current = ticketId;
+
+    // Сбрасываем все состояния сразу, включая ticketData, чтобы автовыбор не сработал на старых данных
     startTransition(() => {
+      setTicketData(null);
       setSelectedPlatform(null);
       setSelectedClient({});
       setSelectedPageId(null);
     });
 
     fetchClientContacts();
-
-    return () => {
-      if (abortRef.current) abortRef.current.abort();
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ticketId]);
 
@@ -196,6 +205,8 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
   useEffect(() => {
     if (!ticketData || !platformOptions.length) return;
     if (selectedPlatform) return;
+    // Защита от срабатывания на старых данных
+    if (currentTicketIdRef.current !== ticketId) return;
 
     let nextPlatform = null;
 
@@ -217,6 +228,8 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
   useEffect(() => {
     if (!selectedPlatform) return;
     if (selectedPageId) return;
+    // Защита от срабатывания на старых данных
+    if (currentTicketIdRef.current !== ticketId) return;
 
     let nextPageId = null;
 
@@ -250,6 +263,8 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
   useEffect(() => {
     if (!selectedPlatform || !contactOptions.length) return;
     if (selectedClient?.value) return;
+    // Защита от срабатывания на старых данных
+    if (currentTicketIdRef.current !== ticketId) return;
 
     let contactValue = null;
     let messageClientId = null;
