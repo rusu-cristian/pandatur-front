@@ -29,7 +29,7 @@ export const GeneralForm = ({ data, formInstance }) => {
   const isInitialized = useRef(false);
 
   // Используем состояние для отслеживания изменений group_title
-  const [currentGroupTitle, setCurrentGroupTitle] = useState(formInstance.getValues().group_title);
+  const [currentGroupTitle, setCurrentGroupTitle] = useState(() => formInstance.getValues().group_title);
 
   const formattedTechnicians = formatMultiSelectData(technicians);
 
@@ -50,9 +50,12 @@ export const GeneralForm = ({ data, formInstance }) => {
     }
   }, [data, formInstance]);
 
-  const filteredGroupTitleOptions = groupTitleOptions.filter((g) =>
-    accessibleGroupTitles.includes(g.value)
-  );
+  // Мемоизируем опции group_title для предотвращения ререндеров
+  const filteredGroupTitleOptions = useMemo(() => {
+    return groupTitleOptions.filter((g) =>
+      accessibleGroupTitles.includes(g.value)
+    );
+  }, [accessibleGroupTitles]);
 
   // Сбрасываем workflow при изменении group_title, если текущий workflow не подходит
   useEffect(() => {

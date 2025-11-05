@@ -379,26 +379,40 @@ export const AppProvider = ({ children }) => {
       const isMatchingGroup = normalizedTicket.group_title === groupTitleForApi;
 
       if (!isMatchingGroup) {
-        // Используем hash map для быстрого поиска O(1)
+        // ВАЖНО: Сохраняем тикет в ticketsMap для доступа через getTicketById,
+        // даже если он не соответствует текущей группе (для случая открытия по прямой ссылке)
         const existingTicket = getTicketById(ticketId);
 
-        if (existingTicket) {
-          // Уменьшаем счётчик непрочитанных на старое значение unseen_count
-          if (existingTicket.unseen_count > 0) {
-            setUnreadCount((prevCount) => Math.max(0, prevCount - existingTicket.unseen_count));
+        // Обновляем тикет в hash map для доступа через getTicketById
+        ticketsMap.current.set(ticketId, normalizedTicket);
+
+        // Если тикет был в массиве tickets, удаляем его (так как он не соответствует текущей группе)
+        // Но сохраняем в ticketsMap для доступа через getTicketById
+        setTickets((prev) => {
+          const wasInTickets = prev.find(t => t.id === ticketId);
+          if (wasInTickets) {
+            // Уменьшаем счётчик непрочитанных на старое значение unseen_count
+            if (wasInTickets.unseen_count > 0) {
+              setUnreadCount((prevCount) => Math.max(0, prevCount - wasInTickets.unseen_count));
+            }
+            // Удаляем из массива tickets, но оставляем в ticketsMap
+            return prev.filter((t) => t.id !== ticketId);
           }
+          return prev;
+        });
 
-          // Удаляем из hash map и массива
-          ticketsMap.current.delete(ticketId);
-          setTickets((prev) => prev.filter((t) => t.id !== ticketId));
-        }
-
-        // Удаляем из chatFilteredTickets
+        // Удаляем из chatFilteredTickets, если он там был
         const existingChatTicket = getChatFilteredTicketById(ticketId);
         if (existingChatTicket) {
           chatFilteredTicketsMap.current.delete(ticketId);
           setChatFilteredTickets((prev) => prev.filter((t) => t.id !== ticketId));
         }
+
+        // Отправляем событие для обновления компонентов (например, SingleChat)
+        window.dispatchEvent(new CustomEvent('ticketUpdated', {
+          detail: { ticketId }
+        }));
+
         return;
       }
 
