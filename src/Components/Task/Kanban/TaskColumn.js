@@ -18,6 +18,8 @@ const language = localStorage.getItem("language") || "RO";
 
 // Дефолтная высота карточки задачи (включая margin)
 const DEFAULT_TASK_CARD_HEIGHT = 250;
+// Отступ между карточками
+const CARD_GAP = 12;
 
 // Wrapper для внутреннего элемента списка
 const wrapperColumn = forwardRef(({ style, ...rest }, ref) => (
@@ -135,10 +137,13 @@ const TaskColumn = ({ titleKey, tasksList, now, onEdit, columnType }) => {
     // Получаем высоту строки или возвращаем дефолтную
     const getItemSize = useCallback((index) => {
         const task = validTasks[index];
-        if (task?.id && rowHeights.current[task.id]) {
-            return rowHeights.current[task.id];
-        }
-        return DEFAULT_TASK_CARD_HEIGHT;
+        const baseHeight = task?.id && rowHeights.current[task.id] 
+            ? rowHeights.current[task.id] 
+            : DEFAULT_TASK_CARD_HEIGHT;
+        
+        // Добавляем gap после каждой карточки, кроме последней
+        const isLast = index === validTasks.length - 1;
+        return baseHeight + (isLast ? 0 : CARD_GAP);
     }, [validTasks]);
 
     // Рендер-функция для элементов списка
