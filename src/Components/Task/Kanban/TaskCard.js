@@ -28,7 +28,7 @@ const TaskCard = ({ task, deadline, now, onClick }) => {
             {/* ID */}
             <div className="task-field">
                 <div className="field-label">
-                    <FaFingerprint size={10} />
+                    <FaFingerprint size={16} />
                     {translations["id"][language]}:
                 </div>
                 <div className="field-value">
@@ -42,6 +42,21 @@ const TaskCard = ({ task, deadline, now, onClick }) => {
                 </div>
             </div>
 
+            {/* Тип задачи */}
+            <div className="task-field">
+                <div className="field-label">
+                    {taskTypeObj?.icon && (
+                        <span className="field-icon">
+                            {taskTypeObj.icon}
+                        </span>
+                    )}
+                    {translations["type"][language]}:
+                </div>
+                <div className="field-value">
+                    {task.task_type}
+                </div>
+            </div>
+
             {/* Статус */}
             <div className="task-field">
                 <div className="field-label">
@@ -52,17 +67,6 @@ const TaskCard = ({ task, deadline, now, onClick }) => {
                     <span className={`status-badge ${isCompleted ? 'completed' : 'not-completed'}`}>
                         {isCompleted ? translations["completed"][language] : translations["notCompleted"][language]}
                     </span>
-                </div>
-            </div>
-
-            {/* Тип задачи */}
-            <div className="task-field">
-                <div className="field-label">
-                    <span className="field-icon">{taskTypeObj?.icon}</span>
-                    {translations["type"][language]}:
-                </div>
-                <div className="field-value">
-                    {task.task_type}
                 </div>
             </div>
 

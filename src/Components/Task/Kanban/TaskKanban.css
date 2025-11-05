@@ -244,6 +244,14 @@
 
 .field-icon {
   font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  margin-right: 6px;
+}
+
+.field-icon svg {
+  width: 14px;
+  height: 14px;
 }
 
 .field-value {
@@ -256,10 +264,10 @@
 
 /* Task ID Link */
 .task-id-link {
-  color: var(--crm-ui-kit-palette-link-primary);
-  text-decoration: none;
+  color: #007bff;
+  text-decoration: underline;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .task-id-link:hover {
