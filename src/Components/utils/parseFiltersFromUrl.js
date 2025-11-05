@@ -54,6 +54,7 @@ export const parseFiltersFromUrl = (params) => ({
     // BasicGeneralFormFilter
     workflow: parseMulti(params, "workflow"),
     priority: parseMulti(params, "priority"),
+    has_tasks: params.get("has_tasks") || undefined,
     contact: params.get("contact") || undefined,
     tags: parseMulti(params, "tags"),
     technician_id: parseNumberMulti(params, "technician_id"),

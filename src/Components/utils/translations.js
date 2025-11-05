@@ -4938,4 +4938,9 @@ export const translations = {
     RU: "Сообщение слишком длинное. Максимум 999 символов.",
     EN: "The message is too long. Maximum is 999 characters.",
   },
+  "Are sarcini": {
+    RO: "Are sarcini",
+    RU: "Имеются задачи",
+    EN: "Has tasks",
+  },
 };

@@ -91,6 +91,10 @@ export const LeadsKanbanFilter = ({
   onWorkflowSelected?.(ticketValues.workflow || []);
 
   setSearchParams(newParams, { replace: true });
+  
+  // Напрямую вызываем fetchKanbanTickets с актуальными фильтрами
+  fetchKanbanTickets(combinedFilters);
+  
   onClose?.();
 };
 

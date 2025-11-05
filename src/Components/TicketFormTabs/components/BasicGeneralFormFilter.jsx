@@ -2,6 +2,7 @@ import {
   TextInput,
   MultiSelect,
   TagsInput,
+  Select,
 } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
@@ -39,6 +40,7 @@ export const BasicGeneralFormFilter = forwardRef(({ loading, data, formId }, ref
     initialValues: {
       workflow: [],
       priority: [],
+      has_tasks: null,
       contact: "",
       tags: [],
       technician_id: [],
@@ -48,6 +50,7 @@ export const BasicGeneralFormFilter = forwardRef(({ loading, data, formId }, ref
     transformValues: ({
       workflow,
       priority,
+      has_tasks,
       contact,
       tags,
       technician_id,
@@ -56,6 +59,7 @@ export const BasicGeneralFormFilter = forwardRef(({ loading, data, formId }, ref
     }) => ({
       workflow: workflow?.length ? workflow : undefined,
       priority: priority?.length ? priority : undefined,
+      has_tasks: has_tasks || undefined,
       contact: contact?.trim() ? contact : undefined,
       tags: tags?.length ? tags : undefined,
       technician_id: technician_id?.length ? technician_id : undefined,
@@ -85,6 +89,7 @@ export const BasicGeneralFormFilter = forwardRef(({ loading, data, formId }, ref
       form.setValues({
         workflow: data.workflow || [],
         priority: data.priority || [],
+        has_tasks: data.has_tasks !== undefined ? String(data.has_tasks) : null,
         contact: data.contact || "",
         tags: data.tags || [],
         technician_id: data.technician_id || [],
@@ -169,6 +174,20 @@ export const BasicGeneralFormFilter = forwardRef(({ loading, data, formId }, ref
         label={getLanguageByKey("Ultima modificare")}
         placeholder={getLanguageByKey("Ultima modificare")}
         {...form.getInputProps("last_interaction_date")}
+      />
+
+      <Select
+        name="has_tasks"
+        mt="md"
+        label={getLanguageByKey("Are sarcini")}
+        placeholder={getLanguageByKey("Selectează")}
+        data={[
+          { value: "true", label: getLanguageByKey("Da") },
+          { value: "false", label: getLanguageByKey("Nu") }
+        ]}
+        clearable
+        key={form.key("has_tasks")}
+        {...form.getInputProps("has_tasks")}
       />
     </form>
   );
