@@ -57,30 +57,38 @@ export const SendedMessage = ({
 
   // Определяем статус сообщения для отображения иконки
   const getMessageStatus = () => {
-    // Если клиент прочитал сообщение (seen_by_client_id заполнен), показываем SEEN
-    if (msg.seen_by_client_id != null) {
-      return MESSAGES_STATUS.SEEN;
-    }
+    // Сначала определяем базовый статус сообщения
+    let baseStatus;
 
     // Если есть messageStatus (сообщения из CRM) - используем его
     if (msg.messageStatus) {
-      return msg.messageStatus;
+      baseStatus = msg.messageStatus;
     }
-
     // Если есть message_status (сообщения из API) - конвертируем его
-    if (msg.message_status) {
+    else if (msg.message_status) {
       switch (msg.message_status) {
         case 'SENT':
-          return MESSAGES_STATUS.SUCCESS;
+          baseStatus = MESSAGES_STATUS.SUCCESS;
+          break;
         case 'NOT_SENT':
-          return MESSAGES_STATUS.ERROR;
+          baseStatus = MESSAGES_STATUS.ERROR;
+          break;
         default:
-          return MESSAGES_STATUS.SUCCESS;
+          baseStatus = MESSAGES_STATUS.SUCCESS;
       }
     }
-
     // По умолчанию - SUCCESS
-    return MESSAGES_STATUS.SUCCESS;
+    else {
+      baseStatus = MESSAGES_STATUS.SUCCESS;
+    }
+
+    // Если клиент прочитал сообщение (seen_by_client_id заполнен),
+    // показываем SEEN только если базовый статус = SENT/SUCCESS
+    if (msg.seen_by_client_id != null && baseStatus === MESSAGES_STATUS.SUCCESS) {
+      return MESSAGES_STATUS.SEEN;
+    }
+
+    return baseStatus;
   };
 
   const messageStatus = getMessageStatus();
