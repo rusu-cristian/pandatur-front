@@ -18,14 +18,15 @@ import { UserGroupMultiSelect } from "../ChatComponent/components/UserGroupMulti
 import { formatMultiSelectData } from "../utils/multiSelectUtils";
 import {
   workflowOptionsByGroupTitle,
-  workflowOptionsLimitedByGroupTitle
+  workflowOptionsLimitedByGroupTitle,
+  TikTokworkflowOptionsByGroupTitle
 } from "../utils/workflowUtils";
 
 const FINAL_WORKFLOWS = ["Realizat cu succes", "Închis și nerealizat"];
 
 export const GeneralForm = ({ data, formInstance }) => {
   const { technicians } = useGetTechniciansList();
-  const { accessibleGroupTitles, isAdmin } = useContext(AppContext);
+  const { accessibleGroupTitles, isAdmin, userGroups } = useContext(AppContext);
   const isInitialized = useRef(false);
 
   // Используем состояние для отслеживания изменений group_title
@@ -54,6 +55,22 @@ export const GeneralForm = ({ data, formInstance }) => {
     accessibleGroupTitles.includes(g.value)
   );
 
+  // Определяем, находится ли пользователь в группе TikTok Manager
+  const isTikTokManager = useMemo(() => {
+    return userGroups?.some((group) => group.name === "TikTok Manager");
+  }, [userGroups]);
+
+  // Функция для получения правильного workflowMap
+  const getWorkflowMap = useMemo(() => {
+    if (isAdmin) {
+      return workflowOptionsByGroupTitle;
+    }
+    if (isTikTokManager) {
+      return TikTokworkflowOptionsByGroupTitle;
+    }
+    return workflowOptionsLimitedByGroupTitle;
+  }, [isAdmin, isTikTokManager]);
+
   // Сбрасываем workflow при изменении group_title, если текущий workflow не подходит
   useEffect(() => {
     if (!isInitialized.current) return;
@@ -61,18 +78,14 @@ export const GeneralForm = ({ data, formInstance }) => {
     const currentWorkflow = formInstance.getValues().workflow;
 
     if (currentWorkflow && currentGroupTitle) {
-      const workflowMap = isAdmin
-        ? workflowOptionsByGroupTitle
-        : workflowOptionsLimitedByGroupTitle;
-
-      const workflowsForGroup = workflowMap[currentGroupTitle] || workflowMap.Default || [];
+      const workflowsForGroup = getWorkflowMap[currentGroupTitle] || getWorkflowMap.Default || [];
 
       // Если текущий workflow не входит в список для нового group_title, сбрасываем его
       if (!workflowsForGroup.includes(currentWorkflow)) {
         formInstance.setFieldValue("workflow", undefined);
       }
     }
-  }, [currentGroupTitle, isAdmin, formInstance]);
+  }, [currentGroupTitle, getWorkflowMap, formInstance]);
 
   // Получаем workflow опции на основе выбранного group_title
   const filteredWorkflowOptions = useMemo(() => {
@@ -80,16 +93,11 @@ export const GeneralForm = ({ data, formInstance }) => {
       return [];
     }
 
-    // Выбираем нужный маппинг в зависимости от прав пользователя
-    const workflowMap = isAdmin
-      ? workflowOptionsByGroupTitle
-      : workflowOptionsLimitedByGroupTitle;
-
     // Получаем workflow опции для выбранного group_title
-    const workflowsForGroup = workflowMap[currentGroupTitle] || workflowMap.Default || [];
+    const workflowsForGroup = getWorkflowMap[currentGroupTitle] || getWorkflowMap.Default || [];
 
     return workflowsForGroup.map((w) => ({ value: w, label: w }));
-  }, [currentGroupTitle, isAdmin]);
+  }, [currentGroupTitle, getWorkflowMap]);
 
   const currentWorkflow = formInstance.getValues().workflow;
   const isFinalWorkflow = FINAL_WORKFLOWS.includes(currentWorkflow);
