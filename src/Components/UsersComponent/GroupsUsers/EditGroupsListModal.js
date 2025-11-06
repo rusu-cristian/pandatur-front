@@ -12,15 +12,13 @@ import {
 } from "@mantine/core";
 import { IoTrash } from "react-icons/io5";
 import { api } from "../../../api";
-import { translations } from "../../utils/translations";
+import { getLanguageByKey } from "../../utils/getLanguageByKey";
 import { useConfirmPopup, useGetTechniciansList } from "../../../hooks";
 import { useSnackbar } from "notistack";
 import {
     formatMultiSelectData,
 } from "../../utils/multiSelectUtils";
 import { UserGroupMultiSelect } from "../../ChatComponent/components/UserGroupMultiSelect/UserGroupMultiSelect";
-
-const language = localStorage.getItem("language") || "RO";
 
 // Оптимизированный компонент строки группы
 const GroupItem = memo(({ 
@@ -96,15 +94,15 @@ const GroupItem = memo(({
                 <Collapse in={isExpanded}>
                     <Stack mt="sm">
                         <TextInput
-                            label={translations["Nume grup"][language]}
-                            placeholder={translations["Nume grup"][language]}
+                            label={getLanguageByKey("Nume grup")}
+                            placeholder={getLanguageByKey("Nume grup")}
                             value={editableName}
                             onChange={handleNameChange}
                             disabled={loading}
                         />
                         <UserGroupMultiSelect
-                            label={translations["Team Lead"][language]}
-                            placeholder={translations["Selectați Team Lead"][language]}
+                            label={getLanguageByKey("Team Lead")}
+                            placeholder={getLanguageByKey("Selectați Team Lead")}
                             value={supervisorId}
                             onChange={handleSupervisorChange}
                             techniciansData={formattedTechnicians}
@@ -112,8 +110,8 @@ const GroupItem = memo(({
                             disabled={loading}
                         />
                         <UserGroupMultiSelect
-                            label={translations["Selectează operator"][language]}
-                            placeholder={translations["Selectează operator"][language]}
+                            label={getLanguageByKey("Selectează operator")}
+                            placeholder={getLanguageByKey("Selectează operator")}
                             value={userIds}
                             onChange={handleUsersChange}
                             techniciansData={formattedTechnicians}
@@ -124,7 +122,7 @@ const GroupItem = memo(({
                             onClick={handleSave} 
                             disabled={loading || !editableName.trim()}
                         >
-                            {translations["Salvează"][language]}
+                            {getLanguageByKey("Salvează")}
                         </Button>
                     </Stack>
                 </Collapse>
@@ -138,16 +136,28 @@ GroupItem.displayName = 'GroupItem';
 const EditGroupsListModal = ({ opened, onClose }) => {
     const [groups, setGroups] = useState([]);
     const [newGroup, setNewGroup] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
     const [expandedGroupId, setExpandedGroupId] = useState(null);
     const [loading, setLoading] = useState(false);
 
     const { enqueueSnackbar } = useSnackbar();
     const confirmDelete = useConfirmPopup({
-        subTitle: translations["Sigur doriți să ștergeți acest grup?"][language],
+        subTitle: getLanguageByKey("Sigur doriți să ștergeți acest grup?"),
     });
 
     const { technicians } = useGetTechniciansList();
     const formattedTechnicians = useMemo(() => formatMultiSelectData(technicians), [technicians]);
+
+    // Фильтрация групп по поисковому запросу
+    const filteredGroups = useMemo(() => {
+        if (!searchQuery.trim()) {
+            return groups;
+        }
+        const query = searchQuery.toLowerCase().trim();
+        return groups.filter(group => 
+            group.name.toLowerCase().includes(query)
+        );
+    }, [groups, searchQuery]);
 
     const fetchGroups = useCallback(async () => {
         setLoading(true);
@@ -155,7 +165,7 @@ const EditGroupsListModal = ({ opened, onClose }) => {
             const data = await api.user.getGroupsList();
             setGroups(data.sort((a, b) => a.name.localeCompare(b.name)));
         } catch (err) {
-            enqueueSnackbar(translations["Eroare la încărcarea grupurilor"][language], {
+            enqueueSnackbar(getLanguageByKey("Eroare la încărcarea grupurilor"), {
                 variant: "error",
             });
         } finally {
@@ -171,11 +181,11 @@ const EditGroupsListModal = ({ opened, onClose }) => {
                 // Оптимистическое обновление
                 setGroups((prev) => [...prev, created].sort((a, b) => a.name.localeCompare(b.name)));
                 setNewGroup("");
-                enqueueSnackbar(translations["Grup adăugat cu succes"][language], {
+                enqueueSnackbar(getLanguageByKey("Grup adăugat cu succes"), {
                     variant: "success",
                 });
             } catch (err) {
-                enqueueSnackbar(translations["Eroare la crearea grupului"][language], {
+                enqueueSnackbar(getLanguageByKey("Eroare la crearea grupului"), {
                     variant: "error",
                 });
                 // Откатываем изменения при ошибке
@@ -192,11 +202,11 @@ const EditGroupsListModal = ({ opened, onClose }) => {
             
             try {
                 await api.user.deleteGroups(groupId);
-                enqueueSnackbar(translations["Grup șters cu succes"][language], {
+                enqueueSnackbar(getLanguageByKey("Grup șters cu succes"), {
                     variant: "success",
                 });
             } catch (err) {
-                enqueueSnackbar(translations["Eroare la ștergerea grupului"][language], {
+                enqueueSnackbar(getLanguageByKey("Eroare la ștergerea grupului"), {
                     variant: "error",
                 });
                 // Откатываем изменения при ошибке
@@ -215,7 +225,7 @@ const EditGroupsListModal = ({ opened, onClose }) => {
         const { editableName, supervisor_id, user_ids } = data;
         
         if (!editableName?.trim()) {
-            enqueueSnackbar(translations["Completați toate câmpurile obligatorii"][language], {
+            enqueueSnackbar(getLanguageByKey("Completați toate câmpurile obligatorii"), {
                 variant: "warning",
             });
             return;
@@ -241,11 +251,11 @@ const EditGroupsListModal = ({ opened, onClose }) => {
 
         try {
             await api.user.updateGroupData({ body: payload });
-            enqueueSnackbar(translations["Grup actualizat cu succes"][language], {
+            enqueueSnackbar(getLanguageByKey("Grup actualizat cu succes"), {
                 variant: "success",
             });
         } catch (err) {
-            enqueueSnackbar(translations["Eroare la actualizarea grupului"][language], {
+            enqueueSnackbar(getLanguageByKey("Eroare la actualizarea grupului"), {
                 variant: "error",
             });
             // Откатываем изменения при ошибке
@@ -259,6 +269,7 @@ const EditGroupsListModal = ({ opened, onClose }) => {
         } else {
             setGroups([]);
             setNewGroup("");
+            setSearchQuery("");
             setExpandedGroupId(null);
         }
     }, [opened, fetchGroups]);
@@ -271,12 +282,20 @@ const EditGroupsListModal = ({ opened, onClose }) => {
         });
     }, []);
 
+    // Обработчик изменения поискового запроса
+    const handleSearchChange = useCallback((e) => {
+        const value = e.target.value;
+        startTransition(() => {
+            setSearchQuery(value);
+        });
+    }, []);
+
     return (
-        <Modal opened={opened} onClose={onClose} title={translations["Editează grupurile"][language]} size="md">
+        <Modal opened={opened} onClose={onClose} title={getLanguageByKey("Editează grupurile")} size="md">
             <Stack>
                 <Flex gap="sm" pt="md">
                     <TextInput
-                        placeholder={translations["Grup nou"][language]}
+                        placeholder={getLanguageByKey("Grup nou")}
                         value={newGroup}
                         onChange={handleNewGroupChange}
                         style={{ flex: 1 }}
@@ -286,9 +305,16 @@ const EditGroupsListModal = ({ opened, onClose }) => {
                         onClick={handleAdd}
                         disabled={loading || !newGroup.trim() || groups.some((g) => g.name === newGroup.trim())}
                     >
-                        {translations["Adaugă"][language]}
+                        {getLanguageByKey("Adaugă")}
                     </Button>
                 </Flex>
+
+                <TextInput
+                    placeholder={getLanguageByKey("Caută grup") || "Caută grup"}
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    disabled={loading}
+                />
 
                 {loading && (
                     <Flex justify="center" py="md">
@@ -297,11 +323,15 @@ const EditGroupsListModal = ({ opened, onClose }) => {
                 )}
 
                 {!loading && groups.length === 0 && (
-                    <Text align="center">{translations["Nu există grupuri"][language]}</Text>
+                    <Text align="center">{getLanguageByKey("Nu există grupuri")}</Text>
+                )}
+
+                {!loading && filteredGroups.length === 0 && groups.length > 0 && (
+                    <Text align="center">{getLanguageByKey("Nu s-au găsit grupuri") || "Nu s-au găsit grupuri"}</Text>
                 )}
 
                 {!loading &&
-                    groups.map((group) => (
+                    filteredGroups.map((group) => (
                         <GroupItem
                             key={group.id}
                             group={group}
