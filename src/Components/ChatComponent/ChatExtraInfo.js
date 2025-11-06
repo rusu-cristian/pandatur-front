@@ -221,8 +221,18 @@ const ChatExtraInfo = ({
       return;
     }
 
+    // Если technician_id пустой (undefined, null, пустая строка, "undefined", "null"), передаем null
+    // чтобы явно указать, что ответственный не установлен
+    const rawTechnicianId = values.technician_id;
+    const technicianId = rawTechnicianId && 
+      rawTechnicianId !== "undefined" && 
+      rawTechnicianId !== "null" && 
+      rawTechnicianId.toString().trim() 
+      ? rawTechnicianId 
+      : null;
+
     const generalFields = {
-      technician_id: values.technician_id,
+      technician_id: technicianId,
       workflow: values.workflow,
       priority: values.priority,
       contact: values.contact,
