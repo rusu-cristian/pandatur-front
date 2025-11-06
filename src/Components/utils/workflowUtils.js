@@ -307,6 +307,68 @@ export const workflowOptionsLimitedMarketing = [
     "Închis și nerealizat"
 ];
 
+//////////////////
+
+export const TikTokworkflowOptionsSalesMD = [
+    "Interesat",
+];
+
+export const TikTokworkflowOptionsSalesRO = [
+    "Interesat",
+];
+
+export const TikTokworkflowOptionsFiliale = [
+    "Interesat",
+];
+
+export const TikTokworkflowOptionsAgency = [
+    "Contactate",
+];
+
+export const TikTokworkflowOptionsGreenCard = [
+    "În lucru GC",
+];
+
+export const TikTokworkflowOptionsIndividualGroups = [
+    "Interesat",
+];
+
+export const TikTokworkflowOptionsBusinessGroups = [
+    "Interesat",
+];
+
+export const TikTokworkflowOptionsFranchiseRascani = [
+    "Interesat",
+];
+
+export const TikTokworkflowOptionsFranchiseOrhei = [
+    "Interesat",
+];
+
+export const TikTokworkflowOptionsFranchiseCantemir = [
+    "Interesat",
+];
+
+export const TikTokworkflowOptionsFranchiseGlodeni = [
+    "Interesat",
+];
+
+export const TikTokworkflowOptionsSalesUA = [
+    "Interesat",
+];
+
+export const TikTokworkflowOptionsHR = [
+    "Primit",
+];
+
+export const TikTokworkflowOptionsFranchisePandaTur = [
+    "Interesat",
+];
+
+export const TikTokworkflowOptionsMarketing = [
+    "Primit",
+];
+
 export const workflowOptionsByGroupTitle = {
     MD: workflowOptionsSalesMD,
     RO: workflowOptionsSalesRO,
@@ -373,12 +435,45 @@ export const workflowOptionsLimitedByGroupTitle = {
     GLODENI: workflowOptionsLimitedFiliale,
 };
 
+export const TikTokworkflowOptionsByGroupTitle = {
+    MD: TikTokworkflowOptionsSalesMD,
+    RO: TikTokworkflowOptionsSalesRO,
+    Filiale: TikTokworkflowOptionsFiliale,
+    Marketing: TikTokworkflowOptionsMarketing,
+    IndividualGroups: TikTokworkflowOptionsIndividualGroups,
+    BusinessGroups: TikTokworkflowOptionsBusinessGroups,
+    Agency: TikTokworkflowOptionsAgency,
+    GreenCard: TikTokworkflowOptionsGreenCard,
+    SalesUA: TikTokworkflowOptionsSalesUA,
+    // Франшизы с новыми значениями
+    ORHEI: TikTokworkflowOptionsFranchiseOrhei,
+    CANTEMIR: TikTokworkflowOptionsFranchiseCantemir,
+    EDINET: TikTokworkflowOptionsFranchisePandaTur,
+    DROCHIA: TikTokworkflowOptionsFranchiseRascani,
+    IALOVENI: TikTokworkflowOptionsFranchisePandaTur,
+    BUIUCANI: TikTokworkflowOptionsFranchisePandaTur,
+    CAUSENI: TikTokworkflowOptionsFranchisePandaTur,
+    SOLDANESTI: TikTokworkflowOptionsFranchisePandaTur,
+    REZINA: TikTokworkflowOptionsFranchisePandaTur,
+    RASCANI: TikTokworkflowOptionsFranchiseRascani,
+    FranchiseTimisoara: TikTokworkflowOptionsFranchisePandaTur,
+    NISPORENI: TikTokworkflowOptionsFranchisePandaTur,
+    FranchiseCluj: TikTokworkflowOptionsFranchisePandaTur,
+    STAUCENI: TikTokworkflowOptionsFranchisePandaTur,
+    HANCESTI: TikTokworkflowOptionsFranchisePandaTur,
+    CIMISLIA: TikTokworkflowOptionsFranchisePandaTur,
+    Default: TikTokworkflowOptionsSalesMD,
+    HR: TikTokworkflowOptionsHR,
+    FranchisePandaTur: TikTokworkflowOptionsFranchisePandaTur,
+    GLODENI: TikTokworkflowOptionsFranchisePandaTur,
+};
+
 export const userGroupsToGroupTitle = {
     // 10
-    "Admin": ["MD", "RO", "Filiale", "Marketing", "IndividualGroups", "BusinessGroups", "Agency", "GreenCard", "SalesUA", "ORHEI", "CANTEMIR", "EDINET", "DROCHIA", "IALOVENI", "BUIUCANI", "CAUSENI", "SOLDANESTI", "REZINA", "RASCANI", "FranchiseTimisoara", "NISPORENI", "FranchiseCluj", "STAUCENI", "HANCESTI", "CIMISLIA", "HR", "FranchisePandaTur","GLODENI"],
-    "IT dep.": ["MD", "RO", "Filiale", "Marketing", "IndividualGroups", "BusinessGroups", "Agency", "GreenCard", "SalesUA", "ORHEI", "CANTEMIR", "EDINET", "DROCHIA", "IALOVENI", "BUIUCANI", "CAUSENI", "SOLDANESTI", "REZINA", "RASCANI", "FranchiseTimisoara", "NISPORENI", "FranchiseCluj", "STAUCENI", "HANCESTI", "CIMISLIA", "HR", "FranchisePandaTur","GLODENI"],
-    "Quality Department": ["MD", "RO", "Filiale", "Marketing", "IndividualGroups", "BusinessGroups", "Agency", "GreenCard", "SalesUA", "ORHEI", "CANTEMIR", "EDINET", "DROCHIA", "IALOVENI", "BUIUCANI", "CAUSENI", "SOLDANESTI", "REZINA", "RASCANI", "FranchiseTimisoara", "NISPORENI", "FranchiseCluj", "STAUCENI", "HANCESTI", "CIMISLIA", "HR", "FranchisePandaTur","GLODENI"],
-    "Marketing": ["MD", "RO", "Filiale", "Marketing", "IndividualGroups", "BusinessGroups", "Agency", "GreenCard", "SalesUA", "ORHEI", "CANTEMIR", "EDINET", "DROCHIA", "IALOVENI", "BUIUCANI", "CAUSENI", "SOLDANESTI", "REZINA", "RASCANI", "FranchiseTimisoara", "NISPORENI", "FranchiseCluj", "STAUCENI", "HANCESTI", "CIMISLIA", "HR", "FranchisePandaTur","GLODENI"],
+    "Admin": ["MD", "RO", "Filiale", "Marketing", "IndividualGroups", "BusinessGroups", "Agency", "GreenCard", "SalesUA", "ORHEI", "CANTEMIR", "EDINET", "DROCHIA", "IALOVENI", "BUIUCANI", "CAUSENI", "SOLDANESTI", "REZINA", "RASCANI", "FranchiseTimisoara", "NISPORENI", "FranchiseCluj", "STAUCENI", "HANCESTI", "CIMISLIA", "HR", "FranchisePandaTur", "GLODENI"],
+    "IT dep.": ["MD", "RO", "Filiale", "Marketing", "IndividualGroups", "BusinessGroups", "Agency", "GreenCard", "SalesUA", "ORHEI", "CANTEMIR", "EDINET", "DROCHIA", "IALOVENI", "BUIUCANI", "CAUSENI", "SOLDANESTI", "REZINA", "RASCANI", "FranchiseTimisoara", "NISPORENI", "FranchiseCluj", "STAUCENI", "HANCESTI", "CIMISLIA", "HR", "FranchisePandaTur", "GLODENI"],
+    "Quality Department": ["MD", "RO", "Filiale", "Marketing", "IndividualGroups", "BusinessGroups", "Agency", "GreenCard", "SalesUA", "ORHEI", "CANTEMIR", "EDINET", "DROCHIA", "IALOVENI", "BUIUCANI", "CAUSENI", "SOLDANESTI", "REZINA", "RASCANI", "FranchiseTimisoara", "NISPORENI", "FranchiseCluj", "STAUCENI", "HANCESTI", "CIMISLIA", "HR", "FranchisePandaTur", "GLODENI"],
+    "Marketing": ["MD", "RO", "Filiale", "Marketing", "IndividualGroups", "BusinessGroups", "Agency", "GreenCard", "SalesUA", "ORHEI", "CANTEMIR", "EDINET", "DROCHIA", "IALOVENI", "BUIUCANI", "CAUSENI", "SOLDANESTI", "REZINA", "RASCANI", "FranchiseTimisoara", "NISPORENI", "FranchiseCluj", "STAUCENI", "HANCESTI", "CIMISLIA", "HR", "FranchisePandaTur", "GLODENI"],
     "Distribution": [""],
     "Front Office": ["MD", "RO", "HR", "SalesUA", "IndividualGroups", "Marketing", "Filiale", "GreenCard", "FranchisePandaTur"],
     "Back Flagman": ["MD", "RO", "HR", "SalesUA", "IndividualGroups", "Marketing", "Filiale", "GreenCard", "FranchisePandaTur"],
@@ -403,9 +498,10 @@ export const userGroupsToGroupTitle = {
     "Organic traffic": ["MD", "RO", "Filiale"],
     "Sorting": ["MD", "RO", "Filiale"],
     "Trainees": ["MD"],
+    "TikTok Manager": ["MD", "RO", "Filiale", "Marketing", "IndividualGroups", "BusinessGroups", "Agency", "GreenCard", "SalesUA", "ORHEI", "CANTEMIR", "EDINET", "DROCHIA", "IALOVENI", "BUIUCANI", "CAUSENI", "SOLDANESTI", "REZINA", "RASCANI", "FranchiseTimisoara", "NISPORENI", "FranchiseCluj", "STAUCENI", "HANCESTI", "CIMISLIA", "HR", "FranchisePandaTur", "GLODENI"],
 
     //franchize 17
-    "Franchise PandaTur": ["ORHEI", "CANTEMIR", "EDINET", "DROCHIA", "IALOVENI", "BUIUCANI", "CAUSENI", "SOLDANESTI", "REZINA", "RASCANI", "FranchiseTimisoara", "NISPORENI", "FranchiseCluj", "STAUCENI", "HANCESTI", "CIMISLIA","GLODENI"],
+    "Franchise PandaTur": ["ORHEI", "CANTEMIR", "EDINET", "DROCHIA", "IALOVENI", "BUIUCANI", "CAUSENI", "SOLDANESTI", "REZINA", "RASCANI", "FranchiseTimisoara", "NISPORENI", "FranchiseCluj", "STAUCENI", "HANCESTI", "CIMISLIA", "GLODENI"],
     "Edinet Franchise": ["EDINET"],
     "Drochia Franchise": ["DROCHIA"],
     "Ialoveni Franchise": ["IALOVENI"],

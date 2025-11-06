@@ -7,6 +7,7 @@ import {
   workflowOptionsByGroupTitle,
   workflowOptionsLimitedByGroupTitle,
   userGroupsToGroupTitle,
+  TikTokworkflowOptionsByGroupTitle
 } from "../Components/utils/workflowUtils";
 import { showServerError, getLanguageByKey } from "../Components/utils";
 import { LoadingOverlay } from "../Components";
@@ -67,8 +68,13 @@ export const UserProvider = ({ children }) => {
   const workflowOptions = useMemo(() => {
     if (!groupTitleForApi) return [];
     if (isAdmin) return workflowOptionsByGroupTitle[groupTitleForApi] || [];
+    
+    // Проверка на TikTok Manager
+    const isTikTokManager = userGroups.some((g) => g.name === "TikTok Manager");
+    if (isTikTokManager) return TikTokworkflowOptionsByGroupTitle[groupTitleForApi] || [];
+    
     return workflowOptionsLimitedByGroupTitle[groupTitleForApi] || [];
-  }, [groupTitleForApi, isAdmin]);
+  }, [groupTitleForApi, isAdmin, userGroups]);
 
   // Функция для выхода
   const handleLogout = useCallback(() => {
