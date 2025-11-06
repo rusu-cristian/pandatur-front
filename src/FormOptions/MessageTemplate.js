@@ -592,9 +592,9 @@ Scrieți în Whatsap la numărul +373690440400`,
 Напишите в Telegram: https://telegram.me/panda_tur_bot
 Напишите в WhatsApp по номеру: +373690440400`,
 
-//////////////////////////
+  //////////////////////////
 
-"old oferta trimisa RO": `Bună ziua 🤗
+  "old oferta trimisa RO": `Bună ziua 🤗
 
 Aș dori să Vă întreb dacă ați reușit să analizați oferta primită?
 
@@ -602,11 +602,42 @@ Sau poate mai aveți careva întrebări?
 
 Vă sunt la dispoziție pentru orice întrebare și Vă mulțumesc că ați ales Panda Tur.`,
 
-"old oferta trimisa RU": `Здравствуйте 🤗
+  "old oferta trimisa RU": `Здравствуйте 🤗
 
 Я бы хотел спросить, вы просмотрели полученное предложение?
 
 Или у вас есть какие-то вопросы?
 
 Я готов ответить на любой вопрос и благодарю за выбор Panda Tur.`,
+
+  //////////////////////////
+
+  "2025 HR Offer RO": `Bună ziua,
+ 
+Vă mulțumim pentru interesul acordat oportunității de angajare în cadrul companiei Panda Tour.
+ 
+Pentru a putea analiza complet candidatura dumneavoastră, vă rugăm să ne transmiteți CV-ul și/sau portofoliul la adresa de e-mail hr@pandatur.md, menționând în subiectul mesajului funcția pentru care optați.
+În cazul în care CV-ul dumneavoastră trece cu succes de prima etapă – analizarea CV-ului – veți fi contactat pentru a fi invitat la următoarea etapă.
+ 
+Dacă aveți întrebări suplimentare, nu ezitați să ne contactați.
+Așteptăm cu interes aplicația dumneavoastră!
+ 
+Cu respect,
+Echipa Resurse Umane
+Panda Tour
+`,
+
+  "2025 HR Offer RU": `Здравствуйте,
+ 
+Спасибо за ваш интерес к возможности работы в компании Panda Tour.
+ 
+Для того чтобы полностью проанализировать вашу кандидатуру, пожалуйста, отправьте нам ваше резюме и/или портфолио по электронной почте hr@pandatur.md, указав в теме письма функцию, на которую вы претендуете.
+В случае, если ваше резюме пройдет первую этап – анализ резюме – вы будете связаны с нами для следующего этапа.
+ 
+Если у вас есть дополнительные вопросы, не стесняйтесь обращаться к нам.
+Мы с нетерпением ждем вашего приложения!
+ 
+С уважением,
+Отдел кадров
+Panda Tour`,
 }
