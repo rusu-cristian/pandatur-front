@@ -159,7 +159,10 @@ export const workflowOptionsMarketing = [
 ];
 
 export const workflowOptionsQualityDepartment = [
-    "Primit"
+    "Primit",
+    "Nou",
+    "Realizat cu succes",
+    "Închis și nerealizat"
 ];
 
 // limited
@@ -312,7 +315,10 @@ export const workflowOptionsLimitedMarketing = [
 ];
 
 export const workflowOptionsLimitedQualityDepartment = [
-    "Primit"
+    "Primit",
+    "Nou",
+    "Realizat cu succes",
+    "Închis și nerealizat"
 ];
 
 // TikTok workflow options
@@ -412,7 +418,7 @@ export const workflowOptionsByGroupTitle = {
     HR: workflowOptionsHR,
     FranchisePandaTur: workflowOptionsFranchisePandaTur,
     GLODENI: workflowOptionsFranchisePandaTur,
-    QUALITYDEPARTMENT: TikTokworkflowOptionsQualityDepartment,
+    QUALITYDEPARTMENT: workflowOptionsQualityDepartment,
 };
 
 export const workflowOptionsLimitedByGroupTitle = {
