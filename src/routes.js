@@ -49,7 +49,7 @@ export const privateRoutes = (userRoles) => {
     routes.push({ path: "/leads/:ticketId?", component: Leads });
   }
 
-  if (hasRouteAccess(matrix, "chat", "view")) {
+  if (hasRouteAccess(matrix, "CHAT", "VIEW")) {
     routes.push({ path: "/chat/:ticketId?", component: Chat });
   }
 

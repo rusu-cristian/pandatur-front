@@ -250,7 +250,7 @@ export const SideBar = () => {
             </MenuItem>
           )}
 
-          <Can permission={{ module: "chat", action: "view" }} skipContextCheck>
+          <Can permission={{ module: "leads", action: "view" }} skipContextCheck>
             <MenuItem
               active={isActive("leads")}
               icon={<FaClipboardList size={24} />}
