@@ -4948,4 +4948,19 @@ export const translations = {
     RU: "Имеются задачи",
     EN: "Has tasks",
   },
+  "În lucru GC": {
+    RO: "În lucru GC",
+    RU: "В работе GC",
+    EN: "In progress GC",
+  },
+  "Colectare date": {
+    RO: "Colectare date",
+    RU: "Сбор данных",
+    EN: "Data collection",
+  },
+  "Rezervări": {
+    RO: "Rezervări",
+    RU: "Резервы",
+    EN: "Reservations",
+  },
 };
