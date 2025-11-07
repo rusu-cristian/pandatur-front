@@ -14,7 +14,10 @@ export const Chat = () => {
     isChatFiltered, 
     getTicketByIdWithFilters, 
     fetchSingleTicket, 
-    groupTitleForApi 
+    groupTitleForApi,
+    accessibleGroupTitles,
+    customGroupTitle,
+    setCustomGroupTitle,
   } = useApp();
   const { messages } = useMessagesContext();
   const { ticketId: ticketIdParam } = useParams();
@@ -30,6 +33,29 @@ export const Chat = () => {
     // Используем новую функцию для получения тикета с учетом фильтров
     return getTicketByIdWithFilters(ticketId, isChatFiltered);
   }, [ticketId, isChatFiltered, getTicketByIdWithFilters]);
+
+  // Автоматическое переключение воронки при открытии тикета по прямой ссылке
+  useEffect(() => {
+    if (!ticketId) return;
+    
+    const loadTicketGroup = async () => {
+      try {
+        const { api } = await import("../api");
+        const ticketData = await api.tickets.ticket.getLightById(ticketId);
+        if (ticketData?.group_title && accessibleGroupTitles.includes(ticketData.group_title)) {
+          // Если группа тикета отличается от текущей, переключаем воронку
+          if (ticketData.group_title !== groupTitleForApi && ticketData.group_title !== customGroupTitle) {
+            setCustomGroupTitle(ticketData.group_title);
+            localStorage.setItem("leads_last_group_title", ticketData.group_title);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load ticket group:", error);
+      }
+    };
+    
+    loadTicketGroup();
+  }, [ticketId, accessibleGroupTitles, groupTitleForApi, customGroupTitle, setCustomGroupTitle]);
 
   // ВАЖНО: При изменении group_title или открытии по прямой ссылке
   // запрашиваем актуальный тикет из новой группы

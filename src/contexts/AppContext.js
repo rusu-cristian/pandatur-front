@@ -387,27 +387,40 @@ export const AppProvider = ({ children }) => {
       const isMatchingGroup = normalizedTicket.group_title === groupTitleForApi;
 
       if (!isMatchingGroup) {
-        // Используем hash map для быстрого поиска O(1)
-        const existingTicket = getTicketById(ticketId);
+        // ВАЖНО: Проверяем, есть ли у пользователя доступ к группе тикета
+        const hasAccessToTicketGroup = accessibleGroupTitles.includes(normalizedTicket.group_title);
+        
+        if (!hasAccessToTicketGroup) {
+          // Пользователь НЕ имеет доступа к группе тикета - удаляем его из списков
+          const existingTicket = getTicketById(ticketId);
 
-        if (existingTicket) {
-          // Уменьшаем счётчик непрочитанных на старое значение unseen_count
-          if (existingTicket.unseen_count > 0) {
-            setUnreadCount((prevCount) => Math.max(0, prevCount - existingTicket.unseen_count));
+          if (existingTicket) {
+            // Уменьшаем счётчик непрочитанных на старое значение unseen_count
+            if (existingTicket.unseen_count > 0) {
+              setUnreadCount((prevCount) => Math.max(0, prevCount - existingTicket.unseen_count));
+            }
+
+            // Удаляем из hash map и массива
+            ticketsMap.current.delete(ticketId);
+            setTickets((prev) => prev.filter((t) => t.id !== ticketId));
           }
 
-          // Удаляем из hash map и массива
-          ticketsMap.current.delete(ticketId);
-          setTickets((prev) => prev.filter((t) => t.id !== ticketId));
+          // Удаляем из chatFilteredTickets
+          const existingChatTicket = getChatFilteredTicketById(ticketId);
+          if (existingChatTicket) {
+            chatFilteredTicketsMap.current.delete(ticketId);
+            setChatFilteredTickets((prev) => prev.filter((t) => t.id !== ticketId));
+          }
+          return;
         }
-
-        // Удаляем из chatFilteredTickets
-        const existingChatTicket = getChatFilteredTicketById(ticketId);
-        if (existingChatTicket) {
-          chatFilteredTicketsMap.current.delete(ticketId);
-          setChatFilteredTickets((prev) => prev.filter((t) => t.id !== ticketId));
-        }
-        return;
+        
+        // Пользователь ИМЕЕТ доступ к группе тикета, но она не совпадает с текущей
+        // Не добавляем в списки, но возвращаем тикет (для компонентов, которые открываются напрямую)
+        // Отправляем событие для обновления personalInfo
+        window.dispatchEvent(new CustomEvent('ticketUpdated', {
+          detail: { ticketId, ticket: normalizedTicket }
+        }));
+        return normalizedTicket;
       }
 
       // ВАЖНО: Используем unseen_count напрямую из тикета с сервера
@@ -479,7 +492,7 @@ export const AppProvider = ({ children }) => {
     } catch (error) {
       enqueueSnackbar(showServerError(error), { variant: "error" });
     }
-  }, [groupTitleForApi, enqueueSnackbar, isChatFiltered, currentChatFilters, doesTicketMatchFilters]);
+  }, [groupTitleForApi, accessibleGroupTitles, enqueueSnackbar, isChatFiltered, currentChatFilters, doesTicketMatchFilters]);
 
   const handleWebSocketMessage = useCallback((message) => {
     switch (message.type) {
