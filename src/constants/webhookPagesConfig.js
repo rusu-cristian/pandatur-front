@@ -273,6 +273,12 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_name: "Brasov - 40721205105",
       type: "phone",
       group_title: ["RO"]
+    },
+    {
+      page_id: "380984284284",
+      page_name: "Catalan - 380984284284",
+      type: "phone",
+      group_title: ["CATALAN"]
     }
   ],
   vibers: [

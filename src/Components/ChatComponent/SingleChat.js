@@ -100,9 +100,8 @@ const SingleChat = ({ technicians, ticketId, onClose, tasks = [] }) => {
           <FaArrowLeft size="12" />
         </ActionIcon>
       </Box>
-      <Can permission={{ module: "chat", action: "edit" }} context={{ responsibleId }}>
         <Flex w="70%">
-          <Can permission={{ module: "chat", action: "view" }} context={{ responsibleId }}>
+          <Can permission={{ module: "chat", action: "view" }}>
             <ChatMessages
               selectedClient={selectedClient}
               ticketId={ticketId ? Number(ticketId) : undefined}
@@ -120,15 +119,12 @@ const SingleChat = ({ technicians, ticketId, onClose, tasks = [] }) => {
             />
           </Can>
         </Flex>
-      </Can>
-      <Can permission={{ module: "chat", action: "edit" }} context={{ responsibleId }}>
         <ChatExtraInfo
           selectedClient={selectedClient}
           ticketId={ticketId}
           updatedTicket={currentTicket}
           onUpdateClientData={updateClientData}
         />
-      </Can>
     </div>
   );
 };
