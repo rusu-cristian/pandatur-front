@@ -131,7 +131,7 @@ export const GeneralForm = ({ data, formInstance }) => {
         required
         disabled={isWorkflowDisabled}
         key={formInstance.key("workflow")}
-        {...formInstance.getInputProps("workflow")}
+        {...formInstance.getInputProps("workflow", { type: "select" })}
       />
 
       <UserGroupMultiSelect
