@@ -6,7 +6,7 @@ import { IoCheckmarkDoneSharp } from "react-icons/io5";
 import { IoInformationCircleOutline } from "react-icons/io5";
 import { renderContent } from "../../renderContent";
 import { HH_mm, MEDIA_TYPE, DEFAULT_PHOTO } from "../../../../app-constants";
-import { parseServerDate, MESSAGES_STATUS, getFullName } from "../../../utils";
+import { parseServerDate, MESSAGES_STATUS, getFullName, getLanguageByKey } from "../../../utils";
 import { Call } from "./Call";
 import { socialMediaIcons } from "../../../utils";
 import { parseCallParticipants } from "../../../utils/callUtils";
@@ -16,10 +16,17 @@ import "./Message.css";
 const DEFAULT_SENDER_NAME = "Panda Tur";
 
 const MESSAGE_STATUS_ICONS = {
-  [MESSAGES_STATUS.PENDING]: <IoMdCheckmark size={24} style={{ color: "var(--crm-ui-kit-palette-text-secondary-dark)" }} />,
-  [MESSAGES_STATUS.ERROR]: <CiWarning size={24} style={{ color: "var(--mantine-color-red-6)", }} />,
-  [MESSAGES_STATUS.SUCCESS]: <IoCheckmarkDoneSharp size={24} style={{ color: "var(--crm-ui-kit-palette-link-primary)" }} />,
-  [MESSAGES_STATUS.SEEN]: <IoCheckmarkDoneSharp size={24} style={{ color: "var(--mantine-color-blue-6)" }} />,
+  [MESSAGES_STATUS.PENDING]: <IoMdCheckmark size={20} style={{ color: "var(--crm-ui-kit-palette-text-secondary-dark)" }} />,
+  [MESSAGES_STATUS.ERROR]: <CiWarning size={18} style={{ color: "var(--mantine-color-red-6)", }} />,
+  [MESSAGES_STATUS.SUCCESS]: <IoCheckmarkDoneSharp size={20} style={{ color: "var(--crm-ui-kit-palette-link-primary)" }} />,
+  [MESSAGES_STATUS.SEEN]: <IoCheckmarkDoneSharp size={20} style={{ color: "var(--mantine-color-blue-6)" }} />,
+};
+
+const MESSAGE_STATUS_LABELS = {
+  [MESSAGES_STATUS.PENDING]: getLanguageByKey("message_status_pending"),
+  [MESSAGES_STATUS.ERROR]: getLanguageByKey("message_status_error"),
+  [MESSAGES_STATUS.SUCCESS]: getLanguageByKey("message_status_sent"),
+  [MESSAGES_STATUS.SEEN]: getLanguageByKey("message_status_seen"),
 };
 
 export const SendedMessage = ({
@@ -135,7 +142,6 @@ export const SendedMessage = ({
               style={{ backgroundColor: "var(--crm-ui-kit-palette-message-sent-background)" }}
             >
               <Flex align="center" gap={8}>
-                <FaHeadphones size={12} />
                 <Text fw="bold" size="sm">
                   {senderName}
                 </Text>
@@ -147,8 +153,15 @@ export const SendedMessage = ({
               </Box>
 
               <Flex justify="end" align="center" gap={4}>
-                <Flex align="center">
-                  {MESSAGE_STATUS_ICONS[messageStatus] || MESSAGE_STATUS_ICONS[MESSAGES_STATUS.SUCCESS]}
+                <Flex align="center" gap={3}>
+                  <Flex align="center">
+                    {MESSAGE_STATUS_ICONS[messageStatus]}
+                  </Flex>
+                  {MESSAGE_STATUS_LABELS[messageStatus] && (
+                    <Text size="xs" c="var(--crm-ui-kit-palette-text-secondary-dark)">
+                      {MESSAGE_STATUS_LABELS[messageStatus]}
+                    </Text>
+                  )}
                 </Flex>
 
                 <Text size="sm">

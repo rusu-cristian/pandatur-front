@@ -4963,4 +4963,24 @@ export const translations = {
     RU: "Резервы",
     EN: "Reservations",
   },
+  message_status_pending: {
+    RO: "Se trimite",
+    RU: "Отправляется",
+    EN: "Sending",
+  },
+  message_status_error: {
+    RO: "Eroare",
+    RU: "Ошибка",
+    EN: "error",
+  },
+  message_status_sent: {
+    RO: "Trimis",
+    RU: "Отправлено",
+    EN: "Sent",
+  },
+  message_status_seen: {
+    RO: "Citit",
+    RU: "Прочитано",
+    EN: "Seen",
+  },
 };
