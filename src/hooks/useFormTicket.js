@@ -2,10 +2,77 @@ import { useState, useEffect, useMemo } from "react";
 import { useForm } from "@mantine/form";
 import { formatDate, getLanguageByKey } from "@utils";
 
-export const useFormTicket = () => {
+const SKIP_REALIZAT_VALIDATION_GROUP_TITLES = [
+  "HR",
+  "QUALITYDEPARTMENT",
+  "Agency",
+  "GreenCard",
+];
+
+const WORKFLOWS_WITH_SOURCE = [
+  "Luat în lucru",
+  "Ofertă trimisă",
+  "Aprobat cu client",
+  "Contract semnat",
+  "Plată primită",
+  "Contract încheiat",
+  "Realizat cu succes",
+];
+
+const WORKFLOWS_WITH_SERVICE = [
+  "Ofertă trimisă",
+  "Aprobat cu client",
+  "Contract semnat",
+  "Plată primită",
+  "Contract încheiat",
+  "Realizat cu succes",
+];
+
+const WORKFLOWS_WITH_PROCESS = [
+  "Aprobat cu client",
+  "Contract semnat",
+  "Plată primită",
+  "Contract încheiat",
+  "Realizat cu succes",
+];
+
+const WORKFLOWS_WITH_CONTRACT = [
+  "Contract semnat",
+  "Plată primită",
+  "Contract încheiat",
+  "Realizat cu succes",
+];
+
+const WORKFLOWS_WITH_PAYMENT = [
+  "Plată primită",
+  "Contract încheiat",
+  "Realizat cu succes",
+];
+
+const WORKFLOWS_FINAL_STAGE = ["Contract încheiat", "Realizat cu succes"];
+
+const WORKFLOWS_REALIZAT_ONLY = ["Realizat cu succes"];
+
+const WORKFLOWS_REFUSED_ONLY = ["Închis și nerealizat"];
+
+export const useFormTicket = ({ groupTitle } = {}) => {
   const [hasErrorsTicketInfoForm, setHasErrorsTicketInfoForm] = useState();
   const [hasErrorsContractForm, setHasErrorsContractForm] = useState();
   const [hasErrorQualityControl, setHasErrorQualityControl] = useState();
+
+  const skipRealizatValidation = !!groupTitle && SKIP_REALIZAT_VALIDATION_GROUP_TITLES.includes(groupTitle);
+
+  const shouldValidateForWorkflow = (workflow, workflowsToCheck) => {
+    if (!workflow || !workflowsToCheck?.length) {
+      return false;
+    }
+
+    if (skipRealizatValidation && workflow === "Realizat cu succes") {
+      return false;
+    }
+
+    return workflowsToCheck.includes(workflow);
+  };
 
   const form = useForm({
     mode: "uncontrolled",
@@ -25,256 +92,124 @@ export const useFormTicket = () => {
 
     validate: {
       sursa_lead: (value, values) => {
-        if (
-          (values.workflow === "Luat în lucru" ||
-            values.workflow === "Ofertă trimisă" ||
-            values.workflow === "Aprobat cu client" ||
-            values.workflow === "Contract semnat" ||
-            values.workflow === "Plată primită" ||
-            values.workflow === "Contract încheiat" ||
-            values.workflow === "Contract încheiat" ||
-            values.workflow === "Realizat cu succes") &&
-          !value
-        ) {
+        if (shouldValidateForWorkflow(values.workflow, WORKFLOWS_WITH_SOURCE) && !value) {
           return getLanguageByKey("workflow_change_field_required");
         }
       },
 
       promo: (value, values) => {
-        if (
-          (values.workflow === "Luat în lucru" ||
-            values.workflow === "Ofertă trimisă" ||
-            values.workflow === "Aprobat cu client" ||
-            values.workflow === "Contract semnat" ||
-            values.workflow === "Plată primită" ||
-            values.workflow === "Contract încheiat" ||
-            values.workflow === "Realizat cu succes") &&
-          !value
-        ) {
+        if (shouldValidateForWorkflow(values.workflow, WORKFLOWS_WITH_SOURCE) && !value) {
           return getLanguageByKey("workflow_change_field_required");
         }
       },
       marketing: (value, values) => {
-        if (
-          (values.workflow === "Luat în lucru" ||
-            values.workflow === "Ofertă trimisă" ||
-            values.workflow === "Aprobat cu client" ||
-            values.workflow === "Contract semnat" ||
-            values.workflow === "Plată primită" ||
-            values.workflow === "Contract încheiat" ||
-            values.workflow === "Realizat cu succes") &&
-          !value
-        ) {
+        if (shouldValidateForWorkflow(values.workflow, WORKFLOWS_WITH_SOURCE) && !value) {
           return getLanguageByKey("workflow_change_field_required");
         }
       },
       tipul_serviciului: (value, values) => {
-        if (
-          (values.workflow === "Ofertă trimisă" ||
-            values.workflow === "Aprobat cu client" ||
-            values.workflow === "Contract semnat" ||
-            values.workflow === "Plată primită" ||
-            values.workflow === "Contract încheiat" ||
-            values.workflow === "Realizat cu succes") &&
-          !value
-        ) {
+        if (shouldValidateForWorkflow(values.workflow, WORKFLOWS_WITH_SERVICE) && !value) {
           return getLanguageByKey("workflow_change_field_required");
         }
       },
       tara: (value, values) => {
-        if (
-          (values.workflow === "Ofertă trimisă" ||
-            values.workflow === "Aprobat cu client" ||
-            values.workflow === "Contract semnat" ||
-            values.workflow === "Plată primită" ||
-            values.workflow === "Contract încheiat" ||
-            values.workflow === "Realizat cu succes") &&
-          !value
-        ) {
+        if (shouldValidateForWorkflow(values.workflow, WORKFLOWS_WITH_SERVICE) && !value) {
           return getLanguageByKey("workflow_change_field_required");
         }
       },
       tip_de_transport: (value, values) => {
-        if (
-          (values.workflow === "Ofertă trimisă" ||
-            values.workflow === "Aprobat cu client" ||
-            values.workflow === "Contract semnat" ||
-            values.workflow === "Plată primită" ||
-            values.workflow === "Contract încheiat" ||
-            values.workflow === "Realizat cu succes") &&
-          !value
-        ) {
+        if (shouldValidateForWorkflow(values.workflow, WORKFLOWS_WITH_SERVICE) && !value) {
           return getLanguageByKey("workflow_change_field_required");
         }
       },
       denumirea_excursiei_turului: (value, values) => {
-        if (
-          (values.workflow === "Ofertă trimisă" ||
-            values.workflow === "Aprobat cu client" ||
-            values.workflow === "Contract semnat" ||
-            values.workflow === "Plată primită" ||
-            values.workflow === "Contract încheiat" ||
-            values.workflow === "Realizat cu succes") &&
-          !value
-        ) {
+        if (shouldValidateForWorkflow(values.workflow, WORKFLOWS_WITH_SERVICE) && !value) {
           return getLanguageByKey("workflow_change_field_required");
         }
       },
       procesarea_achizitionarii: (value, values) => {
-        if (
-          (values.workflow === "Aprobat cu client" ||
-            values.workflow === "Contract semnat" ||
-            values.workflow === "Plată primită" ||
-            values.workflow === "Contract încheiat" ||
-            values.workflow === "Realizat cu succes") &&
-          !value
-        ) {
+        if (shouldValidateForWorkflow(values.workflow, WORKFLOWS_WITH_PROCESS) && !value) {
           return getLanguageByKey("workflow_change_field_required");
         }
       },
       numar_de_contract: (value, values) => {
-        if (
-          (values.workflow === "Contract semnat" ||
-            values.workflow === "Plată primită" ||
-            values.workflow === "Contract încheiat" ||
-            values.workflow === "Realizat cu succes") &&
-          !value
-        ) {
+        if (shouldValidateForWorkflow(values.workflow, WORKFLOWS_WITH_CONTRACT) && !value) {
           return getLanguageByKey("workflow_change_field_required");
         }
       },
       data_contractului: (value, values) => {
-        if (
-          (values.workflow === "Contract semnat" ||
-            values.workflow === "Plată primită" ||
-            values.workflow === "Contract încheiat" ||
-            values.workflow === "Realizat cu succes") &&
-          !value
-        ) {
+        if (shouldValidateForWorkflow(values.workflow, WORKFLOWS_WITH_CONTRACT) && !value) {
           return getLanguageByKey("workflow_change_field_required");
         }
       },
       contract_trimis: (value, values) => {
-        if (
-          (values.workflow === "Contract semnat" ||
-            values.workflow === "Plată primită" ||
-            values.workflow === "Contract încheiat" ||
-            values.workflow === "Realizat cu succes") &&
-          !value
-        ) {
+        if (shouldValidateForWorkflow(values.workflow, WORKFLOWS_WITH_CONTRACT) && !value) {
           return getLanguageByKey("workflow_change_field_required");
         }
       },
       contract_semnat: (value, values) => {
-        if (
-          (values.workflow === "Contract semnat" ||
-            values.workflow === "Plată primită" ||
-            values.workflow === "Contract încheiat" ||
-            values.workflow === "Realizat cu succes") &&
-          !value
-        ) {
+        if (shouldValidateForWorkflow(values.workflow, WORKFLOWS_WITH_CONTRACT) && !value) {
           return getLanguageByKey("workflow_change_field_required");
         }
       },
       achitare_efectuata: (value, values) => {
-        if (
-          (values.workflow === "Plată primită" ||
-            values.workflow === "Contract încheiat" ||
-            values.workflow === "Realizat cu succes") &&
-          !value
-        ) {
+        if (shouldValidateForWorkflow(values.workflow, WORKFLOWS_WITH_PAYMENT) && !value) {
           return getLanguageByKey("workflow_change_field_required");
         }
       },
       buget: (value, values) => {
-        if (
-          (values.workflow === "Contract încheiat" ||
-            values.workflow === "Realizat cu succes") &&
-          !value
-        ) {
+        if (shouldValidateForWorkflow(values.workflow, WORKFLOWS_FINAL_STAGE) && !value) {
           return getLanguageByKey("workflow_change_field_required");
         }
       },
       data_plecarii: (value, values) => {
-        if (
-          (values.workflow === "Contract încheiat" ||
-            values.workflow === "Realizat cu succes") &&
-          !value
-        ) {
+        if (shouldValidateForWorkflow(values.workflow, WORKFLOWS_FINAL_STAGE) && !value) {
           return getLanguageByKey("workflow_change_field_required");
         }
       },
       data_intoarcerii: (value, values) => {
-        if (
-          (values.workflow === "Contract încheiat" ||
-            values.workflow === "Realizat cu succes") &&
-          !value
-        ) {
+        if (shouldValidateForWorkflow(values.workflow, WORKFLOWS_FINAL_STAGE) && !value) {
           return getLanguageByKey("workflow_change_field_required");
         }
       },
       tour_operator: (value, values) => {
-        if (
-          (values.workflow === "Contract încheiat" ||
-            values.workflow === "Realizat cu succes") &&
-          !value
-        ) {
+        if (shouldValidateForWorkflow(values.workflow, WORKFLOWS_FINAL_STAGE) && !value) {
           return getLanguageByKey("workflow_change_field_required");
         }
       },
       numarul_cererii_de_la_operator: (value, values) => {
-        if (
-          (values.workflow === "Contract încheiat" ||
-            values.workflow === "Realizat cu succes") &&
-          !value
-        ) {
+        if (shouldValidateForWorkflow(values.workflow, WORKFLOWS_FINAL_STAGE) && !value) {
           return getLanguageByKey("workflow_change_field_required");
         }
       },
 
       rezervare_confirmata: (value, values) => {
-        if (
-          (values.workflow === "Contract încheiat" ||
-            values.workflow === "Realizat cu succes") &&
-          !value
-        ) {
+        if (shouldValidateForWorkflow(values.workflow, WORKFLOWS_FINAL_STAGE) && !value) {
           return getLanguageByKey("workflow_change_field_required");
         }
       },
       contract_arhivat: (value, values) => {
-        if (
-          (values.workflow === "Contract încheiat" ||
-            values.workflow === "Realizat cu succes") &&
-          !value
-        ) {
+        if (shouldValidateForWorkflow(values.workflow, WORKFLOWS_FINAL_STAGE) && !value) {
           return getLanguageByKey("workflow_change_field_required");
         }
       },
       statutul_platii: (value, values) => {
-        if (
-          (values.workflow === "Contract încheiat" ||
-            values.workflow === "Realizat cu succes") &&
-          !value
-        ) {
+        if (shouldValidateForWorkflow(values.workflow, WORKFLOWS_FINAL_STAGE) && !value) {
           return getLanguageByKey("workflow_change_field_required");
         }
       },
       pret_netto: (value, values) => {
-        if (
-          (values.workflow === "Contract încheiat" ||
-            values.workflow === "Realizat cu succes") &&
-          !value
-        ) {
+        if (shouldValidateForWorkflow(values.workflow, WORKFLOWS_FINAL_STAGE) && !value) {
           return getLanguageByKey("workflow_change_field_required");
         }
       },
       control: (value, values) => {
-        if (values.workflow === "Realizat cu succes" && !value) {
+        if (shouldValidateForWorkflow(values.workflow, WORKFLOWS_REALIZAT_ONLY) && !value) {
           return getLanguageByKey("workflow_change_field_required");
         }
       },
       motivul_refuzului: (value, values) => {
-        if (values.workflow === "Închis și nerealizat" && !value) {
+        if (shouldValidateForWorkflow(values.workflow, WORKFLOWS_REFUSED_ONLY) && !value) {
           return getLanguageByKey("workflow_change_field_required");
         }
       },

@@ -48,7 +48,9 @@ const ChatExtraInfo = ({
     hasErrorsTicketInfoForm,
     hasErrorsContractForm,
     hasErrorQualityControl,
-  } = useFormTicket();
+  } = useFormTicket({
+    groupTitle: updatedTicket?.group_title ?? extraInfo?.group_title,
+  });
 
   // Отладка: проверяем, обновляются ли ошибки
   // console.log('Errors state:', {

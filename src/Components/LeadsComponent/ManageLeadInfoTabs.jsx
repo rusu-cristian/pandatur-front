@@ -27,7 +27,9 @@ export const ManageLeadInfoTabs = ({
     hasErrorsTicketInfoForm,
     hasErrorsContractForm,
     hasErrorQualityControl,
-  } = useFormTicket();
+  } = useFormTicket({
+    groupTitle: generalInfoLightTicket?.group_title ?? ticketInfo?.group_title,
+  });
 
   const handleSubmit = async () => {
     if (form.validate().hasErrors) {
