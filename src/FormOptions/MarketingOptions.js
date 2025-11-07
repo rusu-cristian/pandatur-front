@@ -7,6 +7,7 @@ export const marketingOptions = [
   "Munte Bukovel",
   "Tratament",
   "Croaziere",
+  "Citybreak",
   "Excursii Europa",
   "Excursii Romania",
   "Excursii Moldova",
