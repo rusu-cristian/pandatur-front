@@ -92,6 +92,19 @@ export const SideBar = () => {
     }
   };
 
+  const renderLanguageOption = ({ option }) => (
+    <Flex align="center" gap="8">
+      <img
+        src={option.icon}
+        alt={`${option.label} flag`}
+        style={{ width: 20, height: 14, objectFit: "cover", borderRadius: 2 }}
+      />
+      <span>{option.label}</span>
+    </Flex>
+  );
+
+  const selectedLanguageIcon = LANGUAGES[selectedLanguage]?.icon;
+
   return (
     <>
       {/* Мобильная верхняя панель */}
@@ -113,6 +126,16 @@ export const SideBar = () => {
               data={LANGUAGE_OPTIONS}
               size="xs"
               w={80}
+              leftSection={
+                selectedLanguageIcon ? (
+                  <img
+                    src={selectedLanguageIcon}
+                    alt={`${selectedLanguage} flag`}
+                    style={{ width: 16, height: 12, objectFit: "cover", borderRadius: 2 }}
+                  />
+                ) : null
+              }
+              renderOption={renderLanguageOption}
               styles={{
                 input: {
                   backgroundColor: "transparent",
@@ -309,13 +332,29 @@ export const SideBar = () => {
                     }}
                     title={selectedLanguage}
                   >
-                    {LANGUAGES[selectedLanguage].icon}
+                    {selectedLanguageIcon ? (
+                      <img
+                        src={selectedLanguageIcon}
+                        alt={`${selectedLanguage} flag`}
+                        style={{ width: 24, height: 16, objectFit: "cover", borderRadius: 2 }}
+                      />
+                    ) : null}
                   </div>
                 ) : (
                   <Select
                     value={selectedLanguage}
                     onChange={setLanguage}
                     data={LANGUAGE_OPTIONS}
+                    leftSection={
+                      selectedLanguageIcon ? (
+                        <img
+                          src={selectedLanguageIcon}
+                          alt={`${selectedLanguage} flag`}
+                          style={{ width: 18, height: 12, objectFit: "cover", borderRadius: 2 }}
+                        />
+                      ) : null
+                    }
+                    renderOption={renderLanguageOption}
                     styles={{
                       input: {
                         backgroundColor: "transparent",
