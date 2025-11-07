@@ -509,6 +509,13 @@ export const Leads = () => {
                     localStorage.removeItem("leads_last_group_title");
                   }
 
+                  // Сбрасываем query-параметры фильтров, чтобы не перетирали выбор группы
+                  setSearchParams(() => {
+                    const params = new URLSearchParams();
+                    params.set("view", viewMode);
+                    return params;
+                  });
+
                   // Сброс фильтров и состояния при изменении
                   if (viewMode === VIEW_MODE.LIST) {
                     setCurrentPage(1);
