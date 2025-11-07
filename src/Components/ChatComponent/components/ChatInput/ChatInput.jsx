@@ -604,16 +604,42 @@ export const ChatInput = ({
                   {getLanguageByKey("Anulează")}
                 </Button>
 
-                <Flex gap="xs">
+                <Can permission={{ module: "CHAT", action: "EDIT" }} context={{ responsibleId }}>
+                  <Flex gap="xs">
+                    <Button
+                      onClick={handleMarkAsRead}
+                      variant="filled"
+                      styles={{
+                        root: unseenCount > 0 ? {
+                          backgroundColor: 'var(--mantine-color-red-6) !important',
+                          color: 'white !important',
+                          '&:hover': {
+                            backgroundColor: 'var(--mantine-color-red-7) !important',
+                          }
+                        } : {
+                          backgroundColor: 'var(--crm-ui-kit-palette-link-primary) !important',
+                          color: 'white !important',
+                          '&:hover': {
+                            backgroundColor: 'var(--crm-ui-kit-palette-link-hover-primary) !important',
+                          }
+                        }
+                      }}
+                    >
+                      {unseenCount > 0
+                        ? getLanguageByKey("ReadChat")
+                        : getLanguageByKey("ChatRead")}
+                    </Button>
+                  </Flex>
+
                   <Button
-                    onClick={handleMarkAsRead}
+                    onClick={handleMarkActionResolved}
                     variant="filled"
                     styles={{
-                      root: unseenCount > 0 ? {
-                        backgroundColor: 'var(--mantine-color-red-6) !important',
+                      root: actionNeeded ? {
+                        backgroundColor: 'var(--mantine-color-orange-6) !important',
                         color: 'white !important',
                         '&:hover': {
-                          backgroundColor: 'var(--mantine-color-red-7) !important',
+                          backgroundColor: 'var(--mantine-color-orange-7) !important',
                         }
                       } : {
                         backgroundColor: 'var(--crm-ui-kit-palette-link-primary) !important',
@@ -624,35 +650,11 @@ export const ChatInput = ({
                       }
                     }}
                   >
-                    {unseenCount > 0
-                      ? getLanguageByKey("ReadChat")
-                      : getLanguageByKey("ChatRead")}
+                    {getLanguageByKey(
+                      actionNeeded ? "Acțiune necesară" : "Nu acțiune necesară"
+                    )}
                   </Button>
-                </Flex>
-
-                <Button
-                  onClick={handleMarkActionResolved}
-                  variant="filled"
-                  styles={{
-                    root: actionNeeded ? {
-                      backgroundColor: 'var(--mantine-color-orange-6) !important',
-                      color: 'white !important',
-                      '&:hover': {
-                        backgroundColor: 'var(--mantine-color-orange-7) !important',
-                      }
-                    } : {
-                      backgroundColor: 'var(--crm-ui-kit-palette-link-primary) !important',
-                      color: 'white !important',
-                      '&:hover': {
-                        backgroundColor: 'var(--crm-ui-kit-palette-link-hover-primary) !important',
-                      }
-                    }
-                  }}
-                >
-                  {getLanguageByKey(
-                    actionNeeded ? "Acțiune necesară" : "Nu acțiune necesară"
-                  )}
-                </Button>
+                </Can>
               </Flex>
 
               <Flex gap="xs">
