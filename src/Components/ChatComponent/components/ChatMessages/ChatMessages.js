@@ -65,6 +65,8 @@ export const ChatMessages = ({
       const normalizedMessage = {
         ...metadataMsj,
         message: metadataMsj.message || metadataMsj.message_text,
+        from_reference: metadataMsj.from_reference ?? metadataMsj.page_id ?? null,
+        to_reference: metadataMsj.to_reference ?? metadataMsj.contact_value ?? null,
         seenAt: false,
       };
 

@@ -239,13 +239,18 @@ export const ChatInput = ({
       throw new Error("Invalid client ID");
     }
 
+    const contactValue = currentClient?.payload?.contact_value || null;
+    const pageReference = selectedPageId || null;
+
     return {
       page_id: selectedPageId,
       platform: selectedPlatform,
       client_id: clientId,
       ticket_id: ticketId,
       sender_id: userId,
-      contact_value: currentClient?.payload?.contact_value || null,
+      contact_value: contactValue,
+      from_reference: pageReference,
+      to_reference: contactValue,
     };
   };
 
