@@ -10,10 +10,10 @@ import { ChatMessages } from "../Components/ChatComponent/components/ChatMessage
 import Can from "@components/CanComponent/Can";
 
 export const Chat = () => {
-  const { 
-    isChatFiltered, 
-    getTicketByIdWithFilters, 
-    fetchSingleTicket, 
+  const {
+    isChatFiltered,
+    getTicketByIdWithFilters,
+    fetchSingleTicket,
     groupTitleForApi,
     accessibleGroupTitles,
     customGroupTitle,
@@ -37,7 +37,7 @@ export const Chat = () => {
   // Автоматическое переключение воронки при открытии тикета по прямой ссылке
   useEffect(() => {
     if (!ticketId) return;
-    
+
     const loadTicketGroup = async () => {
       try {
         const { api } = await import("../api");
@@ -53,7 +53,7 @@ export const Chat = () => {
         console.error("Failed to load ticket group:", error);
       }
     };
-    
+
     loadTicketGroup();
   }, [ticketId, accessibleGroupTitles, groupTitleForApi, customGroupTitle, setCustomGroupTitle]);
 
@@ -61,10 +61,10 @@ export const Chat = () => {
   // запрашиваем актуальный тикет из новой группы
   useEffect(() => {
     if (!ticketId) return;
-    
+
     const ticketIdNum = Number(ticketId);
     if (!ticketIdNum) return;
-    
+
     // Запрашиваем актуальный тикет при изменении группы
     // fetchSingleTicket из AppContext правильно обновит тикет
     fetchSingleTicket(ticketIdNum);
@@ -110,37 +110,32 @@ export const Chat = () => {
       <Flex w="100%" h="100%" className="chat-container">
         {isChatListVisible && <ChatList ticketId={ticketId} />}
 
-
-        <Can
-          permission={{ module: "chat", action: "edit" }}
-          context={{ responsibleId }}
-        >
-          <Flex pos="relative" style={{ flex: "1 1 0" }}>
-            <Box pos="absolute" left="10px" top="16px" style={{ zIndex: 1 }}>
-              <ActionIcon
-                variant="default"
-                onClick={() => setIsChatListVisible((prev) => !prev)}
-              >
-                {isChatListVisible ? (
-                  <FaArrowLeft size="12" />
-                ) : (
-                  <FaArrowRight size="12" />
-                )}
-              </ActionIcon>
-            </Box>
-
+        <Flex pos="relative" style={{ flex: "1 1 0" }}>
+          <Box pos="absolute" left="10px" top="16px" style={{ zIndex: 1 }}>
+            <ActionIcon
+              variant="default"
+              onClick={() => setIsChatListVisible((prev) => !prev)}
+            >
+              {isChatListVisible ? (
+                <FaArrowLeft size="12" />
+              ) : (
+                <FaArrowRight size="12" />
+              )}
+            </ActionIcon>
+          </Box>
+          <Can permission={{ module: "chat", action: "view" }}>
             <ChatMessages
               ticketId={ticketId}
               personalInfo={currentTicket}
               technicians={technicians}
               unseenCount={currentTicket?.unseen_count || 0}
             />
-          </Flex>
-        </Can>
+          </Can>
+        </Flex>
 
         {!isNaN(ticketId) && (
           <Can
-            permission={{ module: "chat", action: "edit" }}
+            permission={{ module: "leads", action: "edit" }}
             context={{ responsibleId }}
           >
             <ChatExtraInfo

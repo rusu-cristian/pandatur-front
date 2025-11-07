@@ -100,31 +100,36 @@ const SingleChat = ({ technicians, ticketId, onClose, tasks = [] }) => {
           <FaArrowLeft size="12" />
         </ActionIcon>
       </Box>
-        <Flex w="70%">
-          <Can permission={{ module: "chat", action: "view" }}>
-            <ChatMessages
-              selectedClient={selectedClient}
-              ticketId={ticketId ? Number(ticketId) : undefined}
-              personalInfo={currentTicket}
-              platformOptions={platformOptions}
-              selectedPlatform={selectedPlatform}
-              changePlatform={changePlatform}
-              contactOptions={contactOptions}
-              changeContact={changeContact}
-              selectedPageId={selectedPageId}
-              changePageId={changePageId}
-              loading={loading || isLoadingTicket}
-              technicians={technicians}
-              unseenCount={unseenCount}
-            />
-          </Can>
-        </Flex>
+
+      <Flex w="70%">
+        <Can permission={{ module: "chat", action: "view" }}>
+          <ChatMessages
+            selectedClient={selectedClient}
+            ticketId={ticketId ? Number(ticketId) : undefined}
+            personalInfo={currentTicket}
+            platformOptions={platformOptions}
+            selectedPlatform={selectedPlatform}
+            changePlatform={changePlatform}
+            contactOptions={contactOptions}
+            changeContact={changeContact}
+            selectedPageId={selectedPageId}
+            changePageId={changePageId}
+            loading={loading || isLoadingTicket}
+            technicians={technicians}
+            unseenCount={unseenCount}
+          />
+        </Can>
+      </Flex>
+
+      <Can permission={{ module: "leads", action: "edit" }} context={{ responsibleId }}>
         <ChatExtraInfo
           selectedClient={selectedClient}
           ticketId={ticketId}
           updatedTicket={currentTicket}
           onUpdateClientData={updateClientData}
         />
+      </Can>
+
     </div>
   );
 };
