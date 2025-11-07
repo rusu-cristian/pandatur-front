@@ -125,6 +125,30 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_name: "Panda Tour Iasi",
       type: "facebook",
       group_title: ["RO"]
+    },
+    {
+      page_id: "777266025475762",
+      page_name: "Catalan Travel Ua",
+      type: "facebook",
+      group_title: ["CATALAN"]
+    },
+    {
+      page_id: "695617100305693",
+      page_name: "Catalan travel Lviv",
+      type: "facebook",
+      group_title: ["CATALAN"]
+    },
+    {
+      page_id: "819761597881879",
+      page_name: "Catalan Kyiv",
+      type: "facebook",
+      group_title: ["CATALAN"]
+    },
+    {
+      page_id: "680378511830178",
+      page_name: "Catalan travel Odesa",
+      type: "facebook",
+      group_title: ["CATALAN"]
     }
   ],
   instagrams: [
@@ -223,6 +247,30 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_name: "Panda Tour Iasi",
       type: "instagram",
       group_title: ["RO"]
+    },
+    {
+      page_id: "17841476778536529",
+      page_name: "catalan_travel_ua",
+      type: "instagram",
+      group_title: ["CATALAN",]
+    },
+    {
+      page_id: "17841413135356676",
+      page_name: "catalantravellviv",
+      type: "instagram",
+      group_title: ["CATALAN",]
+    },
+    {
+      page_id: "17841476494595459",
+      page_name: "catalan_travel_kyiv",
+      type: "instagram",
+      group_title: ["CATALAN",]
+    },
+    {
+      page_id: "17841475354894162",
+      page_name: "catalantravel_odesa",
+      type: "instagram",
+      group_title: ["CATALAN",]
     }
   ],
   whatsapps: [
