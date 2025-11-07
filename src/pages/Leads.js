@@ -175,9 +175,30 @@ export const Leads = () => {
 
 
   // открытие чата при переходе на /leads/:ticketId
+  // и автоматическое переключение воронки на группу тикета
   useEffect(() => {
-    if (ticketId) setIsChatOpen(true);
-  }, [ticketId]);
+    if (ticketId) {
+      setIsChatOpen(true);
+      
+      // Загружаем тикет, чтобы узнать его группу
+      const loadTicketGroup = async () => {
+        try {
+          const ticketData = await api.tickets.ticket.getLightById(Number(ticketId));
+          if (ticketData?.group_title && accessibleGroupTitles.includes(ticketData.group_title)) {
+            // Если группа тикета отличается от текущей, переключаем воронку
+            if (ticketData.group_title !== groupTitleForApi && ticketData.group_title !== customGroupTitle) {
+              setCustomGroupTitle(ticketData.group_title);
+              localStorage.setItem("leads_last_group_title", ticketData.group_title);
+            }
+          }
+        } catch (error) {
+          console.error("Failed to load ticket group:", error);
+        }
+      };
+      
+      loadTicketGroup();
+    }
+  }, [ticketId, accessibleGroupTitles, groupTitleForApi, customGroupTitle, setCustomGroupTitle]);
 
   // загрузка таблицы (hard) при готовности фильтров/смене зависимостей
   useEffect(() => {
