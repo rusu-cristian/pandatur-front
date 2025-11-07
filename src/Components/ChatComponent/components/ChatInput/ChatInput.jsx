@@ -64,6 +64,11 @@ export const ChatInput = ({
   const groupTitle = personalInfo?.group_title || "";
   const fromEmails = getEmailsByGroupTitle(groupTitle);
 
+  // Получаем responsibleId для проверки прав доступа
+  const responsibleId = personalInfo?.technician_id
+    ? String(personalInfo.technician_id)
+    : undefined;
+
   // Получаем последнее сообщение для автоматического выбора платформы и контакта
   const lastMessage = useMemo(() => {
     if (!messages || messages.length === 0 || !ticketId) {
@@ -566,19 +571,21 @@ export const ChatInput = ({
 
             <Flex align="center" justify="space-between">
               <Flex gap="xs">
-                <Button
-                  disabled={
-                    (!message.trim() && attachments.length === 0) ||
-                    !currentClient?.payload ||
-                    currentClient.payload.platform === "sipuni" ||
-                    message.length > 999
-                  }
-                  variant="filled"
-                  onClick={sendMessage}
-                  loading={opened}
-                >
-                  {getLanguageByKey("Trimite")}
-                </Button>
+                <Can permission={{ module: "CHAT", action: "CREATE" }} context={{ responsibleId }}>
+                  <Button
+                    disabled={
+                      (!message.trim() && attachments.length === 0) ||
+                      !currentClient?.payload ||
+                      currentClient.payload.platform === "sipuni" ||
+                      message.length > 999
+                    }
+                    variant="filled"
+                    onClick={sendMessage}
+                    loading={opened}
+                  >
+                    {getLanguageByKey("Trimite")}
+                  </Button>
+                </Can>
 
                 <Button
                   onClick={clearState}
@@ -649,38 +656,40 @@ export const ChatInput = ({
               </Flex>
 
               <Flex gap="xs">
-                <ActionIcon
-                  onClick={() => setShowEmailForm(true)}
-                  variant="default"
-                  title="Trimite Email"
-                >
-                  <FaEnvelope size={20} />
-                </ActionIcon>
+                <Can permission={{ module: "CHAT", action: "CREATE" }} context={{ responsibleId }}>
+                  <ActionIcon
+                    onClick={() => setShowEmailForm(true)}
+                    variant="default"
+                    title="Trimite Email"
+                  >
+                    <FaEnvelope size={20} />
+                  </ActionIcon>
 
-                <FileButton
-                  onChange={handleFileButton}
-                  accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.ppt,.pptx"
-                  multiple
-                  title={getLanguageByKey("attachFiles")}
-                >
-                  {(props) => (
-                    <ActionIcon {...props} variant="default" title={getLanguageByKey("attachFiles")}>
-                      <RiAttachment2 size={20} />
-                    </ActionIcon>
-                  )}
-                </FileButton>
+                  <FileButton
+                    onChange={handleFileButton}
+                    accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.ppt,.pptx"
+                    multiple
+                    title={getLanguageByKey("attachFiles")}
+                  >
+                    {(props) => (
+                      <ActionIcon {...props} variant="default" title={getLanguageByKey("attachFiles")}>
+                        <RiAttachment2 size={20} />
+                      </ActionIcon>
+                    )}
+                  </FileButton>
 
-                <ActionIcon onClick={handleEmojiClickButton} variant="default">
-                  <LuSmile size={20} />
-                </ActionIcon>
+                  <ActionIcon onClick={handleEmojiClickButton} variant="default">
+                    <LuSmile size={20} />
+                  </ActionIcon>
 
-                <ActionIcon
-                  onClick={onToggleNoteComposer}
-                  variant="default"
-                  title={getLanguageByKey("Заметка")}
-                >
-                  <LuStickyNote size={20} />
-                </ActionIcon>
+                  <ActionIcon
+                    onClick={onToggleNoteComposer}
+                    variant="default"
+                    title={getLanguageByKey("Заметка")}
+                  >
+                    <LuStickyNote size={20} />
+                  </ActionIcon>
+                </Can>
 
                 <Can permission={{ module: "TASK", action: "CREATE" }}>
                   <ActionIcon
