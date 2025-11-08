@@ -1,377 +1,387 @@
 export const translations = {
+  "Call Status": {
+    RO: "Status apel",
+    RU: "Статус звонка",
+    EN: "Call Status"
+  },
+  "Description": {
+    RO: "Descriere",
+    RU: "Описание",
+    EN: "Description"
+  },
   "Темная тема": {
     RO: "Temă întunecată",
     RU: "Темная тема",
-    EN: "Dark theme",
+    EN: "Dark theme"
   },
   "Светлая тема": {
     RO: "Temă luminoasă",
     RU: "Светлая тема",
-    EN: "Light theme",
+    EN: "Light theme"
   },
   "Adaugă lead": {
     RO: "Adaugă lead",
     RU: "Добавить лид",
-    EN: "Add lead",
+    EN: "Add lead"
   },
   "Interesat": {
     RO: "Interesat",
     RU: "Заинтересован",
-    EN: "Interested",
+    EN: "Interested"
   },
   "Apel de intrare": {
     RO: "Apel de intrare",
     RU: "Входящий звонок",
-    EN: "Incoming call",
+    EN: "Incoming call"
   },
   "De prelucrat": {
     RO: "De prelucrat",
     RU: "Обработка",
-    EN: "To process",
+    EN: "To process"
   },
   "Luat în lucru": {
     RO: "Luat în lucru / 3 zile",
     RU: "В работе / 3 дня",
-    EN: "In progress / 3 days",
+    EN: "In progress / 3 days"
   },
   "Ofertă trimisă": {
     RO: "Ofertă trimisă / 3 zile",
     RU: "Предложение отправлено / 3 дня",
-    EN: "Offer sent / 3 days",
+    EN: "Offer sent / 3 days"
   },
   "Aprobat cu client": {
     RO: "Aprobat cu client / 5 zile",
     RU: "Согласовано с клиентом / 5 дней",
-    EN: "Approved with client / 5 days",
+    EN: "Approved with client / 5 days"
   },
   "Contract încheiat": {
     RO: "Contract încheiat",
     RU: "Контракт заключён",
-    EN: "Contract signed",
+    EN: "Contract signed"
   },
   "Realizat cu succes": {
     RO: "Realizat cu succes",
     RU: "Успешно реализовано",
-    EN: "Successfully completed",
+    EN: "Successfully completed"
   },
   "Închis și nerealizat": {
     RO: "Închis și nerealizat",
     RU: "Закрыт без результата",
-    EN: "Closed and not completed",
+    EN: "Closed and not completed"
   },
   "Contract semnat": {
     RO: "Contract semnat / 1 zi",
     RU: "Договор подписан / 1 день",
-    EN: "Contract signed / 1 day",
+    EN: "Contract signed / 1 day"
   },
   "Plată primită": {
     RO: "Plată primită / 2 zile",
     RU: "Платеж получен / 2 дня",
-    EN: "Payment received / 2 days",
+    EN: "Payment received / 2 days"
   },
   "Factura trimisă": {
     RO: "Factura trimisǎ",
     RU: "Отправлена фактура",
-    EN: "Invoice sent",
+    EN: "Invoice sent"
   },
   "Caută leaduri": {
     RO: "Caută leaduri",
     RU: "Искать лиды",
-    EN: "Search leads",
+    EN: "Search leads"
   },
   Notificări: {
     RO: {
       0: "Notificări",
-      1: "Notificări",
+      1: "Notificări"
     },
     RU: {
       0: "Уведомления",
-      1: "Увед-я",
+      1: "Увед-я"
     },
     EN: {
       0: "Notifications",
-      1: "Notif.",
-    },
+      1: "Notif."
+    }
   },
   Lead: {
     RO: "Lead",
     RU: "Лид",
-    EN: "Lead",
+    EN: "Lead"
   },
   Contact: {
     RO: "Contact",
     RU: "Контакт",
-    EN: "Contact",
+    EN: "Contact"
   },
   Descriere: {
     RO: "Descriere",
     RU: "Описание",
-    EN: "Description",
+    EN: "Description"
   },
   "Adaugă descriere lead": {
     RO: "Adaugă descriere lead",
     RU: "Добавить описание лида",
-    EN: "Add lead description",
+    EN: "Add lead description"
   },
   joasă: {
     RO: "joasă",
     RU: "низкий",
-    EN: "low",
+    EN: "low"
   },
   medie: {
     RO: "medie",
     RU: "средний",
-    EN: "medium",
+    EN: "medium"
   },
   înaltă: {
     RO: "înaltă",
     RU: "высокий",
-    EN: "high",
+    EN: "high"
   },
   critică: {
     RO: "critică",
     RU: "критический",
-    EN: "critical",
+    EN: "critical"
   },
   "Etapa de lucru": {
     RO: "Etapa de lucru",
     RU: "Этап работы",
-    EN: "Work stage",
+    EN: "Work stage"
   },
   Șterge: {
     RO: "Șterge",
     RU: "Удалить",
-    EN: "Delete",
+    EN: "Delete"
   },
   Salvează: {
     RO: "Salvează",
     RU: "Сохранить",
-    EN: "Save",
+    EN: "Save"
   },
   Taskuri: {
     RO: "Taskuri",
     RU: "Задачи",
-    EN: "Tasks",
+    EN: "Tasks"
   },
   Editează: {
     RO: "Editează",
     RU: "Изменить",
-    EN: "Edit",
+    EN: "Edit"
   },
   Închide: {
     RO: "Închide",
     RU: "Закрыть",
-    EN: "Close",
+    EN: "Close"
   },
   Creează: {
     RO: "Creează",
     RU: "Создать",
-    EN: "Create",
+    EN: "Create"
   },
   "Salvează tag": {
     RO: "Salvează tag",
     RU: "Сохранить тэг",
-    EN: "Save tag",
+    EN: "Save tag"
   },
   "Adaugă tag": {
     RO: "Adaugă tag",
     RU: "Добавить тэг",
-    EN: "Add tag",
+    EN: "Add tag"
   },
   "Introduce tag": {
     RO: "Introduce tag",
     RU: "Введите тэг",
-    EN: "Enter tag",
+    EN: "Enter tag"
   },
   "Nici un tag selectat": {
     RO: "Nici un tag selectat",
     RU: "Нет выбранных тэгов",
-    EN: "No tag selected",
+    EN: "No tag selected"
   },
   "Lead nou": {
     RO: "Lead nou",
     RU: "Новый лид",
-    EN: "New lead",
+    EN: "New lead"
   },
   Account: {
     RO: "Account",
     RU: "Аккаунт",
-    EN: "Account",
+    EN: "Account"
   },
   Dashboard: {
     RO: "Dashboard",
     RU: "Дэшборд",
-    EN: "Dashboard",
+    EN: "Dashboard"
   },
   Chat: {
     RO: "Chat",
     RU: "Чат",
-    EN: "Chat",
+    EN: "Chat"
   },
   Admin: {
     RO: "Admin",
     RU: "Админ",
-    EN: "Admin",
+    EN: "Admin"
   },
   "Log Out": {
     RO: "Log Out",
     RU: "Выйти",
-    EN: "Log Out",
+    EN: "Log Out"
   },
   "Adaugă notificare": {
     RO: "Adaugă notificare",
     RU: "Добавить увед-е",
-    EN: "Add notification",
+    EN: "Add notification"
   },
   "Șterge toate": {
     RO: "Șterge toate",
     RU: "Очистить все",
-    EN: "Delete all",
+    EN: "Delete all"
   },
   "Introduceți descrierea notificării": {
     RO: "Introduceți descrierea notificării",
     RU: "Введите описание уведомления",
-    EN: "Enter notification description",
+    EN: "Enter notification description"
   },
   "Nici o notificare": {
     RO: "Nici o notificare",
     RU: "Нет уведомлений",
-    EN: "No notifications",
+    EN: "No notifications"
   },
   "Nici un task": {
     RO: "Nici un task",
     RU: "Нет задач",
-    EN: "No tasks",
+    EN: "No tasks"
   },
   Văzut: {
     RO: "Văzut",
     RU: "Просмотрено",
-    EN: "Seen",
+    EN: "Seen"
   },
   Nevăzut: {
     RO: "Nevăzut",
     RU: "Не просмотрено",
-    EN: "Unseen",
+    EN: "Unseen"
   },
   Marchează: {
     RO: "Marchează",
     RU: "Отметить",
-    EN: "Mark",
+    EN: "Mark"
   },
   "Alege ID lead": {
     RO: "Alege ID lead",
     RU: "Выберите ID лида",
-    EN: "Choose lead ID",
+    EN: "Choose lead ID"
   },
   "Încărcăm leadurile": {
     RO: "Încărcăm leadurile",
     RU: "Загружаем лиды",
-    EN: "Loading leads",
+    EN: "Loading leads"
   },
   "Grafic de lucru": {
     RO: "Grafic de lucru",
     RU: "График работы",
-    EN: "Work schedule",
+    EN: "Work schedule"
   },
   săptămâna: {
     RO: "săptămâna",
     RU: "неделя",
-    EN: "week",
+    EN: "week"
   },
   "săptămâna trecută": {
     RO: "săptămâna trecută",
     RU: "предыдущая неделя",
-    EN: "last week",
+    EN: "last week"
   },
   "săptămâna viitoare": {
     RO: "săptămâna viitoare",
     RU: "следующая неделя",
-    EN: "next week",
+    EN: "next week"
   },
   Angajat: {
     RO: "Angajat",
     RU: "Сотрудник",
-    EN: "Employee",
+    EN: "Employee"
   },
   "Ore de lucru": {
     RO: "Ore de lucru",
     RU: "Рабочее время",
-    EN: "Working hours",
+    EN: "Working hours"
   },
   Monday: {
     RO: "Luni",
     RU: "Понедельник",
-    EN: "Monday",
+    EN: "Monday"
   },
   Tuesday: {
     RO: "Marți",
     RU: "Вторник",
-    EN: "Tuesday",
+    EN: "Tuesday"
   },
   Wednesday: {
     RO: "Miercuri",
     RU: "Среда",
-    EN: "Wednesday",
+    EN: "Wednesday"
   },
   Thursday: {
     RO: "Joi",
     RU: "Четверг",
-    EN: "Thursday",
+    EN: "Thursday"
   },
   Friday: {
     RO: "Vineri",
     RU: "Пятница",
-    EN: "Friday",
+    EN: "Friday"
   },
   Saturday: {
     RO: "Sâmbătă",
     RU: "Суббота",
-    EN: "Saturday",
+    EN: "Saturday"
   },
   Sunday: {
     RO: "Duminică",
     RU: "Воскресенье",
-    EN: "Sunday",
+    EN: "Sunday"
   },
   "Gestionare utilizatori": {
     RO: "Gestionare utilizatori",
     RU: "Управление пользователями",
-    EN: "User management",
+    EN: "User management"
   },
   "Informații utilizator": {
     RO: "Informații utilizator",
     RU: "Информация о пользователе",
-    EN: "User information",
+    EN: "User information"
   },
   username: {
     RO: "Nume de utilizator",
     RU: "Имя пользователя",
-    EN: "Username",
+    EN: "Username"
   },
   email: {
     RO: "email",
     RU: "электронная почта",
-    EN: "email",
+    EN: "email"
   },
   password: {
     RO: "Parolă",
     RU: "Пароль",
-    EN: "Password",
+    EN: "Password"
   },
   "Informații extinse": {
     RO: "Informații extinse",
     RU: "Расширенная информация",
-    EN: "Extended info",
+    EN: "Extended info"
   },
   name: {
     RO: "nume",
     RU: "имя",
-    EN: "name",
+    EN: "name"
   },
   surname: {
     RO: "prenume",
     RU: "фамилия",
-    EN: "surname",
+    EN: "surname"
   },
   date_of_birth: {
     RO: "data nașterii",
@@ -691,137 +701,137 @@ export const translations = {
   January: {
     RO: "Ianuarie",
     RU: "Январь",
-    EN: "January",
+    EN: "January"
   },
   February: {
     RO: "Februarie",
     RU: "Февраль",
-    EN: "February",
+    EN: "February"
   },
   March: {
     RO: "Martie",
     RU: "Март",
-    EN: "March",
+    EN: "March"
   },
   April: {
     RO: "Aprilie",
     RU: "Апрель",
-    EN: "April",
+    EN: "April"
   },
   May: {
     RO: "Mai",
     RU: "Май",
-    EN: "May",
+    EN: "May"
   },
   June: {
     RO: "Iunie",
     RU: "Июнь",
-    EN: "June",
+    EN: "June"
   },
   July: {
     RO: "Iulie",
     RU: "Июль",
-    EN: "July",
+    EN: "July"
   },
   August: {
     RO: "August",
     RU: "Август",
-    EN: "August",
+    EN: "August"
   },
   September: {
     RO: "Septembrie",
     RU: "Сентябрь",
-    EN: "September",
+    EN: "September"
   },
   October: {
     RO: "Octombrie",
     RU: "Октябрь",
-    EN: "October",
+    EN: "October"
   },
   November: {
     RO: "Noiembrie",
     RU: "Ноябрь",
-    EN: "November",
+    EN: "November"
   },
   December: {
     RO: "Decembrie",
     RU: "Декабрь",
-    EN: "December",
+    EN: "December"
   },
   Permisiuni: {
     RO: "Permisiuni",
     RU: "Разрешения",
-    EN: "Permissions",
+    EN: "Permissions"
   },
   "nici un tag": {
     RO: "niciun tag",
     RU: "никакой тег",
-    EN: "no tag",
+    EN: "no tag"
   },
   "Nici un lead": {
     RO: "Niciun lead",
     RU: "никакой лид",
-    EN: "no lead",
+    EN: "no lead"
   },
   "Mesajele clientului": {
     RO: "Mesajele clientului",
     RU: "Сообщения клиента",
-    EN: "Client messages",
+    EN: "Client messages"
   },
   "Alege lead": {
     RO: "Alege lead",
     RU: "Выбрать лид",
-    EN: "Choose lead",
+    EN: "Choose lead"
   },
   "Acest browser nu suporta audio": {
     RO: "Acest browser nu suportă audio",
     RU: "Этот браузер не поддерживает аудио",
-    EN: "This browser does not support audio",
+    EN: "This browser does not support audio"
   },
   "Acest browser nu suporta video": {
     RO: "Acest browser nu suportă video",
     RU: "Этот браузер не поддерживает видео",
-    EN: "This browser does not support video",
+    EN: "This browser does not support video"
   },
   "Deschide file": {
     RO: "Deschide fișier",
     RU: "Открыть файл",
-    EN: "Open file",
+    EN: "Open file"
   },
   Client: {
     RO: "Client",
     RU: "Клиент",
-    EN: "Client",
+    EN: "Client"
   },
   Combina: {
     RO: "Combină",
     RU: "Объединить",
-    EN: "Combine",
+    EN: "Combine"
   },
   "Introduceți ID lead": {
     RO: "Introduceți ID-ul lead-ului",
     RU: "Введите ID лида",
-    EN: "Enter lead ID",
+    EN: "Enter lead ID"
   },
   "Introduceți ID client": {
     RO: "Introduceți ID-ul clientului",
     RU: "Введите ID клиента",
-    EN: "Enter client ID",
+    EN: "Enter client ID"
   },
   "Leadurile mele": {
     RO: "Lead-urile mele",
     RU: "Мои лиды",
-    EN: "My leads",
+    EN: "My leads"
   },
   Filtru: {
     RO: "Filtru",
     RU: "Фильтр",
-    EN: "Filter",
+    EN: "Filter"
   },
   "Cauta dupa Lead, Client sau Tag": {
     RO: "Caută după lead, client sau tag",
     RU: "Искать по лиду, клиенту или тегу",
-    EN: "Search by lead, client or tag",
+    EN: "Search by lead, client or tag"
   },
   "Filtru lead": {
     RO: "Filtru lead",
@@ -2973,47 +2983,47 @@ export const translations = {
   errorConnectingToChatRoomWebSocket: {
     RO: "Eroare la conectarea la camera de chat. Conexiunea WebSocket nu este disponibilă",
     RU: "Ошибка подключения к чату. Соединение WebSocket недоступно",
-    EN: "Error connecting to chat room. WebSocket connection is not available",
+    EN: "Error connecting to chat room. WebSocket connection is not available"
   },
   searchByMessages: {
     RO: "Introduceți mesaj pentru cǎutare",
     RU: "Введите сообщение для поиска",
-    EN: "Enter message to search",
+    EN: "Enter message to search"
   },
   searchByInterval: {
     RO: "Cautǎ dupǎ datǎ",
     RU: "Выберите интервал",
-    EN: "Search by date",
+    EN: "Search by date"
   },
   typeMessages: {
     RO: "Tipul mesajului",
     RU: "Тип сообщения",
-    EN: "Message type",
+    EN: "Message type"
   },
   termsAndConditionsOfUsePandaTurSRL: {
     RO: "Termeni și Condiții de utilizare Panda Tur SRL",
     RU: "Условия использования Panda Tur SRL",
-    EN: "Terms and Conditions of Use Panda Tur SRL",
+    EN: "Terms and Conditions of Use Panda Tur SRL"
   },
   lastUpdate: {
     RO: "Ultima actualizare: 30 aprilie 2025",
     RU: "Последнее обновление: 30 апреля 2025",
-    EN: "Last update: April 30, 2025",
+    EN: "Last update: April 30, 2025"
   },
   acceptanceOfTerms: {
     RO: "Acceptarea Termenilor",
     RU: "Принятие условий",
-    EN: "Acceptance of Terms",
+    EN: "Acceptance of Terms"
   },
   termsAndConditionsOfUsePandaTurSRLAcceptanceOfTerms: {
     RO: "Utilizarea [pandatur.md](https://pandatur.md/ro) este reglementată prin Termeni și Condiții de Utilizare prezentate în continuare.\n\nÎnainte de a utiliza [pandatur.md](https://pandatur.md/ro), vă recomandăm să citiți cu atenție condițiile de utilizare. Folosind serviciile paginii web [pandatur.md](https://pandatur.md/ro), Dvs. sunteți de acord cu Condițiile de utilizare.\n\nPrezentul Acord de utilizare (în continuare {{Acord}}) stabilește condițiile legale obligatorii de utilizare a serviciilor [pandatur.md](https://pandatur.md/ro). Prin utilizarea serviciilor [pandatur.md](https://pandatur.md/ro), dvs. acceptați condițiile prezentului acord, indiferent dacă sunteți {{Vizitator}} sau {{Utilizator înregistrat/membru}}.\n\nDvs. puteți utiliza serviciile [pandatur.md](https://pandatur.md/ro) doar dacă sunteți de acord să respectați prevederile Acordului și toate legile de referință în vigoare. Dacă doriți să deveniți utilizator înregistrat, să comunicați cu alți utilizatori și să utilizați serviciile [pandatur.md](https://pandatur.md/ro), trebuie să acceptați expres prezentul acord în timpul înregistrării.\n\nConținutul site-ului web și al aplicațiilor mobile, informațiile oferite (inclusiv prețul și disponibilitatea serviciilor turistice), precum și datele software și infrastructura utilizate pentru transmiterea informațiilor sunt proprietatea {{Panda Tur SRL}} sau a afiliaților săi.\n\nCompania Panda Tur poate modifica periodic prezentul acord, care intră în vigoare la data publicării pe site-ul web [pandatur.md](https://pandatur.md/ro). Utilizând serviciile după publicare, acceptați respectarea tuturor modificărilor. Se recomandă consultarea periodică a Termenilor.",
-    RU: 'Использование [pandatur.md](https://pandatur.md/ru) регулируется настоящими Условиями использования, изложенными ниже.\n\nПеред использованием [pandatur.md](https://pandatur.md/ru), мы рекомендуем вам внимательно прочитать условия использования. Используя услуги веб-страницы [pandatur.md](https://pandatur.md/ru), вы соглашаетесь с Условиями использования.\n\nНастоящее Соглашение о пользовании (далее "Соглашение") устанавливает обязательные условия использования услуг [pandatur.md](https://pandatur.md/ru). Используя услуги [pandatur.md](https://pandatur.md/ru), вы соглашаетесь с условиями настоящего соглашения, независимо от того, являетесь ли вы {{Посетителем}} или {{Зарегистрированным пользователем/членом}}.\n\nВы можете использовать услуги [pandatur.md](https://pandatur.md/ru) только в том случае, если согласны соблюдать положения Соглашения и все соответствующие законы, действующие на данный момент. Если вы хотите стать зарегистрированным пользователем, общаться с другими пользователями и использовать услуги [pandatur.md](https://pandatur.md/ru), вы должны явно согласиться с настоящим соглашением в процессе регистрации.\n\nСодержимое веб-сайта и мобильных приложений, предоставляемая информация (включая цены и доступность туристических услуг), а также программное обеспечение и инфраструктура, используемые для передачи информации, являются собственностью {{Panda Tur SRL}} или ее аффилированных лиц.\n\nКомпания Panda Tur может периодически изменять настоящее соглашение, которое вступает в силу с момента его публикации на веб-сайте [pandatur.md](https://pandatur.md/ru). Используя услуги после публикации, вы соглашаетесь с соблюдением всех изменений. Рекомендуется периодически проверять Условия.',
-    EN: "The use of [pandatur.md](https://pandatur.md/en) is governed by the Terms and Conditions of Use outlined below.\n\nBefore using [pandatur.md](https://pandatur.md/en), we recommend reading the terms carefully. By using the [pandatur.md](https://pandatur.md/en) website services, you agree to the Terms of Use.\n\nThis User Agreement (hereinafter referred to as the {{Agreement}}) establishes the legally binding conditions for using the services of [pandatur.md](https://pandatur.md/en). By using the services of [pandatur.md](https://pandatur.md/en), you agree to these conditions, whether you are a {{Visitor}} or a {{Registered User/Member}}.\n\nYou may use the services of [pandatur.md](https://pandatur.md/en) only if you agree to comply with the provisions of the Agreement and all applicable laws. If you wish to become a registered user, communicate with other users, and use the services of [pandatur.md](https://pandatur.md/en), you must expressly accept this Agreement during registration.\n\nThe content of the website and mobile applications, the information provided (including prices and availability of travel services), as well as the software and infrastructure used to transmit information, are the property of {{Panda Tur SRL}} or its affiliates.\n\nPanda Tur may periodically amend this Agreement, which takes effect upon publication on the website [pandatur.md](https://pandatur.md/en). By using the services after publication, you agree to comply with all changes. It is recommended to check the Terms periodically.",
+    RU: "Использование [pandatur.md](https://pandatur.md/ru) регулируется настоящими Условиями использования, изложенными ниже.\n\nПеред использованием [pandatur.md](https://pandatur.md/ru), мы рекомендуем вам внимательно прочитать условия использования. Используя услуги веб-страницы [pandatur.md](https://pandatur.md/ru), вы соглашаетесь с Условиями использования.\n\nНастоящее Соглашение о пользовании (далее \"Соглашение\") устанавливает обязательные условия использования услуг [pandatur.md](https://pandatur.md/ru). Используя услуги [pandatur.md](https://pandatur.md/ru), вы соглашаетесь с условиями настоящего соглашения, независимо от того, являетесь ли вы {{Посетителем}} или {{Зарегистрированным пользователем/членом}}.\n\nВы можете использовать услуги [pandatur.md](https://pandatur.md/ru) только в том случае, если согласны соблюдать положения Соглашения и все соответствующие законы, действующие на данный момент. Если вы хотите стать зарегистрированным пользователем, общаться с другими пользователями и использовать услуги [pandatur.md](https://pandatur.md/ru), вы должны явно согласиться с настоящим соглашением в процессе регистрации.\n\nСодержимое веб-сайта и мобильных приложений, предоставляемая информация (включая цены и доступность туристических услуг), а также программное обеспечение и инфраструктура, используемые для передачи информации, являются собственностью {{Panda Tur SRL}} или ее аффилированных лиц.\n\nКомпания Panda Tur может периодически изменять настоящее соглашение, которое вступает в силу с момента его публикации на веб-сайте [pandatur.md](https://pandatur.md/ru). Используя услуги после публикации, вы соглашаетесь с соблюдением всех изменений. Рекомендуется периодически проверять Условия.",
+    EN: "The use of [pandatur.md](https://pandatur.md/en) is governed by the Terms and Conditions of Use outlined below.\n\nBefore using [pandatur.md](https://pandatur.md/en), we recommend reading the terms carefully. By using the [pandatur.md](https://pandatur.md/en) website services, you agree to the Terms of Use.\n\nThis User Agreement (hereinafter referred to as the {{Agreement}}) establishes the legally binding conditions for using the services of [pandatur.md](https://pandatur.md/en). By using the services of [pandatur.md](https://pandatur.md/en), you agree to these conditions, whether you are a {{Visitor}} or a {{Registered User/Member}}.\n\nYou may use the services of [pandatur.md](https://pandatur.md/en) only if you agree to comply with the provisions of the Agreement and all applicable laws. If you wish to become a registered user, communicate with other users, and use the services of [pandatur.md](https://pandatur.md/en), you must expressly accept this Agreement during registration.\n\nThe content of the website and mobile applications, the information provided (including prices and availability of travel services), as well as the software and infrastructure used to transmit information, are the property of {{Panda Tur SRL}} or its affiliates.\n\nPanda Tur may periodically amend this Agreement, which takes effect upon publication on the website [pandatur.md](https://pandatur.md/en). By using the services after publication, you agree to comply with all changes. It is recommended to check the Terms periodically."
   },
   privacyPolicy: {
     RO: "Politica de Confidențialitate",
     RU: "Политика конфиденциальности",
-    EN: "Privacy Policy",
+    EN: "Privacy Policy"
   },
   privacyPolicyText: {
     RO: "Utilizarea site-ului web și a aplicațiilor companiei Panda Tur este reglementată de Politica de Confidențialitate disponibilă pe pagina web [pandatur.md](https://pandatur.md/ro).\n\nDatele colectate prin intermediul site-ului sunt procesate conform legii Republicii Moldova și Regulamentului (UE) 2016/679 (GDPR).",
@@ -3023,7 +3033,7 @@ export const translations = {
   serviceDescription: {
     RO: "Descrierea serviciului",
     RU: "Описание услуги",
-    EN: "Service Description",
+    EN: "Service Description"
   },
   serviceDescriptionText: {
     RO: "Panda Tur oferă utilizatorilor instrumente și mijloace de căutare pentru planificarea și utilizarea serviciilor turistice, inclusiv rezervări online.\n\nDupă finalizarea căutării biletului de avion, utilizatorul completează:\n- Nume / Prenume\n- Data nașterii\n- Numărul și data de expirare a documentului de identitate\n- Adresa e-mail și telefon\n\nPrin selectarea metodei de plată cu {{card bancar}}, sunteți redirecționat către procesatorul de plăți. Dacă plata este realizată cu succes, biletul de avion este expediat prin e-mail.\n\nPrin metoda {{Achită în oficiu}}, rezervarea este validată prin achitarea directă la biroul nostru.\n\nServiciu gratuit & uz personal: Panda Tur oferă motorul de căutare gratuit pentru uz personal. Procesele automatizate (scraping, bots) sunt interzise.",
@@ -3044,17 +3054,17 @@ export const translations = {
   generalTermsOfUse: {
     RO: "Condiții generale de utilizare",
     RU: "Общие условия использования",
-    EN: "General Terms of Use",
+    EN: "General Terms of Use"
   },
   pandaTurUsageRules: {
     RO: "Panda Tur își rezervă dreptul de a stabili reguli privind:\n- Numărul maxim de itinerarii salvate.\n- Numărul maxim de utilizatori per itinerar.\n- Spațiul de stocare pe server.\n\nEste interzisă orice acțiune care ar putea duce la supraîncărcarea infrastructurii Panda Tur.",
     RU: "Panda Tur оставляет за собой право устанавливать правила в отношении:\n- Максимального количества сохранённых маршрутов.\n- Максимального количества пользователей на один маршрут.\n- Объема хранилища на сервере.\n\nЗапрещены любые действия, которые могут привести к перегрузке инфраструктуры Panda Tur.",
-    EN: "Panda Tur reserves the right to set rules regarding:\n- The maximum number of saved itineraries.\n- The maximum number of users per itinerary.\n- Server storage limits.\n\nAny actions that may overload Panda Tur’s infrastructure are prohibited.",
+    EN: "Panda Tur reserves the right to set rules regarding:\n- The maximum number of saved itineraries.\n- The maximum number of users per itinerary.\n- Server storage limits.\n\nAny actions that may overload Panda Tur’s infrastructure are prohibited."
   },
   accountsPasswordsAndSecurity: {
     RO: "Conturi, parole și securitate",
     RU: "Учетные записи, пароли и безопасность",
-    EN: "Accounts, Passwords, and Security",
+    EN: "Accounts, Passwords, and Security"
   },
   userAccountSecurity: {
     RO: "Conturile utilizatorilor sunt protejate prin parolă.\n\nUtilizatorii sunt responsabili pentru păstrarea confidențialității. [Platform Terms - Meta for Developers](https://developers.facebook.com/terms/)\n\nÎn caz de acces neautorizat, vă rugăm să contactați imediat {{security@pandatur.md}}.",
@@ -3135,417 +3145,417 @@ export const translations = {
   generate: {
     RO: "Generează",
     RU: "Генерировать",
-    EN: "Generate",
+    EN: "Generate"
   },
   accountForPayment: {
     RO: "Cont spre plată",
     RU: "Счет для оплаты",
-    EN: "Account for Payment",
+    EN: "Account for Payment"
   },
   returnRequest: {
     RO: "Cerere de return",
     RU: "Запрос на возврат",
-    EN: "Return Request",
+    EN: "Return Request"
   },
   joinUpGuaranteeLetter: {
     RO: "JoinUp Guarantee Letter",
     RU: "JoinUp Guarantee Letter",
-    EN: "JoinUp Guarantee Letter",
+    EN: "JoinUp Guarantee Letter"
   },
   selectDocumentsType: {
     RO: "Selectează tipul de document",
     RU: "Выберите тип документа",
-    EN: "Select Document Type",
+    EN: "Select Document Type"
   },
   documents: {
     RO: "Documente",
     RU: "Документы",
-    EN: "Documents",
+    EN: "Documents"
   },
   documentGeneratedSuccessfully: {
     RO: "Documentul a fost generat cu succes",
     RU: "Документ был успешно сгенерирован",
-    EN: "Document generated successfully",
+    EN: "Document generated successfully"
   },
   FilterForUser: {
     RO: "Filtru pentru utilizatori",
     RU: "Фильтр для пользователей",
-    EN: "Filter for Users",
+    EN: "Filter for Users"
   },
   select_sender_number: {
     RO: "Alege nr WhatsApp",
     RU: "Выбери номер WhatsApp",
-    EN: "Select WhatsApp Number",
+    EN: "Select WhatsApp Number"
   },
   select_sender_number_viber: {
     RO: "Alege nr Viber",
     RU: "Выбери номер Viber",
-    EN: "Select Viber Number",
+    EN: "Select Viber Number"
   },
   select_sender_number_telegram: {
     RO: "Alege nr Telegram",
     RU: "Выбери номер Telegram",
-    EN: "Select Telegram Number",
+    EN: "Select Telegram Number"
   },
   emailFrom: {
     RO: "De la",
     RU: "От",
-    EN: "From",
+    EN: "From"
   },
   emailTo: {
     RO: "Către",
     RU: "Кому",
-    EN: "To",
+    EN: "To"
   },
   emailCc: {
     RO: "CC",
     RU: "Копия",
-    EN: "CC",
+    EN: "CC"
   },
   emailSubject: {
     RO: "Subiect",
     RU: "Тема",
-    EN: "Subject",
+    EN: "Subject"
   },
   emailBody: {
     RO: "Mesaj",
     RU: "Сообщение",
-    EN: "Message",
+    EN: "Message"
   },
   "Select email": {
     RO: "Selectează email",
     RU: "Выбрать email",
-    EN: "Select email",
+    EN: "Select email"
   },
   "No subject": {
     RO: "Fără subiect",
     RU: "Без темы",
-    EN: "No subject",
+    EN: "No subject"
   },
   "No content": {
     RO: "Fără conținut",
     RU: "Нет содержимого",
-    EN: "No content",
+    EN: "No content"
   },
   "Show HTML": {
     RO: "Afișează HTML",
     RU: "Показать HTML",
-    EN: "Show HTML",
+    EN: "Show HTML"
   },
   "Invalid format": {
     RO: "Format invalid",
     RU: "Неверный формат",
-    EN: "Invalid format",
+    EN: "Invalid format"
   },
   "more": {
     RO: "mai multe",
     RU: "ещё",
-    EN: "more",
+    EN: "more"
   },
   "View HTML": {
     RO: "Vezi HTML",
     RU: "Показать HTML",
-    EN: "View HTML",
+    EN: "View HTML"
   },
   "attachment": {
     RO: "atașament",
     RU: "вложение",
-    EN: "attachment",
+    EN: "attachment"
   },
   "Trimite Email": {
     RO: "Trimite Email",
     RU: "Отправить Email",
-    EN: "Send Email",
+    EN: "Send Email"
   },
   Attachments: {
     RO: "Atașamente",
     RU: "Вложения",
-    EN: "Attachments",
+    EN: "Attachments"
   },
   "Attach Files": {
     RO: "Atașează fișiere",
     RU: "Прикрепить файлы",
-    EN: "Attach Files",
+    EN: "Attach Files"
   },
   Cancel: {
     RO: "Anulează",
     RU: "Отмена",
-    EN: "Cancel",
+    EN: "Cancel"
   },
   Send: {
     RO: "Trimite",
     RU: "Отправить",
-    EN: "Send",
+    EN: "Send"
   },
   "Add email": {
     RO: "Adaugă email",
     RU: "Добавить email",
-    EN: "Add email",
+    EN: "Add email"
   },
   "Cauta dupa Lead sau Client": {
     RO: "Caută după Lead sau Client",
     RU: "Поиск по Lead или Клиенту",
-    EN: "Search by Lead or Client",
+    EN: "Search by Lead or Client"
   },
   "Cauta dupa Lead, Client, Telefon sau ID": {
     RO: "Caută după Lead, Client, Telefon sau ID",
     RU: "Поиск по Lead, Клиенту, Телефону или ID",
-    EN: "Search by Lead, Client, Phone or ID",
+    EN: "Search by Lead, Client, Phone or ID"
   },
   "Cauta dupa ID, Nume client, Telefon sau Email": {
     RO: "Caută după ID, Nume client, Telefon sau Email",
     RU: "Поиск по ID, имени клиента, телефону или email",
-    EN: "Search by ID, client name, phone or email",
+    EN: "Search by ID, client name, phone or email"
   },
   Plătitor: {
     RO: "Plătitor",
     RU: "Плательщик",
-    EN: "Payer",
+    EN: "Payer"
   },
   "Nr. Plătitor": {
     RO: "Nr. Plătitor",
     RU: "Номер плательщика",
-    EN: "Payer No.",
+    EN: "Payer No."
   },
   "User ID not found": {
     RO: "ID utilizator nu a fost găsit",
     RU: "ID пользователя не найден",
-    EN: "User ID not found",
+    EN: "User ID not found"
   },
   "Email sent successfully": {
     RO: "Email trimis cu succes",
     RU: "Email отправлен успешно",
-    EN: "Email sent successfully",
+    EN: "Email sent successfully"
   },
   "Failed to send email": {
     RO: "Eroare la trimiterea email-ului",
     RU: "Ошибка отправки email",
-    EN: "Failed to send email",
+    EN: "Failed to send email"
   },
   "Sending...": {
     RO: "Se trimite...",
     RU: "Отправляется...",
-    EN: "Sending...",
+    EN: "Sending..."
   },
   Cantitate: {
     RO: "Cantitate",
     RU: "Количество",
-    EN: "Quantity",
+    EN: "Quantity"
   },
   "В работе GC": {
     RO: "În lucru GC",
     RU: "В работе GC",
-    EN: "In Progress GC",
+    EN: "In Progress GC"
   },
   "Сбор данных": {
     RO: "Colectare date",
     RU: "Сбор данных",
-    EN: "Data Collection",
+    EN: "Data Collection"
   },
   "Купили (прошлые годы)": {
     RO: "Au cumpărat (ani anteriori)",
     RU: "Купили (прошлые годы)",
-    EN: "Purchased (previous years)",
+    EN: "Purchased (previous years)"
   },
   "КУПИЛИ (предыдущие года)": {
     RO: "Au cumpărat (ani anteriori)",
     RU: "КУПИЛИ (предыдущие года)",
-    EN: "Purchased (previous years)",
+    EN: "Purchased (previous years)"
   },
   "Купил (текущий год)": {
     RO: "A cumpărat (an curent)",
     RU: "Купил (текущий год)",
-    EN: "Purchased (current year)",
+    EN: "Purchased (current year)"
   },
   "Cumpărat (ani anteriori)": {
     RO: "Cumpărat (ani anteriori)",
     RU: "Купили (прошлые годы)",
-    EN: "Purchased (previous years)",
+    EN: "Purchased (previous years)"
   },
   "Cumpărat (anul curent)": {
     RO: "Cumpărat (anul curent)",
     RU: "Купил (текущий год)",
-    EN: "Purchased (current year)",
+    EN: "Purchased (current year)"
   },
   "Primit": {
     RO: "Primit",
     RU: "Получено",
-    EN: "Received",
+    EN: "Received"
   },
   "Nou": {
     RO: "Nou",
     RU: "Новый",
-    EN: "New",
+    EN: "New"
   },
   "Бронирования": {
     RO: "Rezervări",
     RU: "Бронирования",
-    EN: "Bookings",
+    EN: "Bookings"
   },
   "Adaugǎ clientul": {
     RO: "Adaugǎ client",
     RU: "Добавить клиента",
-    EN: "Add Client",
+    EN: "Add Client"
   },
   "Adaugă client nou": {
     RO: "Adaugă client nou",
     RU: "Добавить нового клиента",
-    EN: "Add New Client",
+    EN: "Add New Client"
   },
   "Introduceti numele": {
     RO: "Introduceți numele",
     RU: "Введите имя",
-    EN: "Enter name",
+    EN: "Enter name"
   },
   "Introduceti prenumele": {
     RO: "Introduceți prenumele",
     RU: "Введите фамилию",
-    EN: "Enter surname",
+    EN: "Enter surname"
   },
   "Nu există clienți asociați cu acest ticket": {
     RO: "Nu există clienți asociați cu acest ticket",
     RU: "Нет клиентов, связанных с этим тикетом",
-    EN: "No clients associated with this ticket",
+    EN: "No clients associated with this ticket"
   },
   "Adaugă contact nou": {
     RO: "Adaugă contact nou",
     RU: "Добавить новый контакт",
-    EN: "Add New Contact",
+    EN: "Add New Contact"
   },
   "Platformele sociale se adaugă automat prin mesaje": {
     RO: "Platformele sociale se adaugă automat prin mesaje",
     RU: "Социальные платформы добавляются автоматически через сообщения",
-    EN: "Social platforms are added automatically through messages",
+    EN: "Social platforms are added automatically through messages"
   },
   "Tip contact": {
     RO: "Tip contact",
     RU: "Тип контакта",
-    EN: "Contact Type",
+    EN: "Contact Type"
   },
   "Selectați tipul": {
     RO: "Selectați tipul",
     RU: "Выберите тип",
-    EN: "Select type",
+    EN: "Select type"
   },
   "Valoare contact": {
     RO: "Valoare contact",
     RU: "Значение контакта",
-    EN: "Contact Value",
+    EN: "Contact Value"
   },
   "Introduceți valoarea": {
     RO: "Introduceți valoarea",
     RU: "Введите значение",
-    EN: "Enter value",
+    EN: "Enter value"
   },
   "Adaugă contact": {
     RO: "Adaugă contact",
     RU: "Добавить контакт",
-    EN: "Add Contact",
+    EN: "Add Contact"
   },
   "Completați cel puțin un câmp": {
     RO: "Completați cel puțin un câmp",
     RU: "Заполните хотя бы одно поле",
-    EN: "Fill in at least one field",
+    EN: "Fill in at least one field"
   },
   "Clientul a fost adăugat cu succes": {
     RO: "Clientul a fost adăugat cu succes",
     RU: "Клиент успешно добавлен",
-    EN: "Client added successfully",
+    EN: "Client added successfully"
   },
   "Contactul a fost adăugat cu succes": {
     RO: "Contactul a fost adăugat cu succes",
     RU: "Контакт успешно добавлен",
-    EN: "Contact added successfully",
+    EN: "Contact added successfully"
   },
   "Eroare la încărcarea datelor clienților": {
     RO: "Eroare la încărcarea datelor clienților",
     RU: "Ошибка при загрузке данных клиентов",
-    EN: "Error loading client data",
+    EN: "Error loading client data"
   },
   "Selectați tipul de contact": {
     RO: "Selectați tipul de contact",
     RU: "Выберите тип контакта",
-    EN: "Select contact type",
+    EN: "Select contact type"
   },
   "Introduceți valoarea contactului": {
     RO: "Introduceți valoarea contactului",
     RU: "Введите значение контакта",
-    EN: "Enter contact value",
+    EN: "Enter contact value"
   },
   "Introduceți doar cifre": {
     RO: "Introduceți doar cifre",
     RU: "Введите только цифры",
-    EN: "Enter digits only",
+    EN: "Enter digits only"
   },
   "Contactul a fost actualizat cu succes": {
     RO: "Contactul a fost actualizat cu succes",
     RU: "Контакт успешно обновлен",
-    EN: "Contact updated successfully",
+    EN: "Contact updated successfully"
   },
   "Eroare la actualizarea contactului": {
     RO: "Eroare la actualizarea contactului",
     RU: "Ошибка при обновлении контакта",
-    EN: "Error updating contact",
+    EN: "Error updating contact"
   },
   "Principal": {
     RO: "Principal",
     RU: "Основной",
-    EN: "Primary",
+    EN: "Primary"
   },
   "Contactul a fost șters cu succes": {
     RO: "Contactul a fost șters cu succes",
     RU: "Контакт успешно удален",
-    EN: "Contact deleted successfully",
+    EN: "Contact deleted successfully"
   },
   "Eroare la ștergerea contactului": {
     RO: "Eroare la ștergerea contactului",
     RU: "Ошибка при удалении контакта",
-    EN: "Error deleting contact",
+    EN: "Error deleting contact"
   },
   "Sunteți sigur că doriți să ștergeți acest contact?": {
     RO: "Sunteți sigur că doriți să ștergeți acest contact?",
     RU: "Вы уверены, что хотите удалить этот контакт?",
-    EN: "Are you sure you want to delete this contact?",
+    EN: "Are you sure you want to delete this contact?"
   },
   "Clientul a fost actualizat cu succes": {
     RO: "Clientul a fost actualizat cu succes",
     RU: "Клиент успешно обновлен",
-    EN: "Client updated successfully",
+    EN: "Client updated successfully"
   },
   "Eroare la actualizarea clientului": {
     RO: "Eroare la actualizarea clientului",
     RU: "Ошибка при обновлении клиента",
-    EN: "Error updating client",
+    EN: "Error updating client"
   },
   "Username Telegram invalid": {
     RO: "Username Telegram invalid",
     RU: "Неверный username Telegram",
-    EN: "Invalid Telegram username",
+    EN: "Invalid Telegram username"
   },
   "Introduceți username-ul": {
     RO: "Introduceți username-ul",
     RU: "Введите username",
-    EN: "Enter username",
+    EN: "Enter username"
   },
   "Contactate": {
     RO: "Contactate",
     RU: "Связались",
-    EN: "Contacted",
+    EN: "Contacted"
   },
   "In procesare": {
     RO: "În procesare",
     RU: "В обработке",
-    EN: "Processing",
+    EN: "Processing"
   },
   "Creat Cont In sistem": {
     RO: "Creat Cont În sistem",
     RU: "Создан аккаунт в системе",
-    EN: "Account Created in System",
+    EN: "Account Created in System"
   },
   "Rezervari": {
     RO: "Rezervări",
     RU: "Бронирования",
-    EN: "Bookings",
+    EN: "Bookings"
   },
   "Informație suplimentară": {
     "RO": "Informație suplimentară",
@@ -4097,204 +4107,204 @@ export const translations = {
   FilterCalls: {
     RU: "Фильтр звонков",
     RO: "Filtru apeluri",
-    EN: "Call filter",
+    EN: "Call filter"
   },
   Technicians: {
     RU: "Техники",
     RO: "Tehnicieni",
-    EN: "Technicians",
+    EN: "Technicians"
   },
   SelectTechnicians: {
     RU: "Выберите техников",
     RO: "Selectează tehnicieni",
-    EN: "Select technicians",
+    EN: "Select technicians"
   },
   Answered: {
     RU: "Отвечен",
     RO: "Răspuns",
-    EN: "Answered",
+    EN: "Answered"
   },
   SelectStatus: {
     RU: "Выберите статус",
     RO: "Selectează starea",
-    EN: "Select status",
+    EN: "Select status"
   },
   DateFrom: {
     RU: "Дата с",
     RO: "Data de la",
-    EN: "Date from",
+    EN: "Date from"
   },
   DateTo: {
     RU: "Дата по",
     RO: "Data până la",
-    EN: "Date to",
+    EN: "Date to"
   },
   Notice: {
     RU: "Заметка",
     RO: "Notiță",
-    EN: "Notice",
+    EN: "Notice"
   },
   OpenDownload: {
     RU: "Открыть/скачать",
     RO: "Deschide/descărcă",
-    EN: "Open/Download",
+    EN: "Open/Download"
   },
   OpenInNewTab: {
     RU: "Открыть в новой вкладке",
     RO: "Deschide în filă nouă",
-    EN: "Open in new tab",
+    EN: "Open in new tab"
   },
   Download: {
     RU: "Скачать",
     RO: "Descărcă",
-    EN: "Download",
+    EN: "Download"
   },
   FileNotice: {
     RU: "Файл заметки",
     RO: "Fișier notiță",
-    EN: "Notice file",
+    EN: "Notice file"
   },
   Text: {
     RU: "Текст",
     RO: "Text",
-    EN: "Text",
+    EN: "Text"
   },
   Image: {
     RU: "Изображение",
     RO: "Imagine",
-    EN: "Image",
+    EN: "Image"
   },
   Video: {
     RU: "Видео",
     RO: "Video",
-    EN: "Video",
+    EN: "Video"
   },
   Audio: {
     RU: "Аудио",
     RO: "Audio",
-    EN: "Audio",
+    EN: "Audio"
   },
   File: {
     RU: "Файл",
     RO: "Fișier",
-    EN: "File",
+    EN: "File"
   },
   "Instagram Reel": {
     RU: "Instagram Reel",
     RO: "Instagram Reel",
-    EN: "Instagram Reel",
+    EN: "Instagram Reel"
   },
   "Shared Content": {
     RU: "Поделенный контент",
     RO: "Conținut partajat",
-    EN: "Shared Content",
+    EN: "Shared Content"
   },
   you: {
     RU: "Вы",
     RO: "Tu",
-    EN: "You",
+    EN: "You"
   },
   inTicket: {
     RU: "В тикете",
     RO: "În tichet",
-    EN: "In ticket",
+    EN: "In ticket"
   },
   noParticipantsInTicket: {
     RU: "Никого нет в тикете",
     RO: "Nu sunt participanți în tichet",
-    EN: "No participants in ticket",
+    EN: "No participants in ticket"
   },
   showAllParticipants: {
     RU: "Показать всех участников",
     RO: "Afișează toți participanții",
-    EN: "Show all participants",
+    EN: "Show all participants"
   },
   andMore: {
     RU: "и ещё",
     RO: "și încă",
-    EN: "and more",
+    EN: "and more"
   },
   Play: {
     RU: "Воспроизвести",
     RO: "Redare",
-    EN: "Play",
+    EN: "Play"
   },
   Pause: {
     RU: "Пауза",
     RO: "Pauză",
-    EN: "Pause",
+    EN: "Pause"
   },
   socketMaxReconnectReached: {
     RU: "Превышено максимальное число попыток переподключения",
     RO: "Numărul maxim de încercări de reconectare a fost atins",
-    EN: "Maximum reconnect attempts reached",
+    EN: "Maximum reconnect attempts reached"
   },
   Collapse: {
     RU: "Свернуть",
     RO: "Ascunde",
-    EN: "Collapse",
+    EN: "Collapse"
   },
   ShowMore: {
     RU: "Показать ещё",
     RO: "Arată mai mult",
-    EN: "Show more",
+    EN: "Show more"
   },
   WriteNote: {
     RU: "Напишите заметку",
     RO: "Scrieți o notă",
-    EN: "Write a note",
+    EN: "Write a note"
   },
   noNotesYet: {
     RU: "Заметок пока нет",
     RO: "Încă nu există note",
-    EN: "No notes yet",
+    EN: "No notes yet"
   },
   "Are you sure you want to delete this note?": {
     RU: "Вы уверены, что хотите удалить эту заметку?",
     RO: "Sigur doriți să ștergeți această notă?",
-    EN: "Are you sure you want to delete this note?",
+    EN: "Are you sure you want to delete this note?"
   },
 
   "Deleted successfully": {
     RU: "Заметка успешно удалена",
     RO: "Nota a fost ștearsă cu succes",
-    EN: "Deleted successfully",
+    EN: "Deleted successfully"
   },
 
   "Deleting": {
     RU: "Удаление...",
     RO: "Se șterge...",
-    EN: "Deleting...",
+    EN: "Deleting..."
   },
   "Selected": {
     RU: "Выбрано",
     RO: "Selectate",
-    EN: "Selected",
+    EN: "Selected"
   },
   "Select all": {
     RU: "Выбрать все",
     RO: "Selectează toate",
-    EN: "Select all",
+    EN: "Select all"
   },
   "results": {
     RU: "результатов",
     RO: "rezultate",
-    EN: "results",
+    EN: "results"
   },
   "All": {
     RU: "Все",
     RO: "Toate",
-    EN: "All",
+    EN: "All"
   },
   "results selected": {
     RU: "результатов выбрано",
     RO: "rezultate selectate",
-    EN: "results selected",
+    EN: "results selected"
   },
   "Clear selection": {
     RU: "Снять выделение",
     RO: "Anulează selecția",
-    EN: "Clear selection",
+    EN: "Clear selection"
   },
   "Total calls for the period": {
     RU: "Всего звонков за период",
@@ -4344,643 +4354,643 @@ export const translations = {
   "All company": {
     RU: "Вся компания",
     RO: "Întreaga companie",
-    EN: "All company",
+    EN: "All company"
   },
   "By user group": {
     RU: "По группам пользователей",
     RO: "După grup utilizatori",
-    EN: "By user group",
+    EN: "By user group"
   },
   "By user": {
     RU: "По пользователям",
     RO: "După utilizator",
-    EN: "By user",
+    EN: "By user"
   },
   "By group title": {
     RU: "По вороноке",
     RO: "După pâlnie",
-    EN: "By pipeline",
+    EN: "By pipeline"
   },
   "By source": {
     RU: "По источнику",
     RO: "După sursă",
-    EN: "By source",
+    EN: "By source"
   },
   "By platform": {
     RU: "По платформе",
     RO: "După platformă",
-    EN: "By platform",
+    EN: "By platform"
   },
   calls: {
     RU: "Звонки",
     RO: "Apeluri",
-    EN: "Calls",
+    EN: "Calls"
   },
   Messages: {
     RU: "Сообщения",
     RO: "Mesaje",
-    EN: "Messages",
+    EN: "Messages"
   },
   system_usage: {
     RU: "Системная нагрузка",
     RO: "Încărcarea sistemului",
-    EN: "System usage",
+    EN: "System usage"
   },
   tickets_count: {
     RU: "Количество тикетов",
     RO: "Număr de tichete",
-    EN: "Tickets count",
+    EN: "Tickets count"
   },
   distributor: {
     RU: "Дистрибьютор",
     RO: "Distribuitor",
-    EN: "Distributor",
+    EN: "Distributor"
   },
   workflow_change: {
     RU: "Смена воронки",
     RO: "Schimbare flux de lucru",
-    EN: "Workflow change",
+    EN: "Workflow change"
   },
   ticket_create_count: {
     RU: "Создано тикетов",
     RO: "Tichete create",
-    EN: "Tickets created",
+    EN: "Tickets created"
   },
   contract_closed: {
     RU: "Закрытые контракты",
     RO: "Contracte închise",
-    EN: "Contracts closed",
+    EN: "Contracts closed"
   },
   ticket_lifetime: {
     RU: "Время жизни тикетов",
     RO: "Durata de viață a tichetelor",
-    EN: "Ticket lifetime",
+    EN: "Ticket lifetime"
   },
   contract_departure: {
     RU: "Вылеты по контрактам",
     RO: "Ieșiri din contracte",
-    EN: "Contract departures",
+    EN: "Contract departures"
   },
   workflow_percentage: {
     RU: "Доли по воронке",
     RO: "Procente pe flux",
-    EN: "Workflow percentage",
+    EN: "Workflow percentage"
   },
   workflow_duration: {
     RU: "Длительность по воронке",
     RO: "Durată pe flux",
-    EN: "Workflow duration",
+    EN: "Workflow duration"
   },
   country_count: {
     RU: "Страны",
     RO: "Țări",
-    EN: "Countries",
+    EN: "Countries"
   },
   "Ticket State": {
     RU: "Состояние тикетов",
     RO: "Starea tichetelor",
-    EN: "Ticket State",
+    EN: "Ticket State"
   },
   "Total tickets for the period": {
     RU: "Всего тикетов за период",
     RO: "Total tichete pentru perioada",
-    EN: "Total tickets for the period",
+    EN: "Total tickets for the period"
   },
   "Old Clients": {
     RU: "Старые клиенты",
     RO: "Clienți vechi",
-    EN: "Old Clients",
+    EN: "Old Clients"
   },
   "New Clients": {
     RU: "Новые клиенты",
     RO: "Clienți noi",
-    EN: "New Clients",
+    EN: "New Clients"
   },
   "Multiple tickets": {
     RU: "Несколько тикетов",
     RO: "Mai multe tichete",
-    EN: "Multiple tickets",
+    EN: "Multiple tickets"
   },
   "Single ticket": {
     RU: "Один тикет",
     RO: "Un singur tichet",
-    EN: "Single ticket",
+    EN: "Single ticket"
   },
   "Total tickets": {
     RU: "Всего тикетов",
     RO: "Total tichete",
-    EN: "Total tickets",
+    EN: "Total tickets"
   },
   "tickets": {
     RU: "тикетов",
     RO: "tichete",
-    EN: "tickets",
+    EN: "tickets"
   },
   "Total": {
     RU: "Всего",
     RO: "Total",
-    EN: "Total",
+    EN: "Total"
   },
   "Total calls": {
     RU: "Всего звонков",
     RO: "Total apeluri",
-    EN: "Total calls",
+    EN: "Total calls"
   },
   "Tickets Into Work": {
     RU: "Тикеты в работу",
     RO: "Tichete în lucru",
-    EN: "Tickets Into Work",
+    EN: "Tickets Into Work"
   },
   "Tickets taken into work": {
     RU: "Тикеты взятые в работу",
     RO: "Tichete luate în lucru",
-    EN: "Tickets taken into work",
+    EN: "Tickets taken into work"
   },
   "Taken into work": {
     RU: "Взято в работу",
     RO: "Luate în lucru",
-    EN: "Taken into work",
+    EN: "Taken into work"
   },
   "Tickets taken": {
     RU: "Тикетов взято",
     RO: "Tichete luate",
-    EN: "Tickets taken",
+    EN: "Tickets taken"
   },
   "GPT": {
     RU: "GPT",
     RO: "GPT",
-    EN: "GPT",
+    EN: "GPT"
   },
   "System usage": {
     RU: "Использование системы",
     RO: "Utilizarea sistemului",
-    EN: "System usage",
+    EN: "System usage"
   },
   "Activity hours": {
     RU: "Часы активности",
     RO: "Ore de activitate",
-    EN: "Activity hours",
+    EN: "Activity hours"
   },
   "Minutes": {
     RU: "Минуты",
     RO: "Minute",
-    EN: "Minutes",
+    EN: "Minutes"
   },
   "Hours": {
     RU: "Часы",
     RO: "Ore",
-    EN: "Hours",
+    EN: "Hours"
   },
   "activity": {
     RU: "активность",
     RO: "activitate",
-    EN: "activity",
+    EN: "activity"
   },
   "min": {
     RU: "мин",
     RO: "min",
-    EN: "min",
+    EN: "min"
   },
   "Ticket Distribution": {
     RU: "Распределение тикетов",
     RO: "Distribuția tichetelor",
-    EN: "Ticket Distribution",
+    EN: "Ticket Distribution"
   },
   "Distributed tickets": {
     RU: "Распределенные тикеты",
     RO: "Tichete distribuite",
-    EN: "Distributed tickets",
+    EN: "Distributed tickets"
   },
   "Distributed": {
     RU: "Распределено",
     RO: "Distribuit",
-    EN: "Distributed",
+    EN: "Distributed"
   },
   "system": {
     RU: "система",
     RO: "sistem",
-    EN: "system",
+    EN: "system"
   },
   "Closed Tickets Count": {
     RU: "Количество закрытых тикетов",
     RO: "Numărul de tichete închise",
-    EN: "Closed Tickets Count",
+    EN: "Closed Tickets Count"
   },
   "Total closed tickets": {
     RU: "Всего закрытых тикетов",
     RO: "Total tichete închise",
-    EN: "Total closed tickets",
+    EN: "Total closed tickets"
   },
   "Older than 11 days": {
     RU: "Старше 11 дней",
     RO: "Mai vechi de 11 zile",
-    EN: "Older than 11 days",
+    EN: "Older than 11 days"
   },
   "Newer than 11 days": {
     RU: "Новее 11 дней",
     RO: "Mai noi de 11 zile",
-    EN: "Newer than 11 days",
+    EN: "Newer than 11 days"
   },
   "Tickets By Depart Count": {
     RU: "Тикеты по дате отъезда",
     RO: "Tichete după data plecării",
-    EN: "Tickets By Depart Count",
+    EN: "Tickets By Depart Count"
   },
   "Less than 14 days": {
     RU: "Менее 14 дней",
     RO: "Mai puțin de 14 zile",
-    EN: "Less than 14 days",
+    EN: "Less than 14 days"
   },
   "Between 14-30 days": {
     RU: "Между 14-30 днями",
     RO: "Între 14-30 zile",
-    EN: "Between 14-30 days",
+    EN: "Between 14-30 days"
   },
   "More than 30 days": {
     RU: "Более 30 дней",
     RO: "Mai mult de 30 zile",
-    EN: "More than 30 days",
+    EN: "More than 30 days"
   },
   "Ticket Lifetime Stats": {
     RU: "Статистика времени обработки тикетов",
     RO: "Statistici timp procesare tichete",
-    EN: "Ticket Lifetime Stats",
+    EN: "Ticket Lifetime Stats"
   },
   "Total processing time": {
     RU: "Общее время обработки",
     RO: "Timp total procesare",
-    EN: "Total processing time",
+    EN: "Total processing time"
   },
   "Average processing time": {
     RU: "Среднее время обработки",
     RO: "Timp mediu procesare",
-    EN: "Average processing time",
+    EN: "Average processing time"
   },
   "Efficiency": {
     RU: "Эффективность",
     RO: "Eficiență",
-    EN: "Efficiency",
+    EN: "Efficiency"
   },
   "Very fast": {
     RU: "Очень быстро",
     RO: "Foarte rapid",
-    EN: "Very fast",
+    EN: "Very fast"
   },
   "Normal": {
     RU: "Нормально",
     RO: "Normal",
-    EN: "Normal",
+    EN: "Normal"
   },
   "Slow": {
     RU: "Медленно",
     RO: "Lent",
-    EN: "Slow",
+    EN: "Slow"
   },
   "Very slow": {
     RU: "Очень медленно",
     RO: "Foarte lent",
-    EN: "Very slow",
+    EN: "Very slow"
   },
   "Tickets processed": {
     RU: "Обработано тикетов",
     RO: "Tichete procesate",
-    EN: "Tickets processed",
+    EN: "Tickets processed"
   },
   "Total time (minutes)": {
     RU: "Общее время (минуты)",
     RO: "Timp total (minute)",
-    EN: "Total time (minutes)",
+    EN: "Total time (minutes)"
   },
   "Ticket Rate": {
     RU: "Коэффициент обработки тикетов",
     RO: "Rata de procesare tichete",
-    EN: "Ticket Rate",
+    EN: "Ticket Rate"
   },
   "Worked on tickets": {
     RU: "Обработано тикетов",
     RO: "Tichete procesate",
-    EN: "Worked on tickets",
+    EN: "Worked on tickets"
   },
   "Directly closed tickets": {
     RU: "Прямо закрытые тикеты",
     RO: "Tichete închise direct",
-    EN: "Directly closed tickets",
+    EN: "Directly closed tickets"
   },
   "Processing quality": {
     RU: "Качество обработки",
     RO: "Calitatea procesării",
-    EN: "Processing quality",
+    EN: "Processing quality"
   },
   "Excellent": {
     RU: "Отлично",
     RO: "Excelent",
-    EN: "Excellent",
+    EN: "Excellent"
   },
   "Good": {
     RU: "Хорошо",
     RO: "Bun",
-    EN: "Good",
+    EN: "Good"
   },
   "Fair": {
     RU: "Удовлетворительно",
     RO: "Acceptabil",
-    EN: "Fair",
+    EN: "Fair"
   },
   "Poor": {
     RU: "Плохо",
     RO: "Slab",
-    EN: "Poor",
+    EN: "Poor"
   },
   "Total transitions": {
     RU: "Всего переходов",
     RO: "Total tranziții",
-    EN: "Total transitions",
+    EN: "Total transitions"
   },
   "transitions": {
     RU: "переходов",
     RO: "tranziții",
-    EN: "transitions",
+    EN: "transitions"
   },
 
   // Workflow From Change Widget
   "Workflow From Change": {
     RU: "Изменения рабочего процесса",
     RO: "Modificări flux de lucru",
-    EN: "Workflow From Change",
+    EN: "Workflow From Change"
   },
   "changes": {
     RU: "изменений",
     RO: "modificări",
-    EN: "changes",
+    EN: "changes"
   },
   "Total workflow changes": {
     RU: "Всего изменений рабочего процесса",
     RO: "Total modificări flux de lucru",
-    EN: "Total workflow changes",
+    EN: "Total workflow changes"
   },
   // Workflow Change To Widget
   "Workflow Change To": {
     RU: "Изменения в рабочий процесс",
     RO: "Modificări în flux de lucru",
-    EN: "Workflow Change To",
+    EN: "Workflow Change To"
   },
   "completed contracts": {
     RU: "завершенных договоров",
     RO: "contracte încheiate",
-    EN: "completed contracts",
+    EN: "completed contracts"
   },
   "Total completed contracts": {
     RU: "Всего завершенных договоров",
     RO: "Total contracte încheiate",
-    EN: "Total completed contracts",
+    EN: "Total completed contracts"
   },
   // Ticket Creation Widget
   "Ticket Creation": {
     RU: "Создание тикетов",
     RO: "Crearea tichetelor",
-    EN: "Ticket Creation",
+    EN: "Ticket Creation"
   },
   "tickets created": {
     RU: "созданных тикетов",
     RO: "tichete create",
-    EN: "tickets created",
+    EN: "tickets created"
   },
   "Total tickets created": {
     RU: "Всего созданных тикетов",
     RO: "Total tichete create",
-    EN: "Total tickets created",
+    EN: "Total tickets created"
   },
   // Workflow From De Prelucrat Widget
   "Workflow From De Prelucrat": {
     RU: "Рабочий процесс из 'В обработке'",
     RO: "Workflow din 'De prelucrat'",
-    EN: "Workflow From De Prelucrat",
+    EN: "Workflow From De Prelucrat"
   },
   "destination workflow": {
     RU: "целевой рабочий процесс",
     RO: "workflow destinație",
-    EN: "destination workflow",
+    EN: "destination workflow"
   },
   "workflow transitions": {
     RU: "переходы рабочего процесса",
     RO: "tranziții workflow",
-    EN: "workflow transitions",
+    EN: "workflow transitions"
   },
   "Total workflow transitions": {
     RU: "Всего переходов рабочего процесса",
     RO: "Total tranziții workflow",
-    EN: "Total workflow transitions",
+    EN: "Total workflow transitions"
   },
   // Workflow Duration Widget
   "Workflow Duration": {
     RU: "Длительность рабочего процесса",
     RO: "Durata workflow",
-    EN: "Workflow Duration",
+    EN: "Workflow Duration"
   },
   "Processing time": {
     RU: "Время обработки",
     RO: "Timp procesare",
-    EN: "Processing time",
+    EN: "Processing time"
   },
   "in processing state": {
     RU: "в состоянии обработки",
     RO: "în starea de procesare",
-    EN: "in processing state",
+    EN: "in processing state"
   },
   // Ticket Destination Widget
   "Ticket Destination": {
     RU: "Назначение тикетов",
     RO: "Destinația tichetelor",
-    EN: "Ticket Destination",
+    EN: "Ticket Destination"
   },
   "By country": {
     RU: "По странам",
     RO: "Pe țări",
-    EN: "By country",
+    EN: "By country"
   },
   "tickets by country": {
     RU: "тикетов по странам",
     RO: "tichete pe țări",
-    EN: "tickets by country",
+    EN: "tickets by country"
   },
   "hours": {
     RO: "ore",
     RU: "ч",
-    EN: "h",
+    EN: "h"
   },
   "minutes": {
     RO: "min",
     RU: "м",
-    EN: "m",
+    EN: "m"
   },
   "Drop files here to attach": {
     RO: "Trage fișierele aici pentru a le atașa",
     RU: "Перетащите файлы сюда для прикрепления",
-    EN: "Drop files here to attach",
+    EN: "Drop files here to attach"
   },
   "id": {
     RO: "ID",
     RU: "ID",
-    EN: "ID",
+    EN: "ID"
   },
   "status": {
     RO: "Status",
     RU: "Статус",
-    EN: "Status",
+    EN: "Status"
   },
   "completed": {
     RO: "Completat",
     RU: "Выполнено",
-    EN: "Completed",
+    EN: "Completed"
   },
   "notCompleted": {
     RO: "Necompletat",
     RU: "Не выполнено",
-    EN: "Not completed",
+    EN: "Not completed"
   },
   "overdue": {
     RO: "Întârziat",
     RU: "Просрочено",
-    EN: "Overdue",
+    EN: "Overdue"
   },
   "urgent": {
     RO: "Urgent",
     RU: "Срочно",
-    EN: "Urgent",
+    EN: "Urgent"
   },
   "active": {
     RO: "Activ",
     RU: "Активно",
-    EN: "Active",
+    EN: "Active"
   },
   "type": {
     RO: "Tip",
     RU: "Тип",
-    EN: "Type",
+    EN: "Type"
   },
   "deadline": {
     RO: "Termen limită",
     RU: "Дедлайн",
-    EN: "Deadline",
+    EN: "Deadline"
   },
   "remaining": {
     RO: "Rămas",
     RU: "Осталось",
-    EN: "Remaining",
+    EN: "Remaining"
   },
   "description": {
     RO: "Descriere",
     RU: "Описание",
-    EN: "Description",
+    EN: "Description"
   },
   "author": {
     RO: "Autor",
     RU: "Автор",
-    EN: "Author",
+    EN: "Author"
   },
   "responsible": {
     RO: "Responsabil",
     RU: "Ответственный",
-    EN: "Responsible",
+    EN: "Responsible"
   },
   "created": {
     RO: "Creat",
     RU: "Создано",
-    EN: "Created",
+    EN: "Created"
   },
   "lessThan2Hours": {
     RO: "Mai puțin de 2 ore",
     RU: "Менее 2 часов",
-    EN: "Less than 2 hours",
+    EN: "Less than 2 hours"
   },
   "in": {
     RO: "În",
     RU: "Через",
-    EN: "In",
+    EN: "In"
   },
   "days": {
     RO: "zile",
     RU: "дн.",
-    EN: "days",
+    EN: "days"
   },
   "soon": {
     RO: "În curând",
     RU: "Скоро",
-    EN: "Soon",
+    EN: "Soon"
   },
   "searchTasksPlaceholder": {
     RO: "Caută după ID task, numele responsabilului...",
     RU: "Поиск по ID тикета, имени ответственного...",
-    EN: "Search by task ID, responsible name...",
+    EN: "Search by task ID, responsible name..."
   },
   "accessDenied": {
     RO: "Acces interzis. Contactați administratorul pentru a obține permisiuni.",
     RU: "Доступ запрещен. Обратитесь к администратору для получения прав доступа.",
-    EN: "Access denied. Contact administrator to get access permissions.",
+    EN: "Access denied. Contact administrator to get access permissions."
   },
   "Load more emails": {
     RO: "Încarcă mai multe emailuri",
     RU: "Загрузить еще письма",
-    EN: "Load more emails",
+    EN: "Load more emails"
   },
   "New!!!": {
     RO: "Nou!!!",
     RU: "Новый!!!",
-    EN: "New!!!",
+    EN: "New!!!"
   },
   "+": {
     RO: "+",
     RU: "+",
-    EN: "+",
+    EN: "+"
   },
   "-": {
     RO: "-",
     RU: "-",
-    EN: "-",
+    EN: "-"
   },
   "TooLongMessages": {
     RO: "Mesajul este prea lung. Maximul este de 999 caractere.",
     RU: "Сообщение слишком длинное. Максимум 999 символов.",
-    EN: "The message is too long. Maximum is 999 characters.",
+    EN: "The message is too long. Maximum is 999 characters."
   },
   "Are sarcini": {
     RO: "Are sarcini",
     RU: "Имеются задачи",
-    EN: "Has tasks",
+    EN: "Has tasks"
   },
   "În lucru GC": {
     RO: "În lucru GC",
     RU: "В работе GC",
-    EN: "In progress GC",
+    EN: "In progress GC"
   },
   "Colectare date": {
     RO: "Colectare date",
     RU: "Сбор данных",
-    EN: "Data collection",
+    EN: "Data collection"
   },
   "Rezervări": {
     RO: "Rezervări",
     RU: "Резервы",
-    EN: "Reservations",
+    EN: "Reservations"
   },
   message_status_pending: {
     RO: "Se trimite",
     RU: "Отправляется",
-    EN: "Sending",
+    EN: "Sending"
   },
   message_status_error: {
     RO: "Eroare",
     RU: "Ошибка",
-    EN: "error",
+    EN: "error"
   },
   message_status_sent: {
     RO: "Trimis",
     RU: "Отправлено",
-    EN: "Sent",
+    EN: "Sent"
   },
   message_status_seen: {
     RO: "Citit",
     RU: "Прочитано",
-    EN: "Seen",
-  },
+    EN: "Seen"
+  }
 };

@@ -2,6 +2,115 @@ import { Text, Box, Flex } from "@mantine/core";
 import { parseServerDate, getFullName } from "../../../utils";
 import { getLanguageByKey } from "../../../utils";
 
+// Helper function to get human-readable field labels
+const getFieldLabel = (subject) => {
+    const fieldLabels = {
+        // Ticket fields
+        priority: getLanguageByKey("Prioritate"),
+        workflow: getLanguageByKey("Workflow"),
+        contact: getLanguageByKey("Contact"),
+        description: getLanguageByKey("Description"),
+        tags: getLanguageByKey("tags"),
+        technician_id: getLanguageByKey("responsible"),
+        group_title: getLanguageByKey("Grup"),
+        action_needed: getLanguageByKey("Acțiune necesară"),
+
+        // Ticket info fields
+        buget: getLanguageByKey("Buget"),
+        status_sunet_telefonic: getLanguageByKey("Call Status"),
+        sursa_lead: getLanguageByKey("Sursă lead"),
+        promo: getLanguageByKey("Promo"),
+        marketing: getLanguageByKey("Marketing"),
+        tipul_serviciului: getLanguageByKey("Serviciu"),
+        tara: getLanguageByKey("Tara"),
+        tip_de_transport: getLanguageByKey("Transport"),
+        denumirea_excursiei_turului: getLanguageByKey("Excursie"),
+        procesarea_achizitionarii: getLanguageByKey("Achiziție"),
+        numar_de_contract: getLanguageByKey("Nr de contract"),
+        contract_trimis: getLanguageByKey("Contract trimis"),
+        contract_semnat: getLanguageByKey("Contract semnat"),
+        tour_operator: getLanguageByKey("Operator turistic"),
+        numarul_cererii_de_la_operator: getLanguageByKey("Nr cererii de la operator"),
+        achitare_efectuata: getLanguageByKey("Achitare efectuată"),
+        rezervare_confirmata: getLanguageByKey("Rezervare confirmată"),
+        contract_arhivat: getLanguageByKey("Contract arhivat"),
+        statutul_platii: getLanguageByKey("Plată primită"),
+        avans_euro: getLanguageByKey("Avans în euro"),
+        pret_netto: getLanguageByKey("Preț NETTO"),
+        achitat_client: getLanguageByKey("Achitat client"),
+        restant_client: getLanguageByKey("Client Remaining") || "Remaining",
+        comision_companie: getLanguageByKey("Comision companie"),
+        statut_achitare: getLanguageByKey("Statut achitare"),
+        control: getLanguageByKey("Control Admin"),
+        f_serviciu: getLanguageByKey("Service") || "Service",
+        f_nr_factura: getLanguageByKey("Invoice Number") || "Invoice Number",
+        f_numarul: getLanguageByKey("Number") || "Number",
+        f_pret: getLanguageByKey("Price") || "Price",
+        f_suma: getLanguageByKey("Amount") || "Amount",
+        f_valuta_contului: getLanguageByKey("Account Currency") || "Currency",
+        iban: getLanguageByKey("IBAN") || "IBAN",
+        motivul_refuzului: getLanguageByKey("Motivul refuzului"),
+        evaluare_de_odihna: getLanguageByKey("Evaluare odihnă"),
+        urmatoarea_vacanta: getLanguageByKey("Următoarea vacanță"),
+        manager: getLanguageByKey("Manager"),
+        vacanta: getLanguageByKey("Vacanța"),
+        data_venit_in_oficiu: getLanguageByKey("Office Visit Date") || "Office Visit",
+        data_plecarii: getLanguageByKey("Departure Date") || "Departure",
+        data_intoarcerii: getLanguageByKey("Return Date") || "Return",
+        data_cererii_de_retur: getLanguageByKey("Return Request Date") || "Return Request",
+        data_contractului: getLanguageByKey("Data contractului"),
+        data_avansului: getLanguageByKey("Data avansului"),
+        data_de_plata_integrala: getLanguageByKey("Data de plată integrală"),
+    };
+
+    return fieldLabels[subject] || subject;
+};
+
+// Helper function to format values for display
+const formatValue = (value, subject) => {
+    // Handle empty/null values
+    if (value === null || value === undefined || value === "") {
+        return getLanguageByKey("Empty") || "-";
+    }
+
+    // Handle boolean values
+    if (value === "true" || value === "false") {
+        return value === "true"
+            ? (getLanguageByKey("Da"))
+            : (getLanguageByKey("Nu"));
+    }
+
+    // Handle date fields - format if it looks like a date
+    const dateFields = [
+        'data_venit_in_oficiu', 'data_plecarii', 'data_intoarcerii',
+        'data_cererii_de_retur', 'data_contractului', 'data_avansului',
+        'data_de_plata_integrala'
+    ];
+    if (dateFields.includes(subject) && value && value.match(/^\d{4}-\d{2}-\d{2}/)) {
+        try {
+            return parseServerDate(value).format("DD.MM.YYYY");
+        } catch (e) {
+            return value;
+        }
+    }
+
+    // Handle currency/numeric fields - add formatting if needed
+    const currencyFields = [
+        'buget', 'avans_euro', 'pret_netto', 'achitat_client',
+        'restant_client', 'comision_companie', 'f_pret', 'f_suma'
+    ];
+    if (currencyFields.includes(subject) && !isNaN(value)) {
+        return `${Number(value).toLocaleString()} ${subject.includes('euro') || subject.startsWith('f_') ? '€' : ''}`;
+    }
+
+    // Handle tags - show as comma-separated
+    if (subject === 'tags') {
+        return value.replace(/,/g, ', ');
+    }
+
+    return value;
+};
+
 export const MessagesLogItem = ({ log, technicians }) => {
     const date = parseServerDate(log.timestamp).format("DD.MM.YYYY HH:mm");
 
@@ -16,8 +125,6 @@ export const MessagesLogItem = ({ log, technicians }) => {
                 tech.name ||
                 `#${log.by}`
             );
-
-    const object = log.type === "task" ? "Task" : log.type === "ticket" ? "Ticket" : log.type || "Object";
 
     // Определяем что изменилось
     let changed = "";
@@ -36,10 +143,10 @@ export const MessagesLogItem = ({ log, technicians }) => {
         const fromName = log.from === "1" ? "System" : (fromTech.label || getFullName(fromTech.name, fromTech.surname) || `#${log.from}`);
         const toName = log.to === "1" ? "System" : (toTech.label || getFullName(toTech.name, toTech.surname) || `#${log.to}`);
 
-        changed = `${getLanguageByKey("Responsabil Lead")}: ${fromName} → ${toName}`;
+        changed = `${getFieldLabel("technician_id")}: ${fromName} → ${toName}`;
     } else if (log.action === "updated" && log.subject === "workflow") {
         // Специальная обработка для изменения этапа workflow
-        changed = `${getLanguageByKey("Etap")}: ${log.from} → ${log.to}`;
+        changed = `${getFieldLabel("workflow")}: ${log.from} → ${log.to}`;
     } else if (log.action === "updated" && log.subject === "status" && log.type === "task" && log.from === "false" && log.to === "true") {
         // Специальная обработка для завершения задачи
         changed = getLanguageByKey("Task completed");
@@ -61,84 +168,43 @@ export const MessagesLogItem = ({ log, technicians }) => {
         const toName = log.to === "1" ? "System" : (toTech.label || getFullName(toTech.name, toTech.surname) || `#${log.to}`);
 
         changed = `${getLanguageByKey("Task author changed")}: ${fromName} → ${toName}`;
+    } else if (log.action === "updated" && log.subject === "priority") {
+        // Handle priority updates with formatted label
+        changed = `${getFieldLabel("priority")}: ${log.from} → ${log.to}`;
+    } else if (log.action === "updated" && log.subject === "contact") {
+        // Handle contact updates
+        changed = `${getFieldLabel("contact")}: ${log.from} → ${log.to}`;
+    } else if (log.action === "updated" && log.subject === "description") {
+        // Handle description updates - truncate if too long
+        const fromText = log.from?.length > 50 ? log.from.substring(0, 50) + "..." : log.from;
+        const toText = log.to?.length > 50 ? log.to.substring(0, 50) + "..." : log.to;
+        changed = `${getFieldLabel("description")}: ${fromText} → ${toText}`;
+    } else if (log.action === "updated" && log.subject === "tags") {
+        // Handle tags updates with formatted display
+        changed = `${getFieldLabel("tags")}: ${formatValue(log.from, "tags")} → ${formatValue(log.to, "tags")}`;
+    } else if (log.action === "updated" && log.subject === "group_title") {
+        // Handle group title updates
+        changed = `${getFieldLabel("group_title")}: ${log.from} → ${log.to}`;
+    } else if (log.action === "updated" && log.subject === "action_needed") {
+        // Handle action_needed boolean updates
+        changed = `${getFieldLabel("action_needed")}: ${formatValue(log.from, "action_needed")} → ${formatValue(log.to, "action_needed")}`;
+    } else if (log.action === "updated" && log.type === "ticket_info") {
+        // Handle all ticket_info fields with formatted labels and values
+        const fieldLabel = getFieldLabel(log.subject);
+        const fromValue = formatValue(log.from, log.subject);
+        const toValue = formatValue(log.to, log.subject);
+        changed = `${fieldLabel}: ${fromValue} → ${toValue}`;
     } else if (log.subject && log.from && log.to) {
-        changed = `${log.subject}: ${log.from} → ${log.to}`;
+        // Fallback for any other updates - use helpers if available
+        const fieldLabel = getFieldLabel(log.subject);
+        const fromValue = formatValue(log.from, log.subject);
+        const toValue = formatValue(log.to, log.subject);
+        changed = `${fieldLabel}: ${fromValue} → ${toValue}`;
     } else if (log.subject) {
-        changed = log.subject;
+        changed = getFieldLabel(log.subject);
     } else {
         changed = log.action || "modified";
     }
-
-    // Определяем цветовую схему в зависимости от типа действия и объекта
-    const getActionColor = () => {
-        // Цвета в зависимости от типа объекта - используем CSS переменные
-        const ticketColors = {
-            bg: "var(--crm-ui-kit-palette-callout-info-background-color)",
-            border: "var(--crm-ui-kit-palette-link-primary)",
-            icon: "var(--crm-ui-kit-palette-link-hover-primary)"
-        }; // Информация для ticket
-        const taskColors = {
-            bg: "var(--crm-ui-kit-palette-callout-warning-background-color)",
-            border: "var(--crm-ui-kit-palette-link-primary)",
-            icon: "var(--crm-ui-kit-palette-link-hover-primary)"
-        }; // Предупреждение для task
-        const defaultColors = {
-            bg: "var(--crm-ui-kit-palette-background-primary-disabled)",
-            border: "var(--crm-ui-kit-palette-border-default)",
-            icon: "var(--crm-ui-kit-palette-text-secondary-dark)"
-        }; // Серый по умолчанию
-
-        if (log.action === "created") {
-            if (log.type === "ticket") return ticketColors;
-            if (log.type === "task") return taskColors;
-            return {
-                bg: "var(--crm-ui-kit-palette-callout-success-background-color)",
-                border: "var(--crm-ui-kit-palette-link-primary)",
-                icon: "var(--crm-ui-kit-palette-link-hover-primary)"
-            }; // Успех для создания по умолчанию
-        }
-
-        if (log.action === "updated") {
-            // Специальная цветовая схема для завершенных задач
-            if (log.subject === "status" && log.type === "task" && log.from === "false" && log.to === "true") {
-                return taskColors; // Предупреждение для завершенных задач
-            }
-            // Специальная цветовая схема для переназначенных задач
-            if (log.subject === "created_for" && log.type === "task") {
-                return taskColors; // Предупреждение для переназначенных задач
-            }
-            // Специальная цветовая схема для изменения автора задачи
-            if (log.subject === "created_by" && log.type === "task") {
-                return taskColors; // Предупреждение для изменения автора задачи
-            }
-            // Цвета в зависимости от типа объекта
-            if (log.type === "ticket") return ticketColors;
-            if (log.type === "task") return taskColors;
-            return ticketColors; // По умолчанию информация для обновлений
-        }
-
-        if (log.action === "deleted") {
-            if (log.type === "ticket") return {
-                bg: "var(--crm-ui-kit-palette-callout-error-background-color)",
-                border: "var(--crm-ui-kit-palette-border-primary)",
-                icon: "var(--crm-ui-kit-palette-text-secondary-dark)"
-            };
-            if (log.type === "task") return {
-                bg: "var(--crm-ui-kit-palette-callout-error-background-color)",
-                border: "var(--crm-ui-kit-palette-border-primary)",
-                icon: "var(--crm-ui-kit-palette-text-secondary-dark)"
-            }; // Ошибка для удаления task
-            return {
-                bg: "var(--crm-ui-kit-palette-callout-error-background-color)",
-                border: "var(--crm-ui-kit-palette-border-primary)",
-                icon: "var(--crm-ui-kit-palette-text-secondary-dark)"
-            }; // Ошибка по умолчанию для удаления
-        }
-
-        return defaultColors;
-    };
-
-    const colors = getActionColor();
 
     return (
         <Box
