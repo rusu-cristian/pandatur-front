@@ -128,7 +128,9 @@ export const ReceivedMessage = ({ personalInfo, msg, technicians = [] }) => {
                       {!toPage && msg.to_reference && (
                         <Text size="xs">To: {msg.to_reference}</Text>
                       )}
-                      <Text size="xs">Seen by user ID: {msg.seen_by_user_id ?? "null"}</Text>
+                      {msg.seen_by_user_id && (
+                        <Text size="xs">Seen by user ID: {msg.seen_by_user_id}</Text>
+                      )}
                     </Box>
                   }
                   withArrow
