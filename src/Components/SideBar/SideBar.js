@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useMemo } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { Sidebar as BaseSideBar, Menu, MenuItem } from "react-pro-sidebar";
 import {
@@ -25,6 +25,7 @@ import "./SideBar.css";
 import { safeParseJson } from "../UsersComponent/rolesUtils";
 import { convertRolesToMatrix } from "../UsersComponent/rolesUtils";
 import { hasRouteAccess, hasStrictPermission } from "../utils/permissions";
+import { groupTitleOptions } from "../../FormOptions/GroupTitleOptions";
 import { AppContext } from "../../contexts/AppContext";
 import { SocketContext } from "../../contexts/SocketContext";
 
@@ -67,6 +68,11 @@ export const SideBar = () => {
   const { customGroupTitle, groupTitleForApi } = useContext(AppContext);
   const { isConnected } = useContext(SocketContext);
   const currentGroupTitle = customGroupTitle || groupTitleForApi;
+  const currentGroupTitleLabel = useMemo(() => {
+    if (!currentGroupTitle) return null;
+    const option = groupTitleOptions.find((opt) => opt.value === currentGroupTitle);
+    return option?.label || currentGroupTitle;
+  }, [currentGroupTitle]);
 
   const isActive = (page) => {
     if (page === "chat") return location.pathname.startsWith("/chat");
@@ -256,7 +262,7 @@ export const SideBar = () => {
               icon={<FaClipboardList size={24} />}
               component={<Link to="/leads" onClick={handleMenuClick} />}
             >
-              {getLanguageByKey("Leads")} {currentGroupTitle && `(${currentGroupTitle})`}
+              {getLanguageByKey("Leads")} {currentGroupTitleLabel && `(${currentGroupTitleLabel})`}
             </MenuItem>
           </Can>
 
