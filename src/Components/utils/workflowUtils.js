@@ -515,7 +515,7 @@ export const userGroupsToGroupTitle = {
     "Private sales": ["IndividualGroups"],
     "Green Card": ["GreenCard"],
     "Agency": ["Agency"],
-    "Sales UA dep.": ["CATALAN"],
+    "UA Sales Department": ["CATALAN"],
     "Organic traffic": ["MD", "RO", "Filiale"],
     "Sorting": ["MD", "RO", "Filiale"],
     "Trainees": ["MD"],
