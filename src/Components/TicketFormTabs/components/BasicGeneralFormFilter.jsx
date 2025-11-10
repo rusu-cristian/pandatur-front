@@ -13,7 +13,7 @@ import {
   forwardRef,
   useImperativeHandle,
 } from "react";
-import { priorityOptions } from "../../../FormOptions";
+import { priorityOptions, groupTitleOptions } from "../../../FormOptions";
 import { getLanguageByKey } from "../../utils";
 import { useGetTechniciansList } from "../../../hooks";
 import { AppContext } from "../../../contexts/AppContext";
@@ -33,7 +33,13 @@ const GENERAL_FORM_FILTER_ID = "GENERAL_FORM_FILTER_ID";
 export const BasicGeneralFormFilter = forwardRef(({ loading, data, formId }, ref) => {
   const idForm = formId || GENERAL_FORM_FILTER_ID;
   const { technicians } = useGetTechniciansList();
-  const { workflowOptions } = useContext(AppContext);
+  const {
+    workflowOptions,
+    accessibleGroupTitles,
+    customGroupTitle,
+    groupTitleForApi,
+    setCustomGroupTitle,
+  } = useContext(AppContext);
 
   const form = useForm({
     mode: "controlled",
@@ -73,6 +79,36 @@ export const BasicGeneralFormFilter = forwardRef(({ loading, data, formId }, ref
     [technicians]
   );
 
+  const groupTitleSelectData = useMemo(() => {
+    if (!accessibleGroupTitles?.length) {
+      return groupTitleOptions;
+    }
+
+    return groupTitleOptions.filter((option) =>
+      accessibleGroupTitles.includes(option.value)
+    );
+  }, [accessibleGroupTitles]);
+
+  const selectedGroupTitle = customGroupTitle ?? groupTitleForApi ?? null;
+
+  const handleGroupTitleChange = (val) => {
+    let valueToSet = null;
+
+    if (val) {
+      valueToSet = accessibleGroupTitles.includes(val)
+        ? val
+        : accessibleGroupTitles[0] || null;
+    }
+
+    if (valueToSet && accessibleGroupTitles.includes(valueToSet)) {
+      setCustomGroupTitle(valueToSet);
+      localStorage.setItem("leads_last_group_title", valueToSet);
+    } else {
+      setCustomGroupTitle(null);
+      localStorage.removeItem("leads_last_group_title");
+    }
+  };
+
   form.watch("workflow", ({ value }) => {
     if (Array.isArray(value) && value.includes(getLanguageByKey("selectAll"))) {
       // Убираем selectAll из значения и добавляем все workflowOptions
@@ -105,6 +141,17 @@ export const BasicGeneralFormFilter = forwardRef(({ loading, data, formId }, ref
 
   return (
     <form id={idForm}>
+      <Select
+        name="group_title"
+        label={getLanguageByKey("filter_by_group")}
+        placeholder={getLanguageByKey("filter_by_group")}
+        data={groupTitleSelectData}
+        value={selectedGroupTitle}
+        nothingFoundMessage={getLanguageByKey("Nimic găsit")}
+        searchable
+        onChange={handleGroupTitleChange}
+      />
+
       <MultiSelect
         name="workflow"
         label={getLanguageByKey("Workflow")}
