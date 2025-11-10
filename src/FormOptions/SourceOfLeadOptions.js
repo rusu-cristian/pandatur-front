@@ -5,5 +5,6 @@ export const sourceOfLeadOptions = [
   "Turist recomandat",
   "Formular Facebook",
   "Certificat cadou",
-  "Cold call"
+  "Cold call",
+  "Site",
 ]
