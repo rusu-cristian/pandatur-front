@@ -124,6 +124,7 @@ export const workflowOptionsFranchiseGlodeni = [
 
 export const workflowOptionsSalesUA = [
     "Interesat",
+    "Apel de intrare",
     "De prelucrat",
     "Luat în lucru",
     "Ofertă trimisă",
@@ -281,6 +282,7 @@ export const workflowOptionsLimitedFranchiseCantemir = [
 ];
 
 export const workflowOptionsLimitedSalesUA = [
+    "Apel de intrare",
     "De prelucrat",
     "Luat în lucru",
     "Ofertă trimisă",
