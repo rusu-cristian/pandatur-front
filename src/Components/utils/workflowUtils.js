@@ -508,7 +508,7 @@ export const userGroupsToGroupTitle = {
     "Bucharest RO": ["RO"],
     "Brasov RO": ["RO"],
     "Iasi RO": ["RO"],
-    "Back RO": ["RO,MD"],
+    "Back RO": ["RO"],
 
     // other 10
     "Company branches": ["Filiale"],
