@@ -180,7 +180,7 @@ export const BasicGeneralFormFilter = forwardRef(({ loading, data, formId }, ref
         name="has_tasks"
         mt="md"
         label={getLanguageByKey("Are sarcini")}
-        placeholder={getLanguageByKey("Selectează")}
+        placeholder={getLanguageByKey("Alege")}
         data={[
           { value: "true", label: getLanguageByKey("Da") },
           { value: "false", label: getLanguageByKey("Nu") }

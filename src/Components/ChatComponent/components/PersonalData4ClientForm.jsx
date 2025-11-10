@@ -24,6 +24,7 @@ import { api } from "../../../api";
 import { useSnackbar } from "notistack";
 import { useConfirmPopup } from "../../../hooks/useConfirmPopup";
 import "./PersonalData4ClientForm.css";
+import Can from "@components/CanComponent/Can";
 
 const CONTACT_TYPE_COLORS = {
   facebook: "#1877F2",
@@ -47,7 +48,7 @@ const PLATFORM_ICONS = {
   telegram: FaTelegram,
 };
 
-export const PersonalData4ClientForm = ({ ticketId }) => {
+export const PersonalData4ClientForm = ({ ticketId, responsibleId }) => {
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(true);
   const [clients, setClients] = useState([]);
@@ -492,7 +493,6 @@ export const PersonalData4ClientForm = ({ ticketId }) => {
             mb="sm"
           />
 
-
           <Group grow>
             <Button
               variant="outline"
@@ -578,16 +578,18 @@ export const PersonalData4ClientForm = ({ ticketId }) => {
                       <>
                         <Text className="client-card-name" mb="xs">
                           {fullName}
-                          <ActionIcon
-                            size="sm"
-                            variant="subtle"
-                            ml="xs"
-                            onClick={() => {
-                              startEditClient(client.id, client.name, client.surname);
-                            }}
-                          >
-                            <MdEdit size={14} />
-                          </ActionIcon>
+                          <Can permission={{ module: "LEADS", action: "EDIT" }} context={{ responsibleId }}>
+                            <ActionIcon
+                              size="sm"
+                              variant="subtle"
+                              ml="xs"
+                              onClick={() => {
+                                startEditClient(client.id, client.name, client.surname);
+                              }}
+                            >
+                              <MdEdit size={14} />
+                            </ActionIcon>
+                          </Can>
                         </Text>
                         <Text className="client-card-subtitle">
                           {getLanguageByKey("ID")}: {client.id}
@@ -595,13 +597,15 @@ export const PersonalData4ClientForm = ({ ticketId }) => {
                       </>
                     )}
                   </Box>
-                  <ActionIcon
-                    onClick={() => toggleClientExpand(client.id)}
-                    variant="subtle"
-                    size="lg"
-                  >
-                    <LuPlus size={24} />
-                  </ActionIcon>
+                  <Can permission={{ module: "LEADS", action: "EDIT" }} context={{ responsibleId }}>
+                    <ActionIcon
+                      onClick={() => toggleClientExpand(client.id)}
+                      variant="subtle"
+                      size="lg"
+                    >
+                      <LuPlus size={24} />
+                    </ActionIcon>
+                  </Can>
                 </Flex>
 
                 {/* Email контакты */}
@@ -647,26 +651,30 @@ export const PersonalData4ClientForm = ({ ticketId }) => {
                               {emailContact.contact_value}
                             </Text>
                             <Flex gap="xs">
-                              <ActionIcon
-                                size="sm"
-                                variant="subtle"
-                                onClick={() => {
-                                  startEditContact(client.id, emailContact.id, "email", emailContact.contact_value);
-                                }}
-                              >
-                                <MdEdit size={24} />
-                              </ActionIcon>
-                              <ActionIcon
-                                size="sm"
-                                variant="subtle"
-                                color="red"
-                                onClick={() => {
-                                  handleDeleteContact(client.id, emailContact.id);
-                                }}
-                                loading={isDeletingContact}
-                              >
-                                <MdDelete size={24} />
-                              </ActionIcon>
+                              <Can permission={{ module: "LEADS", action: "EDIT" }} context={{ responsibleId }}>
+                                <ActionIcon
+                                  size="sm"
+                                  variant="subtle"
+                                  onClick={() => {
+                                    startEditContact(client.id, emailContact.id, "email", emailContact.contact_value);
+                                  }}
+                                >
+                                  <MdEdit size={24} />
+                                </ActionIcon>
+                              </Can>
+                              <Can permission={{ module: "LEADS", action: "EDIT" }} context={{ responsibleId }}>
+                                <ActionIcon
+                                  size="sm"
+                                  variant="subtle"
+                                  color="red"
+                                  onClick={() => {
+                                    handleDeleteContact(client.id, emailContact.id);
+                                  }}
+                                  loading={isDeletingContact}
+                                >
+                                  <MdDelete size={24} />
+                                </ActionIcon>
+                              </Can>
                             </Flex>
                           </Flex>
                         )}
@@ -721,26 +729,30 @@ export const PersonalData4ClientForm = ({ ticketId }) => {
                               {phoneContact.contact_value}
                             </Text>
                             <Flex gap="xs">
-                              <ActionIcon
-                                size="sm"
-                                variant="subtle"
-                                onClick={() => {
-                                  startEditContact(client.id, phoneContact.id, "phone", phoneContact.contact_value);
-                                }}
-                              >
-                                <MdEdit size={24} />
-                              </ActionIcon>
-                              <ActionIcon
-                                size="sm"
-                                variant="subtle"
-                                color="red"
-                                onClick={() => {
-                                  handleDeleteContact(client.id, phoneContact.id);
-                                }}
-                                loading={isDeletingContact}
-                              >
-                                <MdDelete size={24} />
-                              </ActionIcon>
+                              <Can permission={{ module: "LEADS", action: "EDIT" }} context={{ responsibleId }}>
+                                <ActionIcon
+                                  size="sm"
+                                  variant="subtle"
+                                  onClick={() => {
+                                    startEditContact(client.id, phoneContact.id, "phone", phoneContact.contact_value);
+                                  }}
+                                >
+                                  <MdEdit size={24} />
+                                </ActionIcon>
+                              </Can>
+                              <Can permission={{ module: "LEADS", action: "EDIT" }} context={{ responsibleId }}>
+                                <ActionIcon
+                                  size="sm"
+                                  variant="subtle"
+                                  color="red"
+                                  onClick={() => {
+                                    handleDeleteContact(client.id, phoneContact.id);
+                                  }}
+                                  loading={isDeletingContact}
+                                >
+                                  <MdDelete size={24} />
+                                </ActionIcon>
+                              </Can>
                             </Flex>
                           </Flex>
                         )}
@@ -771,18 +783,20 @@ export const PersonalData4ClientForm = ({ ticketId }) => {
                                   style={{ color: CONTACT_TYPE_COLORS[contact.contact_type] }}
                                 />
                               </Box>
-                              <ActionIcon
-                                size="xs"
-                                variant="subtle"
-                                color="red"
-                                className="platform-delete-btn"
-                                onClick={() => {
-                                  handleDeleteContact(client.id, contact.id);
-                                }}
-                                loading={isDeletingContact}
-                              >
-                                <MdDelete size={24} />
-                              </ActionIcon>
+                              <Can permission={{ module: "LEADS", action: "EDIT" }} context={{ responsibleId }}>
+                                <ActionIcon
+                                  size="xs"
+                                  variant="subtle"
+                                  color="red"
+                                  className="platform-delete-btn"
+                                  onClick={() => {
+                                    handleDeleteContact(client.id, contact.id);
+                                  }}
+                                  loading={isDeletingContact}
+                                >
+                                  <MdDelete size={24} />
+                                </ActionIcon>
+                              </Can>
                             </Box>
                           );
                         })}

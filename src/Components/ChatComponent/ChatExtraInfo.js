@@ -384,6 +384,7 @@ const ChatExtraInfo = ({
             <PersonalData4ClientForm
               key={`personal-${ticketId}`}
               ticketId={ticketId}
+              responsibleId={responsibleId}
             />
 
             {isAdmin && (
