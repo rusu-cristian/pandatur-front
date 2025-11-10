@@ -399,6 +399,7 @@ export const Leads = () => {
       setSelectedTickets(allHardIds);
     }
   };
+
   const handleClearAllResults = () => {
     setSelectedTickets([]);
   };
@@ -482,6 +483,7 @@ export const Leads = () => {
                 placeholder={getLanguageByKey("filter_by_group")}
                 value={customGroupTitle ?? groupTitleForApi}
                 data={groupTitleSelectData}
+                className="min-w-300"
                 onChange={(val) => {
                   // Безопасность: всегда проверяем значение против списка доступных прав
                   let valueToSet = null;
