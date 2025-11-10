@@ -134,17 +134,13 @@ export const Chat = () => {
         </Flex>
 
         {!isNaN(ticketId) && (
-          <Can
-            permission={{ module: "leads", action: "edit" }}
-            context={{ responsibleId }}
-          >
-            <ChatExtraInfo
-              selectedClient={selectedClient}
-              ticketId={ticketId}
-              updatedTicket={currentTicket}
-              onUpdateClientData={updateClientData}
-            />
-          </Can>
+
+          <ChatExtraInfo
+            selectedClient={selectedClient}
+            ticketId={ticketId}
+            updatedTicket={currentTicket}
+            onUpdateClientData={updateClientData}
+          />
         )}
       </Flex>
     </Flex>

@@ -25,6 +25,7 @@ import {
   TicketInfoForm,
 } from "../TicketForms";
 import { InvoiceTab } from "./components";
+import Can from "@components/CanComponent/Can";
 
 const ChatExtraInfo = ({
   selectTicketId,
@@ -67,6 +68,13 @@ const ChatExtraInfo = ({
     contract: extraInfo,
     quality: extraInfo
   }), [updatedTicket, extraInfo]);
+
+  const responsibleId = useMemo(() => {
+    const technicianId = updatedTicket?.technician_id ?? extraInfo?.technician_id;
+    return technicianId !== null && technicianId !== undefined
+      ? String(technicianId)
+      : null;
+  }, [updatedTicket?.technician_id, extraInfo?.technician_id]);
 
   /**
    *
@@ -226,11 +234,11 @@ const ChatExtraInfo = ({
     // Если technician_id пустой (undefined, null, пустая строка, "undefined", "null"), передаем null
     // чтобы явно указать, что ответственный не установлен
     const rawTechnicianId = values.technician_id;
-    const technicianId = rawTechnicianId && 
-      rawTechnicianId !== "undefined" && 
-      rawTechnicianId !== "null" && 
-      rawTechnicianId.toString().trim() 
-      ? rawTechnicianId 
+    const technicianId = rawTechnicianId &&
+      rawTechnicianId !== "undefined" &&
+      rawTechnicianId !== "null" &&
+      rawTechnicianId.toString().trim()
+      ? rawTechnicianId
       : null;
 
     const generalFields = {
@@ -350,15 +358,16 @@ const ChatExtraInfo = ({
               </Text>
             </Tabs.Tab>
           </Tabs.List>
-
-          <Button
-            fullWidth
-            mt="md"
-            loading={isLoadingGeneral || isLoadingInfoTicket}
-            onClick={handleSubmitAllForms}
-          >
-            {getLanguageByKey("Actualizare")}
-          </Button>
+          <Can permission={{ module: "leads", action: "edit" }} context={{ responsibleId }}>
+            <Button
+              fullWidth
+              mt="md"
+              loading={isLoadingGeneral || isLoadingInfoTicket}
+              onClick={handleSubmitAllForms}
+            >
+              {getLanguageByKey("Actualizare")}
+            </Button>
+          </Can>
         </Box>
 
         <Tabs.Panel value="general">

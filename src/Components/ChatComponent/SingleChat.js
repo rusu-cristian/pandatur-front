@@ -121,14 +121,12 @@ const SingleChat = ({ technicians, ticketId, onClose, tasks = [] }) => {
         </Can>
       </Flex>
 
-      <Can permission={{ module: "leads", action: "edit" }} context={{ responsibleId }}>
-        <ChatExtraInfo
-          selectedClient={selectedClient}
-          ticketId={ticketId}
-          updatedTicket={currentTicket}
-          onUpdateClientData={updateClientData}
-        />
-      </Can>
+      <ChatExtraInfo
+        selectedClient={selectedClient}
+        ticketId={ticketId}
+        updatedTicket={currentTicket}
+        onUpdateClientData={updateClientData}
+      />
 
     </div>
   );
