@@ -20,6 +20,7 @@ const getStartEndDateRange = (date) => {
   endOfDay.setHours(23, 59, 59, 999);
   return [startOfDay, endOfDay];
 };
+
 const getYesterdayDate = () => {
   const d = new Date();
   d.setDate(d.getDate() - 1);
@@ -64,6 +65,15 @@ export const Filter = ({
   }, [filteredTechnicians]);
 
   const groupUserMap = useMemo(() => getGroupUserMap(technicians), [technicians]);
+  const groupKeyToNameMap = useMemo(() => {
+    const map = new Map();
+    (technicians || []).forEach((item) => {
+      if (item?.value?.startsWith(GROUP_PREFIX)) {
+        map.set(item.value, item.label);
+      }
+    });
+    return map;
+  }, [technicians]);
 
   const [userGroupsOptions, setUserGroupsOptions] = useState([]);
   const [loadingUserGroups, setLoadingUserGroups] = useState(false);
@@ -176,7 +186,12 @@ export const Filter = ({
     const groupsForUsers = new Set();
     for (const [groupKey, users] of groupUserMap.entries()) {
       const hasAny = (val || []).some((u) => users.includes(u));
-      if (hasAny) groupsForUsers.add(fromGroupKey(groupKey));
+      if (hasAny) {
+        const groupName = groupKeyToNameMap.get(groupKey) ?? fromGroupKey(groupKey);
+        if (groupName) {
+          groupsForUsers.add(groupName);
+        }
+      }
     }
     const nextUserGroups = Array.from(groupsForUsers);
     setSelectedUserGroups(nextUserGroups);
