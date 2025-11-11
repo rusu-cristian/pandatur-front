@@ -3,7 +3,7 @@ import { format } from "date-fns";
 import { useSnackbar } from "notistack";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
-import { Flex, Text, Box, Stack, ActionIcon, MultiSelect, Group } from "@mantine/core";
+import { Flex, Text, Box, Stack, ActionIcon, MultiSelect } from "@mantine/core";
 import { LuFilter } from "react-icons/lu";
 import { api } from "../api";
 import DashboardGrid from "../Components/DashboardComponent/DashboardGrid";
@@ -218,8 +218,7 @@ export const Dashboard = () => {
   }, [selectedTechnicians, selectedUserGroups, selectedGroupTitles, dateRange]);
 
   const extraInfo = (
-    <Group gap="sm">
-
+    <Flex gap="sm" align="center">
       <ActionIcon
         variant={isFilterActive ? "filled" : "default"}
         size="lg"
@@ -230,18 +229,19 @@ export const Dashboard = () => {
         <LuFilter size={18} />
       </ActionIcon>
 
-      <MultiSelect
-        size="sm"
-        w="100%"
-        value={widgetTypes}
-        onChange={(values) => setWidgetTypes(Array.isArray(values) ? values : [])}
-        data={WIDGET_TYPE_OPTIONS}
-        placeholder={getLanguageByKey("Widget type")}
-        aria-label="widget-type"
-        searchable
-        clearable
-      />
-    </Group>
+      <Box style={{ width: 240 }}>
+        <MultiSelect
+          size="sm"
+          value={widgetTypes}
+          onChange={(values) => setWidgetTypes(Array.isArray(values) ? values : [])}
+          data={WIDGET_TYPE_OPTIONS}
+          placeholder={getLanguageByKey("Widget type")}
+          aria-label="widget-type"
+          searchable
+          clearable
+        />
+      </Box>
+    </Flex>
   );
 
   return (
