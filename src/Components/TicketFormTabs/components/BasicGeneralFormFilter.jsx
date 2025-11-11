@@ -3,6 +3,7 @@ import {
   MultiSelect,
   TagsInput,
   Select,
+  Divider,
 } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
@@ -143,8 +144,8 @@ export const BasicGeneralFormFilter = forwardRef(({ loading, data, formId }, ref
     <form id={idForm}>
       <Select
         name="group_title"
-        label={getLanguageByKey("filter_by_group")}
-        placeholder={getLanguageByKey("filter_by_group")}
+        label={getLanguageByKey("Filter by group")}
+        placeholder={getLanguageByKey("Filter by group")}
         data={groupTitleSelectData}
         value={selectedGroupTitle}
         nothingFoundMessage={getLanguageByKey("Nimic găsit")}
@@ -154,6 +155,7 @@ export const BasicGeneralFormFilter = forwardRef(({ loading, data, formId }, ref
 
       <MultiSelect
         name="workflow"
+        mt="md"
         label={getLanguageByKey("Workflow")}
         placeholder={getLanguageByKey("Selectează flux de lucru")}
         data={[getLanguageByKey("selectAll"), ...workflowOptions]}

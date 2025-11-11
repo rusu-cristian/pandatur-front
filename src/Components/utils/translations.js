@@ -4992,5 +4992,10 @@ export const translations = {
     RO: "Citit",
     RU: "Прочитано",
     EN: "Seen"
+  },
+  "Filter by group": {
+    RO: "Filtru după pâlnie",
+    RU: "Фильтр по воронке",
+    EN: "Filter by group"
   }
 };
