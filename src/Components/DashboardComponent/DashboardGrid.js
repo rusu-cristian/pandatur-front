@@ -41,11 +41,16 @@ const WIDGET_SIZES = {
 };
 
 const rowOf = (w) => {
-    const id = String(w?.id ?? "");
-    if (id === "general" || id.startsWith("gt-") || id.startsWith("ug-")) return 0; // 1-я группа
-    if (w.type === "top_users") return 1;                                          // 2-я группа - Top Users первым среди пользователей
-    if (id.startsWith("user-")) return 2;                                          // 3-я группа
-    return 3;                                                                      // 4-я группа
+    const section = w?.section;
+    if (section === "general" || section === "group_title" || section === "user_group") return 0;
+    if (section === "top_users" || w.type === "top_users") return 1;
+    if (section === "user") return 2;
+
+    const originId = String(w?.originId ?? w?.id ?? "");
+    if (originId === "general" || originId.startsWith("gt-") || originId.startsWith("ug-")) return 0;
+    if (originId.startsWith("user-")) return 2;
+
+    return 3;
 };
 
 const getSizeByRow = (w, row) => {
@@ -273,7 +278,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                 subtitle={w.subtitle}
                                 rows={w.rows}
                                 bg={w.bg}
-                                widgetType={w.widgetType}
+                                widgetType={w.widgetType || widgetType}
                                 width={w.w}
                                 height={w.h}
                             />,
@@ -533,7 +538,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     dateRange={dateRange}
                                     sizeInfo={sizeInfo}
                                     bg={w.bg}
-                                    widgetType={widgetType}
+                                    widgetType={w.widgetType || widgetType}
                                 />
                             </Box>,
                             w.id
@@ -542,7 +547,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
 
                     return renderWidgetWrapper(
                         <Box style={{ height: "100%" }}>
-                            <TotalCard
+                                <TotalCard
                                 title={w.title}
                                 subtitle={w.subtitle}
                                 totalAll={Number.isFinite(w.total) ? w.total : 0}
@@ -551,7 +556,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                 dateRange={dateRange}
                                 sizeInfo={sizeInfo}
                                 bg={w.bg}
-                                widgetType={widgetType}
+                                    widgetType={w.widgetType || widgetType}
                             />
                         </Box>,
                         w.id

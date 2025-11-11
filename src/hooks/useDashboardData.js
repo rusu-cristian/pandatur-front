@@ -1,56 +1,88 @@
-import { useMemo } from 'react';
-import { createGeneralWidget } from '../utils/dashboardHelpers';
-import { 
+import { useMemo } from "react";
+import { createGeneralWidget } from "../utils/dashboardHelpers";
+import {
   createGroupTitleWidgets,
   createUserGroupWidgets,
   createUserWidgets,
   createTopUsersWidget,
   createPlatformWidgets,
-  createSourceWidgets
-} from '../utils/dashboardWidgets';
+  createSourceWidgets,
+} from "../utils/dashboardWidgets";
+
+const SECTIONS = {
+  GENERAL: "general",
+  GROUP_TITLE: "group_title",
+  USER_GROUP: "user_group",
+  USER: "user",
+  TOP_USERS: "top_users",
+  PLATFORM: "platform",
+  SOURCE: "source",
+  OTHER: "other",
+};
+
+const buildWidgetsForType = (data, widgetType, userNameById, getLanguageByKey) => {
+  if (!data) return [];
+
+  const widgets = [];
+
+  const appendWidgets = (items = [], section) => {
+    (items || []).forEach((widget, index) => {
+      if (!widget) return;
+      const originId = String(widget.id ?? `${section}-${index}`);
+      widgets.push({
+        ...widget,
+        widgetType,
+        originId,
+        section,
+        id: `${widgetType}-${originId}`,
+      });
+    });
+  };
+
+  const generalWidget = createGeneralWidget(data, widgetType, getLanguageByKey);
+  if (generalWidget) {
+    appendWidgets([generalWidget], SECTIONS.GENERAL);
+  }
+
+  appendWidgets(createGroupTitleWidgets(data, widgetType, getLanguageByKey), SECTIONS.GROUP_TITLE);
+  appendWidgets(createUserGroupWidgets(data, widgetType, getLanguageByKey), SECTIONS.USER_GROUP);
+  appendWidgets(createUserWidgets(data, widgetType, getLanguageByKey, userNameById), SECTIONS.USER);
+
+  const topUsersWidget = createTopUsersWidget(data, widgetType, getLanguageByKey, userNameById);
+  if (topUsersWidget) {
+    appendWidgets([topUsersWidget], SECTIONS.TOP_USERS);
+  }
+
+  appendWidgets(createPlatformWidgets(data, widgetType, getLanguageByKey), SECTIONS.PLATFORM);
+  appendWidgets(createSourceWidgets(data, getLanguageByKey), SECTIONS.SOURCE);
+
+  return widgets;
+};
 
 /**
  * Хук для построения виджетов дашборда
  */
-export const useDashboardData = (rawData, userNameById, widgetType, getLanguageByKey) => {
+export const useDashboardData = (rawData, userNameById, widgetTypes, getLanguageByKey) => {
   return useMemo(() => {
     if (!rawData) return [];
 
-    const widgets = [];
-    const data = rawData;
+    const typesArray = Array.isArray(widgetTypes)
+      ? widgetTypes
+      : widgetTypes
+      ? [widgetTypes]
+      : [];
 
-    // General виджет
-    const generalWidget = createGeneralWidget(data, widgetType, getLanguageByKey);
-    if (generalWidget) {
-      widgets.push(generalWidget);
-    }
+    if (!typesArray.length) return [];
 
-    // Виджеты по group_title
-    const groupTitleWidgets = createGroupTitleWidgets(data, widgetType, getLanguageByKey);
-    widgets.push(...groupTitleWidgets);
+    const combinedWidgets = [];
 
-    // Виджеты по user_group
-    const userGroupWidgets = createUserGroupWidgets(data, widgetType, getLanguageByKey);
-    widgets.push(...userGroupWidgets);
+    typesArray.forEach((type) => {
+      if (!type) return;
+      const data = rawData?.[type];
+      const widgets = buildWidgetsForType(data, type, userNameById, getLanguageByKey);
+      combinedWidgets.push(...widgets);
+    });
 
-    // Виджеты по пользователям
-    const userWidgets = createUserWidgets(data, widgetType, getLanguageByKey, userNameById);
-    widgets.push(...userWidgets);
-
-    // Топ пользователей
-    const topUsersWidget = createTopUsersWidget(data, widgetType, getLanguageByKey, userNameById);
-    if (topUsersWidget) {
-      widgets.push(topUsersWidget);
-    }
-
-    // Виджеты платформ (для messages)
-    const platformWidgets = createPlatformWidgets(data, widgetType, getLanguageByKey);
-    widgets.push(...platformWidgets);
-
-    // Виджеты источников (для calls)
-    const sourceWidgets = createSourceWidgets(data, getLanguageByKey);
-    widgets.push(...sourceWidgets);
-
-    return widgets;
-  }, [rawData, userNameById, widgetType, getLanguageByKey]);
+    return combinedWidgets;
+  }, [rawData, userNameById, widgetTypes, getLanguageByKey]);
 };

@@ -3,7 +3,7 @@ import { format } from "date-fns";
 import { useSnackbar } from "notistack";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
-import { Flex, Text, Box, Stack, ActionIcon, Tooltip, Select, Group } from "@mantine/core";
+import { Flex, Text, Box, Stack, ActionIcon, MultiSelect, Group } from "@mantine/core";
 import { LuFilter } from "react-icons/lu";
 import { api } from "../api";
 import DashboardGrid from "../Components/DashboardComponent/DashboardGrid";
@@ -34,12 +34,31 @@ const WIDGET_TYPE_OPTIONS = [
   { value: "ticket_destination", label: t("Ticket Destination") },
 ];
 
+const WIDGET_API_MAP = {
+  calls: api.dashboard.getWidgetCalls,
+  messages: api.dashboard.getWidgetMessages,
+  ticket_state: api.dashboard.getTicketStateWidget,
+  tickets_into_work: api.dashboard.getTicketsIntoWorkWidget,
+  system_usage: api.dashboard.getSystemUsageWidget,
+  ticket_distribution: api.dashboard.getTicketDistributionWidget,
+  closed_tickets_count: api.dashboard.getClosedTicketsCountWidget,
+  tickets_by_depart_count: api.dashboard.getTicketsByDepartCountWidget,
+  ticket_lifetime_stats: api.dashboard.getTicketLifetimeStatsWidget,
+  ticket_rate: api.dashboard.getTicketRateWidget,
+  workflow_from_change: api.dashboard.getWorkflowFromChangeWidget,
+  workflow_to_change: api.dashboard.getWorkflowToChangeWidget,
+  ticket_creation: api.dashboard.getTicketCreationWidget,
+  workflow_from_de_prelucrat: api.dashboard.getWorkflowFromDePrelucratWidget,
+  workflow_duration: api.dashboard.getWorkflowDurationWidget,
+  ticket_destination: api.dashboard.getTicketDestinationWidget,
+};
+
 export const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [scrollHeight, setScrollHeight] = useState(400);
 
-  // тип виджетов
-  const [widgetType, setWidgetType] = useState("calls");
+  // типы виджетов
+  const [widgetTypes, setWidgetTypes] = useState(["calls"]);
 
   // состояние фильтра
   const [selectedTechnicians, setSelectedTechnicians] = useState([]);
@@ -54,7 +73,7 @@ export const Dashboard = () => {
   const scrollRef = useRef(null);
   const requestIdRef = useRef(0);
 
-  const [rawData, setRawData] = useState(null);
+  const [rawData, setRawData] = useState({});
   const [dataError, setDataError] = useState(null);
 
   // имена по user_id
@@ -90,67 +109,73 @@ export const Dashboard = () => {
   }, [selectedTechnicians, selectedUserGroups, selectedGroupTitles, dateRange]);
 
 
-  // запрос по типу
-  const fetchByType = useCallback(
-    async (payload) => {
+  // запросы по выбранным типам
+  const fetchByTypes = useCallback(
+    async (types, payload) => {
+      if (!types.length) {
+        setRawData({});
+        setDataError(null);
+        setIsLoading(false);
+        return;
+      }
+
+      const uniqueTypes = Array.from(new Set(types.filter(Boolean)));
+      if (!uniqueTypes.length) {
+        setRawData({});
+        setDataError(null);
+        setIsLoading(false);
+        return;
+      }
+
       const thisReqId = ++requestIdRef.current;
       setIsLoading(true);
       setDataError(null);
       try {
-        let res = null;
-        if (widgetType === "calls") {
-          res = await api.dashboard.getWidgetCalls(payload);
-        } else if (widgetType === "messages") {
-          res = await api.dashboard.getWidgetMessages(payload);
-        } else if (widgetType === "ticket_state") {
-          res = await api.dashboard.getTicketStateWidget(payload);
-        } else if (widgetType === "tickets_into_work") {
-          res = await api.dashboard.getTicketsIntoWorkWidget(payload);
-        } else if (widgetType === "system_usage") {
-          res = await api.dashboard.getSystemUsageWidget(payload);
-        } else if (widgetType === "ticket_distribution") {
-          res = await api.dashboard.getTicketDistributionWidget(payload);
-        } else if (widgetType === "closed_tickets_count") {
-          res = await api.dashboard.getClosedTicketsCountWidget(payload);
-        } else if (widgetType === "tickets_by_depart_count") {
-          res = await api.dashboard.getTicketsByDepartCountWidget(payload);
-        } else if (widgetType === "ticket_lifetime_stats") {
-          res = await api.dashboard.getTicketLifetimeStatsWidget(payload);
-        } else if (widgetType === "ticket_rate") {
-          res = await api.dashboard.getTicketRateWidget(payload);
-        } else if (widgetType === "workflow_from_change") {
-          res = await api.dashboard.getWorkflowFromChangeWidget(payload);
-        } else if (widgetType === "workflow_to_change") {
-          res = await api.dashboard.getWorkflowToChangeWidget(payload);
-        } else if (widgetType === "ticket_creation") {
-          res = await api.dashboard.getTicketCreationWidget(payload);
-        } else if (widgetType === "workflow_from_de_prelucrat") {
-          res = await api.dashboard.getWorkflowFromDePrelucratWidget(payload);
-        } else if (widgetType === "workflow_duration") {
-          res = await api.dashboard.getWorkflowDurationWidget(payload);
-        } else if (widgetType === "ticket_destination") {
-          res = await api.dashboard.getTicketDestinationWidget(payload);
-        }
+        const responses = await Promise.all(
+          uniqueTypes.map(async (type) => {
+            const request = WIDGET_API_MAP[type];
+            if (!request) return [type, null];
+            const result = await request(payload);
+            return [type, result];
+          })
+        );
+
         if (requestIdRef.current !== thisReqId) return;
-        setRawData(res || null);
+
+        const dataMap = responses.reduce((acc, entry) => {
+          if (!entry) return acc;
+          const [type, data] = entry;
+          if (type) acc[type] = data || null;
+          return acc;
+        }, {});
+
+        setRawData(dataMap);
       } catch (e) {
         if (requestIdRef.current !== thisReqId) return;
-        setRawData(null);
+        setRawData({});
         setDataError(e?.message || String(e));
         enqueueSnackbar(showServerError(e), { variant: "error" });
       } finally {
         if (requestIdRef.current === thisReqId) setIsLoading(false);
       }
     },
-    [enqueueSnackbar, widgetType]
+    [enqueueSnackbar]
   );
 
   // автозагрузка при изменении диапазона/типа
   useEffect(() => {
     const [start, end] = dateRange || [];
     if (!!start !== !!end) return; // нужен полноценный диапазон
-    fetchByType(buildPayloadCommon());
-  }, [buildPayloadCommon, fetchByType, widgetType, dateRange]);
+    const types = Array.isArray(widgetTypes) ? widgetTypes : widgetTypes ? [widgetTypes] : [];
+    if (!types.length) {
+      requestIdRef.current += 1;
+      setIsLoading(false);
+      setRawData({});
+      setDataError(null);
+      return;
+    }
+    fetchByTypes(types, buildPayloadCommon());
+  }, [buildPayloadCommon, fetchByTypes, widgetTypes, dateRange]);
 
   // размеры
   const recalcSizes = useCallback(() => {
@@ -173,7 +198,7 @@ export const Dashboard = () => {
 
 
   // построение списка виджетов
-  const widgets = useDashboardData(rawData, userNameById, widgetType, getLanguageByKey);
+  const widgets = useDashboardData(rawData, userNameById, widgetTypes, getLanguageByKey);
 
   const handleApplyFilter = useCallback((meta) => {
     setSelectedTechnicians(meta?.selectedTechnicians || []);
@@ -195,27 +220,26 @@ export const Dashboard = () => {
   const extraInfo = (
     <Group gap="sm">
 
-      <Tooltip label={getLanguageByKey("Filtru")}>
-        <ActionIcon
-          variant={isFilterActive ? "filled" : "default"}
-          size="lg"
-          onClick={() => setFilterOpened(true)}
-          aria-label="open-filter"
-          color={isFilterActive ? "green" : undefined}
-        >
-          <LuFilter size={18} />
-        </ActionIcon>
-      </Tooltip>
+      <ActionIcon
+        variant={isFilterActive ? "filled" : "default"}
+        size="lg"
+        onClick={() => setFilterOpened(true)}
+        aria-label="open-filter"
+        color={isFilterActive ? "green" : undefined}
+      >
+        <LuFilter size={18} />
+      </ActionIcon>
 
-      <Select
+      <MultiSelect
         size="sm"
-        w={220}
-        value={widgetType}
-        onChange={(v) => v && setWidgetType(v)}
+        w="100%"
+        value={widgetTypes}
+        onChange={(values) => setWidgetTypes(Array.isArray(values) ? values : [])}
         data={WIDGET_TYPE_OPTIONS}
-        allowDeselect={false}
         placeholder={getLanguageByKey("Widget type")}
         aria-label="widget-type"
+        searchable
+        clearable
       />
     </Group>
   );
@@ -245,7 +269,7 @@ export const Dashboard = () => {
           style={{ width: "100%", height: scrollHeight, overflowY: "auto", overflowX: "hidden", scrollbarGutter: "stable" }}
           pb="200px" pl="50px" pr="50px"
         >
-          <DashboardGrid widgets={widgets} dateRange={dateRange} widgetType={widgetType} />
+          <DashboardGrid widgets={widgets} dateRange={dateRange} widgetType={widgetTypes?.[0] || "calls"} />
         </Box>
       )}
 
@@ -257,7 +281,7 @@ export const Dashboard = () => {
         initialUserGroups={selectedUserGroups}
         initialGroupTitles={selectedGroupTitles}
         initialDateRange={dateRange}
-        widgetType={widgetType}
+        widgetTypes={widgetTypes}
         accessibleGroupTitles={accessibleGroupTitles}
       />
     </Stack>

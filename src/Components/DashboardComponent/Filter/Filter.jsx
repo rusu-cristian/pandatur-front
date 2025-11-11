@@ -35,7 +35,7 @@ export const Filter = ({
   initialUserGroups = [],
   initialGroupTitles = [],
   initialDateRange = [],
-  widgetType = "calls", // Тип виджета для определения доступных фильтров
+  widgetTypes = ["calls"], // Типы виджетов для определения доступных фильтров
   accessibleGroupTitles = [], // Доступные воронки для текущего пользователя
 }) => {
   const { technicians } = useGetTechniciansList();
@@ -148,7 +148,7 @@ export const Filter = ({
     );
   }, [accessibleGroupTitles]);
 
-  // Определяем доступные фильтры в зависимости от типа виджета
+  // Определяем доступные фильтры в зависимости от типов виджетов
   const availableFilters = useMemo(() => {
     const filterMap = {
       'calls': ['user_ids', 'group_titles', 'user_groups', 'attributes'],
@@ -169,8 +169,25 @@ export const Filter = ({
       'ticket_destination': ['attributes'],
     };
 
-    return filterMap[widgetType] || ['user_ids', 'group_titles', 'user_groups', 'attributes'];
-  }, [widgetType]);
+    const defaultOrder = ['user_ids', 'group_titles', 'user_groups', 'attributes'];
+    const typesArray = Array.isArray(widgetTypes)
+      ? widgetTypes
+      : widgetTypes
+      ? [widgetTypes]
+      : [];
+
+    if (!typesArray.length) {
+      return defaultOrder;
+    }
+
+    const activeFilters = new Set();
+    typesArray.forEach((type) => {
+      const filters = filterMap[type] || defaultOrder;
+      filters.forEach((f) => activeFilters.add(f));
+    });
+
+    return defaultOrder.filter((key) => activeFilters.has(key));
+  }, [widgetTypes]);
 
   const showUserFilter = availableFilters.includes('user_ids');
   const showGroupTitlesFilter = availableFilters.includes('group_titles');
