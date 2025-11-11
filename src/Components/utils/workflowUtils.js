@@ -159,7 +159,6 @@ export const workflowOptionsQualityDepartment = [
 // limited
 
 export const workflowOptionsLimitedSalesMD = [
-    "Apel de intrare",
     "De prelucrat",
     "Luat în lucru",
     "Ofertă trimisă",
@@ -172,7 +171,6 @@ export const workflowOptionsLimitedSalesMD = [
 ];
 
 export const workflowOptionsLimitedSalesRO = [
-    "Apel de intrare",
     "De prelucrat",
     "Luat în lucru",
     "Ofertă trimisă",
@@ -193,7 +191,6 @@ export const workflowOptionsLimitedFiliale = [
     "Închis și nerealizat"
 ];
 export const workflowOptionsLimitedFranchiseRascani = [
-    "Apel de intrare",
     "De prelucrat",
     "Luat în lucru",
     "Ofertă trimisă",
