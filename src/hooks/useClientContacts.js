@@ -24,12 +24,76 @@ function normalizePlatformBlock(block) {
 
 function buildClientIndex(clients) {
   const map = new Map();
-  (clients || []).forEach((c) => {
-    (c.contacts || []).forEach((ct) => {
-      if (ct?.id != null) map.set(Number.parseInt(ct.id, 10), c);
-    });
+  (clients || []).forEach((client) => {
+    const clientId = client?.id != null ? Number.parseInt(client.id, 10) : null;
+    if (clientId != null && !Number.isNaN(clientId)) {
+      map.set(clientId, client);
+    }
+
+    const register = (items = []) => {
+      items.forEach((item) => {
+        const itemId = item?.id != null ? Number.parseInt(item.id, 10) : null;
+        if (itemId != null && !Number.isNaN(itemId)) {
+          map.set(itemId, client);
+        }
+      });
+    };
+
+    register(client.contacts);
+    register(client.emails);
+    register(client.phones);
   });
   return map;
+}
+
+function enrichBlocksWithClientContacts(blocks, clients) {
+  if (!clients?.length) return blocks;
+
+  const nextBlocks = { ...blocks };
+
+  const getPlatformByContactType = (type) => {
+    switch ((type || "").toLowerCase()) {
+      case "email":
+        return "email";
+      case "phone":
+      case "mobile":
+      case "sipuni":
+        return "phone";
+      case "whatsapp":
+      case "viber":
+      case "telegram":
+        return type.toLowerCase();
+      default:
+        return "email";
+    }
+  };
+
+  clients.forEach((client) => {
+    (client.contacts || []).forEach((contact) => {
+      const platform = getPlatformByContactType(contact?.contact_type);
+      if (!platform) return;
+
+      if (!nextBlocks[platform]) {
+        nextBlocks[platform] = {};
+      }
+
+      const contactId = contact?.id != null ? String(contact.id) : null;
+      if (!contactId) return;
+
+      // Не перезаписываем данные, пришедшие из API
+      if (nextBlocks[platform][contactId]) return;
+
+      nextBlocks[platform][contactId] = {
+        contact_value: contact?.contact_value ?? "",
+        name: client?.name ?? "",
+        surname: client?.surname ?? "",
+        client_id: client?.id,
+        is_primary: contact?.is_primary ?? false,
+      };
+    });
+  });
+
+  return nextBlocks;
 }
 
 function computePlatformOptionsFromBlocks(platformBlocks) {
@@ -83,11 +147,12 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
   /** 1) Единожды нормализуем все платформенные блоки и строим индекс клиентов */
   const { platformBlocks, clientIndex } = useMemo(() => {
     if (!ticketData) return { platformBlocks: {}, clientIndex: new Map() };
-    const blocks = Object.entries(ticketData).reduce((acc, [key, val]) => {
+    const initialBlocks = Object.entries(ticketData).reduce((acc, [key, val]) => {
       if (key === "clients") return acc;
       acc[key] = normalizePlatformBlock(val);
       return acc;
     }, {});
+    const blocks = enrichBlocksWithClientContacts(initialBlocks, ticketData.clients);
     return {
       platformBlocks: blocks,
       clientIndex: buildClientIndex(ticketData.clients),
@@ -105,9 +170,17 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
     const block = platformBlocks[selectedPlatform] || {};
     const contacts = Object.entries(block).map(([contactIdRaw, contactData]) => {
       const contactId = Number.parseInt(contactIdRaw, 10);
-      const client = clientIndex.get(contactId);
+      const contactClientId =
+        contactData?.client_id != null ? Number.parseInt(contactData.client_id, 10) : null;
 
-      const client_id = client?.id;
+      const client =
+        clientIndex.get(contactId) ||
+        (contactClientId != null ? clientIndex.get(contactClientId) : null);
+
+      const client_id =
+        client?.id ??
+        contactClientId ??
+        (Number.isNaN(contactId) ? null : contactId);
       const name = contactData?.name || client?.name || "";
       const surname = contactData?.surname || client?.surname || "";
       const contact_value = contactData?.contact_value || "";
