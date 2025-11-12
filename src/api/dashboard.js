@@ -105,4 +105,8 @@ export const dashboard = {
     const { data } = await baseAxios.post("/api/dashboard/widget/ticket-source", body);
     return data;
   },
+  getTicketPlatformSourceWidget: async (body) => {
+    const { data } = await baseAxios.post("/api/dashboard/widget/ticket-platform-source", body);
+    return data;
+  },
 };

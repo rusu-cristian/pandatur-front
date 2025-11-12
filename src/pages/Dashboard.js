@@ -34,6 +34,7 @@ const WIDGET_TYPE_OPTIONS = [
   { value: "ticket_destination", label: t("Ticket Destination") },
   { value: "ticket_marketing", label: t("Statistica Marketing") },
   { value: "ticket_source", label: t("Sursă Lead") },
+  { value: "ticket_platform_source", label: t("Platformă lead") },
 ];
 
 const WIDGET_API_MAP = {
@@ -55,6 +56,7 @@ const WIDGET_API_MAP = {
   ticket_destination: api.dashboard.getTicketDestinationWidget,
   ticket_marketing: api.dashboard.getTicketMarketingWidget,
   ticket_source: api.dashboard.getTicketSourceWidget,
+  ticket_platform_source: api.dashboard.getTicketPlatformSourceWidget,
 };
 
 export const Dashboard = () => {

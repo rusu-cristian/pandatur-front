@@ -4803,6 +4803,16 @@ export const translations = {
     RO: "Destinația tichetelor",
     EN: "Ticket Destination"
   },
+  "Ticket Source Stats": {
+    RU: "Статистика источников лидов",
+    RO: "Statistici sursă lead",
+    EN: "Ticket Source Stats"
+  },
+  "Ticket Platform Source Stats": {
+    RU: "Статистика платформ-источников",
+    RO: "Statistici sursă platformă",
+    EN: "Ticket Platform Source Stats"
+  },
   "By country": {
     RU: "По странам",
     RO: "Pe țări",
@@ -5012,5 +5022,10 @@ export const translations = {
     RO: "Sursă Lead",
     RU: "Источник Lead",
     EN: "Lead source"
+  },
+  "Platformă lead": {
+    RO: "Platformă lead",
+    RU: "Источник платформы",
+    EN: "Platform lead source"
   }
 };

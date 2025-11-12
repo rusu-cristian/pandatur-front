@@ -117,6 +117,28 @@ export const createTicketSourceStatsData = (obj) => {
 };
 
 /**
+ * Создает данные для ticket platform source stats виджетов
+ */
+export const createTicketPlatformSourceStatsData = (obj) => {
+  const statsSource = obj?.platform_source_stats ?? obj?.platformSourceStats ?? obj;
+  const stats = normalizeCategoricalStats(statsSource);
+  const totalPlatformSources = stats.reduce((sum, item) => sum + (Number.isFinite(item.count) ? item.count : 0), 0);
+
+  const platformSourceStats = stats
+    .map((item) => ({
+      channel: item.channel || "-",
+      count: Number.isFinite(item.count) ? item.count : 0,
+      percentage: totalPlatformSources > 0 ? (item.count / totalPlatformSources) * 100 : 0,
+    }))
+    .sort((a, b) => b.count - a.count);
+
+  return {
+    platformSourceStats,
+    totalPlatformSources,
+  };
+};
+
+/**
  * Создает данные для ticket state виджетов
  */
 export const createTicketStateData = (obj) => ({
@@ -434,6 +456,15 @@ export const createGeneralWidget = (data, widgetType, getLanguageByKey) => {
         type: "ticket_source",
         title: getLanguageByKey("Ticket Source Stats"),
         ...tss,
+      };
+    }
+    case "ticket_platform_source": {
+      const tps = createTicketPlatformSourceStatsData(data.general);
+      return {
+        ...baseWidget,
+        type: "ticket_platform_source",
+        title: getLanguageByKey("Ticket Platform Source Stats"),
+        ...tps,
       };
     }
     default: {

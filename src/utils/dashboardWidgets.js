@@ -17,6 +17,7 @@ import {
   createTicketDestinationData,
   createTicketMarketingStatsData,
   createTicketSourceStatsData,
+  createTicketPlatformSourceStatsData,
   mapPlatforms,
   BG_COLORS,
 } from "./dashboardHelpers";
@@ -153,6 +154,14 @@ const createWidgetFromData = (item, widgetType, getLanguageByKey, id, title, sub
         ...tss,
       };
     }
+    case "ticket_platform_source": {
+      const tps = createTicketPlatformSourceStatsData(item);
+      return {
+        ...baseWidget,
+        type: "ticket_platform_source",
+        ...tps,
+      };
+    }
     default: {
       const c = createCountsData(item);
       return {
@@ -230,10 +239,7 @@ export const createTopUsersWidget = (data, widgetType, getLanguageByKey, userNam
   const byUser = safeArray(data.by_user);
   if (!byUser.length) return null;
 
-  if (widgetType === "ticket_marketing") {
-    return null;
-  }
-  if (widgetType === "ticket_source") {
+  if (widgetType === "ticket_marketing" || widgetType === "ticket_source" || widgetType === "ticket_platform_source") {
     return null;
   }
 

@@ -162,3 +162,20 @@ export const TicketSourceStatsCard = ({
   />
 );
 
+export const TicketPlatformSourceStatsCard = ({
+  platformSourceStats = [],
+  totalPlatformSources = 0,
+  ...rest
+}) => (
+  <TicketCategoricalStatsCard
+    {...rest}
+    items={platformSourceStats}
+    total={totalPlatformSources}
+    iconNode={<FaShareAlt size={18} />}
+    color="grape"
+    defaultTitleKey="Ticket Platform Source Stats"
+    emptyLabelKey="No data"
+    itemFallbackKey="No source"
+  />
+);
+
