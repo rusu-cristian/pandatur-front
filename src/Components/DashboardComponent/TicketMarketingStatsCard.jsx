@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { Card, Group, Stack, Text, Badge, Progress, ThemeIcon, Box } from "@mantine/core";
-import { FaBullhorn } from "react-icons/fa";
+import { FaBullhorn, FaShareAlt } from "react-icons/fa";
 import { getLanguageByKey } from "@utils";
 
 const fmt = (n) => (typeof n === "number" ? n.toLocaleString() : "-");
@@ -10,31 +10,37 @@ const clampPercentage = (value) => {
   return Math.max(0, Math.min(100, value));
 };
 
-export const TicketMarketingStatsCard = ({
+const mapItems = (items = [], limit = 100) => {
+  const normalized = (items || []).map((item) => ({
+    channel: item?.channel || "-",
+    count: Number.isFinite(item?.count) ? item.count : 0,
+    percentage: clampPercentage(item?.percentage ?? 0),
+  }));
+  normalized.sort((a, b) => b.count - a.count);
+  return normalized.slice(0, limit);
+};
+
+const TicketCategoricalStatsCard = ({
   title,
   subtitle,
-  marketingStats = [],
-  totalMarketing = 0,
+  items = [],
+  total = 0,
   bg,
   limit = 100,
+  iconNode,
+  color = "indigo",
+  defaultTitleKey,
+  emptyLabelKey = "No data",
+  itemFallbackKey = "-",
 }) => {
-  const normalizedStats = useMemo(() => {
-    const items = (marketingStats || []).map((item) => ({
-      channel: item.channel || "-",
-      count: Number.isFinite(item.count) ? item.count : 0,
-      percentage: clampPercentage(item.percentage ?? 0),
-    }));
+  const normalizedStats = useMemo(() => mapItems(items, limit), [items, limit]);
 
-    items.sort((a, b) => b.count - a.count);
-    return items.slice(0, limit);
-  }, [marketingStats, limit]);
-
-  const total = useMemo(() => {
-    if (Number.isFinite(totalMarketing) && totalMarketing > 0) {
-      return totalMarketing;
+  const totalValue = useMemo(() => {
+    if (Number.isFinite(total) && total > 0) {
+      return total;
     }
     return normalizedStats.reduce((sum, item) => sum + (item.count || 0), 0);
-  }, [normalizedStats, totalMarketing]);
+  }, [normalizedStats, total]);
 
   const maxCount = useMemo(
     () => Math.max(1, ...normalizedStats.map((item) => (Number.isFinite(item.count) ? item.count : 0))),
@@ -57,12 +63,12 @@ export const TicketMarketingStatsCard = ({
     >
       <Group justify="space-between" align="flex-start" mb="md">
         <Group gap="sm" align="center">
-          <ThemeIcon size="xl" radius="xl" variant="light" color="blue">
-            <FaBullhorn size={18} />
+          <ThemeIcon size="xl" radius="xl" variant="light" color={color}>
+            {iconNode}
           </ThemeIcon>
           <Stack gap={4}>
             <Text size="xs" c="dimmed" fw={700} tt="uppercase" style={{ letterSpacing: 0.8 }}>
-              {title || getLanguageByKey("Ticket Marketing Stats")}
+              {title || getLanguageByKey(defaultTitleKey || "Statistics")}
             </Text>
             {subtitle ? (
               <Badge variant="light" size="sm">
@@ -73,7 +79,7 @@ export const TicketMarketingStatsCard = ({
         </Group>
         <Box style={{ textAlign: "right" }}>
           <Text fz={36} fw={900} style={{ lineHeight: 1 }}>
-            {fmt(total)}
+            {fmt(totalValue)}
           </Text>
           <Text size="xs" c="dimmed" fw={600}>
             {getLanguageByKey("Total")}
@@ -86,7 +92,7 @@ export const TicketMarketingStatsCard = ({
           normalizedStats.map((item, index) => {
             const count = Number.isFinite(item.count) ? item.count : 0;
             const percent = clampPercentage(item.percentage ?? (count / maxCount) * 100);
-            const share = total > 0 ? Math.round((count / total) * 100) : 0;
+            const share = totalValue > 0 ? Math.round((count / totalValue) * 100) : 0;
 
             return (
               <Box key={`${item.channel}-${index}`}>
@@ -96,7 +102,7 @@ export const TicketMarketingStatsCard = ({
                       {index + 1}
                     </Badge>
                     <Text fw={600} size="sm">
-                      {item.channel || getLanguageByKey("No source")}
+                      {item.channel || getLanguageByKey(itemFallbackKey)}
                     </Text>
                   </Group>
                   <Box style={{ textAlign: "right" }}>
@@ -108,17 +114,51 @@ export const TicketMarketingStatsCard = ({
                     </Text>
                   </Box>
                 </Group>
-                <Progress value={percent} size="md" radius="xl" color="indigo" />
+                <Progress value={percent} size="md" radius="xl" color={color} />
               </Box>
             );
           })
         ) : (
           <Text c="dimmed" size="sm">
-            {getLanguageByKey("No data")}
+            {getLanguageByKey(emptyLabelKey)}
           </Text>
         )}
       </Stack>
     </Card>
   );
 };
+
+export const TicketMarketingStatsCard = ({
+  marketingStats = [],
+  totalMarketing = 0,
+  ...rest
+}) => (
+  <TicketCategoricalStatsCard
+    {...rest}
+    items={marketingStats}
+    total={totalMarketing}
+    iconNode={<FaBullhorn size={18} />}
+    color="blue"
+    defaultTitleKey="Ticket Marketing Stats"
+    emptyLabelKey="No data"
+    itemFallbackKey="No source"
+  />
+);
+
+export const TicketSourceStatsCard = ({
+  sourceStats = [],
+  totalSources = 0,
+  ...rest
+}) => (
+  <TicketCategoricalStatsCard
+    {...rest}
+    items={sourceStats}
+    total={totalSources}
+    iconNode={<FaShareAlt size={18} />}
+    color="teal"
+    defaultTitleKey="Ticket Source Stats"
+    emptyLabelKey="No data"
+    itemFallbackKey="No source"
+  />
+);
 

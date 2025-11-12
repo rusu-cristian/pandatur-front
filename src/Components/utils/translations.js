@@ -5007,5 +5007,10 @@ export const translations = {
     RO: "Statistica Marketing",
     RU: "Статистика Marketing",
     EN: "Marketing statistics"
+  },
+  "Sursă Lead": {
+    RO: "Sursă Lead",
+    RU: "Источник Lead",
+    EN: "Lead source"
   }
 };

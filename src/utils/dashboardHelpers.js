@@ -45,7 +45,7 @@ export const createCountsData = (obj) => ({
 /**
  * Преобразует маркетинговую статистику в массив [{ channel, count }]
  */
-export const normalizeMarketingStats = (stats) => {
+const normalizeCategoricalStats = (stats) => {
   if (!stats) return [];
   if (Array.isArray(stats)) {
     return stats
@@ -68,6 +68,11 @@ export const normalizeMarketingStats = (stats) => {
 };
 
 /**
+ * Преобразует маркетинговую статистику в массив [{ channel, count }]
+ */
+export const normalizeMarketingStats = (stats) => normalizeCategoricalStats(stats);
+
+/**
  * Создает данные для ticket marketing stats виджетов
  */
 export const createTicketMarketingStatsData = (obj) => {
@@ -86,6 +91,28 @@ export const createTicketMarketingStatsData = (obj) => {
   return {
     marketingStats,
     totalMarketing,
+  };
+};
+
+/**
+ * Создает данные для ticket source stats виджетов
+ */
+export const createTicketSourceStatsData = (obj) => {
+  const statsSource = obj?.sursa_lead_stats ?? obj?.sursaLeadStats ?? obj;
+  const stats = normalizeCategoricalStats(statsSource);
+  const totalSources = stats.reduce((sum, item) => sum + (Number.isFinite(item.count) ? item.count : 0), 0);
+
+  const sourceStats = stats
+    .map((item) => ({
+      channel: item.channel || "-",
+      count: Number.isFinite(item.count) ? item.count : 0,
+      percentage: totalSources > 0 ? (item.count / totalSources) * 100 : 0,
+    }))
+    .sort((a, b) => b.count - a.count);
+
+  return {
+    sourceStats,
+    totalSources,
   };
 };
 
@@ -398,6 +425,15 @@ export const createGeneralWidget = (data, widgetType, getLanguageByKey) => {
         type: "ticket_marketing",
         title: getLanguageByKey("Ticket Marketing Stats"),
         ...tms,
+      };
+    }
+    case "ticket_source": {
+      const tss = createTicketSourceStatsData(data.general);
+      return {
+        ...baseWidget,
+        type: "ticket_source",
+        title: getLanguageByKey("Ticket Source Stats"),
+        ...tss,
       };
     }
     default: {

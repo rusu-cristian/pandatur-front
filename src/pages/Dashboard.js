@@ -33,6 +33,7 @@ const WIDGET_TYPE_OPTIONS = [
   { value: "workflow_duration", label: t("Workflow Duration") },
   { value: "ticket_destination", label: t("Ticket Destination") },
   { value: "ticket_marketing", label: t("Statistica Marketing") },
+  { value: "ticket_source", label: t("Sursă Lead") },
 ];
 
 const WIDGET_API_MAP = {
@@ -53,6 +54,7 @@ const WIDGET_API_MAP = {
   workflow_duration: api.dashboard.getWorkflowDurationWidget,
   ticket_destination: api.dashboard.getTicketDestinationWidget,
   ticket_marketing: api.dashboard.getTicketMarketingWidget,
+  ticket_source: api.dashboard.getTicketSourceWidget,
 };
 
 export const Dashboard = () => {
