@@ -113,11 +113,11 @@
 }
 
 .dashboard-widget-select__option--is-focused {
-  background-color: var(--crm-ui-kit-пalette-сurface-hover-background-color);
+  background-color: var(--crm-ui-kit-palette-surface-hover-background-color);
 }
 
 .dashboard-widget-select__option--is-selected {
-  background-color: var(--crm-ui-kit-пalette-link-primary);
+  background-color: var(--crm-ui-kit-palette-link-primary);
   color: var(--crm-ui-kit-пalette-background-primary);
 }
 
@@ -131,7 +131,7 @@
 }
 
 .dashboard-widget-select__menu-list::-webkit-scrollbar-thumb {
-  background-color: var(--crm-ui-kit-пalette-scrollbar-thumb-background);
+  background-color: var(--crm-ui-kit-palette-scrollbar-thumb-background);
   border-radius: 4px;
 }
 
