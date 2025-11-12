@@ -20,6 +20,7 @@ import { TicketCreationCard } from "./TicketCreationCard";
 import { WorkflowFromDePrelucratCard } from "./WorkflowFromDePrelucratCard";
 import { WorkflowDurationCard } from "./WorkflowDurationCard";
 import { TicketDestinationCard } from "./TicketDestinationCard";
+import { TicketMarketingStatsCard } from "./TicketMarketingStatsCard";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -519,6 +520,21 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     bg={w.bg}
                                     width={w.w}
                                     height={w.h}
+                                />
+                            </Box>,
+                            w.id
+                        );
+                    }
+
+                    if (w.type === "ticket_marketing") {
+                        return renderWidgetWrapper(
+                            <Box style={{ height: "100%" }}>
+                                <TicketMarketingStatsCard
+                                    title={w.title}
+                                    subtitle={w.subtitle}
+                                    marketingStats={w.marketingStats || []}
+                                    totalMarketing={Number.isFinite(w.totalMarketing) ? w.totalMarketing : undefined}
+                                    bg={w.bg}
                                 />
                             </Box>,
                             w.id

@@ -1,7 +1,7 @@
-import { 
-  safeArray, 
-  createCountsData, 
-  createTicketStateData, 
+import {
+  safeArray,
+  createCountsData,
+  createTicketStateData,
   createTicketsIntoWorkData,
   createSystemUsageData,
   createTicketDistributionData,
@@ -15,9 +15,10 @@ import {
   createWorkflowFromDePrelucratData,
   createWorkflowDurationData,
   createTicketDestinationData,
+  createTicketMarketingStatsData,
   mapPlatforms,
-  BG_COLORS
-} from './dashboardHelpers';
+  BG_COLORS,
+} from "./dashboardHelpers";
 
 /**
  * Создает виджет для элемента данных
@@ -135,6 +136,14 @@ const createWidgetFromData = (item, widgetType, getLanguageByKey, id, title, sub
         ...wd,
       };
     }
+    case "ticket_marketing": {
+      const tms = createTicketMarketingStatsData(item);
+      return {
+        ...baseWidget,
+        type: "ticket_marketing",
+        ...tms,
+      };
+    }
     default: {
       const c = createCountsData(item);
       return {
@@ -211,6 +220,10 @@ export const createUserWidgets = (data, widgetType, getLanguageByKey, userNameBy
 export const createTopUsersWidget = (data, widgetType, getLanguageByKey, userNameById) => {
   const byUser = safeArray(data.by_user);
   if (!byUser.length) return null;
+
+  if (widgetType === "ticket_marketing") {
+    return null;
+  }
 
   const rows = byUser.map((r) => {
     const uid = Number(r.user_id);

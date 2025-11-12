@@ -32,6 +32,7 @@ const WIDGET_TYPE_OPTIONS = [
   { value: "workflow_from_de_prelucrat", label: t("Workflow From De Prelucrat") },
   { value: "workflow_duration", label: t("Workflow Duration") },
   { value: "ticket_destination", label: t("Ticket Destination") },
+  { value: "ticket_marketing", label: t("Statistica Marketing") },
 ];
 
 const WIDGET_API_MAP = {
@@ -51,6 +52,7 @@ const WIDGET_API_MAP = {
   workflow_from_de_prelucrat: api.dashboard.getWorkflowFromDePrelucratWidget,
   workflow_duration: api.dashboard.getWorkflowDurationWidget,
   ticket_destination: api.dashboard.getTicketDestinationWidget,
+  ticket_marketing: api.dashboard.getTicketMarketingWidget,
 };
 
 export const Dashboard = () => {
@@ -185,6 +187,7 @@ export const Dashboard = () => {
     const viewportH = (window.innerHeight || 800) * 1.3333; // Компенсируем zoom
     setScrollHeight(Math.max(240, viewportH - headerH - margins));
   }, []);
+  
   useEffect(() => {
     recalcSizes();
     window.addEventListener("resize", recalcSizes);

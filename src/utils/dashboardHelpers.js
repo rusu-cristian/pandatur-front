@@ -43,6 +43,53 @@ export const createCountsData = (obj) => ({
 });
 
 /**
+ * Преобразует маркетинговую статистику в массив [{ channel, count }]
+ */
+export const normalizeMarketingStats = (stats) => {
+  if (!stats) return [];
+  if (Array.isArray(stats)) {
+    return stats
+      .map((item) => {
+        if (!item) return null;
+        if (typeof item === "object" && item.channel !== undefined) {
+          return { channel: String(item.channel || "-"), count: pickNum(item, ["count", "value", "total"]) };
+        }
+        return null;
+      })
+      .filter(Boolean);
+  }
+  if (typeof stats === "object") {
+    return Object.entries(stats).map(([channel, value]) => ({
+      channel: channel || "-",
+      count: Number.isFinite(Number(value)) ? Number(value) : 0,
+    }));
+  }
+  return [];
+};
+
+/**
+ * Создает данные для ticket marketing stats виджетов
+ */
+export const createTicketMarketingStatsData = (obj) => {
+  const statsSource = obj?.marketing_stats ?? obj?.marketingStats ?? obj;
+  const stats = normalizeMarketingStats(statsSource);
+  const totalMarketing = stats.reduce((sum, item) => sum + (Number.isFinite(item.count) ? item.count : 0), 0);
+
+  const marketingStats = stats
+    .map((item) => ({
+      channel: item.channel || "-",
+      count: Number.isFinite(item.count) ? item.count : 0,
+      percentage: totalMarketing > 0 ? (item.count / totalMarketing) * 100 : 0,
+    }))
+    .sort((a, b) => b.count - a.count);
+
+  return {
+    marketingStats,
+    totalMarketing,
+  };
+};
+
+/**
  * Создает данные для ticket state виджетов
  */
 export const createTicketStateData = (obj) => ({
@@ -342,6 +389,15 @@ export const createGeneralWidget = (data, widgetType, getLanguageByKey) => {
         type: "ticket_destination",
         title: getLanguageByKey("Ticket Destination"),
         destinationData: td,
+      };
+    }
+    case "ticket_marketing": {
+      const tms = createTicketMarketingStatsData(data.general);
+      return {
+        ...baseWidget,
+        type: "ticket_marketing",
+        title: getLanguageByKey("Ticket Marketing Stats"),
+        ...tms,
       };
     }
     default: {

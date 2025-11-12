@@ -103,6 +103,7 @@ export const workflowOptionsFranchiseCantemir = [
 
 export const workflowOptionsFranchiseGlodeni = [
     "Interesat",
+    "Apel de intrare",
     "De prelucrat",
     "Luat în lucru",
     "Ofertă trimisă",

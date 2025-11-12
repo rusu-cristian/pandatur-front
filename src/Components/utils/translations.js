@@ -5002,5 +5002,10 @@ export const translations = {
     RO: "Tip widget",
     RU: "Тип виджета",
     EN: "Widget type"
+  },
+  "Statistica Marketing": {
+    RO: "Statistica Marketing",
+    RU: "Статистика Marketing",
+    EN: "Marketing statistics"
   }
 };

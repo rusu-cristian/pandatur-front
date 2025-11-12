@@ -97,4 +97,8 @@ export const dashboard = {
     const { data } = await baseAxios.post("/api/dashboard/widget/ticket-destination", body);
     return data;
   },
+  getTicketMarketingWidget: async (body) => {
+    const { data } = await baseAxios.post("/api/dashboard/widget/ticket-marketing", body);
+    return data;
+  },
 };
