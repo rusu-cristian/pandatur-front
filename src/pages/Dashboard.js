@@ -5,8 +5,8 @@ import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import "./dashboard-select.css";
 import { Flex, Text, Box, Stack, ActionIcon } from "@mantine/core";
-import { LuFilter } from "react-icons/lu";
-import Select from "react-select";
+import { LuFilter, LuCheck } from "react-icons/lu";
+import Select, { components as selectComponents } from "react-select";
 import { api } from "../api";
 import DashboardGrid from "../Components/DashboardComponent/DashboardGrid";
 import { showServerError, getLanguageByKey } from "@utils";
@@ -60,6 +60,32 @@ const WIDGET_API_MAP = {
   ticket_source: api.dashboard.getTicketSourceWidget,
   ticket_platform_source: api.dashboard.getTicketPlatformSourceWidget,
 };
+
+const MAX_VISIBLE_WIDGET_TAGS = 2;
+
+const WidgetTypeMultiValue = (props) => {
+  const values = Array.isArray(props.selectProps?.value) ? props.selectProps.value : [];
+  const remaining = values.length - MAX_VISIBLE_WIDGET_TAGS;
+
+  if (props.index < MAX_VISIBLE_WIDGET_TAGS || remaining <= 0) {
+    return <selectComponents.MultiValue {...props} />;
+  }
+
+  if (props.index === MAX_VISIBLE_WIDGET_TAGS) {
+    return <div className="dashboard-widget-select__aggregate">+{remaining}</div>;
+  }
+
+  return null;
+};
+
+const WidgetTypeOption = (props) => (
+  <selectComponents.Option {...props}>
+    <div className="dashboard-widget-select__option">
+      {props.isSelected ? <LuCheck size={16} /> : <span className="dashboard-widget-select__option-placeholder" />}
+      <span>{props.label}</span>
+    </div>
+  </selectComponents.Option>
+);
 
 export const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -193,7 +219,7 @@ export const Dashboard = () => {
     const viewportH = (window.innerHeight || 800) * 1.3333; // Компенсируем zoom
     setScrollHeight(Math.max(240, viewportH - headerH - margins));
   }, []);
-  
+
   useEffect(() => {
     recalcSizes();
     window.addEventListener("resize", recalcSizes);
@@ -249,8 +275,10 @@ export const Dashboard = () => {
           placeholder={getLanguageByKey("Widget type")}
           isClearable
           isSearchable
+          hideSelectedOptions={false}
           closeMenuOnSelect={false}
           classNamePrefix="dashboard-widget-select"
+          components={{ Option: WidgetTypeOption, MultiValue: WidgetTypeMultiValue }}
         />
       </Box>
     </Flex>
