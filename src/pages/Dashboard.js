@@ -3,8 +3,10 @@ import { format } from "date-fns";
 import { useSnackbar } from "notistack";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
-import { Flex, Text, Box, Stack, ActionIcon, MultiSelect } from "@mantine/core";
+import "./dashboard-select.css";
+import { Flex, Text, Box, Stack, ActionIcon } from "@mantine/core";
 import { LuFilter } from "react-icons/lu";
+import Select from "react-select";
 import { api } from "../api";
 import DashboardGrid from "../Components/DashboardComponent/DashboardGrid";
 import { showServerError, getLanguageByKey } from "@utils";
@@ -236,15 +238,19 @@ export const Dashboard = () => {
         <LuFilter size={18} />
       </ActionIcon>
 
-      <Box style={{ width: 350 }}>
-        <MultiSelect
-          size="sm"
-          value={widgetTypes}
-          onChange={(values) => setWidgetTypes(Array.isArray(values) ? values : [])}
-          data={WIDGET_TYPE_OPTIONS}
+      <Box style={{ width: 360 }}>
+        <Select
+          isMulti
+          options={WIDGET_TYPE_OPTIONS}
+          value={WIDGET_TYPE_OPTIONS.filter((option) => widgetTypes.includes(option.value))}
+          onChange={(selected) =>
+            setWidgetTypes(Array.isArray(selected) ? selected.map((option) => option.value) : [])
+          }
           placeholder={getLanguageByKey("Widget type")}
-          searchable
-          clearable
+          isClearable
+          isSearchable
+          closeMenuOnSelect={false}
+          classNamePrefix="dashboard-widget-select"
         />
       </Box>
     </Flex>

@@ -1,0 +1,116 @@
+.dashboard-widget-select__menu-list::-webkit-scrollbar-thumb {
+  background-color: var(--crm-ui-kit-palette-scrollbar-thumb-background);
+  border-radius: 4px;
+}
+
+.dashboard-widget-select__menu-list::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.dashboard-widget-select__control {
+  background-color: var(--crm-ui-kit-palette-background-primary);
+  border: 1px solid var(--crm-ui-kit-palette-border-default);
+  color: var(--crm-ui-kit-palette-text-primary);
+  min-height: 36px;
+  box-shadow: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-widget-select__control--is-focused {
+  border-color: var(--crm-ui-kit-palette-link-primary);
+  box-shadow: 0 0 0 1px var(--crm-ui-kit-palette-link-primary);
+}
+
+.dashboard-widget-select__control:hover {
+  border-color: var(--crm-ui-kit-palette-border-primary);
+}
+
+.dashboard-widget-select__value-container {
+  padding: 4px 8px;
+  color: var(--crm-ui-kit-palette-text-primary);
+}
+
+.dashboard-widget-select__placeholder {
+  color: var(--crm-ui-kit-palette-placeholder-default);
+}
+
+.dashboard-widget-select__input-container {
+  color: var(--crm-ui-kit-palette-text-primary);
+}
+
+.dashboard-widget-select__multi-value {
+  background-color: var(--crm-ui-kit-palette-surface-hover-background-color);
+  color: var(--crm-ui-kit-palette-text-primary);
+  border: 1px solid var(--crm-ui-kit-palette-border-default);
+}
+
+.dashboard-widget-select__multi-value__label {
+  color: inherit;
+}
+
+.dashboard-widget-select__multi-value__remove {
+  color: inherit;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dashboard-widget-select__multi-value__remove:hover {
+  background-color: var(--crm-ui-kit-palette-link-primary);
+  color: var(--crm-ui-kit-palette-background-primary);
+}
+
+.dashboard-widget-select__indicator,
+.dashboard-widget-select__dropdown-indicator,
+.dashboard-widget-select__clear-indicator {
+  color: var(--crm-ui-kit-palette-text-secondary-light);
+}
+
+.dashboard-widget-select__indicator svg,
+.dashboard-widget-select__dropdown-indicator svg,
+.dashboard-widget-select__clear-indicator svg {
+  fill: currentColor;
+}
+
+.dashboard-widget-select__indicator-separator {
+  display: none;
+}
+
+.dashboard-widget-select__menu {
+  background-color: var(--crm-ui-kit-palette-background-primary);
+  color: var(--crm-ui-kit-palette-text-primary);
+  border: 1px solid var(--crm-ui-kit-palette-border-default);
+  box-shadow: 0 8px 24px rgba(9, 17, 27, 0.28);
+}
+
+.dashboard-widget-select__option {
+  background-color: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.dashboard-widget-select__option--is-focused {
+  background-color: var(--crm-ui-kit-пalette-сurface-hover-background-color);
+}
+
+.dashboard-widget-select__option--is-selected {
+  background-color: var(--crm-ui-kit-пalette-link-primary);
+  color: var(--crm-ui-kit-пalette-background-primary);
+}
+
+.dashboard-widget-select__menu-list {
+  max-height: 240px;
+  scrollbar-width: thin;
+}
+
+.dashboard-widget-select__menu-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dashboard-widget-select__menu-list::-webkit-scrollbar-thumb {
+  background-color: var(--crm-ui-kit-пalette-scrollbar-thumb-background);
+  border-radius: 4px;
+}
+
+.dashboard-widget-select__menu-list::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
