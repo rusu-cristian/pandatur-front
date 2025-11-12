@@ -252,6 +252,81 @@ export const Dashboard = () => {
     return hasTechnicians || hasUserGroups || hasGroupTitles || hasDateRange;
   }, [selectedTechnicians, selectedUserGroups, selectedGroupTitles, dateRange]);
 
+  // Кастомные стили для react-select, чтобы переопределить inline styles
+  const customSelectStyles = useMemo(() => ({
+    control: (base) => ({
+      ...base,
+      backgroundColor: 'var(--crm-ui-kit-palette-background-primary)',
+      borderColor: 'var(--crm-ui-kit-palette-border-default)',
+      minHeight: 36,
+      boxShadow: 'none',
+      '&:hover': {
+        borderColor: 'var(--crm-ui-kit-palette-border-primary)',
+      },
+    }),
+    menu: (base) => ({
+      ...base,
+      backgroundColor: 'var(--crm-ui-kit-palette-background-primary)',
+      border: '1px solid var(--crm-ui-kit-palette-border-default)',
+      boxShadow: '0 8px 24px rgba(9, 17, 27, 0.28)',
+    }),
+    option: (base, state) => ({
+      ...base,
+      backgroundColor: state.isSelected
+        ? 'var(--crm-ui-kit-palette-link-primary)'
+        : state.isFocused
+          ? 'var(--crm-ui-kit-palette-surface-hover-background-color)'
+          : 'transparent',
+      color: state.isSelected
+        ? 'var(--crm-ui-kit-palette-background-primary)'
+        : 'var(--crm-ui-kit-palette-text-primary)',
+      '&:active': {
+        backgroundColor: 'var(--crm-ui-kit-palette-link-hover-primary)',
+      },
+    }),
+    multiValue: (base) => ({
+      ...base,
+      backgroundColor: 'var(--crm-ui-kit-palette-surface-hover-background-color)',
+      border: '1px solid var(--crm-ui-kit-palette-border-default)',
+    }),
+    multiValueLabel: (base) => ({
+      ...base,
+      color: 'var(--crm-ui-kit-palette-text-primary)',
+    }),
+    multiValueRemove: (base) => ({
+      ...base,
+      color: 'var(--crm-ui-kit-palette-text-primary)',
+      '&:hover': {
+        backgroundColor: 'var(--crm-ui-kit-palette-link-primary)',
+        color: 'var(--crm-ui-kit-palette-background-primary)',
+      },
+    }),
+    input: (base) => ({
+      ...base,
+      color: 'var(--crm-ui-kit-palette-text-primary)',
+    }),
+    placeholder: (base) => ({
+      ...base,
+      color: 'var(--crm-ui-kit-palette-placeholder-default)',
+    }),
+    singleValue: (base) => ({
+      ...base,
+      color: 'var(--crm-ui-kit-palette-text-primary)',
+    }),
+    dropdownIndicator: (base) => ({
+      ...base,
+      color: 'var(--crm-ui-kit-palette-text-secondary-light)',
+    }),
+    clearIndicator: (base) => ({
+      ...base,
+      color: 'var(--crm-ui-kit-palette-text-secondary-light)',
+    }),
+    indicatorSeparator: (base) => ({
+      ...base,
+      display: 'none',
+    }),
+  }), []);
+
   const extraInfo = (
     <Flex gap="sm" align="center">
       <ActionIcon
@@ -278,6 +353,7 @@ export const Dashboard = () => {
           hideSelectedOptions={false}
           closeMenuOnSelect={false}
           classNamePrefix="dashboard-widget-select"
+          styles={customSelectStyles}
           components={{ Option: WidgetTypeOption, MultiValue: WidgetTypeMultiValue }}
         />
       </Box>

@@ -118,7 +118,15 @@
 
 .dashboard-widget-select__option--is-selected {
   background-color: var(--crm-ui-kit-palette-link-primary);
-  color: var(--crm-ui-kit-пalette-background-primary);
+  color: var(--crm-ui-kit-palette-background-primary);
+}
+
+.dashboard-widget-select__option--is-selected span {
+  color: inherit;
+}
+
+.dashboard-widget-select__option--is-selected svg {
+  color: inherit;
 }
 
 .dashboard-widget-select__menu-list {
