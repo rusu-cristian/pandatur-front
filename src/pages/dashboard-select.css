@@ -28,25 +28,6 @@
 .dashboard-widget-select__value-container {
   padding: 4px 8px;
   color: var(--crm-ui-kit-palette-text-primary);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px;
-  max-width: 100%;
-  overflow: hidden;
-}
-
-.dashboard-widget-select__aggregate {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--crm-ui-kit-palette-text-secondary-light);
-  background-color: var(--crm-ui-kit-palette-background-primary);
-  border: 1px dashed var(--crm-ui-kit-palette-border-default);
 }
 
 .dashboard-widget-select__placeholder {
@@ -101,15 +82,9 @@
 }
 
 .dashboard-widget-select__option {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.dashboard-widget-select__option-placeholder {
-  display: inline-block;
-  width: 16px;
-  height: 16px;
+  background-color: transparent;
+  color: inherit;
+  cursor: pointer;
 }
 
 .dashboard-widget-select__option--is-focused {
