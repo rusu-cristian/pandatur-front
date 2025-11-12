@@ -11,11 +11,17 @@ const clampPercentage = (value) => {
 };
 
 const mapItems = (items = [], limit = 100) => {
-  const normalized = (items || []).map((item) => ({
-    channel: item?.channel || "-",
-    count: Number.isFinite(item?.count) ? item.count : 0,
-    percentage: clampPercentage(item?.percentage ?? 0),
-  }));
+  const normalized = (items || []).map((item) => {
+    const count = Number.isFinite(item?.count) ? item.count : 0;
+    const rawPercentage = Number.isFinite(item?.percentage) ? item.percentage : undefined;
+
+    return {
+      channel: item?.channel || "-",
+      count,
+      ...(rawPercentage !== undefined ? { percentage: clampPercentage(rawPercentage) } : {}),
+      href: typeof item?.href === "string" && item.href ? item.href : undefined,
+    };
+  });
   normalized.sort((a, b) => b.count - a.count);
   return normalized.slice(0, limit);
 };
@@ -93,6 +99,16 @@ const TicketCategoricalStatsCard = ({
             const count = Number.isFinite(item.count) ? item.count : 0;
             const percent = clampPercentage(item.percentage ?? (count / maxCount) * 100);
             const share = totalValue > 0 ? Math.round((count / totalValue) * 100) : 0;
+            const channelLabel = item.channel || getLanguageByKey(itemFallbackKey);
+            const linkProps = item.href
+              ? {
+                component: "a",
+                href: item.href,
+                target: "_blank",
+                rel: "noopener noreferrer",
+                style: { color: "inherit", textDecoration: "none" },
+              }
+              : {};
 
             return (
               <Box key={`${item.channel}-${index}`}>
@@ -101,8 +117,8 @@ const TicketCategoricalStatsCard = ({
                     <Badge variant="light" radius="sm">
                       {index + 1}
                     </Badge>
-                    <Text fw={600} size="sm">
-                      {item.channel || getLanguageByKey(itemFallbackKey)}
+                    <Text fw={600} size="sm" {...linkProps}>
+                      {channelLabel}
                     </Text>
                   </Group>
                   <Box style={{ textAlign: "right" }}>

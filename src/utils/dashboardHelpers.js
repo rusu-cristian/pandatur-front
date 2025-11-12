@@ -42,6 +42,47 @@ export const createCountsData = (obj) => ({
   total: pickNum(obj, ["total_calls_count", "total_messages_count", "total_count", "total", "count", "all"]),
 });
 
+const getCategoricalChannelName = (value, fallback) => {
+  if (!value || typeof value !== "object") {
+    return String(fallback ?? "-");
+  }
+
+  const keys = ["channel", "marketing", "name", "title", "label", "source", "platform", "category"];
+  for (const key of keys) {
+    const candidate = value[key];
+    if (candidate !== undefined && candidate !== null && String(candidate).trim()) {
+      return String(candidate).trim();
+    }
+  }
+
+  return String(fallback ?? "-");
+};
+
+const extractHref = (value) => {
+  if (!value || typeof value !== "object") return undefined;
+  const linkKeys = ["href", "url", "link"];
+  for (const key of linkKeys) {
+    const candidate = value[key];
+    if (typeof candidate === "string" && candidate.trim()) {
+      return candidate.trim();
+    }
+  }
+  return undefined;
+};
+
+const extractPercentage = (value) => {
+  if (!value || typeof value !== "object") return undefined;
+  const percentageKeys = ["percentage", "percent"];
+  for (const key of percentageKeys) {
+    if (Object.prototype.hasOwnProperty.call(value, key)) {
+      const candidate = Number(value[key]);
+      if (Number.isFinite(candidate)) return candidate;
+      return undefined;
+    }
+  }
+  return undefined;
+};
+
 /**
  * Преобразует маркетинговую статистику в массив [{ channel, count }]
  */
@@ -51,18 +92,52 @@ const normalizeCategoricalStats = (stats) => {
     return stats
       .map((item) => {
         if (!item) return null;
-        if (typeof item === "object" && item.channel !== undefined) {
-          return { channel: String(item.channel || "-"), count: pickNum(item, ["count", "value", "total"]) };
+        if (typeof item === "object") {
+          const channel = getCategoricalChannelName(item, "-");
+          const count = pickNum(item, ["count", "value", "total"]);
+          const percentage = extractPercentage(item);
+          const href = extractHref(item);
+
+          return {
+            channel,
+            count: Number.isFinite(count) ? count : 0,
+            ...(percentage !== undefined ? { percentage } : {}),
+            href,
+          };
+        }
+        if (typeof item === "string" || typeof item === "number") {
+          return {
+            channel: String(item),
+            count: typeof item === "number" && Number.isFinite(item) ? item : 0,
+          };
         }
         return null;
       })
       .filter(Boolean);
   }
   if (typeof stats === "object") {
-    return Object.entries(stats).map(([channel, value]) => ({
-      channel: channel || "-",
-      count: Number.isFinite(Number(value)) ? Number(value) : 0,
-    }));
+    return Object.entries(stats).map(([channel, value]) => {
+      if (value && typeof value === "object") {
+        const normalizedChannel = getCategoricalChannelName(value, channel);
+        const count = pickNum(value, ["count", "value", "total"]);
+        const percentage = extractPercentage(value);
+        const href = extractHref(value);
+
+        return {
+          channel: normalizedChannel,
+          count: Number.isFinite(count) ? count : 0,
+          ...(percentage !== undefined ? { percentage } : {}),
+          href,
+        };
+      }
+
+      const numericValue = Number(value);
+
+      return {
+        channel: channel || "-",
+        count: Number.isFinite(numericValue) ? numericValue : 0,
+      };
+    });
   }
   return [];
 };
