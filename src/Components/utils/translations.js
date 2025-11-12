@@ -4997,5 +4997,10 @@ export const translations = {
     RO: "Filtru după pâlnie",
     RU: "Фильтр по воронке",
     EN: "Filter by group"
+  },
+  "Widget type": {
+    RO: "Tip widget",
+    RU: "Тип виджета",
+    EN: "Widget type"
   }
 };

@@ -229,14 +229,13 @@ export const Dashboard = () => {
         <LuFilter size={18} />
       </ActionIcon>
 
-      <Box style={{ width: 240 }}>
+      <Box style={{ width: 350 }}>
         <MultiSelect
           size="sm"
           value={widgetTypes}
           onChange={(values) => setWidgetTypes(Array.isArray(values) ? values : [])}
           data={WIDGET_TYPE_OPTIONS}
           placeholder={getLanguageByKey("Widget type")}
-          aria-label="widget-type"
           searchable
           clearable
         />
