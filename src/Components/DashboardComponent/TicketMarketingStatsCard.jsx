@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { Card, Group, Stack, Text, Badge, Progress, ThemeIcon, Box } from "@mantine/core";
 import { FaBullhorn, FaShareAlt } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import { getLanguageByKey } from "@utils";
 
 const fmt = (n) => (typeof n === "number" ? n.toLocaleString() : "-");
@@ -100,15 +101,7 @@ const TicketCategoricalStatsCard = ({
             const percent = clampPercentage(item.percentage ?? (count / maxCount) * 100);
             const share = totalValue > 0 ? Math.round((count / totalValue) * 100) : 0;
             const channelLabel = item.channel || getLanguageByKey(itemFallbackKey);
-            const linkProps = item.href
-              ? {
-                component: "a",
-                href: item.href,
-                target: "_blank",
-                rel: "noopener noreferrer",
-                style: { color: "inherit", textDecoration: "none" },
-              }
-              : {};
+            const linkPath = item.href || null;
 
             return (
               <Box key={`${item.channel}-${index}`}>
@@ -117,14 +110,29 @@ const TicketCategoricalStatsCard = ({
                     <Badge variant="light" radius="sm">
                       {index + 1}
                     </Badge>
-                    <Text fw={600} size="sm" {...linkProps}>
+                    <Text fw={600} size="sm">
                       {channelLabel}
                     </Text>
                   </Group>
                   <Box style={{ textAlign: "right" }}>
-                    <Text size="sm" fw={700}>
-                      {fmt(count)}
-                    </Text>
+                    {linkPath ? (
+                      <Link
+                        to={linkPath}
+                        style={{
+                          color: "var(--crm-ui-kit-palette-link-primary)",
+                          textDecoration: "underline",
+                          fontSize: 14,
+                          fontWeight: 700,
+                          display: "inline-block",
+                        }}
+                      >
+                        {fmt(count)}
+                      </Link>
+                    ) : (
+                      <Text size="sm" fw={700}>
+                        {fmt(count)}
+                      </Text>
+                    )}
                     <Text size="xs" c="dimmed">
                       {share}%
                     </Text>

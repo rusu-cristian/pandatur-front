@@ -216,7 +216,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
 
     // Универсальная обертка для виджетов (без drag handle)
     const renderWidgetWrapper = (children, key) => (
-        <div key={key} style={{ height: "100%", cursor: "move" }}>
+        <div key={key} style={{ height: "100%", cursor: "default" }}>
             {children}
         </div>
     );
@@ -262,7 +262,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                 compactType={null}
                 preventCollision
                 isResizable
-                isDraggable
+                isDraggable={false}
                 onLayoutChange={handleLayoutChange}
                 draggableCancel=".mantine-Badge,.mantine-Progress,.mantine-Button,.mantine-Input"
                 transformScale={transformScale}
