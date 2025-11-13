@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { Card, Group, Stack, Text, Badge, Progress, ThemeIcon, Box } from "@mantine/core";
-import { FaBullhorn } from "react-icons/fa";
+import { FaShareAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { getLanguageByKey } from "@utils";
 
@@ -27,22 +27,22 @@ const mapItems = (items = [], limit = 100) => {
   return normalized.slice(0, limit);
 };
 
-export const TicketMarketingStatsCard = ({
-  marketingStats = [],
-  totalMarketing = 0,
+export const TicketSourceStatsCard = ({
+  sourceStats = [],
+  totalSources = 0,
   title,
   subtitle,
   bg,
   limit = 100,
 }) => {
-  const normalizedStats = useMemo(() => mapItems(marketingStats, limit), [marketingStats, limit]);
+  const normalizedStats = useMemo(() => mapItems(sourceStats, limit), [sourceStats, limit]);
 
   const totalValue = useMemo(() => {
-    if (Number.isFinite(totalMarketing) && totalMarketing > 0) {
-      return totalMarketing;
+    if (Number.isFinite(totalSources) && totalSources > 0) {
+      return totalSources;
     }
     return normalizedStats.reduce((sum, item) => sum + (item.count || 0), 0);
-  }, [normalizedStats, totalMarketing]);
+  }, [normalizedStats, totalSources]);
 
   const maxCount = useMemo(
     () => Math.max(1, ...normalizedStats.map((item) => (Number.isFinite(item.count) ? item.count : 0))),
@@ -65,12 +65,12 @@ export const TicketMarketingStatsCard = ({
     >
       <Group justify="space-between" align="flex-start" mb="md">
         <Group gap="sm" align="center">
-          <ThemeIcon size="xl" radius="xl" variant="light" color="blue">
-            <FaBullhorn size={18} />
+          <ThemeIcon size="xl" radius="xl" variant="light" color="teal">
+            <FaShareAlt size={18} />
           </ThemeIcon>
           <Stack gap={4}>
             <Text size="xs" c="dimmed" fw={700} tt="uppercase" style={{ letterSpacing: 0.8 }}>
-              {title || getLanguageByKey("Ticket Marketing Stats")}
+              {title || getLanguageByKey("Ticket Source Stats")}
             </Text>
             {subtitle ? (
               <Badge variant="light" size="sm">
@@ -133,7 +133,7 @@ export const TicketMarketingStatsCard = ({
                     </Text>
                   </Box>
                 </Group>
-                <Progress value={percent} size="md" radius="xl" color="blue" />
+                <Progress value={percent} size="md" radius="xl" color="teal" />
               </Box>
             );
           })
@@ -146,3 +146,4 @@ export const TicketMarketingStatsCard = ({
     </Card>
   );
 };
+

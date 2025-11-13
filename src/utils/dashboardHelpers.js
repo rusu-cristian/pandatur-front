@@ -185,11 +185,15 @@ export const createTicketSourceStatsData = (obj) => {
   const totalSources = stats.reduce((sum, item) => sum + (Number.isFinite(item.count) ? item.count : 0), 0);
 
   const sourceStats = stats
-    .map((item) => ({
-      channel: item.channel || "-",
-      count: Number.isFinite(item.count) ? item.count : 0,
-      percentage: totalSources > 0 ? (item.count / totalSources) * 100 : 0,
-    }))
+    .map((item) => {
+      const count = Number.isFinite(item.count) ? item.count : 0;
+      return {
+        channel: item.channel || "-",
+        count,
+        percentage: totalSources > 0 && count > 0 ? (count / totalSources) * 100 : 0,
+        href: item.href, // ✅ сохраняем href из normalizeCategoricalStats
+      };
+    })
     .sort((a, b) => b.count - a.count);
 
   return {
@@ -207,11 +211,15 @@ export const createTicketPlatformSourceStatsData = (obj) => {
   const totalPlatformSources = stats.reduce((sum, item) => sum + (Number.isFinite(item.count) ? item.count : 0), 0);
 
   const platformSourceStats = stats
-    .map((item) => ({
-      channel: item.channel || "-",
-      count: Number.isFinite(item.count) ? item.count : 0,
-      percentage: totalPlatformSources > 0 ? (item.count / totalPlatformSources) * 100 : 0,
-    }))
+    .map((item) => {
+      const count = Number.isFinite(item.count) ? item.count : 0;
+      return {
+        channel: item.channel || "-",
+        count,
+        percentage: totalPlatformSources > 0 && count > 0 ? (count / totalPlatformSources) * 100 : 0,
+        href: item.href, // ✅ сохраняем href из normalizeCategoricalStats
+      };
+    })
     .sort((a, b) => b.count - a.count);
 
   return {

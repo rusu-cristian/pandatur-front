@@ -20,7 +20,9 @@ import { TicketCreationCard } from "./TicketCreationCard";
 import { WorkflowFromDePrelucratCard } from "./WorkflowFromDePrelucratCard";
 import { WorkflowDurationCard } from "./WorkflowDurationCard";
 import { TicketDestinationCard } from "./TicketDestinationCard";
-import { TicketMarketingStatsCard, TicketSourceStatsCard, TicketPlatformSourceStatsCard } from "./TicketMarketingStatsCard";
+import { TicketMarketingStatsCard } from "./TicketMarketingStatsCard";
+import { TicketSourceStatsCard } from "./TicketSourceStatsCard";
+import { TicketPlatformSourceStatsCard } from "./TicketPlatformSourceStatsCard";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
