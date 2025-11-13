@@ -331,6 +331,12 @@ export const WEBHOOK_PAGES_CONFIG = {
   ],
   vibers: [
     {
+      page_id: "380984284284",
+      page_name: "Catalan - 380984284284",
+      type: "phone",
+      group_title: ["CATALAN"]
+    },
+    {
       page_id: "37360991919",
       page_name: "Chisinau - 37360991919",
       type: "phone",
@@ -353,12 +359,6 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_name: "Drochia - 37361141919",
       type: "phone",
       group_title: ["DROCHIA"]
-    },
-    {
-      page_id: "380984284284",
-      page_name: "Catalan - 380984284284",
-      type: "phone",
-      group_title: ["CATALAN"]
     }
   ],
   "viber-bots": [
