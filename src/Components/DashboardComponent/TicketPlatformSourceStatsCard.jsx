@@ -113,6 +113,7 @@ export const TicketPlatformSourceStatsCard = ({
                     {linkPath ? (
                       <Link
                         to={linkPath}
+                        target="_blank"
                         style={{
                           color: "var(--crm-ui-kit-palette-link-primary)",
                           textDecoration: "underline",
