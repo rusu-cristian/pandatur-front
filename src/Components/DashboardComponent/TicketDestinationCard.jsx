@@ -29,46 +29,30 @@ const parseDestinationValue = (value) => {
 const mapDestinationItems = (destinationData = {}, limit = 100) => {
   if (!destinationData || typeof destinationData !== "object") return [];
 
-  const countryMap = new Map();
-  const stateOrder = Object.keys(destinationData || {});
+  const workflowEntries = Object.entries(destinationData || {});
 
-  stateOrder.forEach((stateKey) => {
-    Object.entries(destinationData?.[stateKey] || {}).forEach(([country, rawValue]) => {
-      const { count, href } = parseDestinationValue(rawValue);
-      if (!count) return;
-
-      if (!countryMap.has(country)) {
-        countryMap.set(country, {
+  return workflowEntries.map(([workflowKey, countriesObj]) => {
+    const countryList = Object.entries(countriesObj || {})
+      .map(([country, rawValue]) => {
+        const { count, href } = parseDestinationValue(rawValue);
+        return {
           country,
-          details: [],
-          total: 0,
-          totalHref: undefined,
-        });
-      }
+          count,
+          href,
+        };
+      })
+      .filter((item) => Number.isFinite(item.count) && item.count > 0)
+      .sort((a, b) => b.count - a.count)
+      .slice(0, limit);
 
-      const entry = countryMap.get(country);
-      entry.details.push({
-        state: stateKey,
-        count,
-        href,
-      });
-      if (!entry.totalHref && href) {
-        entry.totalHref = href;
-      }
-      entry.total += count;
-    });
+    const total = countryList.reduce((sum, item) => sum + item.count, 0);
+
+    return {
+      workflow: workflowKey,
+      countries: countryList,
+      total,
+    };
   });
-
-  const normalized = Array.from(countryMap.values())
-    .map((item) => ({
-      ...item,
-      details: item.details.filter((detail) => detail.count > 0),
-    }))
-    .filter((item) => item.total > 0);
-
-  normalized.sort((a, b) => b.total - a.total);
-
-  return normalized.slice(0, limit);
 };
 
 const STATE_COLORS = {
@@ -83,17 +67,15 @@ export const TicketDestinationCard = ({
   bg,
   limit = 100,
 }) => {
-  const normalizedStats = useMemo(() => mapDestinationItems(destinationData, limit), [destinationData, limit]);
+  const workflowStats = useMemo(() => mapDestinationItems(destinationData, limit), [destinationData, limit]);
 
-  const totalValue = useMemo(
-    () => normalizedStats.reduce((sum, item) => sum + (Number.isFinite(item.total) ? item.total : 0), 0),
-    [normalizedStats]
-  );
-
-  const maxCount = useMemo(
-    () => Math.max(1, ...normalizedStats.map((item) => (Number.isFinite(item.total) ? item.total : 0))),
-    [normalizedStats]
-  );
+  const summary = useMemo(() => {
+    const totals = workflowStats.map((wf) => wf.total);
+    return {
+      grandTotal: totals.reduce((sum, value) => sum + value, 0),
+      maxTotal: Math.max(1, ...totals, 1),
+    };
+  }, [workflowStats]);
 
   return (
     <Card
@@ -127,7 +109,7 @@ export const TicketDestinationCard = ({
         </Group>
         <Box style={{ textAlign: "right" }}>
           <Text fz={36} fw={900} style={{ lineHeight: 1 }}>
-            {fmt(totalValue)}
+            {fmt(summary.grandTotal)}
           </Text>
           <Text size="xs" c="dimmed" fw={600}>
             {getLanguageByKey("Total")}
@@ -135,90 +117,77 @@ export const TicketDestinationCard = ({
         </Box>
       </Group>
 
-      <Stack gap="sm" style={{ overflowY: "auto", flex: 1 }}>
-        {normalizedStats.length ? (
-          normalizedStats.map((item, index) => {
-            const totalCount = Number.isFinite(item.total) ? item.total : 0;
-            const percent = clampPercentage((totalCount / maxCount) * 100);
-            const share = totalValue > 0 ? Math.round((totalCount / totalValue) * 100) : 0;
-            const countryLabel = item.country || getLanguageByKey("No source");
+      <Stack gap="md" style={{ overflowY: "auto", flex: 1 }}>
+        {workflowStats.length ? (
+          workflowStats.map((workflowBlock) => {
+            const color = STATE_COLORS[workflowBlock.workflow] || "blue";
+            const workflowLabel = getLanguageByKey(workflowBlock.workflow) || workflowBlock.workflow;
 
             return (
-              <Box key={`${item.country}-${index}`}>
+              <Box key={workflowBlock.workflow}>
                 <Group justify="space-between" align="center" mb={6}>
                   <Group gap="xs" align="center">
-                    <Badge variant="light" radius="sm">
-                      {index + 1}
+                    <Badge variant="light" color={color} radius="sm">
+                      {workflowLabel}
                     </Badge>
-                    <Text fw={600} size="sm">
-                      {countryLabel}
-                    </Text>
                   </Group>
                   <Box style={{ textAlign: "right" }}>
-                    {item.totalHref ? (
-                      <Link
-                        to={item.totalHref}
-                        target="_blank"
-                        style={{
-                          color: "var(--crm-ui-kit-palette-link-primary)",
-                          textDecoration: "underline",
-                          fontSize: 14,
-                          fontWeight: 700,
-                          display: "inline-block",
-                        }}
-                        onMouseDown={(e) => e.stopPropagation()}
-                        onTouchStart={(e) => e.stopPropagation()}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        {fmt(totalCount)}
-                      </Link>
-                    ) : (
-                      <Text size="sm" fw={700}>
-                        {fmt(totalCount)}
-                      </Text>
-                    )}
-                    <Text size="xs" c="dimmed">
-                      {share}%
+                    <Text size="sm" fw={700}>
+                      {fmt(workflowBlock.total)}
                     </Text>
                   </Box>
                 </Group>
 
-                {item.details.length ? (
-                  <Group gap="xs" justify="flex-start" wrap="wrap" mb={6}>
-                    {item.details.map((detail) => {
-                      const stateLabel = getLanguageByKey(detail.state) || detail.state;
-                      const badgeColor = STATE_COLORS[detail.state] || "blue";
-                      const badgeContent = (
-                        <Badge
-                          size="xs"
-                          variant="light"
-                          color={badgeColor}
-                          style={{ cursor: detail.href ? "pointer" : "default" }}
-                        >
-                          {stateLabel}: {fmt(detail.count)}
-                        </Badge>
-                      );
+                <Stack gap="sm" style={{ paddingLeft: 28 }}>
+                  {workflowBlock.countries.length ? (
+                    workflowBlock.countries.map((item, idx) => {
+                      const share = summary.grandTotal > 0 ? Math.round((item.count / summary.grandTotal) * 100) : 0;
+                      const percent = clampPercentage((item.count / workflowBlock.countries[0].count) * 100);
 
-                      return detail.href ? (
-                        <Link
-                          target="_blank"
-                          key={`${item.country}-${detail.state}`}
-                          to={detail.href}
-                          style={{ textDecoration: "none" }}
-                          onMouseDown={(e) => e.stopPropagation()}
-                          onTouchStart={(e) => e.stopPropagation()}
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          {badgeContent}
-                        </Link>
-                      ) : (
-                        <Box key={`${item.country}-${detail.state}`}>{badgeContent}</Box>
+                      return (
+                        <Box key={`${workflowBlock.workflow}-${item.country}-${idx}`}>
+                          <Group justify="space-between" align="center" mb={4}>
+                            <Text fw={500} size="sm">
+                              {item.country}
+                            </Text>
+                            <Box style={{ textAlign: "right" }}>
+                              {item.href ? (
+                                <Link
+                                  to={item.href}
+                                  target="_blank"
+                                  style={{
+                                    color: "var(--crm-ui-kit-palette-link-primary)",
+                                    textDecoration: "underline",
+                                    fontSize: 14,
+                                    fontWeight: 700,
+                                    display: "inline-block",
+                                  }}
+                                  onMouseDown={(e) => e.stopPropagation()}
+                                  onTouchStart={(e) => e.stopPropagation()}
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  {fmt(item.count)}
+                                </Link>
+                              ) : (
+                                <Text size="sm" fw={700}>
+                                  {fmt(item.count)}
+                                </Text>
+                              )}
+                              <Text size="xs" c="dimmed">
+                                {share}%
+                              </Text>
+                            </Box>
+                          </Group>
+                          <Progress value={percent} size="md" radius="xl" color={color} />
+                        </Box>
                       );
-                    })}
-                  </Group>
-                ) : null}
-
-                <Progress value={percent} size="md" radius="xl" color="blue" />
+                    })
+                  ) : (
+                    <Text c="dimmed" size="sm">
+                      {getLanguageByKey("No data")}
+                    </Text>
+                  )}
+                </Stack>
               </Box>
             );
           })
