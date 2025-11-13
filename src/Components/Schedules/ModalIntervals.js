@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Drawer,
   Stack,
@@ -81,6 +81,22 @@ const ModalIntervals = ({
     });
     setIntervalsByDay(updated);
   }, [selectedDays, opened, selected.employeeIndex]);
+
+  const selectedTechniciansData = useMemo(() => {
+    if (!selectedTechnicians || selectedTechnicians.length === 0) {
+      return [];
+    }
+
+    const selectedIds = new Set(selectedTechnicians);
+
+    return schedule
+      .filter((s) => selectedIds.has(s.id))
+      .map((s) => ({
+        value: String(s.id),
+        label: s.name || String(s.id),
+        status: s.status ?? true,
+      }));
+  }, [schedule, selectedTechnicians]);
 
   const getTechnicianIds = () =>
     selectedTechnicians.length > 0
@@ -202,14 +218,6 @@ const ModalIntervals = ({
   const getSelectedNames = () => {
     if (selectedTechnicians.length > 1) {
       // Преобразуем данные schedule в формат для UserGroupMultiSelect
-      const techniciansData = schedule
-        .filter((s) => selectedTechnicians.includes(s.id))
-        .map((s) => ({
-          value: String(s.id),
-          label: s.name,
-          groupName: s.group || "Default"
-        }));
-
       return (
         <Group direction="column" spacing="xs">
           <Text fw={500} size="lg">
@@ -217,8 +225,8 @@ const ModalIntervals = ({
           </Text>
           <UserGroupMultiSelect
             value={selectedTechnicians.map(id => String(id))}
-            onChange={() => {}} // disabled, не изменяем
-            techniciansData={techniciansData}
+            onChange={() => {}}
+            techniciansData={selectedTechniciansData}
             disabled={true}
             mode="multi"
             label=""
@@ -229,8 +237,13 @@ const ModalIntervals = ({
     }
 
     if (selectedTechnicians.length === 1) {
+      const technicianData = selectedTechniciansData[0];
+      if (technicianData) {
+        return technicianData.label;
+      }
+
       const tech = schedule.find((s) => s.id === selectedTechnicians[0]);
-      return tech ? tech.name : "";
+      return tech ? tech.name : String(selectedTechnicians[0]);
     }
 
     return selectedEmployee
