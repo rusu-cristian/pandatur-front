@@ -1,4 +1,4 @@
-import { Select, Button, Flex, Divider, Text } from "@mantine/core";
+import { Select, Button, Flex, Divider } from "@mantine/core";
 import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 import { getLanguageByKey, showServerError } from "@utils";

@@ -3453,7 +3453,7 @@ export const translations = {
     EN: "Account for Payment"
   },
   returnRequest: {
-    RO: "Cerere de return",
+    RO: "Cerere de retur",
     RU: "Запрос на возврат",
     EN: "Return Request"
   },
