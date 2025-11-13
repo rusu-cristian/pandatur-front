@@ -1,6 +1,6 @@
 import { useMemo, useEffect, useState } from "react";
 import dayjs from "dayjs";
-import { Button, Group, MultiSelect, Modal, Stack, Box } from "@mantine/core";
+import { Button, Group, MultiSelect, Modal, Stack, Box, Flex } from "@mantine/core";
 import { DateRangePicker } from "../../DateRangePicker";
 import { getLanguageByKey } from "../../utils";
 import { useGetTechniciansList, useUserPermissions } from "../../../hooks";
@@ -242,6 +242,8 @@ export const Filter = ({
     if (showUserGroupsFilter) setSelectedUserGroups([]);
     if (showGroupTitlesFilter) setSelectedGroupTitles([]);
     if (showDateFilter) setDateRange([]);
+    onApply?.({});
+    onClose?.();
   };
 
   const handleApply = () => {
@@ -340,21 +342,17 @@ export const Filter = ({
         </Box>
 
         {/* Футер ВСЕГДА снизу */}
-        <Box style={{ borderTop: "1px solid var(--mantine-color-gray-3)", paddingTop: 12, marginTop: 12 }}>
-          <Group justify="space-between">
-            <Button variant="outline" onClick={handleReset}>
-              {getLanguageByKey("Reset")}
-            </Button>
-            <Group>
-              <Button variant="outline" onClick={onClose}>
-                {getLanguageByKey("Anulează")}
-              </Button>
-              <Button onClick={handleApply}>
-                {getLanguageByKey("Aplică")}
-              </Button>
-            </Group>
-          </Group>
-        </Box>
+        <Flex justify="end" gap="md" pt={16} pb={8} pr="md" style={{ borderTop: "1px solid var(--mantine-color-gray-3)" }}>
+          <Button variant="outline" onClick={handleReset}>
+            {getLanguageByKey("Reset")}
+          </Button>
+          <Button variant="outline" onClick={onClose}>
+            {getLanguageByKey("Anulează")}
+          </Button>
+          <Button onClick={handleApply}>
+            {getLanguageByKey("Aplică")}
+          </Button>
+        </Flex>
       </Box>
     </Modal>
   );
