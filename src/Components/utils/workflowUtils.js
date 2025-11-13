@@ -27,6 +27,7 @@ export const workflowOptionsSalesRO = [
 
 export const workflowOptionsFiliale = [
     "Interesat",
+    "Apel de intrare",
     "De prelucrat",
     "Luat în lucru",
     "Ofertă trimisă",
@@ -482,7 +483,8 @@ export const userGroupsToGroupTitle = {
     "Iasi RO": ["RO"],
     "Back RO": ["RO"],
 
-    // other 10
+    // other 11
+    "Branches MD": ["Filiale"],
     "Company branches": ["Filiale"],
     "Corporate sales": ["IndividualGroups"],
     "Corporate clients": ["IndividualGroups"],
