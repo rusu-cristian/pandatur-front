@@ -6,13 +6,15 @@ import { useSnackbar } from "notistack";
 
 const language = localStorage.getItem("language") || "RO";
 
+const createEmptyFilters = () => ({
+    group: [],
+    role: [],
+    status: null,
+    functie: null,
+});
+
 const UserFilterModal = ({ opened, onClose, onApply, users }) => {
-    const [filters, setFilters] = useState({
-        group: [],
-        role: [],
-        status: null,
-        functie: null,
-    });
+    const [filters, setFilters] = useState(() => createEmptyFilters());
     const [groupOptions, setGroupOptions] = useState([]);
     const [permissionOptions, setPermissionOptions] = useState([]);
     const { enqueueSnackbar } = useSnackbar();
@@ -63,12 +65,10 @@ const UserFilterModal = ({ opened, onClose, onApply, users }) => {
     };
 
     const resetFilters = () => {
-        setFilters({
-            group: [],
-            role: [],
-            status: null,
-            functie: null,
-        });
+        const nextFilters = createEmptyFilters();
+        setFilters(nextFilters);
+        onApply?.(nextFilters);
+        onClose?.();
     };
 
     const applyFilters = () => {
