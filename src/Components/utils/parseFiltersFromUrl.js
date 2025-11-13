@@ -60,6 +60,7 @@ export const parseFiltersFromUrl = (params) => ({
     technician_id: parseNumberMulti(params, "technician_id"),
     creation_date: getFromTo(params, "creation_date", YYYY_MM_DD_DASH),
     last_interaction_date: getFromTo(params, "last_interaction_date", YYYY_MM_DD_DASH),
+    platform_source: params.get("platform_source") || undefined,
 
     // TicketInfoFormFilter
     buget: getFromTo(params, "buget"), // число
