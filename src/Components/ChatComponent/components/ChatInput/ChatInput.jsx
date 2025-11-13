@@ -12,7 +12,7 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { FaTasks, FaEnvelope } from "react-icons/fa";
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef, useMemo, useEffect } from "react";
 import { createPortal } from "react-dom";
 import EmojiPicker from "emoji-picker-react";
 import { LuSmile, LuStickyNote } from "react-icons/lu";
@@ -31,6 +31,9 @@ import { EmailForm } from "../EmailForm/EmailForm";
 import { getPagesByType } from "../../../../constants/webhookPagesConfig";
 import { socialMediaIcons } from "../../../utils/socialMediaIcons";
 import "./ChatInput.css";
+
+const MESSAGE_LENGTH_LIMIT = 999;
+const LIMITED_PLATFORMS = ["facebook", "instagram"];
 
 export const ChatInput = ({
   onSendMessage,
@@ -107,6 +110,17 @@ export const ChatInput = ({
     changePageId,
     loading,
   } = useClientContacts(ticketId, lastMessage, groupTitle);
+
+  const isLengthLimited = useMemo(
+    () => LIMITED_PLATFORMS.includes((selectedPlatform || "").toLowerCase()),
+    [selectedPlatform]
+  );
+
+  useEffect(() => {
+    if (!isLengthLimited) {
+      warningShownRef.current = false;
+    }
+  }, [isLengthLimited]);
 
   // Функция для рендеринга опций с иконками
   const renderPlatformOption = ({ option }) => (
@@ -217,14 +231,19 @@ export const ChatInput = ({
   const handleMessageChange = (e) => {
     const newValue = e.target.value;
     setMessage(newValue);
-    
+
+    if (!isLengthLimited) {
+      warningShownRef.current = false;
+      return;
+    }
+
     // Показываем уведомление только один раз при превышении лимита
-    if (newValue.length > 999 && !warningShownRef.current) {
+    if (newValue.length > MESSAGE_LENGTH_LIMIT && !warningShownRef.current) {
       warningShownRef.current = true;
       enqueueSnackbar(getLanguageByKey("TooLongMessages"), {
         variant: "warning",
       });
-    } else if (newValue.length <= 999) {
+    } else if (newValue.length <= MESSAGE_LENGTH_LIMIT) {
       // Сбрасываем флаг, если длина вернулась в норму
       warningShownRef.current = false;
     }
@@ -292,7 +311,7 @@ export const ChatInput = ({
 
     if (!hasText && !hasFiles) return;
 
-    if (message.length > 999) {
+    if (isLengthLimited && message.length > MESSAGE_LENGTH_LIMIT) {
       return;
     }
 
@@ -577,7 +596,7 @@ export const ChatInput = ({
                       (!message.trim() && attachments.length === 0) ||
                       !currentClient?.payload ||
                       currentClient.payload.platform === "sipuni" ||
-                      message.length > 999
+                      (isLengthLimited && message.length > MESSAGE_LENGTH_LIMIT)
                     }
                     variant="filled"
                     onClick={sendMessage}
