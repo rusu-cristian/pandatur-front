@@ -1408,6 +1408,306 @@ export const translations = {
     RU: "Выберите маркетинг",
     EN: "Choose marketing"
   },
+  "Egipt": {
+    RO: "Egipt",
+    RU: "Египет",
+    EN: "Egypt"
+  },
+  "Turcia": {
+    RO: "Turcia",
+    RU: "Турция",
+    EN: "Turkey"
+  },
+  "Dubai": {
+    RO: "Dubai",
+    RU: "Дубай",
+    EN: "Dubai"
+  },
+  "Munte Romania": {
+    RO: "Munte Romania",
+    RU: "Горы Румыния",
+    EN: "Romanian mountains"
+  },
+  "Munte Bulgaria": {
+    RO: "Munte Bulgaria",
+    RU: "Горы Болгария",
+    EN: "Bulgarian mountains"
+  },
+  "Munte Bukovel": {
+    RO: "Munte Bukovel",
+    RU: "Горы Буковель",
+    EN: "Bukovel mountains"
+  },
+  "Tratament": {
+    RO: "Tratament",
+    RU: "Лечение",
+    EN: "Treatment"
+  },
+  "Croaziere": {
+    RO: "Croaziere",
+    RU: "Круизы",
+    EN: "Cruises"
+  },
+  "Citybreak": {
+    RO: "Citybreak",
+    RU: "Сити-брейк",
+    EN: "City break"
+  },
+  "Excursii Europa": {
+    RO: "Excursii Europa",
+    RU: "Экскурсии по Европе",
+    EN: "Europe tours"
+  },
+  "Excursii Romania": {
+    RO: "Excursii Romania",
+    RU: "Экскурсии по Румынии",
+    EN: "Romania tours"
+  },
+  "Excursii Moldova": {
+    RO: "Excursii Moldova",
+    RU: "Экскурсии по Молдове",
+    EN: "Moldova tours"
+  },
+  "Cappadocia": {
+    RO: "Cappadocia",
+    RU: "Каппадокия",
+    EN: "Cappadocia"
+  },
+  "Excursie Istanbul (autocar)": {
+    RO: "Excursie Istanbul (autocar)",
+    RU: "Экскурсия в Стамбул (автобус)",
+    EN: "Istanbul tour (bus)"
+  },
+  "City Break de Vis în Istanbul": {
+    RO: "City Break de Vis în Istanbul",
+    RU: "Сити-брейк мечты в Стамбуле",
+    EN: "Dream city break in Istanbul"
+  },
+  "TeamBuilding": {
+    RO: "TeamBuilding",
+    RU: "Тимбилдинг",
+    EN: "Team building"
+  },
+  "Munte Alpi (Austria, Italia, Elvetia, Franta)": {
+    RO: "Munte Alpi (Austria, Italia, Elvetia, Franta)",
+    RU: "Горы Альпы (Австрия, Италия, Швейцария, Франция)",
+    EN: "Alps mountains (Austria, Italy, Switzerland, France)"
+  },
+  "e-Visa UAE": {
+    RO: "e-Visa UAE",
+    RU: "Электронная виза ОАЭ",
+    EN: "e-Visa UAE"
+  },
+  "e-Visa Thailanda": {
+    RO: "e-Visa Thailanda",
+    RU: "Электронная виза Таиланд",
+    EN: "e-Visa Thailand"
+  },
+  "e-Visa India": {
+    RO: "e-Visa India",
+    RU: "Электронная виза Индия",
+    EN: "e-Visa India"
+  },
+  "e-Visa Cuba": {
+    RO: "e-Visa Cuba",
+    RU: "Электронная виза Куба",
+    EN: "e-Visa Cuba"
+  },
+  "e-Visa Kenya": {
+    RO: "e-Visa Kenya",
+    RU: "Электронная виза Кения",
+    EN: "e-Visa Kenya"
+  },
+  "e-Visa Vietnam": {
+    RO: "e-Visa Vietnam",
+    RU: "Электронная виза Вьетнам",
+    EN: "e-Visa Vietnam"
+  },
+  "e-Visa Iordania": {
+    RO: "e-Visa Iordania",
+    RU: "Электронная виза Иордания",
+    EN: "e-Visa Jordan"
+  },
+  "e-Visa USA": {
+    RO: "e-Visa USA",
+    RU: "Электронная виза США",
+    EN: "e-Visa USA"
+  },
+  "e-Visa China": {
+    RO: "e-Visa China",
+    RU: "Электронная виза Китай",
+    EN: "e-Visa China"
+  },
+  "Green Card": {
+    RO: "Green Card",
+    RU: "Грин-карта",
+    EN: "Green Card"
+  },
+  "Delta Dunarii 3 zile cu All Inclusive": {
+    RO: "Delta Dunarii 3 zile cu All Inclusive",
+    RU: "Дельта Дуная 3 дня All Inclusive",
+    EN: "Danube Delta 3 days all inclusive"
+  },
+  "Transalpina – Cazanele Dunarii – Chipul lui Decebal – Coloana Infinitului – Bran – Brasov": {
+    RO: "Transalpina – Cazanele Dunarii – Chipul lui Decebal – Coloana Infinitului – Bran – Brasov",
+    RU: "Трансальпина – Казаны Дуная – Лик Децебала – Колонна Бесконечности – Бран – Брашов",
+    EN: "Transalpina – Danube Gorges – Decebal's Face – Endless Column – Bran – Brasov"
+  },
+  "Excursie Budapesta": {
+    RO: "Excursie Budapesta",
+    RU: "Экскурсия в Будапешт",
+    EN: "Budapest tour"
+  },
+  "Excursii pentru elevi": {
+    RO: "Excursii pentru elevi",
+    RU: "Экскурсии для учащихся",
+    EN: "Tours for students"
+  },
+  "Excursii pentru profesori": {
+    RO: "Excursii pentru profesori",
+    RU: "Экскурсии для учителей",
+    EN: "Tours for teachers"
+  },
+  "Excursii corporative": {
+    RO: "Excursii corporative",
+    RU: "Корпоративные экскурсии",
+    EN: "Corporate tours"
+  },
+  "Excursii pentru gradinite": {
+    RO: "Excursii pentru gradinite",
+    RU: "Экскурсии для детсадов",
+    EN: "Tours for kindergartens"
+  },
+  "Grecia pentru toti": {
+    RO: "Grecia pentru toti",
+    RU: "Греция для всех",
+    EN: "Greece for everyone"
+  },
+  "Pelerinaj": {
+    RO: "Pelerinaj",
+    RU: "Паломничество",
+    EN: "Pilgrimage"
+  },
+  "Athos": {
+    RO: "Athos",
+    RU: "Афон",
+    EN: "Athos"
+  },
+  "Tabara Iuliana Beregoi 2025": {
+    RO: "Tabara Iuliana Beregoi 2025",
+    RU: "Лагерь Юлианы Берегой 2025",
+    EN: "Iuliana Beregoi Camp 2025"
+  },
+  "Targ de Craciun": {
+    RO: "Targ de Craciun",
+    RU: "Рождественская ярмарка",
+    EN: "Christmas market"
+  },
+  "Bilete de avion": {
+    RO: "Bilete de avion",
+    RU: "Авиабилеты",
+    EN: "Plane tickets"
+  },
+  "Albania": {
+    RO: "Albania",
+    RU: "Албания",
+    EN: "Albania"
+  },
+  "Bali": {
+    RO: "Bali",
+    RU: "Бали",
+    EN: "Bali"
+  },
+  "Bulgaria": {
+    RO: "Bulgaria",
+    RU: "Болгария",
+    EN: "Bulgaria"
+  },
+  "Cipru": {
+    RO: "Cipru",
+    RU: "Кипр",
+    EN: "Cyprus"
+  },
+  "Grecia avion": {
+    RO: "Grecia avion",
+    RU: "Греция самолет",
+    EN: "Greece by plane"
+  },
+  "Grecia autocar": {
+    RO: "Grecia autocar",
+    RU: "Греция автобус",
+    EN: "Greece by bus"
+  },
+  "India": {
+    RO: "India",
+    RU: "Индия",
+    EN: "India"
+  },
+  "Italia": {
+    RO: "Italia",
+    RU: "Италия",
+    EN: "Italy"
+  },
+  "Laponia": {
+    RO: "Laponia",
+    RU: "Лапландия",
+    EN: "Lapland"
+  },
+  "Maldive": {
+    RO: "Maldive",
+    RU: "Мальдивы",
+    EN: "Maldives"
+  },
+  "Mauritius": {
+    RO: "Mauritius",
+    RU: "Маврикий",
+    EN: "Mauritius"
+  },
+  "Muntenegru": {
+    RO: "Muntenegru",
+    RU: "Черногория",
+    EN: "Montenegro"
+  },
+  "R. Dominicana": {
+    RO: "R. Dominicana",
+    RU: "Доминиканская Республика",
+    EN: "Dominican Republic"
+  },
+  "Spania": {
+    RO: "Spania",
+    RU: "Испания",
+    EN: "Spain"
+  },
+  "Sri Lanka": {
+    RO: "Sri Lanka",
+    RU: "Шри-Ланка",
+    EN: "Sri Lanka"
+  },
+  "Thailanda": {
+    RO: "Thailanda",
+    RU: "Таиланд",
+    EN: "Thailand"
+  },
+  "Tunisia": {
+    RO: "Tunisia",
+    RU: "Тунис",
+    EN: "Tunisia"
+  },
+  "Zanzibar": {
+    RO: "Zanzibar",
+    RU: "Занзибар",
+    EN: "Zanzibar"
+  },
+  "Exotica": {
+    RO: "Exotica",
+    RU: "Экзотика",
+    EN: "Exotic"
+  },
+  "Nu e specificat": {
+    RO: "Nu e specificat",
+    RU: "Не указано",
+    EN: "Not specified"
+  },
   "Tara": {
     RO: "Tara",
     RU: "Страна",

@@ -1,4 +1,6 @@
-export const marketingOptions = [
+import { getLanguageByKey } from "../Components/utils/getLanguageByKey";
+
+const marketingOptionKeys = [
   "Egipt",
   "Turcia",
   "Dubai",
@@ -60,4 +62,9 @@ export const marketingOptions = [
   "Exotica",
   "Altele",
   "Nu e specificat"
-]
+];
+
+export const marketingOptions = marketingOptionKeys.map((key) => ({
+  value: key,
+  label: getLanguageByKey(key) || key,
+}));
