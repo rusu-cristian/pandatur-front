@@ -153,14 +153,21 @@ export const normalizeMarketingStats = (stats) => normalizeCategoricalStats(stat
 export const createTicketMarketingStatsData = (obj) => {
   const statsSource = obj?.marketing_stats ?? obj?.marketingStats ?? obj;
   const stats = normalizeMarketingStats(statsSource);
-  const totalMarketing = stats.reduce((sum, item) => sum + (Number.isFinite(item.count) ? item.count : 0), 0);
+  const totalMarketing = stats.reduce(
+    (sum, item) => sum + (Number.isFinite(item.count) ? item.count : 0),
+    0
+  );
 
   const marketingStats = stats
-    .map((item) => ({
-      channel: item.channel || "-",
-      count: Number.isFinite(item.count) ? item.count : 0,
-      percentage: totalMarketing > 0 ? (item.count / totalMarketing) * 100 : 0,
-    }))
+    .map((item) => {
+      const count = Number.isFinite(item.count) ? item.count : 0;
+      return {
+        channel: item.channel || "-",
+        count,
+        percentage: totalMarketing > 0 && count > 0 ? (count / totalMarketing) * 100 : 0,
+        href: item.href, // ✅ сохраняем href из normalizeCategoricalStats
+      };
+    })
     .sort((a, b) => b.count - a.count);
 
   return {
@@ -235,10 +242,10 @@ export const createTicketsIntoWorkData = (obj) => ({
 export const createSystemUsageData = (obj) => {
   const minutes = pickNum(obj, ["activity_minutes", "minutes", "min"]);
   const hours = pickNum(obj, ["activity_hours", "hours", "hrs"]);
-  
+
   // Если есть минуты, конвертируем их в часы (с округлением до 2 знаков)
   const convertedHours = minutes ? Math.round((minutes / 60) * 100) / 100 : 0;
-  
+
   return {
     activityMinutes: minutes,
     activityHours: hours || convertedHours, // Используем переданные часы или конвертированные из минут
@@ -268,7 +275,7 @@ export const createTicketsByDepartCountData = (obj) => ({
   lessThan14Days: pickNum(obj, ["less_than_14_days_count", "less_than_14_days", "less_14"]),
   between14And30Days: pickNum(obj, ["between_14_30_days_count", "between_14_30_days", "between_14_30"]),
   moreThan30Days: pickNum(obj, ["more_than_30_days_count", "more_than_30_days", "more_30"]),
-  totalTickets: pickNum(obj, ["total_tickets_count", "total_tickets", "total"]) || 
+  totalTickets: pickNum(obj, ["total_tickets_count", "total_tickets", "total"]) ||
     (pickNum(obj, ["less_than_14_days_count"]) + pickNum(obj, ["between_14_30_days_count"]) + pickNum(obj, ["more_than_30_days_count"])),
 });
 
@@ -335,9 +342,9 @@ export const createWorkflowFromDePrelucratData = (obj) => {
   } else {
     // Для других секций - это объект с workflow_changes массивом
     const workflowChanges = safeArray(obj.workflow_changes || obj.changes || []);
-    const totalChanges = pickNum(obj, ["total_changes", "total"]) || 
+    const totalChanges = pickNum(obj, ["total_changes", "total"]) ||
       workflowChanges.reduce((sum, item) => sum + (pickNum(item, ["change_count", "count"]) || 0), 0);
-    
+
     return {
       workflowChanges: workflowChanges.map(item => ({
         destination_workflow: item.destination_workflow || item.destination || "-",
