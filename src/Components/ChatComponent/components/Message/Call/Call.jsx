@@ -30,6 +30,7 @@ export const Call = ({
 }) => {
   const callerLabel = findCallParticipantName(from, technicians, clients);
   const receiverLabel = findCallParticipantName(to, technicians, clients);
+  const hasRecording = Boolean(src);
 
   // Определяем статус звонка и его отображение
   const getCallStatusInfo = () => {
@@ -53,14 +54,14 @@ export const Call = ({
           icon: <HiPhoneMissedCall size={28} color="#c92a2a" />,
           color: "red",
           text: getLanguageByKey("NoAnswer"),
-          showAudio: false,
+          showAudio: hasRecording,
         };
       default:
         return {
           icon: <MdCall size={36} />,
           color: "gray",
           text: status || getLanguageByKey("Unknown"),
-          showAudio: !!src,
+          showAudio: hasRecording,
         };
     }
   };
