@@ -9,14 +9,18 @@ import { InvoiceForm } from "../../TicketForms/InvoiceForm";
 
 const DOCUMENTS_TYPE = {
   ACCOUNT_DUE: "cont-spre-plata",
-  RETURN_REQUEST: "cerere-de-return",
-  JOIN_UP_GUARANTEE_LETTER: "join-up-guarantee-letter",
+  RETURN_REQUEST: "cerere-de-restituire",
+  JOIN_UP_LETTER_RO: "join-up-letter-ro",
+  JOIN_UP_LETTER_RU: "join-up-letter-ru",
+  PROGRAM_NEW_YEAR_INSTAMBUL: "program-new-year-instambul-ua",
+  PROGRAM_BRASOV: "program-brasov-ua",
+  PROGRAM_INSTAMBUL: "program-instambul-ua",
 };
 
 export const InvoiceTab = ({ clientInfo }) => {
   const [selectedValue, setSelectedValue] = useState();
   const [loading, handlers] = useDisclosure(false);
-  const [generatedDocument, setGeneratedDocument] = useState("");
+  const [generatedDocument, setGeneratedDocument] = useState(null);
 
   const generateDocument = async (type, values = {}) => {
     handlers.open();
@@ -24,7 +28,7 @@ export const InvoiceTab = ({ clientInfo }) => {
       const data = await api.documents.create(type, values);
 
       if (data?.document_url) {
-        setGeneratedDocument(data.document_url);
+        setGeneratedDocument({ type, url: data.document_url });
         enqueueSnackbar(getLanguageByKey("documentGeneratedSuccessfully"), {
           variant: "success",
         });
@@ -46,19 +50,38 @@ export const InvoiceTab = ({ clientInfo }) => {
     <div>
       <Select
         mb="md"
-        onChange={setSelectedValue}
+        onChange={(value) => {
+          setSelectedValue(value);
+          setGeneratedDocument(null);
+        }}
         data={[
           {
             value: DOCUMENTS_TYPE.ACCOUNT_DUE,
             label: getLanguageByKey("accountForPayment"),
           },
           {
+            value: DOCUMENTS_TYPE.JOIN_UP_LETTER_RO,
+            label: getLanguageByKey("joinUpLetterRO"),
+          },
+          {
+            value: DOCUMENTS_TYPE.JOIN_UP_LETTER_RU,
+            label: getLanguageByKey("joinUpLetterRU"),
+          },
+          {
             value: DOCUMENTS_TYPE.RETURN_REQUEST,
             label: getLanguageByKey("returnRequest"),
           },
           {
-            value: DOCUMENTS_TYPE.JOIN_UP_GUARANTEE_LETTER,
-            label: getLanguageByKey("joinUpGuaranteeLetter"),
+            value: DOCUMENTS_TYPE.PROGRAM_BRASOV,
+            label: getLanguageByKey("programBrasov"),
+          },
+          {
+            value: DOCUMENTS_TYPE.PROGRAM_INSTAMBUL,
+            label: getLanguageByKey("programInstambul"),
+          },
+          {
+            value: DOCUMENTS_TYPE.PROGRAM_NEW_YEAR_INSTAMBUL,
+            label: getLanguageByKey("programNewYearInstambul"),
           },
         ]}
         placeholder={getLanguageByKey("selectDocumentsType")}
@@ -75,7 +98,7 @@ export const InvoiceTab = ({ clientInfo }) => {
           renderFooterButtons={({ onSubmit }) => (
             <Button
               disabled={
-                !selectedValue || generatedDocument.includes(selectedValue)
+                !selectedValue || generatedDocument?.type === selectedValue
               }
               loading={loading}
               onClick={onSubmit}
@@ -89,7 +112,7 @@ export const InvoiceTab = ({ clientInfo }) => {
           <Button
             onClick={() => generateDocument(selectedValue)}
             disabled={
-              !selectedValue || generatedDocument.includes(selectedValue)
+              !selectedValue || generatedDocument?.type === selectedValue
             }
             loading={loading}
           >
@@ -102,8 +125,8 @@ export const InvoiceTab = ({ clientInfo }) => {
         <>
           <Divider my="md" />
           <File
-            src={generatedDocument}
-            label={generatedDocument}
+            src={generatedDocument.url}
+            label={generatedDocument.url}
           />
         </>
       )}

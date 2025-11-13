@@ -3453,14 +3453,39 @@ export const translations = {
     EN: "Account for Payment"
   },
   returnRequest: {
-    RO: "Cerere de retur",
-    RU: "Запрос на возврат",
-    EN: "Return Request"
+    RO: "Cerere de restituire",
+    RU: "Запрос на возврат средств",
+    EN: "Refund Request"
   },
   joinUpGuaranteeLetter: {
     RO: "JoinUp Guarantee Letter",
     RU: "JoinUp Guarantee Letter",
     EN: "JoinUp Guarantee Letter"
+  },
+  joinUpLetterRO: {
+    RO: "JoinUp Scrisoare RO",
+    RU: "JoinUp письмо RO",
+    EN: "JoinUp Letter RO"
+  },
+  joinUpLetterRU: {
+    RO: "JoinUp Scrisoare RU",
+    RU: "JoinUp письмо RU",
+    EN: "JoinUp Letter RU"
+  },
+  programBrasov: {
+    RO: "Program Brașov UA",
+    RU: "Программа Брашов UA",
+    EN: "Program Brașov UA"
+  },
+  programInstambul: {
+    RO: "Program Instambul UA",
+    RU: "Программа Стамбул UA",
+    EN: "Program Instambul UA"
+  },
+  programNewYearInstambul: {
+    RO: "Program Anul Nou Instambul UA",
+    RU: "Новогодняя программа Стамбул UA",
+    EN: "Program New Year Instambul UA"
   },
   selectDocumentsType: {
     RO: "Selectează tipul de document",
@@ -5327,5 +5352,20 @@ export const translations = {
     RO: "Platformă lead",
     RU: "Источник платформы",
     EN: "Platform lead source"
+  },
+  new_year_instambul: {
+    RO: "Anul nou Instambul",
+    RU: "Новый год Инстамбул",
+    EN: "New Year Instambul"
+  },
+  "program_brasov": { 
+    RO: "Program Brasov",
+    RU: "Программа Брашов",
+    EN: "Program Brasov"
+  },
+  "program_instambul": {
+    RO: "Program Instambul",
+    RU: "Программа Инстамбул",
+    EN: "Program Instambul"
   }
 };
