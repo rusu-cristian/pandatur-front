@@ -47,6 +47,9 @@
   --crm-ui-kit-palette-surface-background-color: #0f2231;
   /* Фон поверхностей/карточек */
   --crm-ui-kit-palette-surface-hover-background-color: #264b79;
+
+  --crm-ui-kit-palette-surface-active-background-color: #263f79;
+
   /* Ховер для поверхностей */
   --crm-ui-kit-palette-surface-text-color: #f2f2f2;
   /* Текст на поверхностях */
@@ -86,6 +89,12 @@
   /* Цвет текста последнего сообщения от техника/менеджера */
   --crm-ui-kit-palette-message-client-text-color: #ffffff;
   /* Цвет текста последнего сообщения от клиента */
+  --crm-ui-kit-palette-chat-list-client-background: #1c3754;
+  /* Фон карточки чата, когда последнее сообщение от клиента */
+  --crm-ui-kit-palette-chat-list-client-text-color: #ffffff;
+  /* Цвет текста сообщения клиента в списке чатов */
+  --crm-ui-kit-palette-chat-list-manager-text-color: #94a3b8;
+  /* Цвет текста сообщения менеджера в списке чатов */
 }
 
 /* Светлая тема */
@@ -173,4 +182,10 @@
   /* Цвет текста последнего сообщения от техника/менеджера */
   --crm-ui-kit-palette-message-client-text-color: #000000;
   /* Цвет текста последнего сообщения от клиента */
+  --crm-ui-kit-palette-chat-list-client-background: #e6f1ff;
+  /* Фон карточки чата, когда последнее сообщение от клиента */
+  --crm-ui-kit-palette-chat-list-client-text-color: #ffffff;
+  /* Цвет текста сообщения клиента в списке чатов */
+  --crm-ui-kit-palette-chat-list-manager-text-color: #6c757d;
+  /* Цвет текста сообщения менеджера в списке чатов */
 }

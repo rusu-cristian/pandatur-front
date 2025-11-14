@@ -1,4 +1,5 @@
 import { Box, Flex, Image, Text, Badge, Divider, Menu, ActionIcon } from "@mantine/core";
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { HiSpeakerWave } from "react-icons/hi2";
 import { FaFingerprint } from "react-icons/fa6";
@@ -111,6 +112,34 @@ export const ChatListItem = ({ chat, style, selectTicketId }) => {
 
   const userPhoto = getUserPhoto();
 
+  const isClientLastMessage = useMemo(() => {
+    if (!chat.last_message) {
+      return false;
+    }
+
+    const senderId = chat.last_message_sender_id;
+    if (senderId === undefined || senderId === null) {
+      return true;
+    }
+
+    const senderIdNumber = Number(senderId);
+    if (!Number.isFinite(senderIdNumber) || senderIdNumber === 1) {
+      return false;
+    }
+
+    if (chat.clients?.some((client) => Number(client?.id) === senderIdNumber)) {
+      return true;
+    }
+
+    if (userId && Number(userId) === senderIdNumber) {
+      return false;
+    }
+
+    return false;
+  }, [chat.clients, chat.last_message, chat.last_message_sender_id, userId]);
+
+  const lastMessageAuthorClass = isClientLastMessage ? "client-message" : "manager-message";
+
   // Обработчик для пометки чата как прочитанного
   // ВАЖНО: НЕ меняет action_needed - только читает сообщения
   const handleMarkAsRead = async (e) => {
@@ -189,7 +218,9 @@ export const ChatListItem = ({ chat, style, selectTicketId }) => {
           pr="10px"
           pl="10px"
           key={chat.id}
-          className={`chat-item ${chat.id === selectTicketId ? "active" : ""} pointer`}
+          className={`chat-item ${lastMessageAuthorClass} ${
+            chat.id === selectTicketId ? "active" : ""
+          } pointer`}
           data-ticket-id={chat.id}
           pos="relative"
         >
@@ -264,7 +295,17 @@ export const ChatListItem = ({ chat, style, selectTicketId }) => {
           <Flex justify="space-between" gap="6" align="center">
             <Box mt="4px" w="60%">
               {MESSAGE_INDICATOR[chat.last_message_type] || (
-                <Text h="20px" c="dimmed" size="sm" truncate>
+                <Text
+                  h="20px"
+                  size="sm"
+                  truncate
+                  fw={isClientLastMessage ? 900 : 400}
+                  c={
+                    isClientLastMessage
+                      ? "var(--crm-ui-kit-palette-chat-list-client-text-color)"
+                      : "var(--crm-ui-kit-palette-chat-list-manager-text-color)"
+                  }
+                >
                   {chat.last_message}
                 </Text>
               )}
@@ -281,7 +322,7 @@ export const ChatListItem = ({ chat, style, selectTicketId }) => {
         </Box>
       </Link>
 
-      <Divider color="var(--crm-ui-kit-palette-border-default)" />
+      <Divider style={{ borderColor: "var(--crm-ui-kit-palette-border-default)" }} />
     </div>
   );
 };

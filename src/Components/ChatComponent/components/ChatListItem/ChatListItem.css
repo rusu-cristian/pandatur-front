@@ -5,8 +5,12 @@
   cursor: pointer;
 }
 
+.chat-item.client-message {
+  background-color: var(--crm-ui-kit-palette-chat-list-client-background);
+}
+
 .chat-item.active {
-  background-color: var(--crm-ui-kit-palette-surface-hover-background-color);
+  background-color: var(--crm-ui-kit-palette-surface-active-background-color);
   border-left: 4px solid var(--crm-ui-kit-palette-link-primary);
 }
 
