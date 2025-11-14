@@ -317,8 +317,8 @@ export const TicketCard = memo(({
               {isClientLastMessage && (
                 <span
                   style={{
-                    // color: '#2e7d32',
-                    color:"ff0000",
+                    color: '#2e7d32',
+                    // color:"ff0000",
                     fontWeight: 700,
                     marginRight: '4px'
                   }}
