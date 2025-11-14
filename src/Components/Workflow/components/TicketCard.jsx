@@ -101,6 +101,30 @@ export const TicketCard = memo(({
     return renderTags(ticket.tags);
   }, [ticket.tags]);
 
+  const isClientLastMessage = useMemo(() => {
+    if (!ticket.last_message) return false;
+
+    const senderId = ticket.last_message_sender_id;
+    if (senderId === undefined || senderId === null) {
+      return true;
+    }
+
+    const senderIdNumber = Number(senderId);
+    if (!Number.isFinite(senderIdNumber) || senderIdNumber === 1) {
+      return false;
+    }
+
+    if (ticket.clients?.some((client) => Number(client?.id) === senderIdNumber)) {
+      return true;
+    }
+
+    if (user?.id && Number(user.id) === senderIdNumber) {
+      return false;
+    }
+
+    return false;
+  }, [ticket.clients, ticket.last_message, ticket.last_message_sender_id, user?.id]);
+
   return (
     <Link to={`/leads/${ticket.id}`}>
       <Card
@@ -268,8 +292,13 @@ export const TicketCard = memo(({
           {/* Last messages */}
           {ticket.last_message && (
             <Text
+              pt="4px"
               size="xs"
-              c="var(--crm-ui-kit-palette-text-secondary-light)"
+              c={
+                isClientLastMessage
+                  ? "var(--crm-ui-kit-palette-message-client-text-color)"
+                  : "var(--crm-ui-kit-palette-message-manager-text-color)"
+              }
               style={{
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
@@ -278,7 +307,7 @@ export const TicketCard = memo(({
                 WebkitBoxOrient: 'vertical',
                 lineHeight: '1.4',
                 fontSize: '14px',
-                fontWeight: '700',
+                fontWeight: isClientLastMessage ? '700' : '300',
                 letterSpacing: "0.5px",
               }}
             >
@@ -325,13 +354,13 @@ export const TicketCard = memo(({
               const getTaskColor = () => {
                 switch (tasksStatus) {
                   case 'none':
-                    return '#FF9800'; 
+                    return '#FF9800';
                   case 'overdue':
-                    return '#F44336'; 
+                    return '#F44336';
                   case 'today':
-                    return '#388E3C'; 
+                    return '#388E3C';
                   case 'upcoming':
-                    return '#0288D1'; 
+                    return '#0288D1';
                   default:
                     return 'var(--crm-ui-kit-palette-text-secondary-light)';
                 }

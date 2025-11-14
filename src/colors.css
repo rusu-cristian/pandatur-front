@@ -82,6 +82,10 @@
   /* Фон полученных сообщений (от клиента) */
   --crm-ui-kit-palette-message-sent-background: #203e57;
   /* Фон отправленных сообщений (от техника) */
+  --crm-ui-kit-palette-message-manager-text-color: #94a3b8;
+  /* Цвет текста последнего сообщения от техника/менеджера */
+  --crm-ui-kit-palette-message-client-text-color: #ffffff;
+  /* Цвет текста последнего сообщения от клиента */
 }
 
 /* Светлая тема */
@@ -165,4 +169,8 @@
   /* Фон полученных сообщений (от клиента) - светло-зеленый */
   --crm-ui-kit-palette-message-sent-background: #e9ecef;
   /* Фон отправленных сообщений (от техника) - светло-серый */
+  --crm-ui-kit-palette-message-manager-text-color: #6c757d;
+  /* Цвет текста последнего сообщения от техника/менеджера */
+  --crm-ui-kit-palette-message-client-text-color: #000000;
+  /* Цвет текста последнего сообщения от клиента */
 }
