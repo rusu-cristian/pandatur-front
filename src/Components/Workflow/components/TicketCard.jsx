@@ -309,6 +309,7 @@ export const TicketCard = memo(({
                 fontSize: '14px',
                 fontWeight: isClientLastMessage ? '700' : '300',
                 letterSpacing: "0.5px",
+                textAlign: isClientLastMessage ? 'left' : 'right',
               }}
             >
               {lastMessagePreview}
