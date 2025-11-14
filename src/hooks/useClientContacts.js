@@ -63,7 +63,7 @@ function enrichBlocksWithClientContacts(blocks, clients) {
       case "telegram":
         return type.toLowerCase();
       default:
-        return "email";
+        return "";
     }
   };
 
