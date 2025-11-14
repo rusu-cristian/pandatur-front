@@ -1,20 +1,36 @@
 export const templateOptions = {
+    /////////////////////////////////Ro-Sales
 
-  "2024 Salutare RO OLD":
-    `Salutare 😍
+    "Rezervare RO 1": `Pentru comoditatea dvs. vă putem propune cîteva opțiuni de achitare și rezervare. Rezervarea se consideră efectuată cu succes în cazul achitării a minim 30 % din suma totală a sejurului sau excursiei.
+
+!  Achitarea se face în Roni în baza cursului BNR la data plății !
+
+1. Rezervarea și achitarea cu cash la noi in oficiu (Iași)
+
+2. Rezervarea și achitarea online prin operatorii Panda Tour. Veti primi o proforma pe care o puteti achita la orice banca.
+
+Pentru rezervare avem nevoie:
+a) poza pașaportului a fiecărui turist
+b) data de plecare 
+c) număr de telefon
+d) orașul de plecare 
+e) numărul de persoane`,
+
+    "Salutare RO Prescurtat 1":
+        `Salutare 😍
 Mulțumim că ați ales Panda Tur
 Ma numesc`,
 
-  ////////////////
+    ////////////////MD-Sales
 
-  "2024 Salutare RU OLD":
-    `Добрый день, 
+    "Salutare RU Prescurtat 1":
+        `Добрый день, 
 Спасибо за обращение в компанию Panda Tur
 Mеня зовут`,
 
-  /////////////
+    /////////////
 
-  "2024 Salutare RO": `Salutare 😍
+    "Salutare RO 1": `Salutare 😍
  
 Mulțumim că ați ales Panda Tur!
  
@@ -22,9 +38,9 @@ Sunt __________, managerul companiei, și mă bucur să vă urez bun venit în a
 
 Suntem aici pentru a ne asigura că fiecare moment al călătoriei este de neuitat.`,
 
-  //////////////////////////////
+    //////////////////////////////
 
-  "2024 Salutare RU": `Приветствую 😍
+    "Salutare RU 1": `Приветствую 😍
 
 Спасибо, что выбрали Panda Tur!
 
@@ -33,9 +49,9 @@ Suntem aici pentru a ne asigura că fiecare moment al călătoriei este de neuit
 
 Мы здесь, чтобы убедиться, что каждый момент вашего путешествия будет незабываемым.`,
 
-  //////////////////////////////
+    //////////////////////////////
 
-  "2025 Offer Ro": `Bună ziua! 😊
+    "Offer RO 1": `Bună ziua! 😊
 
 Vă propunem următoarea ofertă personalizată pentru vacanța dvs.:
 
@@ -63,9 +79,9 @@ Vă propunem următoarea ofertă personalizată pentru vacanța dvs.:
 
 💬 Dacă aveți întrebări suplimentare sau doriți să ajustăm oferta, ne puteți scrie oricând! 😊 Ne dorim ca vacanța dvs. să fie perfect organizată și lipsită de griji! 🌞🌴`,
 
-  //////////////////////////////
+    //////////////////////////////
 
-  "2025 Offer Ru": `Добрый день! 😊
+    "Offer RU 1": `Добрый день! 😊
 
 Предлагаем вам следующее персональное предложение для вашего отдыха:
 
@@ -94,9 +110,9 @@ Vă propunem următoarea ofertă personalizată pentru vacanța dvs.:
 💬 Если у вас возникнут дополнительные вопросы или вы хотите изменить предложение — напишите нам в любое время! 😊
 Мы сделаем всё, чтобы ваш отдых был идеально организован и прошёл без забот! 🌞🌴`,
 
-  ///////////////////////////////
+    ///////////////////////////////
 
-  "2024 Bronare RO": `Pentru rezervare online, vă rugăm să ne oferiți următoarele informații:
+    "Bronare RO 1": `Pentru rezervare online, vă rugăm să ne oferiți următoarele informații:
 
 1. Fotografiile pașaportelor tuturor turiștilor
 
@@ -109,9 +125,9 @@ Notă:
 Pentru a accelera procesul de rezervare, trimite-ne o confirmare de plată cu starea de finalizare cu succes.
 Vă mulțumim.`,
 
-  //////////////////////////////
+    //////////////////////////////
 
-  "2024 Bronare RU": `Для онлайн-бронирование, просим предоставить следующую информацию:
+    "Bronare RU 1": `Для онлайн-бронирование, просим предоставить следующую информацию:
 
 1. Фотографии  паспортов всех туристов
 
@@ -123,9 +139,9 @@ Vă mulțumim.`,
  Примечание:
 Для ускорения процеса бронирования пришлите нам подтверждение оплаты со статусом успешного выполнения.`,
 
-  //////////////////////////
+    //////////////////////////
 
-  "2024 Achitare RO": `Pentru comoditatea dvs. vă putem propune cîteva opțiuni de achitare și rezervare. 
+    "Achitare RO 1": `Pentru comoditatea dvs. vă putem propune cîteva opțiuni de achitare și rezervare. 
 
 Rezervarea se consideră efectuată cu succes în cazul achitării a minim 30 % din suma totală a sejurului sau excursiei.
 
@@ -144,9 +160,9 @@ Atragem atenția dvs că conform regulilor companiei Panda Tur, plata integrală
 
 Dacă rezervați un tur cu mai puțin de 14 zile înainte de sosire, plata se face integral.`,
 
-  //////////////////////////////
+    //////////////////////////////
 
-  "2024 Achitare RU": `Для Вашего удобства мы можем предложить несколько вариантов оплаты и бронирования. 
+    "Achitare RU 1": `Для Вашего удобства мы можем предложить несколько вариантов оплаты и бронирования. 
 
 Для того чтобы сделать бронь нужно оплатить минимум 30% от полной стоимости тура.
 
@@ -165,26 +181,7 @@ Dacă rezervați un tur cu mai puțin de 14 zile înainte de sosire, plata se fa
 
 При бронировании тура, менее чем за 14 дней до заезда, оплата производится в полном размере.`,
 
-  /////////////////////////////////
-
-  "2024 Rezervare RO": `Pentru comoditatea dvs. vă putem propune cîteva opțiuni de achitare și rezervare. Rezervarea se consideră efectuată cu succes în cazul achitării a minim 30 % din suma totală a sejurului sau excursiei.
-
-!  Achitarea se face în Roni în baza cursului BNR la data plății !
-
-1. Rezervarea și achitarea cu cash la noi in oficiu (Iași)
-
-2. Rezervarea și achitarea online prin operatorii Panda Tour. Veti primi o proforma pe care o puteti achita la orice banca.
-
-Pentru rezervare avem nevoie:
-a) poza pașaportului a fiecărui turist
-b) data de plecare 
-c) număr de telefon
-d) orașul de plecare 
-e) numărul de persoane`,
-
-  ///////////////////////////////
-
-  "2024 Acord pentru Modificările Rezervării RO": `Acord pentru Modificările Rezervării
+    " Acord pentru Modificările Rezervării RO 1": `Acord pentru Modificările Rezervării
 
 
 
@@ -222,18 +219,18 @@ Prin urmare, accept varianta alternativă a hotelului nou și mă oblig să semn
 Data: ___________
 Semnătura:____________________`,
 
-  ////////////////////////////////////////
+    ////////////////////////////////////////
 
-  "2024 Acord hotel de categorie 3* și mai jos RO": `Eu, [NUMELE PRENUMELE], 
+    "Acord hotel de categorie 3* și mai jos RO 1": `Eu, [NUMELE PRENUMELE], 
 sunt informat(ă) despre hotelul ales _________________(numele hotelului), 
 categoria acestuia . 
 
 Înțeleg și îmi asum întreaga responsabilitate pentru alegerea acestui hotel. 
 Nu voi avea pretenții către compania Panda Tur și managerii săi.`,
 
-  ////////////////////////////////////////
+    ////////////////////////////////////////
 
-  "Confirmarea Hotelului RO": `Bună ziua,    [Nume Turist] !
+    "Confirmarea Hotelului RO 1": `Bună ziua,    [Nume Turist] !
 
 
 
@@ -247,10 +244,10 @@ Cu 1-2 zile înainte de plecare, vă vom trimite toate actele necesare. 🥰
  📩oferte@pandatur.md 
 🌐 https://pandatur.md`,
 
-  ///////////////////////////////////////////
+    ///////////////////////////////////////////
 
 
-  "2024 Confirmarea Hotelului RU  ": `Здравствуйте, [Имя Туриста]!
+    "Confirmarea Hotelului RU 1": `Здравствуйте, [Имя Туриста]!
 
 
 
@@ -264,9 +261,9 @@ Cu 1-2 zile înainte de plecare, vă vom trimite toate actele necesare. 🥰
 📩oferte@pandatur.md
 🌐 https://pandatur.md`,
 
-  ///////////////////////////////////////
+    ///////////////////////////////////////
 
-  "2024 Informare cu 3 zile înainte de plecare (sejur) RO": `Hai să ne pregătim împreună pentru vacanță!😇
+    "Informare cu 3 zile înainte de plecare (sejur) RO 1": `Hai să ne pregătim împreună pentru vacanță!😇
 
 
 Detalii:
@@ -293,9 +290,9 @@ Check-out: [12:00] - [Data]
 📩oferte@pandatur.md 
 🌐 https://pandatur.md`,
 
-  ///////////////////////////////////
+    ///////////////////////////////////
 
-  "2024 Informare cu 3 zile înainte de plecare (sejur) RU": `Давайте вместе подготовимся к отпуску! 😇
+    "Informare cu 3 zile înainte de plecare (sejur) RU 1": `Давайте вместе подготовимся к отпуску! 😇
 
 
 Детали:
@@ -322,9 +319,9 @@ Check-out: [12:00] - [Data]
 📩oferte@pandatur.md
 🌐 https://pandatur.md`,
 
-  ///////////////////////////////
+    ///////////////////////////////
 
-  "2024 Eliberarea actelor RO": `Bună ziua, [Nume Turist]! 
+    "Eliberarea actelor RO 1": `Bună ziua, [Nume Turist]! 
 
 Actele dvs sunt gata:
 
@@ -366,9 +363,9 @@ Biletul de avion (fizic sau electronic)
 Cu respect,
 Panda Tur!🐼`,
 
-  //////////////////////////////////////
+    //////////////////////////////////////
 
-  "2024 Eliberarea actelor RU": `Здравствуйте, [Имя Туриста]!
+    "Eliberarea actelor RU 1": `Здравствуйте, [Имя Туриста]!
 
  Ваши документы готовы:
 
@@ -411,9 +408,9 @@ Panda Tur!🐼`,
 С уважением,
 Panda Tur! 🐼`,
 
-  //////////////////////////
+    //////////////////////////
 
-  "2024 Sorting Final": `Mulțumimi pentru detaliile oferite, transmit specialistului responsabil de acestă destinație, 
+    "Sorting RO 1": `Mulțumimi pentru detaliile oferite, transmit specialistului responsabil de acestă destinație, 
 
 în scurt ve-ți primi recomandării din partea companiei cu descrierea completă.
 
@@ -421,10 +418,10 @@ Panda Tur! 🐼`,
 Vă rog să indicați un număr de telefon pentru discuția mai constructivă cu un specialist. 
 *(în caz de sunteți peste hotare indicații codul țării și ve-ți fi telefonati pe whatsapp sau viber.)`,
 
-  /////////////////////////////////////////////
+    /////////////////////////////////////////////
 
-  "2024 Sorting RO": `Bună  ziua.
-Ma numesc Ariadna 
+    "Sorting (Offer send) RO 1": `Bună  ziua.
+Ma numesc ... 
 Mulțumim că ați ales Panda Tur     
 
 Nu am primit un răspuns de la dvs.
@@ -437,10 +434,10 @@ Ne aflăm pe strada Vasile Alecsandri 121, Chisinau. Contact:
 069-44-04-00 
 www.pandatur.md`,
 
-  //////////////////////////////////
+    //////////////////////////////////
 
-  "2024 Sorting RU": `Здравствуйте.
-Меня зовут Ариадна.
+    "Sorting (Offer send) RU 1": `Здравствуйте.
+Меня зовут ...
 Спасибо, что выбрали Panda Tur.
 
 
@@ -459,9 +456,9 @@ www.pandatur.md`,
 069-44-04-00
 www.pandatur.md`,
 
+    /////////////////////////////////////////
 
-
-  "2024 Notification Exs. RO": `Stimați turiști,
+    "Notification Exs. RO 1": `Stimați turiști,
 
 
 📅 Vă informăm cu drag că aveți o excursie programată: [Nume Excursie] pe data de [Data Plecarii]
@@ -491,9 +488,9 @@ Vă dorim o călătorie plăcută!
 
 Cu drag, echipa Panda Tur 🐼`,
 
-  ////////////////////////////
+    ////////////////////////////
 
-  "2024 Notification Exs. RU": `Уважаемые туристы,
+    "Notification Exs. RU 1": `Уважаемые туристы,
 
 📅 С радостью сообщаем, что у вас запланирована экскурсия: [Название экскурсии] на дату [Дата отправления].
 
@@ -513,9 +510,9 @@ Cu drag, echipa Panda Tur 🐼`,
 Желаем вам приятного путешествия!
 
 С уважением, команда Panda Tur 🐼`,
-  ///////////////////
+    ///////////////////
 
-  "2025 Identification RO": `🌞 Bună ziua și vă mulțumim pentru mesajul Dvs.! 😊
+    "Salutare (Identification) RO 1": `🌞 Bună ziua și vă mulțumim pentru mesajul Dvs.! 😊
 
 Mă numesc ____, 
 sunt manager la Panda Tur și sunt aici pentru a vă ajuta cu drag să găsim împreună cea mai bună opțiune pentru vacanța dvs.
@@ -545,9 +542,9 @@ Până la primirea detaliilor, vă recomandăm câteva destinații populare pent
 
 💬 Aștept cu interes azi detaliile dvs. pentru a reveni cu o ofertă perfect adaptată dorințelor familiei dvs.! 🌴`,
 
-  ///////////////////////////////
+    ///////////////////////////////
 
-  "2025 Identification RU": `🌞 Добрый день и благодарим вас за ваше сообщение! 😊
+    "Salutare (Identification) RU 1": `🌞 Добрый день и благодарим вас за ваше сообщение! 😊
   
 Меня зовут ____,
 я являюсь менеджером компании Panda Tur и с удовольствием помогу вам подобрать лучший вариант для вашего отпуска.
@@ -576,25 +573,25 @@ Până la primirea detaliilor, vă recomandăm câteva destinații populare pent
 
 💬 Жду с интересом сегодня ваших уточнений, чтобы подготовить идеальное предложение, соответствующее ожиданиям вашей семьи! 🌴`,
 
-  ///////////////////
+    ///////////////////
 
-  "2025 FB&INSTAGRAM RO": `La moment avem defectiuni tehnice cu Facebook și Instagram, răspundem mult mai operativ pe Viber, Whatsapp sau Telegram:
+    "Greseala tehnica FB & Insta RO 1": `La moment avem defectiuni tehnice cu Facebook și Instagram, răspundem mult mai operativ pe Viber, Whatsapp sau Telegram:
 
 Scrieți în Viber aici : viber://pa?chatURI=pandatur_viber
 Scrieți în Telegram aici: https://telegram.me/panda_tur_bot
 Scrieți în Whatsap la numărul +373690440400`,
 
-  ///////////////////
+    ///////////////////
 
-  "2025 FB&INSTAGRAM RU": `В данный момент у нас технические неполадки с Facebook и Instagram. Мы отвечаем гораздо оперативнее в Viber, WhatsApp или Telegram:
+    "Greseala tehnica FB & Insta RU 1": `В данный момент у нас технические неполадки с Facebook и Instagram. Мы отвечаем гораздо оперативнее в Viber, WhatsApp или Telegram:
 
 Напишите в Viber: viber://pa?chatURI=pandatur_viber
 Напишите в Telegram: https://telegram.me/panda_tur_bot
 Напишите в WhatsApp по номеру: +373690440400`,
 
-  //////////////////////////
+    //////////////////////////
 
-  "old oferta trimisa RO": `Bună ziua 🤗
+    "Sorting (Offer send) RO 2": `Bună ziua 🤗
 
 Aș dori să Vă întreb dacă ați reușit să analizați oferta primită?
 
@@ -602,7 +599,7 @@ Sau poate mai aveți careva întrebări?
 
 Vă sunt la dispoziție pentru orice întrebare și Vă mulțumesc că ați ales Panda Tur.`,
 
-  "old oferta trimisa RU": `Здравствуйте 🤗
+    "Sorting (Offer send) RU 2": `Здравствуйте 🤗
 
 Я бы хотел спросить, вы просмотрели полученное предложение?
 
@@ -610,9 +607,9 @@ Vă sunt la dispoziție pentru orice întrebare și Vă mulțumesc că ați ales
 
 Я готов ответить на любой вопрос и благодарю за выбор Panda Tur.`,
 
-  //////////////////////////
+    //////////////////////////HR
 
-  "2025 HR Offer RO": `Bună ziua,
+    "HR Offer RO 1": `Bună ziua,
  
 Vă mulțumim pentru interesul acordat oportunității de angajare în cadrul companiei Panda Tour.
  
@@ -626,8 +623,8 @@ Cu respect,
 Echipa Resurse Umane
 Panda Tour
 `,
-
-  "2025 HR Offer RU": `Здравствуйте,
+/////////////////////////////////////////
+    "HR Offer RU 1": `Здравствуйте,
  
 Спасибо за ваш интерес к возможности работы в компании Panda Tour.
  
@@ -640,8 +637,9 @@ Panda Tour
 С уважением,
 Отдел кадров
 Panda Tour`,
+    /////////////////////////////////////////UA-Sales
 
-  "2025 Istanbul New Year Offer UA": `
+    "Istanbul New Year Offer UA 1": `
 Відправляю програму нижче:
 
 🟣День 1. ПОНЕДІЛОК
@@ -721,7 +719,7 @@ Panda Tour`,
 
 Прибуття у місто
 `,
-  "2025 Brasov Offer UA": `
+    "Brasov Offer UA 1": `
 Відправляю програму нижче:
 
 УВАГА! Усі екскурсії - факультативні, тобто за бажанням.
@@ -761,9 +759,7 @@ Panda Tour`,
 Прибуття у Одесу, ближче до ранку
 `,
 
-
-
-  "2025 Istanbul Offer UA": `
+    "Istanbul Offer UA 1": `
 Відправляю програму нижче:
 
 УВАГА! У вартість туру входіть дві оглядові екскурсії. Усі інші - факультативні, тобто за бажанням.
@@ -823,7 +819,7 @@ Panda Tour`,
 
 Прибуття у місто
 `,
-  "2025 Welcome Message UA": `
+    "Welcome Message UA 1": `
 Вітаю🥰
 Дякую за звернення.
 Мене звати _____ , менеджер Каталан Тревел
@@ -831,20 +827,20 @@ Panda Tour`,
 Як я можу допомогти вам сьогодні?
 Якщо вам потрібна допомога, будь ласка, не соромтеся звертатися до мене.
 `,
-  "2025 Payment NEW UA": `
+    "Payment NEW UA 1": `
 При оплаті у полі "Призначення платежу" вкажіть :
 1. Дату відправки туру ()
 2. Ваше ПІБ
 3. Назву поїздки ()
 `,
-  "2025 Booking NEW UA": `
+    "Booking NEW UA 1": `
 Для бронювання туру надішліть, будь ласка:
 
 🖼 Фотографії першої сторінки закордонного біометричного пасторту всіх туристів 
 ☎️Номер телефону
 ✉️Електронну пошту
 `,
-  "2025 Egypt Offer UA": `
+    "Egypt Offer UA 1": `
 Добрий день 🥰
 Я вивчила Ваш запит і підібрала найідеальнішу пропозицію, виходячи з Ваших очікувань:
 
@@ -867,12 +863,12 @@ Panda Tour`,
 🍽 Харчування Все Включно 
 🏥 Медичне страхування
 `,
-  "2025 number phone NEW UA": `
+    "Number phone NEW UA 1": `
 Дякуємо за звернення! Ми незабаром з вами зв’яжемося.
  
 Щоб відповідь надійшла швидше й не загубилася, залиште, будь ласка, номер телефону — ми зможемо надати детальну інформацію про тур 😊
 `,
-  "2025 Cost NEW UA": `
+    "Cost NEW UA 1": `
 У вартість входить:
  
 1. Проїзд у обидві сторони автобусом турист-класу
@@ -885,7 +881,7 @@ Panda Tour`,
 8. Багаж у салон до 8 кг
 9. Багаж основний до 15 кг (55 × 40 × 23 см)
 `,
-  "2025 Contract Confirmation NEW UA": `
+    "Contract Confirmation NEW UA 1": `
 Я, __________________________________ (прізвище, ім’я, по батькові), що посвідчуюся документом ____________________________ (назва документа) № ________________, з ідентифікаційним номером _____________________, підтверджую, що мною уважно прочитано Договір № __________ від «» __________ 20___ року.
 
 Усі умови договору є мені зрозумілими та прийнятними. Цим повідомленням, надісланим із мого особистого номера телефону, зареєстрованого на моє ім’я, я підтверджую свою згоду з усіма умовами та пунктами договору.
