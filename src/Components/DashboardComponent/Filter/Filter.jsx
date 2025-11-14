@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { Button, Group, MultiSelect, Modal, Stack, Box, Flex } from "@mantine/core";
 import { DateRangePicker } from "../../DateRangePicker";
 import { getLanguageByKey } from "../../utils";
-import { useGetTechniciansList, useUserPermissions } from "../../../hooks";
+import { useGetTechniciansList } from "../../../hooks";
 import { formatMultiSelectData, getGroupUserMap } from "../../utils/multiSelectUtils";
 import { user } from "../../../api/user";
 import { userGroupsToGroupTitle } from "../../utils/workflowUtils";
@@ -39,26 +39,12 @@ export const Filter = ({
   accessibleGroupTitles = [], // Доступные воронки для текущего пользователя
 }) => {
   const { technicians } = useGetTechniciansList();
-  const { isAdmin, myGroups, userRole, userId, isTeamLeader, supervisedGroups, teamUserIds } = useUserPermissions();
 
   // Фильтруем пользователей в зависимости от роли
   const filteredTechnicians = useMemo(() => {
     if (!technicians || technicians.length === 0) return [];
-
-    // Если Regular User - показываем только себя
-    // Это обеспечивает безопасность: обычные пользователи не видят других пользователей
-    if (userRole === 'Regular User') {
-      return technicians.filter(tech => tech.value === String(userId));
-    }
-
-    // Если Team Leader - показываем только свою команду (подчиненных)
-    if (userRole === 'Team Leader') {
-      return technicians.filter(tech => teamUserIds.has(tech.value));
-    }
-
-    // Для Admin и IT dep. - показываем всех пользователей
     return technicians;
-  }, [technicians, userRole, userId, teamUserIds]);
+  }, [technicians]);
 
   const formattedTechnicians = useMemo(() => {
     return formatMultiSelectData(filteredTechnicians);
@@ -100,28 +86,7 @@ export const Filter = ({
         setLoadingUserGroups(true);
         const data = await user.getGroupsList();
 
-        // Фильтруем группы в зависимости от прав пользователя
-        let filteredGroups = data || [];
-
-        if (isAdmin) {
-          // Если Admin - показываем все группы (без фильтрации)
-          filteredGroups = data || [];
-        } else if (isTeamLeader) {
-          // Если Team Leader - показываем только группы, которыми он руководит
-          const supervisedGroupNames = supervisedGroups.map(group => group.name);
-          filteredGroups = (data || []).filter(group =>
-            supervisedGroupNames.includes(group.name)
-          );
-        } else {
-          // Если Regular User - показываем только группы, в которых состоит пользователь
-          // Это обеспечивает безопасность: обычные пользователи не видят чужие группы
-          const myGroupNames = myGroups.map(group => group.name);
-          filteredGroups = (data || []).filter(group =>
-            myGroupNames.includes(group.name)
-          );
-        }
-
-        const opts = Array.from(new Set(filteredGroups.map((g) => g?.name).filter(Boolean))).map(
+        const opts = Array.from(new Set((data || []).map((g) => g?.name).filter(Boolean))).map(
           (name) => ({ value: name, label: name })
         );
 
@@ -133,7 +98,7 @@ export const Filter = ({
       }
     })();
     return () => { mounted = false; };
-  }, [isAdmin, isTeamLeader, myGroups, supervisedGroups, userRole]);
+  }, []);
 
   // Фильтруем доступные group titles на основе прав пользователя
   const groupTitleSelectData = useMemo(() => {

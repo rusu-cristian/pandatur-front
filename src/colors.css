@@ -49,7 +49,9 @@
   --crm-ui-kit-palette-surface-hover-background-color: #264b79;
 
   /* Фон активной карточки чата */
-  --crm-ui-kit-palette-surface-active-background-color: #0048ad;
+  --crm-ui-kit-palette-surface-active-background-color: #38a27e;
+
+  --crm-ui-kit-palette-surface-active-background-color: #38a27e;
 
   /* Ховер для поверхностей */
   --crm-ui-kit-palette-surface-text-color: #f2f2f2;

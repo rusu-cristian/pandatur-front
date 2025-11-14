@@ -1,4 +1,4 @@
-import { Box, Flex, Image, Text, Badge, Divider, Menu, ActionIcon } from "@mantine/core";
+import { Box, Flex, Image, Text, Badge, Menu, ActionIcon, Divider } from "@mantine/core";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { HiSpeakerWave } from "react-icons/hi2";
@@ -211,10 +211,14 @@ export const ChatListItem = ({ chat, style, selectTicketId }) => {
   };
 
   return (
-    <div style={style}>
+    <div
+      style={{
+        ...style,
+      }}
+    >
       <Link to={`/chat/${chat.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
         <Box
-          py="10px"
+          py="9px"
           pr="10px"
           pl="10px"
           key={chat.id}
@@ -223,6 +227,7 @@ export const ChatListItem = ({ chat, style, selectTicketId }) => {
           } pointer`}
           data-ticket-id={chat.id}
           pos="relative"
+          style={{ borderBottom: "1px solid gray" }}
         >
           {/* Индикатор непрочитанных сообщений */}
           {chat.unseen_count > 0 && (
@@ -321,8 +326,6 @@ export const ChatListItem = ({ chat, style, selectTicketId }) => {
           </Flex>
         </Box>
       </Link>
-
-      <Divider style={{ borderColor: "var(--crm-ui-kit-palette-border-default)" }} />
     </div>
   );
 };
