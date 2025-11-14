@@ -227,7 +227,7 @@ export const ChatListItem = ({ chat, style, selectTicketId }) => {
           } pointer`}
           data-ticket-id={chat.id}
           pos="relative"
-          style={{ borderBottom: "1px solid gray" }}
+          style={{ borderBottom: "1px solid var(--crm-ui-kit-palette-border-default)" }}
         >
           {/* Индикатор непрочитанных сообщений */}
           {chat.unseen_count > 0 && (
