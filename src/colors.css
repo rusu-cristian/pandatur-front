@@ -48,7 +48,8 @@
   /* Фон поверхностей/карточек */
   --crm-ui-kit-palette-surface-hover-background-color: #264b79;
 
-  --crm-ui-kit-palette-surface-active-background-color: #263f79;
+  /* Фон активной карточки чата */
+  --crm-ui-kit-palette-surface-active-background-color: #0048ad;
 
   /* Ховер для поверхностей */
   --crm-ui-kit-palette-surface-text-color: #f2f2f2;
@@ -143,6 +144,10 @@
   --crm-ui-kit-palette-surface-background-color: #ffffff;
   /* Фон поверхностей/карточек */
   --crm-ui-kit-palette-surface-hover-background-color: #e7f1ff;
+
+  /* Фон активной карточки чата */
+  --crm-ui-kit-palette-surface-active-background-color: #d9e6ff;
+
   /* Ховер для поверхностей */
   --crm-ui-kit-palette-surface-text-color: #212529;
   /* Текст на поверхностях */
