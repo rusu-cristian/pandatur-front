@@ -54,11 +54,10 @@ function enrichBlocksWithClientContacts(blocks, clients) {
   const getPlatformByContactType = (type) => {
     switch ((type || "").toLowerCase()) {
       case "email":
-        return "email";
+        return "";
       case "phone":
-      case "mobile":
       case "sipuni":
-        return "phone";
+        return "telegram";
       case "whatsapp":
       case "viber":
       case "telegram":

@@ -88,7 +88,7 @@ export const Leads = () => {
 
   // Debounce для поиска в таблице
   const [searchTerm, setSearchTerm] = useState("");
-  const debouncedSearchTerm = useDebounce(searchTerm, 2000);
+  const debouncedSearchTerm = useDebounce(searchTerm, 1000);
 
   // --- ТАБЛИЦА (hard) ---
   const {
