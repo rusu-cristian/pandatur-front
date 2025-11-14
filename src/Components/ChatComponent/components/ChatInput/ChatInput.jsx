@@ -20,7 +20,7 @@ import { RiAttachment2 } from "react-icons/ri";
 import { useSnackbar } from "notistack";
 import { getLanguageByKey } from "../../../utils";
 import { getEmailsByGroupTitle } from "../../../utils/emailUtils";
-import { templateOptions } from "../../../../FormOptions";
+import { templateOptions, templateGroupsByKey, TEMPLATE_GROUPS } from "../../../../FormOptions";
 import { useUploadMediaFile, useClientContacts, useMessagesContext } from "../../../../hooks";
 import { getMediaType } from "../../renderContent";
 import { useApp, useSocket, useUser } from "@hooks";
@@ -34,6 +34,24 @@ import "./ChatInput.css";
 
 const MESSAGE_LENGTH_LIMIT = 999;
 const LIMITED_PLATFORMS = ["facebook", "instagram"];
+
+const resolveTemplateGroup = (groupTitle) => {
+  const normalized = (groupTitle || "").toUpperCase();
+
+  if (normalized.startsWith("RO")) {
+    return TEMPLATE_GROUPS.RO;
+  }
+
+  if (normalized.startsWith("CATALAN") || normalized.includes("UA")) {
+    return TEMPLATE_GROUPS.CATALAN;
+  }
+
+  if (normalized.startsWith("HR")) {
+    return TEMPLATE_GROUPS.HR;
+  }
+
+  return TEMPLATE_GROUPS.MD;
+};
 
 export const ChatInput = ({
   onSendMessage,
@@ -131,6 +149,23 @@ export const ChatInput = ({
       )}
     </Flex>
   );
+
+  const templateGroup = useMemo(() => resolveTemplateGroup(groupTitle), [groupTitle]);
+
+  const templateSelectOptions = useMemo(() => {
+    return Object.keys(templateOptions)
+      .filter((key) => templateGroupsByKey[key] === templateGroup)
+      .map((key) => ({
+        value: key,
+        label: key,
+      }));
+  }, [templateGroup]);
+
+  useEffect(() => {
+    if (template && templateGroupsByKey[template] !== templateGroup) {
+      setTemplate(undefined);
+    }
+  }, [template, templateGroup]);
 
   // Получаем список page_id для выбранной платформы, отфильтрованный по group_title тикета
   const pageIdOptions = useMemo(() => {
@@ -494,14 +529,12 @@ export const ChatInput = ({
                       className="w-full"
                       onChange={(value) => {
                         setMessage(value ? templateOptions[value] : "");
-                        setTemplate(value);
+                        setTemplate(value || undefined);
                       }}
-                      value={template}
+                      value={template || null}
                       placeholder={getLanguageByKey("select_message_template")}
-                      data={Object.keys(templateOptions).map((key) => ({
-                        value: key,
-                        label: key,
-                      }))}
+                      data={templateSelectOptions}
+                      disabled={templateSelectOptions.length === 0}
                       styles={{
                         input: {
                           fontSize: '16px',

@@ -902,3 +902,45 @@ Panda Tour`,
 Це підтвердження разом із Договором становить єдиний юридично зобов’язуючий документ.
 `,
 }
+
+export const TEMPLATE_GROUPS = {
+    RO: "RO",
+    MD: "MD",
+    HR: "HR",
+    CATALAN: "CATALAN"
+};
+
+const RO_TEMPLATE_KEYS = new Set([
+    "Rezervare RO 1",
+]);
+
+const HR_TEMPLATE_KEYS = new Set([
+    "HR Offer RO 1",
+    "HR Offer RU 1"
+]);
+
+const CATALAN_TEMPLATE_KEYS = new Set([
+    "Istanbul New Year Offer UA 1",
+    "Brasov Offer UA 1",
+    "Istanbul Offer UA 1",
+    "Welcome Message UA 1",
+    "Payment NEW UA 1",
+    "Booking NEW UA 1",
+    "Egypt Offer UA 1",
+    "Number phone NEW UA 1",
+    "Cost NEW UA 1",
+    "Contract Confirmation NEW UA 1"
+]);
+
+export const templateGroupsByKey = Object.keys(templateOptions).reduce((acc, key) => {
+    if (RO_TEMPLATE_KEYS.has(key)) {
+        acc[key] = TEMPLATE_GROUPS.RO;
+    } else if (HR_TEMPLATE_KEYS.has(key)) {
+        acc[key] = TEMPLATE_GROUPS.HR;
+    } else if (CATALAN_TEMPLATE_KEYS.has(key)) {
+        acc[key] = TEMPLATE_GROUPS.CATALAN;
+    } else {
+        acc[key] = TEMPLATE_GROUPS.MD;
+    }
+    return acc;
+}, {});
