@@ -99,20 +99,13 @@ const NoteContent = ({ note }) => {
                     loading="lazy"
                     style={{ 
                         maxWidth: "100%", 
-                        maxHeight: 460, 
+                        maxHeight: 160, 
                         objectFit: "contain", 
                         borderRadius: 10, 
                         cursor: "pointer",
-                        transition: "transform 0.2s ease",
                         background: "var(--crm-ui-kit-palette-background-primary)"
                     }}
                     onClick={() => window.open(url, '_blank')}
-                    onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = "scale(1.02)";
-                    }}
-                    onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = "scale(1)";
-                    }}
                     onError={(e) => {
                         e.currentTarget.style.display = "none";
                         const link = e.currentTarget.nextSibling;
