@@ -62,7 +62,7 @@ const MESSAGE_INDICATOR = {
   [MEDIA_TYPE.CALL]: (
     <Flex c="dimmed" align="center" gap="8">
       <IoCall />
-      <Text h="20px" size="sm">
+      <Text h="20px" size="sm" c="white" fw={900}>
         {getLanguageByKey("call")}
       </Text>
     </Flex>
@@ -70,7 +70,7 @@ const MESSAGE_INDICATOR = {
   [MEDIA_TYPE.EMAIL]: (
     <Flex c="dimmed" align="center" gap="8">
       <FaEnvelope />
-      <Text h="20px" size="sm">
+      <Text h="20px" size="sm" c="white" fw={900}>
         {getLanguageByKey("email")}
       </Text>
     </Flex>

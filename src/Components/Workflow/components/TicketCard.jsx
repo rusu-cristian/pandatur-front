@@ -101,6 +101,8 @@ export const TicketCard = memo(({
     return renderTags(ticket.tags);
   }, [ticket.tags]);
 
+  const clientLabel = getLanguageByKey("Client") || "Client";
+
   const isClientLastMessage = useMemo(() => {
     if (!ticket.last_message) return false;
 
@@ -312,6 +314,18 @@ export const TicketCard = memo(({
                 textAlign: isClientLastMessage ? 'left' : 'right',
               }}
             >
+              {isClientLastMessage && (
+                <span
+                  style={{
+                    // color: '#2e7d32',
+                    color:"ff0000",
+                    fontWeight: 700,
+                    marginRight: '4px'
+                  }}
+                >
+                  {clientLabel}:
+                </span>
+              )}
               {lastMessagePreview}
             </Text>
           )}
