@@ -910,6 +910,13 @@ export const TEMPLATE_GROUPS = {
     CATALAN: "CATALAN"
 };
 
+export const TEMPLATE_GROUP_BY_TITLE = {
+    RO: TEMPLATE_GROUPS.RO,
+    CATALAN: TEMPLATE_GROUPS.CATALAN,
+    HR: TEMPLATE_GROUPS.HR,
+    MD: TEMPLATE_GROUPS.MD
+};
+
 const RO_TEMPLATE_KEYS = new Set([
     "Rezervare RO 1",
 ]);

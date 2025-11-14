@@ -20,7 +20,7 @@ import { RiAttachment2 } from "react-icons/ri";
 import { useSnackbar } from "notistack";
 import { getLanguageByKey } from "../../../utils";
 import { getEmailsByGroupTitle } from "../../../utils/emailUtils";
-import { templateOptions, templateGroupsByKey, TEMPLATE_GROUPS } from "../../../../FormOptions";
+import { templateOptions, templateGroupsByKey, TEMPLATE_GROUP_BY_TITLE } from "../../../../FormOptions";
 import { useUploadMediaFile, useClientContacts, useMessagesContext } from "../../../../hooks";
 import { getMediaType } from "../../renderContent";
 import { useApp, useSocket, useUser } from "@hooks";
@@ -36,21 +36,12 @@ const MESSAGE_LENGTH_LIMIT = 999;
 const LIMITED_PLATFORMS = ["facebook", "instagram"];
 
 const resolveTemplateGroup = (groupTitle) => {
-  const normalized = (groupTitle || "").toUpperCase();
-
-  if (normalized.startsWith("RO")) {
-    return TEMPLATE_GROUPS.RO;
+  if (!groupTitle) {
+    return null;
   }
 
-  if (normalized.startsWith("CATALAN") || normalized.includes("UA")) {
-    return TEMPLATE_GROUPS.CATALAN;
-  }
-
-  if (normalized.startsWith("HR")) {
-    return TEMPLATE_GROUPS.HR;
-  }
-
-  return TEMPLATE_GROUPS.MD;
+  const normalized = groupTitle.toUpperCase();
+  return TEMPLATE_GROUP_BY_TITLE[normalized] || null;
 };
 
 export const ChatInput = ({
@@ -153,6 +144,10 @@ export const ChatInput = ({
   const templateGroup = useMemo(() => resolveTemplateGroup(groupTitle), [groupTitle]);
 
   const templateSelectOptions = useMemo(() => {
+    if (!templateGroup) {
+      return [];
+    }
+
     return Object.keys(templateOptions)
       .filter((key) => templateGroupsByKey[key] === templateGroup)
       .map((key) => ({
@@ -162,6 +157,11 @@ export const ChatInput = ({
   }, [templateGroup]);
 
   useEffect(() => {
+    if (!templateGroup) {
+      setTemplate(undefined);
+      return;
+    }
+
     if (template && templateGroupsByKey[template] !== templateGroup) {
       setTemplate(undefined);
     }
