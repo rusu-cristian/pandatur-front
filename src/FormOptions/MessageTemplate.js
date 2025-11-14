@@ -1,5 +1,5 @@
 export const templateOptions = {
-    /////////////////////////////////Ro-Sales
+    /////////////////////////////////RO
 
     "Rezervare RO 1": `Pentru comoditatea dvs. vă putem propune cîteva opțiuni de achitare și rezervare. Rezervarea se consideră efectuată cu succes în cazul achitării a minim 30 % din suma totală a sejurului sau excursiei.
 
@@ -21,7 +21,7 @@ e) numărul de persoane`,
 Mulțumim că ați ales Panda Tur
 Ma numesc`,
 
-    ////////////////MD-Sales
+    ////////////////MD
 
     "Salutare RU Prescurtat 1":
         `Добрый день, 
@@ -637,7 +637,7 @@ Panda Tour
 С уважением,
 Отдел кадров
 Panda Tour`,
-    /////////////////////////////////////////UA-Sales
+    /////////////////////////////////////////CATALAN
 
     "Istanbul New Year Offer UA 1": `
 Відправляю програму нижче:
