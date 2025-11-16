@@ -2,7 +2,7 @@ export const groupTitleOptions = [
     { value: "MD", label: "MD-Sales" },
     { value: "RO", label: "RO-Sales" },
     { value: "CATALAN", label: "UA Sales" },
-    { value: "Filiale", label: "Filiale MD" },
+    { value: "FILIALE", label: "Filiale MD" },
     { value: "IndividualGroups", label: "Individual groups" },
     { value: "HR", label: "HR" },
     { value: "QUALITYDEPARTMENT", label: "Quality Department" },
