@@ -109,6 +109,36 @@ export const WEBHOOK_PAGES_CONFIG = {
       group_title: ["COMRAT"]
     },
     {
+      page_id: "1953801028210594",
+      page_name: "Balti",
+      type: "facebook",
+      group_title: ["FILIALE"]
+    },
+    {
+      page_id: "187817508490443",
+      page_name: "Cahul",
+      type: "facebook",
+      group_title: ["FILIALE"]
+    },
+    {
+      page_id: "350678882163343",
+      page_name: "Calarasi",
+      type: "facebook",
+      group_title: ["FILIALE"]
+    },
+    {
+      page_id: "611412865950465",
+      page_name: "Falesti",
+      type: "facebook",
+      group_title: ["FILIALE"]
+    },
+    {
+      page_id: "255098058326027",
+      page_name: "Ungheni",
+      type: "facebook",
+      group_title: ["FILIALE"]
+    },
+    {
       page_id: "130361096818926",
       page_name: "Panda Tour Bucuresti",
       type: "facebook",
@@ -225,6 +255,36 @@ export const WEBHOOK_PAGES_CONFIG = {
       group_title: ["CANTEMIR"]
     },
     {
+      page_id: "17841406366155327",
+      page_name: "Balti",
+      type: "instagram",
+      group_title: ["FILIALE"]
+    },
+    {
+      page_id: "17841408150041038",
+      page_name: "Cahul",
+      type: "instagram",
+      group_title: ["FILIALE"]
+    },
+    {
+      page_id: "17841451827167218",
+      page_name: "Calarasi",
+      type: "instagram",
+      group_title: ["FILIALE"]
+    },
+    {
+      page_id: "17841453610678126",
+      page_name: "Falesti",
+      type: "instagram",
+      group_title: ["FILIALE"]
+    },
+    {
+      page_id: "17841474220604628",
+      page_name: "Ungheni",
+      type: "instagram",
+      group_title: ["FILIALE"]
+    },
+    {
       page_id: "17841461747788266",
       page_name: "Panda Tour Bucuresti",
       type: "instagram",
@@ -305,6 +365,36 @@ export const WEBHOOK_PAGES_CONFIG = {
       group_title: ["DROCHIA"]
     },
     {
+      page_id: "37362170070",
+      page_name: "Balti - 37362170070",
+      type: "phone",
+      group_title: ["FILIALE"]
+    },
+    {
+      page_id: "37376051919",
+      page_name: "Cahul - 37376051919",
+      type: "phone",
+      group_title: ["FILIALE"]
+    },
+    {
+      page_id: "37379231919",
+      page_name: "Calarasi - 37379231919",
+      type: "phone",
+      group_title: ["FILIALE"]
+    },
+    {
+      page_id: "37376071919",
+      page_name: "Falesti - 37376071919",
+      type: "phone",
+      group_title: ["FILIALE"]
+    },
+    {
+      page_id: "37360225253",
+      page_name: "Ungheni - 37360225253",
+      type: "phone",
+      group_title: ["FILIALE"]
+    },
+    {
       page_id: "40720949119",
       page_name: "Iasi - 40720949119",
       type: "phone",
@@ -359,6 +449,36 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_name: "Drochia - 37361141919",
       type: "phone",
       group_title: ["DROCHIA"]
+    },
+    {
+      page_id: "37362170070",
+      page_name: "Balti - 37362170070",
+      type: "phone",
+      group_title: ["FILIALE"]
+    },
+    {
+      page_id: "37376051919",
+      page_name: "Cahul - 37376051919",
+      type: "phone",
+      group_title: ["FILIALE"]
+    },
+    {
+      page_id: "37379231919",
+      page_name: "Calarasi - 37379231919",
+      type: "phone",
+      group_title: ["FILIALE"]
+    },
+    {
+      page_id: "37376071919",
+      page_name: "Falesti - 37376071919",
+      type: "phone",
+      group_title: ["FILIALE"]
+    },
+    {
+      page_id: "37360225253",
+      page_name: "Ungheni - 37360225253",
+      type: "phone",
+      group_title: ["FILIALE"]
     }
   ],
   "viber-bots": [
