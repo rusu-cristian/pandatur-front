@@ -209,12 +209,12 @@ export const renderMediaContent = ({
     ),
     [MEDIA_TYPE.EMAIL]: (
       <Flex gap="4" direction="column">
-        <EmailMessage 
-          message={message} 
-          platform_id={payload?.platform_id} 
-          page_id={payload?.page_id} 
+        <EmailMessage
+          message={message}
+          platform_id={payload?.platform_id}
+          page_id={payload?.page_id}
         />
-        
+
         {!shouldDelete && (
           <TimeClient
             id={payload?.client_id}
@@ -223,9 +223,46 @@ export const renderMediaContent = ({
         )}
       </Flex>
     ),
+    // Обработка типа "document" - отображаем как обычный файл
+    document: (
+      <Flex
+        align="center"
+        justify="space-between"
+        w="100%"
+        className="media-wrapper"
+      >
+        <Flex>
+          <Link className="file-link" to={message} target="_blank">
+            <Flex gap="xs" align="center" p={8}>
+              <FaRegFileLines size={32} />
+              <Flex direction="column" gap="4">
+                <Text>{`${message?.slice(0, 45)}...`}</Text>
+                <TimeClient
+                  id={payload?.client_id}
+                  date={parseServerDate(msjTime)?.format(
+                    `${YYYY_MM_DD} ${HH_mm}`,
+                  )}
+                />
+              </Flex>
+            </Flex>
+          </Link>
+        </Flex>
+
+        {shouldDelete && (
+          <ActionIcon
+            size="md"
+            onClick={() => deleteAttachment(id)}
+            variant="danger"
+          >
+            <GoTrash size={14} />
+          </ActionIcon>
+        )}
+      </Flex>
+    ),
   };
 
-  return MEDIA_CONTENT[type];
+  // Если тип не найден, пробуем использовать обработчик для FILE (для совместимости)
+  return MEDIA_CONTENT[type] || MEDIA_CONTENT[MEDIA_TYPE.FILE];
 };
 
 export const renderFile = ({
@@ -235,7 +272,7 @@ export const renderFile = ({
   renderAddAttachments,
 }) => {
   const filterMediaByImageAndVideo = media?.filter((i) =>
-    [MEDIA_TYPE.FILE, MEDIA_TYPE.EMAIL].includes(i.mtype),
+    [MEDIA_TYPE.FILE, MEDIA_TYPE.EMAIL, "document"].includes(i.mtype),
   );
 
   return (

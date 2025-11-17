@@ -13,6 +13,7 @@ const FORMAT_MEDIA = [
   MEDIA_TYPE.FILE,
   MEDIA_TYPE.CALL,
   MEDIA_TYPE.EMAIL,
+  "document", // Тип для документов (PDF и т.д.)
 ];
 
 const getMediaFileMessages = (messageList) => {
