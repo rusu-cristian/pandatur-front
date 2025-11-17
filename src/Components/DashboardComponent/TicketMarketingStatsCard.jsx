@@ -74,11 +74,9 @@ export const TicketMarketingStatsCard = ({
               {title || getLanguageByKey("Ticket Marketing Stats")}
             </Text>
             <Group gap={6} wrap="wrap">
-              {widgetType && (
-                <Badge variant="light" color="blue" size="sm">
-                  {getLanguageByKey("Statistica Marketing") || widgetType}
-                </Badge>
-              )}
+              <Badge variant="light" color="blue" size="sm">
+                {getLanguageByKey("Statistica Marketing") || widgetType || "Statistica Marketing"}
+              </Badge>
               {subtitle ? (
                 <Badge variant="light" size="sm">
                   {subtitle}

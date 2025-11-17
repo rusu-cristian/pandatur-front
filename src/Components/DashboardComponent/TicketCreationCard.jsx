@@ -44,11 +44,9 @@ export const TicketCreationCard = ({
               {title}
             </Text>
             <Group gap={6} wrap="wrap" mt={4}>
-              {widgetType && (
-                <Badge variant="light" color="blue" size="sm">
-                  {getLanguageByKey("Ticket Creation") || widgetType}
-                </Badge>
-              )}
+              <Badge variant="light" color="blue" size="sm">
+                {getLanguageByKey("Ticket Creation") || widgetType || "Ticket Creation"}
+              </Badge>
               {subtitle && (
                 <Text fw={700} size={subtitleSize} c="dark">
                   {subtitle}

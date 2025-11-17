@@ -54,11 +54,9 @@ export const TicketsIntoWorkCard = ({
                         </Text>
 
                         <Group gap={6} wrap="wrap">
-                            {widgetType && (
-                                <Badge variant="light" color="blue" size="sm">
-                                    {getLanguageByKey("Tickets Into Work") || widgetType}
-                                </Badge>
-                            )}
+                            <Badge variant="light" color="blue" size="sm">
+                                {getLanguageByKey("Tickets Into Work") || widgetType || "Tickets Into Work"}
+                            </Badge>
                             {subtitle ? <Badge variant="light">{subtitle}</Badge> : null}
                             <Badge variant="light">
                                 {dateRange?.[0] ? format(dateRange[0], "dd.MM.yyyy") : "—"} →{" "}

@@ -75,11 +75,9 @@ export const TicketLifetimeStatsCard = ({
               {title}
             </Text>
             <Group gap={6} wrap="wrap">
-              {widgetType && (
-                <Badge variant="light" color="blue" size="sm">
-                  {getLanguageByKey("Ticket Lifetime Stats") || widgetType}
-                </Badge>
-              )}
+              <Badge variant="light" color="blue" size="sm">
+                {getLanguageByKey("Ticket Lifetime Stats") || widgetType || "Ticket Lifetime Stats"}
+              </Badge>
               {subtitle && (
                 <Text fw={700} size="lg">
                   {subtitle}

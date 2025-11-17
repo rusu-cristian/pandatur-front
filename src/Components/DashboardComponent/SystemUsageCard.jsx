@@ -56,11 +56,9 @@ export const SystemUsageCard = ({
               {title}
             </Text>
             <Group gap={6} wrap="wrap" mt={4}>
-              {widgetType && (
-                <Badge variant="light" color="blue" size="sm">
-                  {getLanguageByKey("System usage") || widgetType}
-                </Badge>
-              )}
+              <Badge variant="light" color="blue" size="sm">
+                {getLanguageByKey("System usage") || widgetType || "System usage"}
+              </Badge>
               {subtitle && (
                 <Text size="xs" c="dimmed">
                   {subtitle}

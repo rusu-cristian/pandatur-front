@@ -44,11 +44,9 @@ export const WorkflowToChangeCard = ({
               {title}
             </Text>
             <Group gap={6} wrap="wrap" mt={4}>
-              {widgetType && (
-                <Badge variant="light" color="blue" size="sm">
-                  {getLanguageByKey("Workflow Change To") || widgetType}
-                </Badge>
-              )}
+              <Badge variant="light" color="blue" size="sm">
+                {getLanguageByKey("Workflow Change To") || widgetType || "Workflow Change To"}
+              </Badge>
               {subtitle && (
                 <Text fw={700} size={subtitleSize} c="dark">
                   {subtitle}

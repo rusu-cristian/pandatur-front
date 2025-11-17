@@ -63,11 +63,9 @@ export const WorkflowDurationCard = ({
               {title}
             </Text>
             <Group gap={6} wrap="wrap" mt={4}>
-              {widgetType && (
-                <Badge variant="light" color="blue" size="sm">
-                  {getLanguageByKey("Workflow Duration") || widgetType}
-                </Badge>
-              )}
+              <Badge variant="light" color="blue" size="sm">
+                {getLanguageByKey("Workflow Duration") || widgetType || "Workflow Duration"}
+              </Badge>
               {subtitle && (
                 <Text fw={700} size={subtitleSize} c="dark">
                   {subtitle}

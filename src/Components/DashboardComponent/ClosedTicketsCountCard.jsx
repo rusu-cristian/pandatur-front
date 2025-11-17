@@ -45,11 +45,9 @@ export const ClosedTicketsCountCard = ({
               {title}
             </Text>
             <Group gap={6} wrap="wrap" mt={4}>
-              {widgetType && (
-                <Badge variant="light" color="blue" size="sm">
-                  {getLanguageByKey("Closed Tickets Count") || widgetType}
-                </Badge>
-              )}
+              <Badge variant="light" color="blue" size="sm">
+                {getLanguageByKey("Closed Tickets Count") || widgetType || "Closed Tickets Count"}
+              </Badge>
               {subtitle && (
                 <Text size="xs" c="dimmed">
                   {subtitle}

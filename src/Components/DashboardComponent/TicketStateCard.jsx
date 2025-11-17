@@ -65,11 +65,9 @@ export const TicketStateCard = ({
                         </Text>
 
                         <Group gap={6} wrap="wrap">
-                            {widgetType && (
-                                <Badge variant="light" color="blue" size="sm">
-                                    {getLanguageByKey("Ticket State") || widgetType}
-                                </Badge>
-                            )}
+                            <Badge variant="light" color="blue" size="sm">
+                                {getLanguageByKey("Ticket State") || widgetType || "Ticket State"}
+                            </Badge>
                             {subtitle ? <Badge variant="light">{subtitle}</Badge> : null}
                             <Badge variant="light">
                                 {dateRange?.[0] ? format(dateRange[0], "dd.MM.yyyy") : "—"} →{" "}
