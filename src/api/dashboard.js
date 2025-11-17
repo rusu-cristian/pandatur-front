@@ -86,7 +86,7 @@ export const dashboard = {
     return data;
   },
   getWorkflowFromDePrelucratWidget: async (body) => {
-    const { data } = await baseAxios.post("/api/dashboard/widget/workflow-from-de-prelucrat", body);
+    const { data } = await baseAxios.post("/api/dashboard/widget/workflow-from-to-process", body);
     return data;
   },
   getWorkflowDurationWidget: async (body) => {
