@@ -1808,6 +1808,16 @@ export const translations = {
     RU: "Рекомендовано туристом",
     EN: "Tourist recommended"
   },
+  "Apel": {
+    RO: "Apel",
+    RU: "Звонок",
+    EN: "Call"
+  },
+  "Mesaj": {
+    RO: "Mesaj",
+    RU: "Сообщение",
+    EN: "Message"
+  },
   "Birou": {
     RO: "Birou",
     RU: "Офис",
@@ -1827,6 +1837,11 @@ export const translations = {
     RO: "Site",
     RU: "Сайт",
     EN: "Website"
+  },
+  "Cold call": {
+    RO: "Cold call",
+    RU: "Холодный звонок",
+    EN: "Cold call"
   },
   "White Friday": {
     RO: "White Friday",
