@@ -23,6 +23,7 @@ import { TicketDestinationCard } from "./TicketDestinationCard";
 import { TicketMarketingStatsCard } from "./TicketMarketingStatsCard";
 import { TicketSourceStatsCard } from "./TicketSourceStatsCard";
 import { TicketPlatformSourceStatsCard } from "./TicketPlatformSourceStatsCard";
+import { CallsCard } from "./CallsCard";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -216,9 +217,9 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
         []
     );
 
-    // Универсальная обертка для виджетов (без drag handle)
+    // Универсальная обертка для виджетов
     const renderWidgetWrapper = (children, key) => (
-        <div key={key} style={{ height: "100%", cursor: "default" }}>
+        <div key={key}>
             {children}
         </div>
     );
@@ -264,9 +265,9 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                 compactType="vertical"
                 preventCollision={false}
                 isResizable
-                isDraggable={false}
+                isDraggable={true}
                 onLayoutChange={handleLayoutChange}
-                draggableCancel=".mantine-Badge,.mantine-Progress,.mantine-Button,.mantine-Input"
+                draggableCancel=".mantine-Badge,.mantine-Progress,.mantine-Button,.mantine-Input,a,.dashboard-link,[role='link']"
                 transformScale={transformScale}
                 useCSSTransforms={true}
             >
@@ -575,8 +576,26 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                         );
                     }
 
-                    // Source widgets (Platform, Source) - используют TotalCard
+                    // Source widgets (Platform, Source) - используют CallsCard для звонков, TotalCard для остального
                     if (w.type === "source") {
+                        const currentWidgetType = w.widgetType || widgetType;
+                        if (currentWidgetType === "calls") {
+                            return renderWidgetWrapper(
+                                <Box style={{ height: "100%" }}>
+                                    <CallsCard
+                                        title={w.title}
+                                        subtitle={w.subtitle}
+                                        totalAll={Number.isFinite(w.total) ? w.total : 0}
+                                        totalIncoming={Number.isFinite(w.incoming) ? w.incoming : 0}
+                                        totalOutgoing={Number.isFinite(w.outgoing) ? w.outgoing : 0}
+                                        dateRange={dateRange}
+                                        sizeInfo={sizeInfo}
+                                        bg={w.bg}
+                                    />
+                                </Box>,
+                                w.id
+                            );
+                        }
                         return renderWidgetWrapper(
                             <Box style={{ height: "100%" }}>
                                 <TotalCard
@@ -588,13 +607,34 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     dateRange={dateRange}
                                     sizeInfo={sizeInfo}
                                     bg={w.bg}
-                                    widgetType={w.widgetType || widgetType}
+                                    widgetType={currentWidgetType}
                                 />
                             </Box>,
                             w.id
                         );
                     }
 
+                    // Виджеты звонков (general, group) - используют CallsCard
+                    const currentWidgetType = w.widgetType || widgetType;
+                    if (currentWidgetType === "calls") {
+                        return renderWidgetWrapper(
+                            <Box style={{ height: "100%" }}>
+                                <CallsCard
+                                    title={w.title}
+                                    subtitle={w.subtitle}
+                                    totalAll={Number.isFinite(w.total) ? w.total : 0}
+                                    totalIncoming={Number.isFinite(w.incoming) ? w.incoming : 0}
+                                    totalOutgoing={Number.isFinite(w.outgoing) ? w.outgoing : 0}
+                                    dateRange={dateRange}
+                                    sizeInfo={sizeInfo}
+                                    bg={w.bg}
+                                />
+                            </Box>,
+                            w.id
+                        );
+                    }
+
+                    // Остальные виджеты используют TotalCard
                     return renderWidgetWrapper(
                         <Box style={{ height: "100%" }}>
                                 <TotalCard
@@ -606,7 +646,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                 dateRange={dateRange}
                                 sizeInfo={sizeInfo}
                                 bg={w.bg}
-                                    widgetType={w.widgetType || widgetType}
+                                    widgetType={currentWidgetType}
                             />
                         </Box>,
                         w.id
