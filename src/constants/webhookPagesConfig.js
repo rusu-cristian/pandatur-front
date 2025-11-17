@@ -115,6 +115,12 @@ export const WEBHOOK_PAGES_CONFIG = {
       group_title: ["FILIALE"]
     },
     {
+      page_id: "892518147271121",
+      page_name: "Glodeni",
+      type: "facebook",
+      group_title: ["GLODENI"]
+    },
+    {
       page_id: "187817508490443",
       page_name: "Cahul",
       type: "facebook",
@@ -199,6 +205,12 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_name: "Rascani",
       type: "instagram",
       group_title: ["RASCANI"]
+    },
+    {
+      page_id: "17841477312877531",
+      page_name: "Glodeni",
+      type: "instagram",
+      group_title: ["GLODENI"]
     },
     {
       page_id: "17841473664962072",
@@ -353,6 +365,12 @@ export const WEBHOOK_PAGES_CONFIG = {
       group_title: ["RASCANI"]
     },
     {
+      page_id: "37361161919",
+      page_name: "Rascani - 37361161919",
+      type: "phone",
+      group_title: ["GLODENI"]
+    },
+    {
       page_id: "37361001919",
       page_name: "Rascani - 37361001919",
       type: "phone",
@@ -425,6 +443,12 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_name: "Catalan - 380984284284",
       type: "phone",
       group_title: ["CATALAN"]
+    },
+    {
+      page_id: "37361161919",
+      page_name: "Rascani - 37361161919",
+      type: "phone",
+      group_title: ["GLODENI"]
     },
     {
       page_id: "37360991919",
