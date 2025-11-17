@@ -261,8 +261,8 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                 rowHeight={ROW_HEIGHT}
                 margin={MARGIN}
                 containerPadding={PADDING}
-                compactType={null}
-                preventCollision
+                compactType="vertical"
+                preventCollision={false}
                 isResizable
                 isDraggable={false}
                 onLayoutChange={handleLayoutChange}
