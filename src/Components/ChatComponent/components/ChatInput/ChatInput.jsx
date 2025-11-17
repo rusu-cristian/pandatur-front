@@ -745,7 +745,7 @@ export const ChatInput = ({
                   </ActionIcon>
                 </Can>
 
-                <Can permission={{ module: "TASK", action: "CREATE" }}>
+                <Can permission={{ module: "TASK", action: "CREATE" }} context={{ responsibleId }}>
                   <ActionIcon
                     onClick={onCreateTask}
                     variant="default"
