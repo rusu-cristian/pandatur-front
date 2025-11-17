@@ -90,7 +90,7 @@ export const dashboard = {
     return data;
   },
   getWorkflowDurationWidget: async (body) => {
-    const { data } = await baseAxios.post("/api/dashboard/widget/workflow-duration", body);
+    const { data } = await baseAxios.post("/api/dashboard/widget/workflow-to-process-duration", body);
     return data;
   },
   getTicketDestinationWidget: async (body) => {
