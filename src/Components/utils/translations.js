@@ -1708,6 +1708,31 @@ export const translations = {
     RU: "Не указано",
     EN: "Not specified"
   },
+  "Black Fryday": {
+    RO: "Black Fryday",
+    RU: "Черная пятница",
+    EN: "Black Friday"
+  },
+  "Black and White Friday": {
+    RO: "Black and White Friday",
+    RU: "Черно-белая пятница",
+    EN: "Black and White Friday"
+  },
+  "Flash Sale": {
+    RO: "Flash Sale",
+    RU: "Мгновенная распродажа",
+    EN: "Flash Sale"
+  },
+  "Turist recomandat": {
+    RO: "Turist recomandat",
+    RU: "Рекомендовано туристом",
+    EN: "Tourist recommended"
+  },
+  "White Friday": {
+    RO: "White Friday",
+    RU: "Белая пятница",
+    EN: "White Friday"
+  },
   "Canada": {
     RO: "Canada",
     RU: "Канада",
@@ -2152,6 +2177,16 @@ export const translations = {
     RU: "Обработка покупки",
     EN: "Purchase processing"
   },
+  "Online": {
+    RO: "Online",
+    RU: "Онлайн",
+    EN: "Online"
+  },
+  "La birou": {
+    RO: "La birou",
+    RU: "В офисе",
+    EN: "At the office"
+  },
   "Alege achiziție": {
     RO: "Alege achiziție",
     RU: "Выберите покупку",
@@ -2161,6 +2196,16 @@ export const translations = {
     RO: "Selectează statutul plății",
     RU: "Выберите статус оплаты",
     EN: "Select payment status"
+  },
+  "Part pay": {
+    RO: "Plată parțială",
+    RU: "Частичная оплата",
+    EN: "Part pay"
+  },
+  "Full pay": {
+    RO: "Plată integrală",
+    RU: "Полная оплата",
+    EN: "Full pay"
   },
   "Control Admin": {
     RO: "Control Admin",
