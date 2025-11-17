@@ -102,7 +102,7 @@ const SingleChat = ({ technicians, ticketId, onClose, tasks = [] }) => {
       </Box>
 
       <Flex w="70%">
-        <Can permission={{ module: "chat", action: "view" }}>
+        <Can permission={{ module: "chat", action: "view" }} context={{ responsibleId }}>
           <ChatMessages
             selectedClient={selectedClient}
             ticketId={ticketId ? Number(ticketId) : undefined}
