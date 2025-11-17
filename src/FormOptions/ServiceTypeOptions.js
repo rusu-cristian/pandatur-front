@@ -1,4 +1,6 @@
-export const serviceTypeOptions = [
+import { getLanguageByKey } from "../Components/utils/getLanguageByKey";
+
+const serviceTypeOptionKeys = [
   "Sejur la Mare",
   "Excursii",
   "Pelerinaj",
@@ -17,4 +19,9 @@ export const serviceTypeOptions = [
   "Recenzie",
   "Contact specialist",
   "Altele"
-]
+];
+
+export const serviceTypeOptions = serviceTypeOptionKeys.map((key) => ({
+  value: key,
+  label: getLanguageByKey(key) || key,
+}));

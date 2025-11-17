@@ -1,4 +1,6 @@
-export const sourceOfLeadOptions = [
+import { getLanguageByKey } from "../Components/utils/getLanguageByKey";
+
+const sourceOfLeadOptionKeys = [
   "Apel",
   "Mesaj",
   "Birou",
@@ -7,4 +9,9 @@ export const sourceOfLeadOptions = [
   "Certificat cadou",
   "Cold call",
   "Site",
-]
+];
+
+export const sourceOfLeadOptions = sourceOfLeadOptionKeys.map((key) => ({
+  value: key,
+  label: getLanguageByKey(key) || key,
+}));

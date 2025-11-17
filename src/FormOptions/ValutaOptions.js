@@ -1,1 +1,11 @@
-export const valutaOptions = ["Mdl", "Eur"]
+import { getLanguageByKey } from "../Components/utils/getLanguageByKey";
+
+const valutaOptionKeys = [
+  "Mdl",
+  "Eur"
+];
+
+export const valutaOptions = valutaOptionKeys.map((key) => ({
+  value: key,
+  label: getLanguageByKey(key) || key,
+}));

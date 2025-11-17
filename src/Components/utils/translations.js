@@ -528,10 +528,90 @@ export const translations = {
     RU: "Транспорт",
     EN: "Transport"
   },
+  "Avion": {
+    RO: "Avion",
+    RU: "Самолет",
+    EN: "Plane"
+  },
+  "Autocar": {
+    RO: "Autocar",
+    RU: "Автобус",
+    EN: "Bus"
+  },
+  "Transport personal": {
+    RO: "Transport personal",
+    RU: "Личный транспорт",
+    EN: "Personal transport"
+  },
+  "Fara transport": {
+    RO: "Fara transport",
+    RU: "Без транспорта",
+    EN: "No transport"
+  },
   Excursie: {
     RO: "Excursie",
     RU: "Экскурсия",
     EN: "Trip"
+  },
+  "Sejur la Mare": {
+    RO: "Sejur la Mare",
+    RU: "Отдых на море",
+    EN: "Seaside stay"
+  },
+  "Excursii": {
+    RO: "Excursii",
+    RU: "Экскурсии",
+    EN: "Tours"
+  },
+  "Munte": {
+    RO: "Munte",
+    RU: "Горы",
+    EN: "Mountains"
+  },
+  "CityBreak": {
+    RO: "CityBreak",
+    RU: "Сити-брейк",
+    EN: "City Break"
+  },
+  "Angajare": {
+    RO: "Angajare",
+    RU: "Трудоустройство",
+    EN: "Employment"
+  },
+  "Doar transport": {
+    RO: "Doar transport",
+    RU: "Только транспорт",
+    EN: "Transport only"
+  },
+  "Viza": {
+    RO: "Viza",
+    RU: "Виза",
+    EN: "Visa"
+  },
+  "Bilet de fotbal": {
+    RO: "Bilet de fotbal",
+    RU: "Футбольный билет",
+    EN: "Football ticket"
+  },
+  "Tabara la munte cu Panda tur si Iuliana Beregoi": {
+    RO: "Tabara la munte cu Panda tur si Iuliana Beregoi",
+    RU: "Горный лагерь с Panda Tur и Юлианой Берегой",
+    EN: "Mountain camp with Panda Tur and Iuliana Beregoi"
+  },
+  "Festival": {
+    RO: "Festival",
+    RU: "Фестиваль",
+    EN: "Festival"
+  },
+  "Recenzie": {
+    RO: "Recenzie",
+    RU: "Отзыв",
+    EN: "Review"
+  },
+  "Contact specialist": {
+    RO: "Contact specialist",
+    RU: "Связаться со специалистом",
+    EN: "Contact specialist"
   },
   "Data plecării": {
     RO: "Data plecării",
@@ -1727,6 +1807,26 @@ export const translations = {
     RO: "Turist recomandat",
     RU: "Рекомендовано туристом",
     EN: "Tourist recommended"
+  },
+  "Birou": {
+    RO: "Birou",
+    RU: "Офис",
+    EN: "Office"
+  },
+  "Formular Facebook": {
+    RO: "Formular Facebook",
+    RU: "Форма Facebook",
+    EN: "Facebook form"
+  },
+  "Certificat cadou": {
+    RO: "Certificat cadou",
+    RU: "Подарочный сертификат",
+    EN: "Gift certificate"
+  },
+  "Site": {
+    RO: "Site",
+    RU: "Сайт",
+    EN: "Website"
   },
   "White Friday": {
     RO: "White Friday",
