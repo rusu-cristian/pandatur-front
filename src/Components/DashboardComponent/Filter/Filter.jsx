@@ -6,7 +6,6 @@ import { getLanguageByKey } from "../../utils";
 import { useGetTechniciansList } from "../../../hooks";
 import { formatMultiSelectData, getGroupUserMap } from "../../utils/multiSelectUtils";
 import { user } from "../../../api/user";
-import { userGroupsToGroupTitle } from "../../utils/workflowUtils";
 import { UserGroupMultiSelect } from "../../ChatComponent/components/UserGroupMultiSelect/UserGroupMultiSelect";
 import { groupTitleOptions } from "../../../FormOptions";
 
@@ -177,18 +176,10 @@ export const Filter = ({
     }
     const nextUserGroups = Array.from(groupsForUsers);
     setSelectedUserGroups(nextUserGroups);
-
-    // Обновляем group titles на основе групп
-    const titlesSet = new Set();
-    nextUserGroups.forEach((g) => (userGroupsToGroupTitle?.[g] || []).forEach((t) => titlesSet.add(t)));
-    setSelectedGroupTitles(Array.from(titlesSet));
   };
 
   const handleUserGroupsChange = (groups) => {
     setSelectedUserGroups(groups || []);
-    const titlesSet = new Set();
-    (groups || []).forEach((g) => (userGroupsToGroupTitle?.[g] || []).forEach((t) => titlesSet.add(t)));
-    setSelectedGroupTitles(Array.from(titlesSet));
   };
 
 
