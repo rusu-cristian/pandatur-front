@@ -1,4 +1,6 @@
-export const nameExcursionOptions = [
+import { getLanguageByKey } from "../Components/utils/getLanguageByKey";
+
+const nameExcursionOptionKeys = [
   "Excursie de 4 zile la Istanbul cu Autocarul",
   "Conacul lui Manuc Bei + Ferma de Struți",
   "Excursie Cetatea Soroca – Cosăuți",
@@ -66,4 +68,9 @@ export const nameExcursionOptions = [
   "Citybreak",
   "Tratament",
   "Alte"
-]
+];
+
+export const nameExcursionOptions = nameExcursionOptionKeys.map((key) => ({
+  value: key,
+  label: getLanguageByKey(key) || key,
+}));

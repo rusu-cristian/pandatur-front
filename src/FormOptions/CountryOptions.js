@@ -1,4 +1,6 @@
-export const countryOptions = [
+import { getLanguageByKey } from "../Components/utils/getLanguageByKey";
+
+const countryOptionKeys = [
   "Albania",
   "Bulgaria",
   "Canada",
@@ -29,7 +31,12 @@ export const countryOptions = [
   "Ungaria",
   "USA",
   "Zanzibar",
-  "Nu este specificat",
   "Laponia",
   "Altele",
-]
+  "Nu este specificat",
+];
+
+export const countryOptions = countryOptionKeys.map((key) => ({
+  value: key,
+  label: getLanguageByKey(key) || key,
+}));

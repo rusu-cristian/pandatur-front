@@ -1708,6 +1708,411 @@ export const translations = {
     RU: "Не указано",
     EN: "Not specified"
   },
+  "Canada": {
+    RO: "Canada",
+    RU: "Канада",
+    EN: "Canada"
+  },
+  "Cuba": {
+    RO: "Cuba",
+    RU: "Куба",
+    EN: "Cuba"
+  },
+  "Dubai (Emiratele arabe unite)": {
+    RO: "Dubai (Emiratele arabe unite)",
+    RU: "Дубай (Объединенные Арабские Эмираты)",
+    EN: "Dubai (United Arab Emirates)"
+  },
+  "Grecia": {
+    RO: "Grecia",
+    RU: "Греция",
+    EN: "Greece"
+  },
+  "Grecia,Creta": {
+    RO: "Grecia,Creta",
+    RU: "Греция, Крит",
+    EN: "Greece, Crete"
+  },
+  "Israel": {
+    RO: "Israel",
+    RU: "Израиль",
+    EN: "Israel"
+  },
+  "Europa": {
+    RO: "Europa",
+    RU: "Европа",
+    EN: "Europe"
+  },
+  "Franta": {
+    RO: "Franta",
+    RU: "Франция",
+    EN: "France"
+  },
+  "Indonesia,Balti": {
+    RO: "Indonesia,Balti",
+    RU: "Индонезия, Бали",
+    EN: "Indonesia, Bali"
+  },
+  "Moldova": {
+    RO: "Moldova",
+    RU: "Молдова",
+    EN: "Moldova"
+  },
+  "Romania": {
+    RO: "Romania",
+    RU: "Румыния",
+    EN: "Romania"
+  },
+  "Republica Dominicana": {
+    RO: "Republica Dominicana",
+    RU: "Доминиканская Республика",
+    EN: "Dominican Republic"
+  },
+  "Tanzania": {
+    RO: "Tanzania",
+    RU: "Танзания",
+    EN: "Tanzania"
+  },
+  "Thailand": {
+    RO: "Thailand",
+    RU: "Таиланд",
+    EN: "Thailand"
+  },
+  "Ucraina": {
+    RO: "Ucraina",
+    RU: "Украина",
+    EN: "Ukraine"
+  },
+  "Ungaria": {
+    RO: "Ungaria",
+    RU: "Венгрия",
+    EN: "Hungary"
+  },
+  "USA": {
+    RO: "USA",
+    RU: "США",
+    EN: "USA"
+  },
+  "Nu este specificat": {
+    RO: "Nu este specificat",
+    RU: "Не указано",
+    EN: "Not specified"
+  },
+  "Excursie de 4 zile la Istanbul cu Autocarul": {
+    RO: "Excursie de 4 zile la Istanbul cu Autocarul",
+    RU: "Экскурсия 4 дня в Стамбул на автобусе",
+    EN: "4-day Istanbul tour by bus"
+  },
+  "Conacul lui Manuc Bei + Ferma de Struți": {
+    RO: "Conacul lui Manuc Bei + Ferma de Struți",
+    RU: "Усадьба Манука Бея + Страусиная ферма",
+    EN: "Manuc Bei Mansion + Ostrich Farm"
+  },
+  "Excursie Cetatea Soroca – Cosăuți": {
+    RO: "Excursie Cetatea Soroca – Cosăuți",
+    RU: "Экскурсия Сорокская крепость – Косэуць",
+    EN: "Soroca Fortress – Cosăuți tour"
+  },
+  "Excursie cu Vaporul + Saharna + Țipova + distracție cu DJ": {
+    RO: "Excursie cu Vaporul + Saharna + Țipova + distracție cu DJ",
+    RU: "Экскурсия на пароходе + Сахарна + Ципова + развлечения с DJ",
+    EN: "Boat tour + Saharna + Țipova + DJ entertainment"
+  },
+  "Mica Elveție Fetești – Zăbriceni": {
+    RO: "Mica Elveție Fetești – Zăbriceni",
+    RU: "Маленькая Швейцария Фетешть – Зэбричень",
+    EN: "Little Switzerland Fetești – Zăbriceni"
+  },
+  "Orheiul Vechi – Curchi – Satul Vatici": {
+    RO: "Orheiul Vechi – Curchi – Satul Vatici",
+    RU: "Старый Орхей – Курки – Село Ватич",
+    EN: "Old Orhei – Curchi – Vatici Village"
+  },
+  "Pădurea Domnească + Duruitoarea Veche + Costești-Stânca + Butești + Suta de Movile": {
+    RO: "Pădurea Domnească + Duruitoarea Veche + Costești-Stânca + Butești + Suta de Movile",
+    RU: "Княжеский лес + Старая Дуройтоаре + Костешть-Стынка + Бутешть + Сто курганов",
+    EN: "Domnească Forest + Old Duruitoarea + Costești-Stânca + Butești + Hundred Mounds"
+  },
+  "Plaiul Fagului": {
+    RO: "Plaiul Fagului",
+    RU: "Плаюл Фагулуй",
+    EN: "Plaiul Fagului"
+  },
+  "Bucovina – Mocănița": {
+    RO: "Bucovina – Mocănița",
+    RU: "Буковина – Узкоколейка",
+    EN: "Bucovina – Narrow Gauge Railway"
+  },
+  "București + Therme București": {
+    RO: "București + Therme București",
+    RU: "Бухарест + Термы Бухарест",
+    EN: "Bucharest + Therme Bucharest"
+  },
+  "Cheile Bicazului – Lacul Roșu – Piatra Neamț": {
+    RO: "Cheile Bicazului – Lacul Roșu – Piatra Neamț",
+    RU: "Ущелье Биказ – Красное озеро – Пьятра-Нямц",
+    EN: "Bicaz Gorge – Red Lake – Piatra Neamț"
+  },
+  "Delta Dunării": {
+    RO: "Delta Dunării",
+    RU: "Дельта Дуная",
+    EN: "Danube Delta"
+  },
+  "Excursie Brașov – Sinaia – Bran": {
+    RO: "Excursie Brașov – Sinaia – Bran",
+    RU: "Экскурсия Брашов – Синая – Бран",
+    EN: "Brașov – Sinaia – Bran tour"
+  },
+  "Excursie Cluj - Rimetea - Salina Turda - Târgul Mureș": {
+    RO: "Excursie Cluj - Rimetea - Salina Turda - Târgul Mureș",
+    RU: "Экскурсия Клуж - Риметеа - Соляная шахта Турда - Тыргу-Муреш",
+    EN: "Cluj - Rimetea - Turda Salt Mine - Târgul Mureș tour"
+  },
+  "Excursie de 3 zile Transalpina – Cazanele Dunării – Chipul lui Decebal – Coloana Infinitului – Bran – Brașov / Transalpina – Brașov": {
+    RO: "Excursie de 3 zile Transalpina – Cazanele Dunării – Chipul lui Decebal – Coloana Infinitului – Bran – Brașov / Transalpina – Brașov",
+    RU: "Экскурсия 3 дня Трансальпина – Казаны Дуная – Лик Децебала – Колонна Бесконечности – Бран – Брашов / Трансальпина – Брашов",
+    EN: "3-day tour Transalpina – Danube Gorges – Decebal's Face – Endless Column – Bran – Brașov / Transalpina – Brașov"
+  },
+  "Ferma de Cerbi – Sibiu – Castelul de Lut – Brașov": {
+    RO: "Ferma de Cerbi – Sibiu – Castelul de Lut – Brașov",
+    RU: "Оленья ферма – Сибиу – Глиняный замок – Брашов",
+    EN: "Deer Farm – Sibiu – Clay Castle – Brașov"
+  },
+  "Iași + Shopping la Palas Mall": {
+    RO: "Iași + Shopping la Palas Mall",
+    RU: "Яссы + Шоппинг в Palas Mall",
+    EN: "Iași + Shopping at Palas Mall"
+  },
+  "Maramureș – Mocănița – Cascada Cailor": {
+    RO: "Maramureș – Mocănița – Cascada Cailor",
+    RU: "Марамуреш – Узкоколейка – Конский водопад",
+    EN: "Maramureș – Narrow Gauge Railway – Horse Waterfall"
+  },
+  "Sibiu – Sighișoara": {
+    RO: "Sibiu – Sighișoara",
+    RU: "Сибиу – Сигишоара",
+    EN: "Sibiu – Sighișoara"
+  },
+  "Borsec-Fontana Spa & BiquadFilterNode": {
+    RO: "Borsec-Fontana Spa & BiquadFilterNode",
+    RU: "Борсек-Фонтана Спа",
+    EN: "Borsec-Fontana Spa"
+  },
+  "Tabără la Munte cu Panda Tur și Iuliana Beregoi": {
+    RO: "Tabără la Munte cu Panda Tur și Iuliana Beregoi",
+    RU: "Горный лагерь с Panda Tur и Юлианой Берегой",
+    EN: "Mountain camp with Panda Tur and Iuliana Beregoi"
+  },
+  "Transfăgărășan – Lacul Bîlea - Ferma de Cerbi – Sibiu – Catelul de Lut –Cetatea Făgăraș": {
+    RO: "Transfăgărășan – Lacul Bîlea - Ferma de Cerbi – Sibiu – Catelul de Lut –Cetatea Făgăraș",
+    RU: "Трансфэгэрашан – Озеро Былеа – Оленья ферма – Сибиу – Глиняный замок – Крепость Фэгэраш",
+    EN: "Transfăgărășan – Bîlea Lake – Deer Farm – Sibiu – Clay Castle – Făgăraș Fortress"
+  },
+  "Transfăgărășan + Sighișoara + Lacul Bâlea": {
+    RO: "Transfăgărășan + Sighișoara + Lacul Bâlea",
+    RU: "Трансфэгэрашан + Сигишоара + Озеро Былеа",
+    EN: "Transfăgărășan + Sighișoara + Bâlea Lake"
+  },
+  "Turul României – 6 orașe": {
+    RO: "Turul României – 6 orașe",
+    RU: "Тур по Румынии – 6 городов",
+    EN: "Romania Tour – 6 cities"
+  },
+  "3 zile la mare la Costinești": {
+    RO: "3 zile la mare la Costinești",
+    RU: "3 дня на море в Костинешть",
+    EN: "3 days at sea in Costinești"
+  },
+  "Bukovel + Rafting": {
+    RO: "Bukovel + Rafting",
+    RU: "Буковель + Рафтинг",
+    EN: "Bukovel + Rafting"
+  },
+  "Viena – Salzburg": {
+    RO: "Viena – Salzburg",
+    RU: "Вена – Зальцбург",
+    EN: "Vienna – Salzburg"
+  },
+  "Budapesta + Viena + Bratislava": {
+    RO: "Budapesta + Viena + Bratislava",
+    RU: "Будапешт + Вена + Братислава",
+    EN: "Budapest + Vienna + Bratislava"
+  },
+  "Circuit de 3 zile la Budapesta + Viena (Opțional)": {
+    RO: "Circuit de 3 zile la Budapesta + Viena (Opțional)",
+    RU: "Тур 3 дня в Будапешт + Вена (Опционально)",
+    EN: "3-day tour to Budapest + Vienna (Optional)"
+  },
+  "Circuit de 4 zile la Budapesta + Viena (Opțional)": {
+    RO: "Circuit de 4 zile la Budapesta + Viena (Opțional)",
+    RU: "Тур 4 дня в Будапешт + Вена (Опционально)",
+    EN: "4-day tour to Budapest + Vienna (Optional)"
+  },
+  "Crăciun în Viena-Salburg": {
+    RO: "Crăciun în Viena-Salburg",
+    RU: "Рождество в Вене-Зальцбурге",
+    EN: "Christmas in Vienna-Salzburg"
+  },
+  "Grecia Low Cost / Excursie Grecia 8 zile 7 nopți": {
+    RO: "Grecia Low Cost / Excursie Grecia 8 zile 7 nopți",
+    RU: "Греция Low Cost / Экскурсия Греция 8 дней 7 ночей",
+    EN: "Greece Low Cost / Greece Tour 8 days 7 nights"
+  },
+  "Cracovia – Varșovia – Kosice": {
+    RO: "Cracovia – Varșovia – Kosice",
+    RU: "Краков – Варшава – Кошице",
+    EN: "Krakow – Warsaw – Kosice"
+  },
+  "Praga – Dresda – Karlovy Vary": {
+    RO: "Praga – Dresda – Karlovy Vary",
+    RU: "Прага – Дрезден – Карловы Вары",
+    EN: "Prague – Dresden – Karlovy Vary"
+  },
+  "Turul Europei – 7 Orașe": {
+    RO: "Turul Europei – 7 Orașe",
+    RU: "Тур по Европе – 7 городов",
+    EN: "Europe Tour – 7 Cities"
+  },
+  "Turul în Europa – 5 Orașe": {
+    RO: "Turul în Europa – 5 Orașe",
+    RU: "Тур по Европе – 5 городов",
+    EN: "Europe Tour – 5 Cities"
+  },
+  "Crăciun în Europa - 5 Orașe": {
+    RO: "Crăciun în Europa - 5 Orașe",
+    RU: "Рождество в Европе - 5 городов",
+    EN: "Christmas in Europe - 5 Cities"
+  },
+  "Țările Baltice – Polonia": {
+    RO: "Țările Baltice – Polonia",
+    RU: "Прибалтика – Польша",
+    EN: "Baltic States – Poland"
+  },
+  "Turul Țărilor Balcanice": {
+    RO: "Turul Țărilor Balcanice",
+    RU: "Тур по Балканам",
+    EN: "Balkan Countries Tour"
+  },
+  "Excursie Castelele din Bavaria + Austria": {
+    RO: "Excursie Castelele din Bavaria + Austria",
+    RU: "Экскурсия Замки Баварии + Австрия",
+    EN: "Bavaria Castles + Austria tour"
+  },
+  "BULGARIA - EXCURSIE DE 3 ZILE CU ALL INCLUSIVE": {
+    RO: "BULGARIA - EXCURSIE DE 3 ZILE CU ALL INCLUSIVE",
+    RU: "БОЛГАРИЯ - ЭКСКУРСИЯ 3 ДНЯ ALL INCLUSIVE",
+    EN: "BULGARIA - 3-DAY ALL INCLUSIVE TOUR"
+  },
+  "EXCURSIE TURCIA-GEORGIA": {
+    RO: "EXCURSIE TURCIA-GEORGIA",
+    RU: "ЭКСКУРСИЯ ТУРЦИЯ-ГРУЗИЯ",
+    EN: "TURKEY-GEORGIA TOUR"
+  },
+  "Pelerinaj în Israel": {
+    RO: "Pelerinaj în Israel",
+    RU: "Паломничество в Израиль",
+    EN: "Pilgrimage to Israel"
+  },
+  "Pelerinaj! Săptămâna Patimilor în Țara Sfântă: Întâmpinarea Luminii Sfinte": {
+    RO: "Pelerinaj! Săptămâna Patimilor în Țara Sfântă: Întâmpinarea Luminii Sfinte",
+    RU: "Паломничество! Страстная неделя в Святой Земле: Встреча Святого Света",
+    EN: "Pilgrimage! Holy Week in the Holy Land: Meeting of the Holy Light"
+  },
+  "Pelerinaj de o zi la 9 mănăstiri": {
+    RO: "Pelerinaj de o zi la 9 mănăstiri",
+    RU: "Паломничество на один день в 9 монастырей",
+    EN: "One-day pilgrimage to 9 monasteries"
+  },
+  "Pelerinaj la Muntele Athos, Tesalonic": {
+    RO: "Pelerinaj la Muntele Athos, Tesalonic",
+    RU: "Паломничество на гору Афон, Салоники",
+    EN: "Pilgrimage to Mount Athos, Thessaloniki"
+  },
+  "Pelerinaj la Părinții Arsenie Boca și Iustin Pârvu": {
+    RO: "Pelerinaj la Părinții Arsenie Boca și Iustin Pârvu",
+    RU: "Паломничество к отцам Арсению Боке и Иустину Пырву",
+    EN: "Pilgrimage to Fathers Arsenie Boca and Iustin Pârvu"
+  },
+  "Pelerinaj de 2 zile la Sf. Parascheva şi Mănăstirile din Iaşi": {
+    RO: "Pelerinaj de 2 zile la Sf. Parascheva şi Mănăstirile din Iaşi",
+    RU: "Паломничество 2 дня к Св. Параскеве и монастырям в Яссах",
+    EN: "2-day pilgrimage to St. Parascheva and monasteries in Iași"
+  },
+  "Pelerinaj de 2 zile la Mănăstirile din Neamț": {
+    RO: "Pelerinaj de 2 zile la Mănăstirile din Neamț",
+    RU: "Паломничество 2 дня в монастыри Нямц",
+    EN: "2-day pilgrimage to Neamț monasteries"
+  },
+  "Pelerinaj de 2 zile la Putna și Mănăstirile din Bucovina": {
+    RO: "Pelerinaj de 2 zile la Putna și Mănăstirile din Bucovina",
+    RU: "Паломничество 2 дня в Путну и монастыри Буковины",
+    EN: "2-day pilgrimage to Putna and Bucovina monasteries"
+  },
+  "Munte România": {
+    RO: "Munte România",
+    RU: "Горы Румыния",
+    EN: "Romanian Mountains"
+  },
+  "Mare Bulgaria": {
+    RO: "Mare Bulgaria",
+    RU: "Море Болгария",
+    EN: "Bulgarian Sea"
+  },
+  "Mare Grecia": {
+    RO: "Mare Grecia",
+    RU: "Море Греция",
+    EN: "Greek Sea"
+  },
+  "Mare Dubai": {
+    RO: "Mare Dubai",
+    RU: "Море Дубай",
+    EN: "Dubai Sea"
+  },
+  "Mare Egipt": {
+    RO: "Mare Egipt",
+    RU: "Море Египет",
+    EN: "Egyptian Sea"
+  },
+  "Mare Maldive": {
+    RO: "Mare Maldive",
+    RU: "Море Мальдивы",
+    EN: "Maldives Sea"
+  },
+  "Mare Turcia": {
+    RO: "Mare Turcia",
+    RU: "Море Турция",
+    EN: "Turkish Sea"
+  },
+  "Mare Zanzibar": {
+    RO: "Mare Zanzibar",
+    RU: "Море Занзибар",
+    EN: "Zanzibar Sea"
+  },
+  "Canary Islands": {
+    RO: "Canary Islands",
+    RU: "Канарские острова",
+    EN: "Canary Islands"
+  },
+  "Exotic Tanzania": {
+    RO: "Exotic Tanzania",
+    RU: "Экзотическая Танзания",
+    EN: "Exotic Tanzania"
+  },
+  "Exotic Thailand": {
+    RO: "Exotic Thailand",
+    RU: "Экзотический Таиланд",
+    EN: "Exotic Thailand"
+  },
+  "Croaziera": {
+    RO: "Croaziera",
+    RU: "Круиз",
+    EN: "Cruise"
+  },
+  "Alte": {
+    RO: "Alte",
+    RU: "Другие",
+    EN: "Others"
+  },
   "Tara": {
     RO: "Tara",
     RU: "Страна",
