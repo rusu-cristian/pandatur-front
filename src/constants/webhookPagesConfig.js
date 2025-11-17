@@ -365,8 +365,8 @@ export const WEBHOOK_PAGES_CONFIG = {
       group_title: ["RASCANI"]
     },
     {
-      page_id: "37361161919",
-      page_name: "Glodeni - 37361161919",
+      page_id: "37368791919",
+      page_name: "Glodeni - 37368791919",
       type: "phone",
       group_title: ["GLODENI"]
     },
@@ -445,8 +445,8 @@ export const WEBHOOK_PAGES_CONFIG = {
       group_title: ["CATALAN"]
     },
     {
-      page_id: "37361161919",
-      page_name: "Glodeni - 37361161919",
+      page_id: "37368791919",
+      page_name: "Glodeni - 37368791919",
       type: "phone",
       group_title: ["GLODENI"]
     },
