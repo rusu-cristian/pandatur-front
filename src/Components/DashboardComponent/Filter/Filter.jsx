@@ -4,13 +4,10 @@ import { Button, Group, MultiSelect, Modal, Stack, Box, Flex } from "@mantine/co
 import { DateRangePicker } from "../../DateRangePicker";
 import { getLanguageByKey } from "../../utils";
 import { useGetTechniciansList } from "../../../hooks";
-import { formatMultiSelectData, getGroupUserMap } from "../../utils/multiSelectUtils";
+import { formatMultiSelectData } from "../../utils/multiSelectUtils";
 import { user } from "../../../api/user";
 import { UserGroupMultiSelect } from "../../ChatComponent/components/UserGroupMultiSelect/UserGroupMultiSelect";
 import { groupTitleOptions } from "../../../FormOptions";
-
-const GROUP_PREFIX = "__group__";
-const fromGroupKey = (key) => (key?.startsWith(GROUP_PREFIX) ? key.slice(GROUP_PREFIX.length) : key);
 
 const getStartEndDateRange = (date) => {
   const startOfDay = new Date(date);
@@ -48,17 +45,6 @@ export const Filter = ({
   const formattedTechnicians = useMemo(() => {
     return formatMultiSelectData(filteredTechnicians);
   }, [filteredTechnicians]);
-
-  const groupUserMap = useMemo(() => getGroupUserMap(technicians), [technicians]);
-  const groupKeyToNameMap = useMemo(() => {
-    const map = new Map();
-    (technicians || []).forEach((item) => {
-      if (item?.value?.startsWith(GROUP_PREFIX)) {
-        map.set(item.value, item.label);
-      }
-    });
-    return map;
-  }, [technicians]);
 
   const [userGroupsOptions, setUserGroupsOptions] = useState([]);
   const [loadingUserGroups, setLoadingUserGroups] = useState(false);
@@ -162,20 +148,6 @@ export const Filter = ({
     // UserGroupMultiSelect уже обрабатывает группы внутри себя
     // и возвращает только ID пользователей в массиве val
     setSelectedTechnicians(val || []);
-
-    // Определяем группы на основе выбранных пользователей
-    const groupsForUsers = new Set();
-    for (const [groupKey, users] of groupUserMap.entries()) {
-      const hasAny = (val || []).some((u) => users.includes(u));
-      if (hasAny) {
-        const groupName = groupKeyToNameMap.get(groupKey) ?? fromGroupKey(groupKey);
-        if (groupName) {
-          groupsForUsers.add(groupName);
-        }
-      }
-    }
-    const nextUserGroups = Array.from(groupsForUsers);
-    setSelectedUserGroups(nextUserGroups);
   };
 
   const handleUserGroupsChange = (groups) => {
