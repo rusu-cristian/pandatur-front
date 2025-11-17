@@ -77,7 +77,7 @@ export const TopUsersCard = ({
     title = "Top users",
     subtitle,
     rows = [],          // [{ user_id, name, total }]
-    limit = 10,
+    limit = 100,
     bg,
     colors = { totalAccent: "indigo" },
     widgetType = "calls", // Тип виджета для определения отображаемых данных
@@ -208,7 +208,44 @@ export const TopUsersCard = ({
                         <Text size={titleSize} c="dimmed" fw={700} tt="uppercase" style={{ letterSpacing: 0.6 }}>
                             {title}
                         </Text>
-                        {subtitle ? <Badge variant="light" size={isVeryCompact ? "xs" : "sm"}>{subtitle}</Badge> : null}
+                        <Group gap={6} wrap="wrap" mt={4}>
+                            <Badge variant="light" color="blue" size={isVeryCompact ? "xs" : "sm"}>
+                                {widgetType === "calls" 
+                                    ? getLanguageByKey("Calls") 
+                                    : widgetType === "messages"
+                                    ? getLanguageByKey("Messages")
+                                    : widgetType === "ticket_state"
+                                    ? getLanguageByKey("Ticket State")
+                                    : widgetType === "tickets_into_work"
+                                    ? getLanguageByKey("Tickets Into Work")
+                                    : widgetType === "system_usage"
+                                    ? getLanguageByKey("System usage")
+                                    : widgetType === "ticket_distribution"
+                                    ? getLanguageByKey("Ticket Distribution")
+                                    : widgetType === "closed_tickets_count"
+                                    ? getLanguageByKey("Closed Tickets Count")
+                                    : widgetType === "tickets_by_depart_count"
+                                    ? getLanguageByKey("Tickets By Depart Count")
+                                    : widgetType === "ticket_lifetime_stats"
+                                    ? getLanguageByKey("Ticket Lifetime Stats")
+                                    : widgetType === "ticket_rate"
+                                    ? getLanguageByKey("Ticket Rate")
+                                    : widgetType === "workflow_from_change"
+                                    ? getLanguageByKey("Workflow From Change")
+                                    : widgetType === "workflow_to_change"
+                                    ? getLanguageByKey("Workflow Change To")
+                                    : widgetType === "ticket_creation"
+                                    ? getLanguageByKey("Ticket Creation")
+                                    : widgetType === "workflow_from_de_prelucrat"
+                                    ? getLanguageByKey("Workflow From De Prelucrat")
+                                    : widgetType === "workflow_duration"
+                                    ? getLanguageByKey("Workflow Duration")
+                                    : widgetType === "ticket_destination"
+                                    ? getLanguageByKey("Ticket Destination")
+                                    : getLanguageByKey(widgetType) || widgetType || "Top users"}
+                            </Badge>
+                            {subtitle ? <Badge variant="light" size={isVeryCompact ? "xs" : "sm"}>{subtitle}</Badge> : null}
+                        </Group>
                     </div>
                 </Group>
                 
