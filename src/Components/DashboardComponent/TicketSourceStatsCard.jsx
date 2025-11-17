@@ -34,6 +34,7 @@ export const TicketSourceStatsCard = ({
   subtitle,
   bg,
   limit = 100,
+  widgetType,
 }) => {
   const normalizedStats = useMemo(() => mapItems(sourceStats, limit), [sourceStats, limit]);
 
@@ -72,11 +73,18 @@ export const TicketSourceStatsCard = ({
             <Text size="xs" c="dimmed" fw={700} tt="uppercase" style={{ letterSpacing: 0.8 }}>
               {title || getLanguageByKey("Ticket Source Stats")}
             </Text>
-            {subtitle ? (
-              <Badge variant="light" size="sm">
-                {subtitle}
-              </Badge>
-            ) : null}
+            <Group gap={6} wrap="wrap">
+              {widgetType && (
+                <Badge variant="light" color="blue" size="sm">
+                  {getLanguageByKey("Sursă Lead") || widgetType}
+                </Badge>
+              )}
+              {subtitle ? (
+                <Badge variant="light" size="sm">
+                  {subtitle}
+                </Badge>
+              ) : null}
+            </Group>
           </Stack>
         </Group>
         <Box style={{ textAlign: "right" }}>

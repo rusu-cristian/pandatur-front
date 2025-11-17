@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Text, Group, Stack, Box } from "@mantine/core";
+import { Card, Text, Group, Stack, Box, Badge } from "@mantine/core";
 import { FaCheckCircle, FaClock, FaCalendarAlt } from "react-icons/fa";
 import { getLanguageByKey } from "@utils";
 
@@ -12,7 +12,8 @@ export const ClosedTicketsCountCard = ({
   newerThan11Days = 0,
   totalClosedTickets = 0,
   bg,
-  icons = {} 
+  icons = {},
+  widgetType,
 }) => {
   const colors = {
     older: "#F59E0B",    // amber-500
@@ -43,9 +44,18 @@ export const ClosedTicketsCountCard = ({
             <Text size="sm" fw={500} c="dimmed">
               {title}
             </Text>
-            <Text size="xs" c="dimmed">
-              {subtitle}
-            </Text>
+            <Group gap={6} wrap="wrap" mt={4}>
+              {widgetType && (
+                <Badge variant="light" color="blue" size="sm">
+                  {getLanguageByKey("Closed Tickets Count") || widgetType}
+                </Badge>
+              )}
+              {subtitle && (
+                <Text size="xs" c="dimmed">
+                  {subtitle}
+                </Text>
+              )}
+            </Group>
           </Box>
         </Group>
 

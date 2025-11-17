@@ -13,7 +13,8 @@ export const TicketRateCard = ({
   workedOnPercentage = 0,
   title,
   subtitle,
-  bg
+  bg,
+  widgetType,
 }) => {
   const getQualityColor = (directlyClosedPct) => {
     if (directlyClosedPct <= 10) return "green"; // Хорошо - мало прямых закрытий
@@ -49,9 +50,18 @@ export const TicketRateCard = ({
             <Text fw={600} size="sm" c="dimmed">
               {title}
             </Text>
-            <Text fw={700} size="lg">
-              {subtitle}
-            </Text>
+            <Group gap={6} wrap="wrap">
+              {widgetType && (
+                <Badge variant="light" color="blue" size="sm">
+                  {getLanguageByKey("Ticket Rate") || widgetType}
+                </Badge>
+              )}
+              {subtitle && (
+                <Text fw={700} size="lg">
+                  {subtitle}
+                </Text>
+              )}
+            </Group>
           </Stack>
           <Badge color="blue" variant="light" size="lg">
             {totalTransitions}

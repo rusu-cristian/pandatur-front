@@ -12,7 +12,8 @@ export const TicketsByDepartCountCard = ({
   totalTickets = 0,
   title,
   subtitle,
-  bg
+  bg,
+  widgetType,
 }) => {
   const total = lessThan14Days + between14And30Days + moreThan30Days;
   
@@ -43,9 +44,18 @@ export const TicketsByDepartCountCard = ({
             <Text fw={600} size="sm" c="dimmed">
               {title}
             </Text>
-            <Text fw={700} size="lg">
-              {subtitle}
-            </Text>
+            <Group gap={6} wrap="wrap">
+              {widgetType && (
+                <Badge variant="light" color="blue" size="sm">
+                  {getLanguageByKey("Tickets By Depart Count") || widgetType}
+                </Badge>
+              )}
+              {subtitle && (
+                <Text fw={700} size="lg">
+                  {subtitle}
+                </Text>
+              )}
+            </Group>
           </Stack>
           <Badge color="blue" variant="light" size="lg">
             {totalTickets || total}

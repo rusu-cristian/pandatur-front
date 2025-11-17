@@ -12,6 +12,7 @@ export const WorkflowFromChangeCard = ({
   bg,
   width,
   height,
+  widgetType,
 }) => {
   const luatPercentage = totalChanges > 0 ? Math.round((luatInLucruChangedCount / totalChanges) * 100) : 0;
   const ofertaPercentage = totalChanges > 0 ? Math.round((ofertaTrimisaChangedCount / totalChanges) * 100) : 0;
@@ -57,9 +58,18 @@ export const WorkflowFromChangeCard = ({
             <Text fw={600} size={titleSize} c="dimmed">
               {title}
             </Text>
-            <Text fw={700} size={subtitleSize} c="dark">
-              {subtitle}
-            </Text>
+            <Group gap={6} wrap="wrap" mt={4}>
+              {widgetType && (
+                <Badge variant="light" color="blue" size="sm">
+                  {getLanguageByKey("Workflow From Change") || widgetType}
+                </Badge>
+              )}
+              {subtitle && (
+                <Text fw={700} size={subtitleSize} c="dark">
+                  {subtitle}
+                </Text>
+              )}
+            </Group>
           </Box>
           <Badge size={badgeSize} variant="light" color="blue">
             {totalChanges} {getLanguageByKey("changes")}

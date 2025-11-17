@@ -302,6 +302,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     dateRange={dateRange}
                                     sizeInfo={sizeInfo}
                                     bg={w.bg}
+                                    widgetType={w.type}
                                 />
                             </Box>,
                             w.id
@@ -318,6 +319,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     dateRange={dateRange}
                                     sizeInfo={sizeInfo}
                                     bg={w.bg}
+                                    widgetType={w.type}
                                 />
                             </Box>,
                             w.id
@@ -335,6 +337,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     dateRange={dateRange}
                                     sizeInfo={sizeInfo}
                                     bg={w.bg}
+                                    widgetType={w.type}
                                 />
                             </Box>,
                             w.id
@@ -351,6 +354,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     dateRange={dateRange}
                                     sizeInfo={sizeInfo}
                                     bg={w.bg}
+                                    widgetType={w.type}
                                 />
                             </Box>,
                             w.id
@@ -369,6 +373,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     dateRange={dateRange}
                                     sizeInfo={sizeInfo}
                                     bg={w.bg}
+                                    widgetType={w.type}
                                 />
                             </Box>,
                             w.id
@@ -386,6 +391,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     moreThan30Days={Number.isFinite(w.moreThan30Days) ? w.moreThan30Days : 0}
                                     totalTickets={Number.isFinite(w.totalTickets) ? w.totalTickets : 0}
                                     bg={w.bg}
+                                    widgetType={w.type}
                                 />
                             </Box>,
                             w.id
@@ -404,6 +410,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     totalLifetimeHours={Number.isFinite(w.totalLifetimeHours) ? w.totalLifetimeHours : 0}
                                     averageLifetimeHours={Number.isFinite(w.averageLifetimeHours) ? w.averageLifetimeHours : 0}
                                     bg={w.bg}
+                                    widgetType={w.type}
                                 />
                             </Box>,
                             w.id
@@ -422,6 +429,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     workedOnCount={Number.isFinite(w.workedOnCount) ? w.workedOnCount : 0}
                                     workedOnPercentage={Number.isFinite(w.workedOnPercentage) ? w.workedOnPercentage : 0}
                                     bg={w.bg}
+                                    widgetType={w.type}
                                 />
                             </Box>,
                             w.id
@@ -440,6 +448,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     bg={w.bg}
                                     width={w.w}
                                     height={w.h}
+                                    widgetType={w.type}
                                 />
                             </Box>,
                             w.id
@@ -456,6 +465,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     bg={w.bg}
                                     width={w.w}
                                     height={w.h}
+                                    widgetType={w.type}
                                 />
                             </Box>,
                             w.id
@@ -472,6 +482,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     bg={w.bg}
                                     width={w.w}
                                     height={w.h}
+                                    widgetType={w.type}
                                 />
                             </Box>,
                             w.id
@@ -489,6 +500,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     bg={w.bg}
                                     width={w.w}
                                     height={w.h}
+                                    widgetType={w.type}
                                 />
                             </Box>,
                             w.id
@@ -507,6 +519,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     bg={w.bg}
                                     width={w.w}
                                     height={w.h}
+                                    widgetType={w.type}
                                 />
                             </Box>,
                             w.id
@@ -523,6 +536,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     bg={w.bg}
                                     width={w.w}
                                     height={w.h}
+                                    widgetType={w.type}
                                 />
                             </Box>,
                             w.id
@@ -538,6 +552,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     marketingStats={w.marketingStats || []}
                                     totalMarketing={Number.isFinite(w.totalMarketing) ? w.totalMarketing : undefined}
                                     bg={w.bg}
+                                    widgetType={w.type}
                                 />
                             </Box>,
                             w.id
@@ -553,6 +568,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     sourceStats={w.sourceStats || []}
                                     totalSources={Number.isFinite(w.totalSources) ? w.totalSources : undefined}
                                     bg={w.bg}
+                                    widgetType={w.type}
                                 />
                             </Box>,
                             w.id
@@ -570,6 +586,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                         Number.isFinite(w.totalPlatformSources) ? w.totalPlatformSources : undefined
                                     }
                                     bg={w.bg}
+                                    widgetType={w.type}
                                 />
                             </Box>,
                             w.id
@@ -591,6 +608,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                         dateRange={dateRange}
                                         sizeInfo={sizeInfo}
                                         bg={w.bg}
+                                        widgetType={currentWidgetType}
                                     />
                                 </Box>,
                                 w.id
@@ -628,6 +646,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     dateRange={dateRange}
                                     sizeInfo={sizeInfo}
                                     bg={w.bg}
+                                    widgetType={currentWidgetType}
                                 />
                             </Box>,
                             w.id

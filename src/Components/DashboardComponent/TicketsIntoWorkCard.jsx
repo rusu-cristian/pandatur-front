@@ -18,6 +18,7 @@ export const TicketsIntoWorkCard = ({
     sizeInfo,
     sizePx,
     bg,
+    widgetType,
 }) => {
     const TotalIconNode = icons.total ?? <FaBriefcase size={18} />;
 
@@ -53,6 +54,11 @@ export const TicketsIntoWorkCard = ({
                         </Text>
 
                         <Group gap={6} wrap="wrap">
+                            {widgetType && (
+                                <Badge variant="light" color="blue" size="sm">
+                                    {getLanguageByKey("Tickets Into Work") || widgetType}
+                                </Badge>
+                            )}
                             {subtitle ? <Badge variant="light">{subtitle}</Badge> : null}
                             <Badge variant="light">
                                 {dateRange?.[0] ? format(dateRange[0], "dd.MM.yyyy") : "—"} →{" "}

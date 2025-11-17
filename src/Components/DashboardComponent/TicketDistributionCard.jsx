@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Text, Group, Stack, Box } from "@mantine/core";
+import { Card, Text, Group, Stack, Box, Badge } from "@mantine/core";
 import { FaShare, FaTicketAlt } from "react-icons/fa";
 import { getLanguageByKey } from "@utils";
 
@@ -10,7 +10,8 @@ export const TicketDistributionCard = ({
   subtitle, 
   distributedTickets = 0, 
   bg,
-  icons = {} 
+  icons = {},
+  widgetType,
 }) => {
   const colors = {
     distributed: "#8B5CF6", // purple-500
@@ -39,9 +40,18 @@ export const TicketDistributionCard = ({
             <Text size="sm" fw={500} c="dimmed">
               {title}
             </Text>
-            <Text size="xs" c="dimmed">
-              {subtitle}
-            </Text>
+            <Group gap={6} wrap="wrap" mt={4}>
+              {widgetType && (
+                <Badge variant="light" color="blue" size="sm">
+                  {getLanguageByKey("Ticket Distribution") || widgetType}
+                </Badge>
+              )}
+              {subtitle && (
+                <Text size="xs" c="dimmed">
+                  {subtitle}
+                </Text>
+              )}
+            </Group>
           </Box>
         </Group>
 

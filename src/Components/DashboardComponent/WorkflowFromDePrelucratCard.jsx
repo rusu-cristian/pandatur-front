@@ -11,6 +11,7 @@ export const WorkflowFromDePrelucratCard = ({
   bg,
   width,
   height,
+  widgetType,
 }) => {
   // Адаптивные размеры в зависимости от размера виджета
   const isCompact = width < 40 || height < 15;
@@ -50,9 +51,18 @@ export const WorkflowFromDePrelucratCard = ({
             <Text fw={600} size={titleSize} c="dimmed">
               {title}
             </Text>
-            <Text fw={700} size={subtitleSize} c="dark">
-              {subtitle}
-            </Text>
+            <Group gap={6} wrap="wrap" mt={4}>
+              {widgetType && (
+                <Badge variant="light" color="blue" size="sm">
+                  {getLanguageByKey("Workflow From De Prelucrat") || widgetType}
+                </Badge>
+              )}
+              {subtitle && (
+                <Text fw={700} size={subtitleSize} c="dark">
+                  {subtitle}
+                </Text>
+              )}
+            </Group>
           </Box>
           <Badge size={badgeSize} variant="light" color="blue">
             {totalChanges} {getLanguageByKey("workflow transitions")}

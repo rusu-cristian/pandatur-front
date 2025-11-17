@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Text, Group, Stack, Box } from "@mantine/core";
+import { Card, Text, Group, Stack, Box, Badge } from "@mantine/core";
 import { FaClock, FaStopwatch } from "react-icons/fa";
 import { getLanguageByKey } from "@utils";
 
@@ -25,7 +25,8 @@ export const SystemUsageCard = ({
   activityMinutes = 0, 
   activityHours = 0, 
   bg,
-  icons = {} 
+  icons = {},
+  widgetType,
 }) => {
   const colors = {
     minutes: "#3B82F6", // blue-500
@@ -54,9 +55,18 @@ export const SystemUsageCard = ({
             <Text size="sm" fw={500} c="dimmed">
               {title}
             </Text>
-            <Text size="xs" c="dimmed">
-              {subtitle}
-            </Text>
+            <Group gap={6} wrap="wrap" mt={4}>
+              {widgetType && (
+                <Badge variant="light" color="blue" size="sm">
+                  {getLanguageByKey("System usage") || widgetType}
+                </Badge>
+              )}
+              {subtitle && (
+                <Text size="xs" c="dimmed">
+                  {subtitle}
+                </Text>
+              )}
+            </Group>
           </Box>
         </Group>
 

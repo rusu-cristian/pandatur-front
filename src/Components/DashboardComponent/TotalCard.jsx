@@ -132,6 +132,13 @@ export const TotalCard = ({
                     </Group>
 
                     <Group gap={6} wrap="wrap" mt="xs">
+                        <Badge variant="light" color="blue" size="sm">
+                            {widgetType === "messages" 
+                                ? getLanguageByKey("Messages") 
+                                : widgetType === "calls" 
+                                    ? getLanguageByKey("Calls") 
+                                    : getLanguageByKey(widgetType) || widgetType}
+                        </Badge>
                         <Badge variant="light" color="gray" size="sm">
                             {dateRange?.[0] ? format(dateRange[0], "dd.MM.yyyy") : "—"} →{" "}
                             {dateRange?.[1] ? format(dateRange[1], "dd.MM.yyyy") : "—"}

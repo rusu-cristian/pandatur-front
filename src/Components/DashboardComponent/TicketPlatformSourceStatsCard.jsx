@@ -34,6 +34,7 @@ export const TicketPlatformSourceStatsCard = ({
   subtitle,
   bg,
   limit = 100,
+  widgetType,
 }) => {
   const normalizedStats = useMemo(() => mapItems(platformSourceStats, limit), [platformSourceStats, limit]);
 
@@ -72,11 +73,18 @@ export const TicketPlatformSourceStatsCard = ({
             <Text size="xs" c="dimmed" fw={700} tt="uppercase" style={{ letterSpacing: 0.8 }}>
               {title || getLanguageByKey("Ticket Platform Source Stats")}
             </Text>
-            {subtitle ? (
-              <Badge variant="light" size="sm">
-                {subtitle}
-              </Badge>
-            ) : null}
+            <Group gap={6} wrap="wrap">
+              {widgetType && (
+                <Badge variant="light" color="blue" size="sm">
+                  {getLanguageByKey("Platformă lead") || widgetType}
+                </Badge>
+              )}
+              {subtitle ? (
+                <Badge variant="light" size="sm">
+                  {subtitle}
+                </Badge>
+              ) : null}
+            </Group>
           </Stack>
         </Group>
         <Box style={{ textAlign: "right" }}>
