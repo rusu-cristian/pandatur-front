@@ -198,10 +198,11 @@ export const createGroupTitleWidgets = (data, widgetType, getLanguageByKey) => {
     // данные могут быть в поле stats, и нужно включить user_groups
     const itemData = r.stats || r;
     
-    // Проверяем, является ли это виджетом со статистикой
+    // Проверяем, является ли это виджетом со статистикой или workflow
     const isStatsWidget = widgetType === "ticket_source" || 
                          widgetType === "ticket_marketing" || 
                          widgetType === "ticket_platform_source";
+    const isWorkflowWidget = widgetType === "workflow_from_de_prelucrat";
     
     // Если это виджет со статистикой и есть user_groups, добавляем их в данные
     if (isStatsWidget && r.user_groups && Array.isArray(r.user_groups)) {
@@ -222,6 +223,53 @@ export const createGroupTitleWidgets = (data, widgetType, getLanguageByKey) => {
           userGroupName: ug.user_group_name ?? ug.user_group ?? "-",
           stats: ug.stats || ug,
         })),
+      };
+    }
+    
+    // Если это workflow виджет и есть user_groups, добавляем их в данные
+    if (isWorkflowWidget && r.user_groups && Array.isArray(r.user_groups)) {
+      const widget = createWidgetFromData(
+        itemData, 
+        widgetType, 
+        getLanguageByKey, 
+        `gt-${shortName ?? idx}`, 
+        "Group title", 
+        fullName, 
+        BG_COLORS.by_group_title
+      );
+      
+      // Добавляем вложенные группы пользователей
+      // Для workflow виджетов данные могут быть в поле stats (объект)
+      return {
+        ...widget,
+        userGroups: r.user_groups.map(ug => {
+          const ugStats = ug.stats || ug;
+          // Если это объект со stats (новый формат), преобразуем в массив
+          let workflowChanges = [];
+          let totalChanges = 0;
+          
+          if (ugStats && typeof ugStats === "object" && !Array.isArray(ugStats)) {
+            // Новый формат: объект, где значения - объекты с destination_workflow и count
+            workflowChanges = Object.values(ugStats)
+              .filter(item => item && typeof item === "object")
+              .map(item => ({
+                destination_workflow: item.destination_workflow || item.destination || "-",
+                change_count: Number.isFinite(item.count) ? item.count : (Number.isFinite(item.change_count) ? item.change_count : 0),
+              }));
+            totalChanges = workflowChanges.reduce((sum, item) => sum + (item.change_count || 0), 0);
+          } else {
+            // Старый формат: массив workflow_changes
+            workflowChanges = safeArray(ug.workflow_changes || ug.changes || []);
+            totalChanges = Number.isFinite(ug.total_changes) ? ug.total_changes : 
+              workflowChanges.reduce((sum, item) => sum + (Number.isFinite(item.change_count) ? item.change_count : (Number.isFinite(item.count) ? item.count : 0)), 0);
+          }
+          
+          return {
+            userGroupName: ug.user_group_name ?? ug.user_group ?? "-",
+            workflowChanges,
+            totalChanges,
+          };
+        }),
       };
     }
     
@@ -251,10 +299,11 @@ export const createUserGroupWidgets = (data, widgetType, getLanguageByKey, userN
     // данные могут быть в поле stats, и нужно включить user_technicians
     const itemData = r.stats || r;
     
-    // Проверяем, является ли это виджетом со статистикой
+    // Проверяем, является ли это виджетом со статистикой или workflow
     const isStatsWidget = widgetType === "ticket_source" || 
                          widgetType === "ticket_marketing" || 
                          widgetType === "ticket_platform_source";
+    const isWorkflowWidget = widgetType === "workflow_from_de_prelucrat";
     
     // Если это виджет со статистикой и есть user_technicians, добавляем их в данные
     if (isStatsWidget && r.user_technicians && Array.isArray(r.user_technicians)) {
@@ -283,6 +332,57 @@ export const createUserGroupWidgets = (data, widgetType, getLanguageByKey, userN
       };
     }
     
+    // Если это workflow виджет и есть user_technicians, добавляем их в данные
+    if (isWorkflowWidget && r.user_technicians && Array.isArray(r.user_technicians)) {
+      const widget = createWidgetFromData(
+        itemData, 
+        widgetType, 
+        getLanguageByKey, 
+        `ug-${idx}`, 
+        "User group", 
+        name || "-", 
+        BG_COLORS.by_user_group
+      );
+      
+      // Добавляем вложенных пользователей с их именами
+      // Для workflow виджетов данные могут быть в поле stats (объект)
+      return {
+        ...widget,
+        userTechnicians: r.user_technicians.map(ut => {
+          const uid = Number(ut.user_id);
+          const userName = userNameById?.get?.(uid) || (Number.isFinite(uid) ? `ID ${uid}` : "-");
+          const utStats = ut.stats || ut;
+          
+          // Если это объект со stats (новый формат), преобразуем в массив
+          let workflowChanges = [];
+          let totalChanges = 0;
+          
+          if (utStats && typeof utStats === "object" && !Array.isArray(utStats)) {
+            // Новый формат: объект, где значения - объекты с destination_workflow и count
+            workflowChanges = Object.values(utStats)
+              .filter(item => item && typeof item === "object")
+              .map(item => ({
+                destination_workflow: item.destination_workflow || item.destination || "-",
+                change_count: Number.isFinite(item.count) ? item.count : (Number.isFinite(item.change_count) ? item.change_count : 0),
+              }));
+            totalChanges = workflowChanges.reduce((sum, item) => sum + (item.change_count || 0), 0);
+          } else {
+            // Старый формат: массив workflow_changes
+            workflowChanges = safeArray(ut.workflow_changes || ut.changes || []);
+            totalChanges = Number.isFinite(ut.total_changes) ? ut.total_changes : 
+              workflowChanges.reduce((sum, item) => sum + (Number.isFinite(item.change_count) ? item.change_count : (Number.isFinite(item.count) ? item.count : 0)), 0);
+          }
+          
+          return {
+            userId: uid,
+            userName,
+            workflowChanges,
+            totalChanges,
+          };
+        }),
+      };
+    }
+    
     return createWidgetFromData(
       itemData, 
       widgetType, 
@@ -304,8 +404,10 @@ export const createUserWidgets = (data, widgetType, getLanguageByKey, userNameBy
     const uid = Number(r.user_id);
     const name = userNameById.get(uid);
     const subtitle = (name || (Number.isFinite(uid) ? `ID ${uid}` : "-")) + (r.sipuni_id ? ` • ${r.sipuni_id}` : "");
+    // Для workflow виджетов данные могут быть в поле stats
+    const itemData = (widgetType === "workflow_from_de_prelucrat" && r.stats) ? r.stats : r;
     return createWidgetFromData(
-      r, 
+      itemData, 
       widgetType, 
       getLanguageByKey, 
       `user-${uid || idx}`, 

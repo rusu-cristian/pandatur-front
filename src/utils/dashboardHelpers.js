@@ -338,7 +338,7 @@ export const createTicketCreationData = (obj) => ({
  */
 export const createWorkflowFromDePrelucratData = (obj) => {
   if (Array.isArray(obj)) {
-    // Для general секции - это массив объектов
+    // Для general секции (старый формат) - это массив объектов
     const totalChanges = obj.reduce((sum, item) => sum + (pickNum(item, ["change_count", "count"]) || 0), 0);
     return {
       workflowChanges: obj.map(item => ({
@@ -347,8 +347,29 @@ export const createWorkflowFromDePrelucratData = (obj) => {
       })),
       totalChanges,
     };
-  } else {
-    // Для других секций - это объект с workflow_changes массивом
+  } else if (obj && typeof obj === "object") {
+    // Проверяем, является ли это объектом со stats (новый формат)
+    // где ключи - это названия workflow, а значения - объекты с destination_workflow и count
+    const statsObj = obj.stats || obj;
+    
+    // Если это объект, где значения - объекты с destination_workflow и count
+    if (statsObj && typeof statsObj === "object" && !Array.isArray(statsObj)) {
+      const workflowChanges = Object.values(statsObj)
+        .filter(item => item && typeof item === "object")
+        .map(item => ({
+          destination_workflow: item.destination_workflow || item.destination || "-",
+          change_count: pickNum(item, ["change_count", "count"]) || 0,
+        }));
+      
+      const totalChanges = workflowChanges.reduce((sum, item) => sum + (item.change_count || 0), 0);
+      
+      return {
+        workflowChanges,
+        totalChanges,
+      };
+    }
+    
+    // Для других секций (старый формат) - это объект с workflow_changes массивом
     const workflowChanges = safeArray(obj.workflow_changes || obj.changes || []);
     const totalChanges = pickNum(obj, ["total_changes", "total"]) ||
       workflowChanges.reduce((sum, item) => sum + (pickNum(item, ["change_count", "count"]) || 0), 0);
@@ -361,6 +382,12 @@ export const createWorkflowFromDePrelucratData = (obj) => {
       totalChanges,
     };
   }
+  
+  // Fallback для пустых или неожиданных данных
+  return {
+    workflowChanges: [],
+    totalChanges: 0,
+  };
 };
 
 /**
