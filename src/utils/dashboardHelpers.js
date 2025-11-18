@@ -322,9 +322,27 @@ export const createWorkflowFromChangeData = (obj) => ({
 /**
  * Создает данные для workflow to change виджетов
  */
-export const createWorkflowToChangeData = (obj) => ({
-  contractIncheiatChangedCount: pickNum(obj, ["contract_incheiat_changed_count", "contract_incheiat", "contract"]),
-});
+export const createWorkflowToChangeData = (obj) => {
+  // Проверяем, является ли это объектом со stats (новый формат)
+  // где может быть объект с contract_incheiat внутри
+  const statsSource = obj?.stats ?? obj;
+
+  // Если это объект, где есть contract_incheiat с workflow и count
+  if (statsSource && typeof statsSource === "object" && !Array.isArray(statsSource)) {
+    const contractIncheiatObj = statsSource.contract_incheiat;
+    if (contractIncheiatObj && typeof contractIncheiatObj === "object") {
+      const count = pickNum(contractIncheiatObj, ["count", "value", "total"]) || 0;
+      return {
+        contractIncheiatChangedCount: count,
+      };
+    }
+  }
+
+  // Старый формат или прямой доступ
+  return {
+    contractIncheiatChangedCount: pickNum(obj, ["contract_incheiat_changed_count", "contract_incheiat", "contract"]) || 0,
+  };
+};
 
 /**
  * Создает данные для ticket creation виджетов
