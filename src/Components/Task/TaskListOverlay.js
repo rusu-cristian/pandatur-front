@@ -17,6 +17,8 @@ import dayjs from "dayjs";
 import Can from "../CanComponent/Can";
 import { SocketContext } from "../../contexts/SocketContext";
 import { UserGroupMultiSelect } from "../ChatComponent/components/UserGroupMultiSelect/UserGroupMultiSelect";
+import { hasPermission } from "../utils/permissions";
+import { convertRolesToMatrix, safeParseJson } from "../UsersComponent/rolesUtils";
 
 // Цвета для статусов задач (те же, что в TicketCard.jsx)
 const TASK_STATUS_COLORS = {
@@ -29,13 +31,13 @@ const TASK_STATUS_COLORS = {
 // Функция для определения цвета задачи на основе даты
 const getTaskDateColor = (date) => {
   if (!date) return TASK_STATUS_COLORS.none;
-  
+
   const taskDate = toDate(date);
   if (!taskDate) return TASK_STATUS_COLORS.none;
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  
+
   const taskDay = new Date(taskDate);
   taskDay.setHours(0, 0, 0, 0);
 
@@ -99,10 +101,21 @@ const TaskListOverlay = ({ ticketId, creatingTask, setCreatingTask }) => {
   const [taskEdits, setTaskEdits] = useState({});
   const [editMode, setEditMode] = useState({});
   const { technicians: users } = useGetTechniciansList();
-  const { userId } = useUser();
+  const { userId, user, teamUserIds } = useUser();
   const { enqueueSnackbar } = useSnackbar();
   const [originalTaskValues, setOriginalTaskValues] = useState({});
   const { onEvent } = useContext(SocketContext);
+
+  // Проверяем права на создание задач и определяем, нужно ли фильтровать по команде
+  const rawRoles = safeParseJson(user?.roles || "[]");
+  const matrix = convertRolesToMatrix(rawRoles);
+  const taskCreateLevel = matrix["TASK_CREATE"];
+  const isTeamLevel = taskCreateLevel === "Team";
+
+  // Если у пользователя права уровня "Team", ограничиваем выбор только участниками команды
+  const allowedUserIdsForCreate = isTeamLevel && teamUserIds
+    ? new Set([...teamUserIds, String(userId)])
+    : null;
 
   const [listLoading, setListLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
@@ -351,6 +364,7 @@ const TaskListOverlay = ({ ticketId, creatingTask, setCreatingTask }) => {
               label={translations["Autor"][language]}
               // placeholder={translations["Autor"][language]}
               disabled={!isEditing || actionLoading}
+              allowedUserIds={isNew && allowedUserIdsForCreate ? allowedUserIdsForCreate : null}
             />
             <UserGroupMultiSelect
               techniciansData={users}
@@ -360,6 +374,7 @@ const TaskListOverlay = ({ ticketId, creatingTask, setCreatingTask }) => {
               label={translations["Responsabil"][language]}
               // placeholder={translations["Responsabil"][language]}
               disabled={!isEditing || actionLoading}
+              allowedUserIds={isNew && allowedUserIdsForCreate ? allowedUserIdsForCreate : null}
             />
             <TextInput
               label={translations["Comentariu"][language]}

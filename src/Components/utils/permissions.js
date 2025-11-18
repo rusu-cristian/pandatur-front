@@ -20,7 +20,17 @@ export const hasPermission = (
     if (skipContextCheck) return true;
 
     if (level === "IfResponsible") return responsibleId === currentUserId;
-    if (level === "Team") return isSameTeam;
+    
+    // Для уровня "Team" и действия "CREATE": если responsibleId не установлен,
+    // разрешаем создание (пользователь сможет выбрать ответственного из команды при создании)
+    if (level === "Team") {
+        // Если responsibleId не установлен и это CREATE, разрешаем (ответственный выберется при создании)
+        if (action.toUpperCase() === "CREATE" && !responsibleId) {
+            return true;
+        }
+        // Если responsibleId установлен, проверяем, что он из той же команды
+        return isSameTeam;
+    }
 
     return false;
 };
