@@ -151,7 +151,7 @@ export const normalizeMarketingStats = (stats) => normalizeCategoricalStats(stat
  * Создает данные для ticket marketing stats виджетов
  */
 export const createTicketMarketingStatsData = (obj) => {
-  const statsSource = obj?.marketing_stats ?? obj?.marketingStats ?? obj;
+  const statsSource = obj?.marketing_stats ?? obj?.marketingStats ?? obj?.stats ?? obj;
   const stats = normalizeMarketingStats(statsSource);
   const totalMarketing = stats.reduce(
     (sum, item) => sum + (Number.isFinite(item.count) ? item.count : 0),
@@ -180,7 +180,7 @@ export const createTicketMarketingStatsData = (obj) => {
  * Создает данные для ticket source stats виджетов
  */
 export const createTicketSourceStatsData = (obj) => {
-  const statsSource = obj?.sursa_lead_stats ?? obj?.sursaLeadStats ?? obj;
+  const statsSource = obj?.sursa_lead_stats ?? obj?.sursaLeadStats ?? obj?.stats ?? obj;
   const stats = normalizeCategoricalStats(statsSource);
   const totalSources = stats.reduce((sum, item) => sum + (Number.isFinite(item.count) ? item.count : 0), 0);
 
@@ -206,7 +206,7 @@ export const createTicketSourceStatsData = (obj) => {
  * Создает данные для ticket platform source stats виджетов
  */
 export const createTicketPlatformSourceStatsData = (obj) => {
-  const statsSource = obj?.platform_source_stats ?? obj?.platformSourceStats ?? obj;
+  const statsSource = obj?.platform_source_stats ?? obj?.platformSourceStats ?? obj?.stats ?? obj;
   const stats = normalizeCategoricalStats(statsSource);
   const totalPlatformSources = stats.reduce((sum, item) => sum + (Number.isFinite(item.count) ? item.count : 0), 0);
 

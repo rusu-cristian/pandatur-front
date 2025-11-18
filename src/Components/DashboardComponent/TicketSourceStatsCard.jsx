@@ -35,6 +35,7 @@ export const TicketSourceStatsCard = ({
   bg,
   limit = 100,
   widgetType,
+  userGroups = [], // Вложенные группы пользователей для by_group_title
 }) => {
   const normalizedStats = useMemo(() => mapItems(sourceStats, limit), [sourceStats, limit]);
 
@@ -96,6 +97,7 @@ export const TicketSourceStatsCard = ({
       </Group>
 
       <Stack gap="sm" style={{ overflowY: "auto", flex: 1 }}>
+        {/* Основные данные воронки (group_title) */}
         {normalizedStats.length ? (
           normalizedStats.map((item, index) => {
             const count = Number.isFinite(item.count) ? item.count : 0;
@@ -148,6 +150,95 @@ export const TicketSourceStatsCard = ({
           <Text c="dimmed" size="sm">
             {getLanguageByKey("No data")}
           </Text>
+        )}
+
+        {/* Вложенные группы пользователей (user_groups) */}
+        {userGroups && userGroups.length > 0 && (
+          <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
+            <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+              {getLanguageByKey("User Groups") || "User Groups"}
+            </Text>
+            <Stack gap="md">
+              {userGroups.map((ug, ugIndex) => {
+                // Обрабатываем статистику группы через normalizeCategoricalStats
+                const groupStats = (() => {
+                  if (!ug.stats || typeof ug.stats !== "object") return [];
+                  if (Array.isArray(ug.stats)) return ug.stats;
+                  return Object.entries(ug.stats).map(([channel, value]) => {
+                    if (value && typeof value === "object") {
+                      return {
+                        channel: value.sursa_lead || channel,
+                        count: Number.isFinite(value.count) ? value.count : 0,
+                        href: value.href,
+                      };
+                    }
+                    return {
+                      channel,
+                      count: Number.isFinite(value) ? value : 0,
+                    };
+                  });
+                })();
+
+                const normalizedGroupStats = mapItems(groupStats, limit);
+                const groupTotal = normalizedGroupStats.reduce((sum, item) => sum + (item.count || 0), 0);
+                const groupMaxCount = Math.max(1, ...normalizedGroupStats.map((item) => (Number.isFinite(item.count) ? item.count : 0)));
+
+                if (normalizedGroupStats.length === 0) return null;
+
+                return (
+                  <Box key={`ug-${ugIndex}`}>
+                    <Text fw={600} size="sm" mb="xs" c="dark">
+                      {ug.userGroupName}
+                    </Text>
+                    <Stack gap="xs">
+                      {normalizedGroupStats.map((item, itemIndex) => {
+                        const count = Number.isFinite(item.count) ? item.count : 0;
+                        const percent = clampPercentage((count / groupMaxCount) * 100);
+                        const share = groupTotal > 0 ? Math.round((count / groupTotal) * 100) : 0;
+                        const channelLabel = item.channel || getLanguageByKey("No source");
+                        const linkPath = item.href || null;
+
+                        return (
+                          <Box key={`${item.channel}-${itemIndex}`} pl="md">
+                            <Group justify="space-between" align="center" mb={4}>
+                              <Text size="xs" fw={500}>
+                                {channelLabel}
+                              </Text>
+                              <Box style={{ textAlign: "right" }}>
+                                {linkPath ? (
+                                  <Link
+                                    to={linkPath}
+                                    target="_blank"
+                                    style={{
+                                      color: "var(--crm-ui-kit-palette-link-primary)",
+                                      textDecoration: "underline",
+                                      fontSize: 12,
+                                      fontWeight: 600,
+                                      display: "inline-block",
+                                    }}
+                                  >
+                                    {fmt(count)}
+                                  </Link>
+                                ) : (
+                                  <Text size="xs" fw={600}>
+                                    {fmt(count)}
+                                  </Text>
+                                )}
+                                <Text size="xs" c="dimmed">
+                                  {share}%
+                                </Text>
+                              </Box>
+                            </Group>
+                            <Progress value={percent} size="sm" radius="xl" color="teal" />
+                          </Box>
+                        );
+                      })}
+                    </Stack>
+                  </Box>
+                );
+              })}
+            </Stack>
+          </Box>
         )}
       </Stack>
     </Card>

@@ -175,13 +175,47 @@ const createWidgetFromData = (item, widgetType, getLanguageByKey, id, title, sub
 
 /**
  * Создает виджеты для группы по group_title
+ * Каждый элемент массива = 1 виджет
+ * Для виджетов со статистикой (ticket_source, ticket_marketing, ticket_platform_source)
+ * включает вложенные user_groups в данные виджета
  */
 export const createGroupTitleWidgets = (data, widgetType, getLanguageByKey) => {
   const byGt = safeArray(data.by_group_title);
   return byGt.map((r, idx) => {
     const name = r.group_title_name ?? r.group_title ?? r.group ?? "-";
+    // Для виджетов со статистикой (ticket_source, ticket_marketing, ticket_platform_source)
+    // данные могут быть в поле stats, и нужно включить user_groups
+    const itemData = r.stats || r;
+    
+    // Проверяем, является ли это виджетом со статистикой
+    const isStatsWidget = widgetType === "ticket_source" || 
+                         widgetType === "ticket_marketing" || 
+                         widgetType === "ticket_platform_source";
+    
+    // Если это виджет со статистикой и есть user_groups, добавляем их в данные
+    if (isStatsWidget && r.user_groups && Array.isArray(r.user_groups)) {
+      const widget = createWidgetFromData(
+        itemData, 
+        widgetType, 
+        getLanguageByKey, 
+        `gt-${name ?? idx}`, 
+        "Group title", 
+        name || "-", 
+        BG_COLORS.by_group_title
+      );
+      
+      // Добавляем вложенные группы пользователей
+      return {
+        ...widget,
+        userGroups: r.user_groups.map(ug => ({
+          userGroupName: ug.user_group_name ?? ug.user_group ?? "-",
+          stats: ug.stats || ug,
+        })),
+      };
+    }
+    
     return createWidgetFromData(
-      r, 
+      itemData, 
       widgetType, 
       getLanguageByKey, 
       `gt-${name ?? idx}`, 
@@ -194,13 +228,17 @@ export const createGroupTitleWidgets = (data, widgetType, getLanguageByKey) => {
 
 /**
  * Создает виджеты для группы по user_group
+ * Каждый элемент массива = 1 виджет
  */
 export const createUserGroupWidgets = (data, widgetType, getLanguageByKey) => {
   const byUserGroup = safeArray(data.by_user_group);
   return byUserGroup.map((r, idx) => {
     const name = r.user_group_name ?? r.user_group ?? r.group ?? "-";
+    // Для виджетов со статистикой (ticket_source, ticket_marketing, ticket_platform_source)
+    // данные могут быть в поле stats
+    const itemData = r.stats || r;
     return createWidgetFromData(
-      r, 
+      itemData, 
       widgetType, 
       getLanguageByKey, 
       `ug-${idx}`, 
