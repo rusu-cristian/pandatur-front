@@ -21,6 +21,14 @@ import {
   mapPlatforms,
   BG_COLORS,
 } from "./dashboardHelpers";
+import { groupTitleOptions } from "../FormOptions/GroupTitleOptions";
+
+// Функция для получения полного названия воронки по короткому
+const getGroupTitleLabel = (shortName) => {
+  if (!shortName) return "-";
+  const option = groupTitleOptions.find(opt => opt.value === shortName);
+  return option ? option.label : shortName;
+};
 
 /**
  * Создает виджет для элемента данных
@@ -182,7 +190,10 @@ const createWidgetFromData = (item, widgetType, getLanguageByKey, id, title, sub
 export const createGroupTitleWidgets = (data, widgetType, getLanguageByKey) => {
   const byGt = safeArray(data.by_group_title);
   return byGt.map((r, idx) => {
-    const name = r.group_title_name ?? r.group_title ?? r.group ?? "-";
+    const shortName = r.group_title_name ?? r.group_title ?? r.group ?? "-";
+    // Получаем полное название воронки (например, "MD" -> "MD-Sales")
+    const fullName = getGroupTitleLabel(shortName);
+    
     // Для виджетов со статистикой (ticket_source, ticket_marketing, ticket_platform_source)
     // данные могут быть в поле stats, и нужно включить user_groups
     const itemData = r.stats || r;
@@ -198,9 +209,9 @@ export const createGroupTitleWidgets = (data, widgetType, getLanguageByKey) => {
         itemData, 
         widgetType, 
         getLanguageByKey, 
-        `gt-${name ?? idx}`, 
+        `gt-${shortName ?? idx}`, 
         "Group title", 
-        name || "-", 
+        fullName, 
         BG_COLORS.by_group_title
       );
       
@@ -218,9 +229,9 @@ export const createGroupTitleWidgets = (data, widgetType, getLanguageByKey) => {
       itemData, 
       widgetType, 
       getLanguageByKey, 
-      `gt-${name ?? idx}`, 
+      `gt-${shortName ?? idx}`, 
       "Group title", 
-      name || "-", 
+      fullName, 
       BG_COLORS.by_group_title
     );
   });
