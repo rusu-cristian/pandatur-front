@@ -329,9 +329,27 @@ export const createWorkflowToChangeData = (obj) => ({
 /**
  * Создает данные для ticket creation виджетов
  */
-export const createTicketCreationData = (obj) => ({
-  ticketsCreatedCount: pickNum(obj, ["tickets_created_count", "tickets_created", "created"]),
-});
+export const createTicketCreationData = (obj) => {
+  // Проверяем, является ли это объектом со stats (новый формат)
+  // где может быть объект с tickets_created внутри
+  const statsSource = obj?.stats ?? obj;
+
+  // Если это объект, где есть tickets_created с metric и count
+  if (statsSource && typeof statsSource === "object" && !Array.isArray(statsSource)) {
+    const ticketsCreatedObj = statsSource.tickets_created;
+    if (ticketsCreatedObj && typeof ticketsCreatedObj === "object") {
+      const count = pickNum(ticketsCreatedObj, ["count", "value", "total"]) || 0;
+      return {
+        ticketsCreatedCount: count,
+      };
+    }
+  }
+
+  // Старый формат или прямой доступ
+  return {
+    ticketsCreatedCount: pickNum(obj, ["tickets_created_count", "tickets_created", "created"]) || 0,
+  };
+};
 
 /**
  * Создает данные для workflow from de prelucrat виджетов
