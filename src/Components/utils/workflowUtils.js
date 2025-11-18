@@ -485,6 +485,11 @@ export const userGroupsToGroupTitle = {
 
     // other 11
     "Branches MD": ["FILIALE"],
+    "Branches MD Balti": ["FILIALE"],
+    "Branches MD Falesti": ["FILIALE"],
+    "Branches MD Calarasi": ["FILIALE"],
+    "Branches MD Cahul": ["FILIALE"],
+    "Branches MD Ungheni": ["FILIALE"],
     "Company branches": ["FILIALE"],
     "Corporate sales": ["IndividualGroups"],
     "Corporate clients": ["IndividualGroups"],
