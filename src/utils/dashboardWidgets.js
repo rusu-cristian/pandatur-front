@@ -404,8 +404,11 @@ export const createUserWidgets = (data, widgetType, getLanguageByKey, userNameBy
     const uid = Number(r.user_id);
     const name = userNameById.get(uid);
     const subtitle = (name || (Number.isFinite(uid) ? `ID ${uid}` : "-")) + (r.sipuni_id ? ` • ${r.sipuni_id}` : "");
-    // Для workflow виджетов данные могут быть в поле stats
-    const itemData = (widgetType === "workflow_from_de_prelucrat" && r.stats) ? r.stats : r;
+    // Для workflow и stats виджетов данные могут быть в поле stats
+    const isStatsWidget = widgetType === "ticket_source" || 
+                         widgetType === "ticket_marketing" || 
+                         widgetType === "ticket_platform_source";
+    const itemData = ((isStatsWidget || widgetType === "workflow_from_de_prelucrat") && r.stats) ? r.stats : r;
     return createWidgetFromData(
       itemData, 
       widgetType, 

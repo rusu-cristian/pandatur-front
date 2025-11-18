@@ -428,6 +428,8 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     totalMarketing={Number.isFinite(w.totalMarketing) ? w.totalMarketing : undefined}
                                     bg={w.bg}
                                     widgetType={w.type}
+                                    userGroups={w.userGroups || []}
+                                    userTechnicians={w.userTechnicians || []}
                                 />
                             </Box>,
                             w.id
