@@ -388,6 +388,8 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                 <WorkflowDurationCard
                                     title={w.title}
                                     subtitle={w.subtitle}
+                                    durationBuckets={w.durationBuckets || []}
+                                    totalTickets={Number.isFinite(w.totalTickets) ? w.totalTickets : 0}
                                     totalDurationMinutes={Number.isFinite(w.totalDurationMinutes) ? w.totalDurationMinutes : 0}
                                     averageDurationMinutes={Number.isFinite(w.averageDurationMinutes) ? w.averageDurationMinutes : 0}
                                     ticketsProcessed={Number.isFinite(w.ticketsProcessed) ? w.ticketsProcessed : 0}
@@ -395,6 +397,8 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     width={w.w}
                                     height={w.h}
                                     widgetType={w.type}
+                                    userGroups={w.userGroups || []}
+                                    userTechnicians={w.userTechnicians || []}
                                 />
                             </Box>,
                             w.id

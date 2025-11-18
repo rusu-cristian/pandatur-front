@@ -393,11 +393,56 @@ export const createWorkflowFromDePrelucratData = (obj) => {
 /**
  * Создает данные для workflow duration виджетов
  */
-export const createWorkflowDurationData = (obj) => ({
-  totalDurationMinutes: pickNum(obj, ["total_duration_minutes", "total_duration", "duration"]) || 0,
-  averageDurationMinutes: pickNum(obj, ["average_duration_minutes", "average_duration", "avg_duration"]) || 0,
-  ticketsProcessed: pickNum(obj, ["tickets_processed", "tickets", "processed"]) || 0,
-});
+export const createWorkflowDurationData = (obj) => {
+  // Проверяем, является ли это объектом со stats (новый формат)
+  // где ключи - это названия duration_bucket, а значения - объекты с duration_bucket и count
+  const statsSource = obj?.stats ?? obj;
+
+  // Если это объект, где значения - объекты с duration_bucket и count
+  if (statsSource && typeof statsSource === "object" && !Array.isArray(statsSource)) {
+    const durationBuckets = Object.values(statsSource)
+      .filter(item => item && typeof item === "object")
+      .map(item => ({
+        duration_bucket: item.duration_bucket || item.bucket || "-",
+        count: pickNum(item, ["count", "value", "total"]) || 0,
+      }));
+
+    const totalTickets = durationBuckets.reduce((sum, item) => sum + (item.count || 0), 0);
+
+    return {
+      durationBuckets: durationBuckets.sort((a, b) => {
+        // Сортируем по порядку: сначала числовые диапазоны, потом "Not processed"
+        const order = {
+          "0-1 hour": 1,
+          "1-4 hours": 2,
+          "4-8 hours": 3,
+          "8-24 hours": 4,
+          "1-2 days": 5,
+          "2-7 days": 6,
+          "7+ days": 7,
+          "Not processed": 8,
+        };
+        const aOrder = order[a.duration_bucket] || 99;
+        const bOrder = order[b.duration_bucket] || 99;
+        return aOrder - bOrder;
+      }),
+      totalTickets,
+      // Для обратной совместимости
+      totalDurationMinutes: pickNum(obj, ["total_duration_minutes", "total_duration", "duration"]) || 0,
+      averageDurationMinutes: pickNum(obj, ["average_duration_minutes", "average_duration", "avg_duration"]) || 0,
+      ticketsProcessed: totalTickets || pickNum(obj, ["tickets_processed", "tickets", "processed"]) || 0,
+    };
+  }
+
+  // Старый формат - возвращаем как было
+  return {
+    durationBuckets: [],
+    totalTickets: 0,
+    totalDurationMinutes: pickNum(obj, ["total_duration_minutes", "total_duration", "duration"]) || 0,
+    averageDurationMinutes: pickNum(obj, ["average_duration_minutes", "average_duration", "avg_duration"]) || 0,
+    ticketsProcessed: pickNum(obj, ["tickets_processed", "tickets", "processed"]) || 0,
+  };
+};
 
 /**
  * Создает данные для ticket destination виджетов

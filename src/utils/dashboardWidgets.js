@@ -203,9 +203,32 @@ export const createGroupTitleWidgets = (data, widgetType, getLanguageByKey) => {
                          widgetType === "ticket_marketing" || 
                          widgetType === "ticket_platform_source";
     const isWorkflowWidget = widgetType === "workflow_from_de_prelucrat";
+    const isDurationWidget = widgetType === "workflow_duration";
     
     // Если это виджет со статистикой и есть user_groups, добавляем их в данные
     if (isStatsWidget && r.user_groups && Array.isArray(r.user_groups)) {
+      const widget = createWidgetFromData(
+        itemData, 
+        widgetType, 
+        getLanguageByKey, 
+        `gt-${shortName ?? idx}`, 
+        "Group title", 
+        fullName, 
+        BG_COLORS.by_group_title
+      );
+      
+      // Добавляем вложенные группы пользователей
+      return {
+        ...widget,
+        userGroups: r.user_groups.map(ug => ({
+          userGroupName: ug.user_group_name ?? ug.user_group ?? "-",
+          stats: ug.stats || ug,
+        })),
+      };
+    }
+    
+    // Если это workflow duration виджет и есть user_groups, добавляем их в данные
+    if (isDurationWidget && r.user_groups && Array.isArray(r.user_groups)) {
       const widget = createWidgetFromData(
         itemData, 
         widgetType, 
@@ -304,9 +327,37 @@ export const createUserGroupWidgets = (data, widgetType, getLanguageByKey, userN
                          widgetType === "ticket_marketing" || 
                          widgetType === "ticket_platform_source";
     const isWorkflowWidget = widgetType === "workflow_from_de_prelucrat";
+    const isDurationWidget = widgetType === "workflow_duration";
     
     // Если это виджет со статистикой и есть user_technicians, добавляем их в данные
     if (isStatsWidget && r.user_technicians && Array.isArray(r.user_technicians)) {
+      const widget = createWidgetFromData(
+        itemData, 
+        widgetType, 
+        getLanguageByKey, 
+        `ug-${idx}`, 
+        "User group", 
+        name || "-", 
+        BG_COLORS.by_user_group
+      );
+      
+      // Добавляем вложенных пользователей с их именами
+      return {
+        ...widget,
+        userTechnicians: r.user_technicians.map(ut => {
+          const uid = Number(ut.user_id);
+          const userName = userNameById?.get?.(uid) || (Number.isFinite(uid) ? `ID ${uid}` : "-");
+          return {
+            userId: uid,
+            userName,
+            stats: ut.stats || ut,
+          };
+        }),
+      };
+    }
+    
+    // Если это workflow duration виджет и есть user_technicians, добавляем их в данные
+    if (isDurationWidget && r.user_technicians && Array.isArray(r.user_technicians)) {
       const widget = createWidgetFromData(
         itemData, 
         widgetType, 
@@ -408,7 +459,8 @@ export const createUserWidgets = (data, widgetType, getLanguageByKey, userNameBy
     const isStatsWidget = widgetType === "ticket_source" || 
                          widgetType === "ticket_marketing" || 
                          widgetType === "ticket_platform_source";
-    const itemData = ((isStatsWidget || widgetType === "workflow_from_de_prelucrat") && r.stats) ? r.stats : r;
+    const isDurationWidget = widgetType === "workflow_duration";
+    const itemData = ((isStatsWidget || isDurationWidget || widgetType === "workflow_from_de_prelucrat") && r.stats) ? r.stats : r;
     return createWidgetFromData(
       itemData, 
       widgetType, 

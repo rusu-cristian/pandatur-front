@@ -1,22 +1,11 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Card, Text, Group, Stack, Badge, Box, Progress } from "@mantine/core";
 import { FaClock } from "react-icons/fa";
 import { getLanguageByKey } from "../utils";
 
-// Функция для форматирования времени в минутах
-const formatDuration = (minutes) => {
-  if (!minutes || minutes === 0) return "0m";
-  
-  const hours = Math.floor(minutes / 60);
-  const mins = Math.round(minutes % 60);
-  
-  if (hours > 0) {
-    return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
-  }
-  return `${mins}m`;
-};
-
 export const WorkflowDurationCard = ({
+  durationBuckets = [],
+  totalTickets = 0,
   totalDurationMinutes = 0,
   averageDurationMinutes = 0,
   ticketsProcessed = 0,
@@ -26,6 +15,8 @@ export const WorkflowDurationCard = ({
   width,
   height,
   widgetType,
+  userGroups = [], // Вложенные группы пользователей для by_group_title
+  userTechnicians = [], // Вложенные пользователи для by_user_group
 }) => {
   // Адаптивные размеры в зависимости от размера виджета
   const isCompact = width < 40 || height < 15;
@@ -37,9 +28,20 @@ export const WorkflowDurationCard = ({
   const badgeSize = isVeryCompact ? "xs" : isCompact ? "sm" : "lg";
   const statGap = isVeryCompact ? "xs" : isCompact ? "sm" : "sm";
 
-  // Форматируем значения
-  const totalTime = formatDuration(totalDurationMinutes);
-  const avgTime = formatDuration(averageDurationMinutes);
+  // Используем totalTickets или ticketsProcessed
+  const totalValue = totalTickets || ticketsProcessed || 0;
+
+  // Ограничиваем количество отображаемых элементов для компактного режима
+  const maxItems = isVeryCompact ? 3 : isCompact ? 4 : 5;
+  const displayBuckets = useMemo(() => {
+    if (!Array.isArray(durationBuckets) || durationBuckets.length === 0) return [];
+    return durationBuckets.slice(0, maxItems);
+  }, [durationBuckets, maxItems]);
+
+  const maxCount = useMemo(
+    () => Math.max(1, ...displayBuckets.map((item) => (Number.isFinite(item.count) ? item.count : 0))),
+    [displayBuckets]
+  );
 
   return (
     <Card
@@ -55,9 +57,9 @@ export const WorkflowDurationCard = ({
         overflow: "hidden",
       }}
     >
-      <Stack gap={statGap} style={{ flex: 1, height: "100%" }}>
+      <Stack gap={statGap} style={{ flex: 1, height: "100%", minHeight: 0 }}>
         {/* Заголовок */}
-        <Group justify="space-between" align="flex-start">
+        <Group justify="space-between" align="flex-start" style={{ flexShrink: 0 }}>
           <Box>
             <Text fw={600} size={titleSize} c="dimmed">
               {title}
@@ -74,70 +76,211 @@ export const WorkflowDurationCard = ({
             </Group>
           </Box>
           <Badge size={badgeSize} variant="light" color="blue">
-            {ticketsProcessed} {getLanguageByKey("Tickets processed")}
+            {totalValue} {getLanguageByKey("Tickets processed")}
           </Badge>
         </Group>
 
-        {/* Основная статистика */}
-        <Stack gap={isVeryCompact ? "xs" : "sm"} style={{ flex: 1 }}>
-          {/* Общее время обработки */}
-          <Box>
-            <Group justify="space-between" align="center" mb={4}>
-              <Group gap="xs" align="center">
-                <FaClock size={isVeryCompact ? 10 : 12} color="#28a745" />
-                <Text fw={500} size={isVeryCompact ? "xs" : "sm"} c="dark">
-                  {getLanguageByKey("Total processing time")}
+        {/* Прокручиваемая область с контентом */}
+        <Box style={{ flex: 1, overflowY: "auto", overflowX: "hidden", minHeight: 0 }}>
+          <Stack gap={isVeryCompact ? "xs" : "sm"}>
+            {/* Статистика по buckets */}
+            {displayBuckets.length > 0 ? (
+              displayBuckets.map((bucket, index) => {
+                const count = Number.isFinite(bucket.count) ? bucket.count : 0;
+                const percent = maxCount > 0 ? Math.round((count / maxCount) * 100) : 0;
+
+                return (
+                  <Box key={index}>
+                    <Group justify="space-between" align="center" mb={4}>
+                      <Group gap="xs" align="center">
+                        <FaClock size={isVeryCompact ? 10 : 12} color="#007bff" />
+                        <Text fw={500} size={isVeryCompact ? "xs" : "sm"} c="dark" lineClamp={1}>
+                          {bucket.duration_bucket || "-"}
+                        </Text>
+                      </Group>
+                      <Text fw={700} size={isVeryCompact ? "xs" : "sm"} c="#007bff">
+                        {count}
+                      </Text>
+                    </Group>
+                    <Progress
+                      value={percent}
+                      size={isVeryCompact ? "xs" : "sm"}
+                      color="blue"
+                      radius="xl"
+                    />
+                  </Box>
+                );
+              })
+            ) : (
+              <Text c="dimmed" size="sm">
+                {getLanguageByKey("No data")}
+              </Text>
+            )}
+
+            {/* Вложенные группы пользователей (для by_group_title) */}
+            {userGroups && userGroups.length > 0 && (
+              <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
+                <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+                  {getLanguageByKey("User Groups") || "User Groups"}
                 </Text>
-              </Group>
-              <Text fw={700} size={isVeryCompact ? "xs" : "sm"} c="#28a745">
-                {totalTime}
+                <Stack gap="md">
+                  {userGroups.map((ug, ugIndex) => {
+                    const groupBuckets = (() => {
+                      if (!ug.stats || typeof ug.stats !== "object") return [];
+                      if (Array.isArray(ug.stats)) return ug.stats;
+                      return Object.values(ug.stats)
+                        .filter(item => item && typeof item === "object")
+                        .map(item => ({
+                          duration_bucket: item.duration_bucket || item.bucket || "-",
+                          count: Number.isFinite(item.count) ? item.count : 0,
+                        }))
+                        .sort((a, b) => {
+                          const order = {
+                            "0-1 hour": 1,
+                            "1-4 hours": 2,
+                            "4-8 hours": 3,
+                            "8-24 hours": 4,
+                            "1-2 days": 5,
+                            "2-7 days": 6,
+                            "7+ days": 7,
+                            "Not processed": 8,
+                          };
+                          const aOrder = order[a.duration_bucket] || 99;
+                          const bOrder = order[b.duration_bucket] || 99;
+                          return aOrder - bOrder;
+                        });
+                    })();
+
+                    const displayGroupBuckets = groupBuckets.slice(0, isVeryCompact ? 2 : isCompact ? 3 : 4);
+                    const groupMaxCount = Math.max(1, ...displayGroupBuckets.map((item) => (Number.isFinite(item.count) ? item.count : 0)));
+
+                    if (displayGroupBuckets.length === 0) return null;
+
+                    return (
+                      <Box key={`ug-${ugIndex}`}>
+                        <Text fw={600} size="sm" mb="xs" c="dark">
+                          {ug.userGroupName || "-"}
+                        </Text>
+                        <Stack gap="xs">
+                          {displayGroupBuckets.map((bucket, bucketIndex) => {
+                            const count = Number.isFinite(bucket.count) ? bucket.count : 0;
+                            const percent = groupMaxCount > 0 ? Math.round((count / groupMaxCount) * 100) : 0;
+                            return (
+                              <Box key={`${bucketIndex}`} pl="md">
+                                <Group justify="space-between" align="center" mb={4}>
+                                  <Group gap="xs" align="center">
+                                    <FaClock size={isVeryCompact ? 8 : 10} color="#007bff" />
+                                    <Text fw={500} size={isVeryCompact ? "xs" : "xs"} c="dark" lineClamp={1}>
+                                      {bucket.duration_bucket || "-"}
+                                    </Text>
+                                  </Group>
+                                  <Text fw={700} size={isVeryCompact ? "xs" : "xs"} c="#007bff">
+                                    {count}
+                                  </Text>
+                                </Group>
+                                <Progress
+                                  value={percent}
+                                  size="xs"
+                                  color="blue"
+                                  radius="xl"
+                                />
+                              </Box>
+                            );
+                          })}
+                        </Stack>
+                      </Box>
+                    );
+                  })}
+                </Stack>
+              </Box>
+            )}
+
+            {/* Вложенные пользователи (для by_user_group) */}
+            {userTechnicians && userTechnicians.length > 0 && (
+              <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
+                <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+                  {getLanguageByKey("Users") || "Users"}
+                </Text>
+                <Stack gap="md">
+                  {userTechnicians.map((ut, utIndex) => {
+                    const userBuckets = (() => {
+                      if (!ut.stats || typeof ut.stats !== "object") return [];
+                      if (Array.isArray(ut.stats)) return ut.stats;
+                      return Object.values(ut.stats)
+                        .filter(item => item && typeof item === "object")
+                        .map(item => ({
+                          duration_bucket: item.duration_bucket || item.bucket || "-",
+                          count: Number.isFinite(item.count) ? item.count : 0,
+                        }))
+                        .sort((a, b) => {
+                          const order = {
+                            "0-1 hour": 1,
+                            "1-4 hours": 2,
+                            "4-8 hours": 3,
+                            "8-24 hours": 4,
+                            "1-2 days": 5,
+                            "2-7 days": 6,
+                            "7+ days": 7,
+                            "Not processed": 8,
+                          };
+                          const aOrder = order[a.duration_bucket] || 99;
+                          const bOrder = order[b.duration_bucket] || 99;
+                          return aOrder - bOrder;
+                        });
+                    })();
+
+                    const displayUserBuckets = userBuckets.slice(0, isVeryCompact ? 2 : isCompact ? 3 : 4);
+                    const userMaxCount = Math.max(1, ...displayUserBuckets.map((item) => (Number.isFinite(item.count) ? item.count : 0)));
+
+                    if (displayUserBuckets.length === 0) return null;
+
+                    return (
+                      <Box key={`ut-${utIndex}`}>
+                        <Text fw={600} size="sm" mb="xs" c="dark">
+                          {ut.userName || `ID ${ut.userId}`}
+                        </Text>
+                        <Stack gap="xs">
+                          {displayUserBuckets.map((bucket, bucketIndex) => {
+                            const count = Number.isFinite(bucket.count) ? bucket.count : 0;
+                            const percent = userMaxCount > 0 ? Math.round((count / userMaxCount) * 100) : 0;
+                            return (
+                              <Box key={`${bucketIndex}`} pl="md">
+                                <Group justify="space-between" align="center" mb={4}>
+                                  <Group gap="xs" align="center">
+                                    <FaClock size={isVeryCompact ? 8 : 10} color="#007bff" />
+                                    <Text fw={500} size={isVeryCompact ? "xs" : "xs"} c="dark" lineClamp={1}>
+                                      {bucket.duration_bucket || "-"}
+                                    </Text>
+                                  </Group>
+                                  <Text fw={700} size={isVeryCompact ? "xs" : "xs"} c="#007bff">
+                                    {count}
+                                  </Text>
+                                </Group>
+                                <Progress
+                                  value={percent}
+                                  size="xs"
+                                  color="blue"
+                                  radius="xl"
+                                />
+                              </Box>
+                            );
+                          })}
+                        </Stack>
+                      </Box>
+                    );
+                  })}
+                </Stack>
+              </Box>
+            )}
+
+            {/* Общая информация */}
+            <Group justify="center" mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
+              <Text fw={600} size="sm" c="dimmed">
+                {getLanguageByKey("Processing time")}
               </Text>
             </Group>
-            <Progress 
-              value={100} 
-              size={isVeryCompact ? "xs" : "sm"} 
-              color="green" 
-              radius="xl"
-            />
-          </Box>
-
-          {/* Среднее время обработки */}
-          <Box>
-            <Group justify="space-between" align="center" mb={4}>
-              <Group gap="xs" align="center">
-                <FaClock size={isVeryCompact ? 10 : 12} color="#007bff" />
-                <Text fw={500} size={isVeryCompact ? "xs" : "sm"} c="dark">
-                  {getLanguageByKey("Average processing time")}
-                </Text>
-              </Group>
-              <Text fw={700} size={isVeryCompact ? "xs" : "sm"} c="#007bff">
-                {avgTime}
-              </Text>
-            </Group>
-            <Progress 
-              value={100} 
-              size={isVeryCompact ? "xs" : "sm"} 
-              color="blue" 
-              radius="xl"
-            />
-          </Box>
-
-          {/* Дополнительная информация для компактного режима */}
-          {!isVeryCompact && (
-            <Box mt="auto">
-              <Text fw={500} size="xs" c="dimmed" ta="center">
-                {getLanguageByKey("De prelucrat")} {getLanguageByKey("in processing state")}
-              </Text>
-            </Box>
-          )}
-        </Stack>
-
-        {/* Общая информация */}
-        <Group justify="center" mt="auto">
-          <Text fw={600} size="sm" c="dimmed">
-            {getLanguageByKey("Processing time")}
-          </Text>
-        </Group>
+          </Stack>
+        </Box>
       </Stack>
     </Card>
   );
