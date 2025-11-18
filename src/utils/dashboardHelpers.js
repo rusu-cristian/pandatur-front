@@ -312,12 +312,39 @@ export const createTicketRateData = (obj) => ({
 /**
  * Создает данные для workflow from change виджетов
  */
-export const createWorkflowFromChangeData = (obj) => ({
-  luatInLucruChangedCount: pickNum(obj, ["luat_in_lucru_changed_count", "luat_in_lucru", "luat"]),
-  ofertaTrimisaChangedCount: pickNum(obj, ["oferta_trimisa_changed_count", "oferta_trimisa", "oferta"]),
-  totalChanges: pickNum(obj, ["total_changes", "total"]) ||
-    (pickNum(obj, ["luat_in_lucru_changed_count"]) + pickNum(obj, ["oferta_trimisa_changed_count"])),
-});
+export const createWorkflowFromChangeData = (obj) => {
+  // Проверяем, является ли это объектом со stats (новый формат)
+  // где ключи - это названия workflow (например, "Luat în lucru", "Ofertă trimisă")
+  const statsSource = obj?.stats ?? obj;
+
+  // Если это объект, где ключи - это названия workflow, а значения - объекты с source_workflow и count
+  if (statsSource && typeof statsSource === "object" && !Array.isArray(statsSource)) {
+    const luatInLucruObj = statsSource["Luat în lucru"] || statsSource["luat_in_lucru"] || statsSource["Luat \u00een lucru"];
+    const ofertaTrimisaObj = statsSource["Ofertă trimisă"] || statsSource["oferta_trimisa"] || statsSource["Ofert\u0103 trimis\u0103"];
+
+    const luatCount = luatInLucruObj && typeof luatInLucruObj === "object" 
+      ? (pickNum(luatInLucruObj, ["count", "value", "total"]) || 0)
+      : 0;
+    
+    const ofertaCount = ofertaTrimisaObj && typeof ofertaTrimisaObj === "object"
+      ? (pickNum(ofertaTrimisaObj, ["count", "value", "total"]) || 0)
+      : 0;
+
+    return {
+      luatInLucruChangedCount: luatCount,
+      ofertaTrimisaChangedCount: ofertaCount,
+      totalChanges: luatCount + ofertaCount,
+    };
+  }
+
+  // Старый формат или прямой доступ
+  return {
+    luatInLucruChangedCount: pickNum(obj, ["luat_in_lucru_changed_count", "luat_in_lucru", "luat"]) || 0,
+    ofertaTrimisaChangedCount: pickNum(obj, ["oferta_trimisa_changed_count", "oferta_trimisa", "oferta"]) || 0,
+    totalChanges: pickNum(obj, ["total_changes", "total"]) ||
+      (pickNum(obj, ["luat_in_lucru_changed_count"]) + pickNum(obj, ["oferta_trimisa_changed_count"])),
+  };
+};
 
 /**
  * Создает данные для workflow to change виджетов

@@ -322,6 +322,8 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     width={w.w}
                                     height={w.h}
                                     widgetType={w.type}
+                                    userGroups={w.userGroups || []}
+                                    userTechnicians={w.userTechnicians || []}
                                 />
                             </Box>,
                             w.id
