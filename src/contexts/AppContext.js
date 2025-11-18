@@ -33,7 +33,7 @@ const getLeadsUrlViewMode = () => {
 };
 
 export const AppProvider = ({ children }) => {
-  const { sendedValue, socketRef } = useSocket();
+  const { sendedValue } = useSocket();
   const { enqueueSnackbar } = useSnackbar();
   const { storage, changeLocalStorage } = useLocalStorage(SIDEBAR_COLLAPSE, "false");
   const [tickets, setTickets] = useState([]);
@@ -672,24 +672,6 @@ export const AppProvider = ({ children }) => {
           }
         });
 
-        const socketInstance = socketRef.current;
-        if (socketInstance?.readyState === WebSocket.OPEN) {
-          const CHUNK_SIZE = 50;
-          for (let i = 0; i < ids.length; i += CHUNK_SIZE) {
-            const chunk = ids.slice(i, i + CHUNK_SIZE);
-            socketInstance.send(
-              JSON.stringify({
-                type: TYPE_SOCKET_EVENTS.CONNECT,
-                data: { ticket_id: chunk },
-              })
-            );
-          }
-        } else {
-          enqueueSnackbar(getLanguageByKey("errorConnectingToChatRoomWebSocket"), {
-            variant: "error",
-          });
-        }
-
         break;
       }
 
@@ -774,7 +756,7 @@ export const AppProvider = ({ children }) => {
 
       default:
     }
-  }, [userId, enqueueSnackbar, fetchSingleTicket, groupTitleForApi, isAdmin, socketRef, workflowOptions, currentChatFilters, doesTicketMatchFilters, isChatFiltered]); // Добавляем все необходимые зависимости
+  }, [userId, fetchSingleTicket, groupTitleForApi, isAdmin, workflowOptions, currentChatFilters, doesTicketMatchFilters, isChatFiltered]);
 
   useEffect(() => {
     if (sendedValue) {
@@ -783,83 +765,6 @@ export const AppProvider = ({ children }) => {
   }, [sendedValue, handleWebSocketMessage]);
 
   // Обработчик события ticketUpdated убран - теперь используем TICKET_UPDATE от сервера
-
-  useEffect(() => {
-    const connectToWebSocketRooms = async () => {
-      if (!groupTitleForApi || !workflowOptions.length || !socketRef.current) return;
-
-      try {
-        const res = await api.tickets.filters({
-          type: "id",
-          group_title: groupTitleForApi,
-          attributes: { workflow: workflowOptions },
-        });
-
-        const ticketIds = res?.data?.filter(Boolean) || [];
-        if (!ticketIds.length) return;
-
-        const socketMessage = JSON.stringify({
-          type: TYPE_SOCKET_EVENTS.CONNECT,
-          data: { ticket_id: ticketIds },
-        });
-
-        const trySend = () => {
-          if (socketRef.current?.readyState === WebSocket.OPEN) {
-            socketRef.current.send(socketMessage);
-          } else {
-            setTimeout(trySend, 500);
-          }
-        };
-
-        trySend();
-      } catch (e) {
-      }
-    };
-
-    connectToWebSocketRooms();
-    // eslint-disable-next-line
-  }, [groupTitleForApi, workflowOptions, socketRef]);
-
-  useEffect(() => {
-    if (!socketRef?.current || !groupTitleForApi || !workflowOptions.length) return;
-
-    const socket = socketRef.current;
-
-    const handleReconnect = async () => {
-      try {
-        const res = await api.tickets.filters({
-          type: "id",
-          group_title: groupTitleForApi,
-          attributes: { workflow: workflowOptions },
-        });
-
-        const ticketIds = res?.data?.filter(Boolean) || [];
-        if (!ticketIds.length) return;
-
-        const socketMessage = JSON.stringify({
-          type: TYPE_SOCKET_EVENTS.CONNECT,
-          data: { ticket_id: ticketIds },
-        });
-
-        socket.send(socketMessage);
-      } catch (e) {
-      }
-    };
-
-    if (socket.readyState === WebSocket.OPEN) {
-      handleReconnect();
-    } else {
-      const interval = setInterval(() => {
-        if (socket.readyState === WebSocket.OPEN) {
-          clearInterval(interval);
-          handleReconnect();
-        }
-      }, 2000);
-
-      return () => clearInterval(interval);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [groupTitleForApi, workflowOptions]);
 
   return (
     <AppContext.Provider
