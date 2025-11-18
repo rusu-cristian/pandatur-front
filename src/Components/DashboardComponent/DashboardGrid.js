@@ -443,6 +443,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     bg={w.bg}
                                     widgetType={w.type}
                                     userGroups={w.userGroups || []}
+                                    userTechnicians={w.userTechnicians || []}
                                 />
                             </Box>,
                             w.id

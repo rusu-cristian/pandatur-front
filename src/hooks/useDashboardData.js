@@ -45,7 +45,7 @@ const buildWidgetsForType = (data, widgetType, userNameById, getLanguageByKey) =
   }
 
   appendWidgets(createGroupTitleWidgets(data, widgetType, getLanguageByKey), SECTIONS.GROUP_TITLE);
-  appendWidgets(createUserGroupWidgets(data, widgetType, getLanguageByKey), SECTIONS.USER_GROUP);
+  appendWidgets(createUserGroupWidgets(data, widgetType, getLanguageByKey, userNameById), SECTIONS.USER_GROUP);
   appendWidgets(createUserWidgets(data, widgetType, getLanguageByKey, userNameById), SECTIONS.USER);
 
   const topUsersWidget = createTopUsersWidget(data, widgetType, getLanguageByKey, userNameById);

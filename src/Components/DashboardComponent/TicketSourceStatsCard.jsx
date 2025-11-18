@@ -36,6 +36,7 @@ export const TicketSourceStatsCard = ({
   limit = 100,
   widgetType,
   userGroups = [], // Вложенные группы пользователей для by_group_title
+  userTechnicians = [], // Вложенные пользователи для by_user_group
 }) => {
   const normalizedStats = useMemo(() => mapItems(sourceStats, limit), [sourceStats, limit]);
 
@@ -195,6 +196,95 @@ export const TicketSourceStatsCard = ({
                         const count = Number.isFinite(item.count) ? item.count : 0;
                         const percent = clampPercentage((count / groupMaxCount) * 100);
                         const share = groupTotal > 0 ? Math.round((count / groupTotal) * 100) : 0;
+                        const channelLabel = item.channel || getLanguageByKey("No source");
+                        const linkPath = item.href || null;
+
+                        return (
+                          <Box key={`${item.channel}-${itemIndex}`} pl="md">
+                            <Group justify="space-between" align="center" mb={4}>
+                              <Text size="xs" fw={500}>
+                                {channelLabel}
+                              </Text>
+                              <Box style={{ textAlign: "right" }}>
+                                {linkPath ? (
+                                  <Link
+                                    to={linkPath}
+                                    target="_blank"
+                                    style={{
+                                      color: "var(--crm-ui-kit-palette-link-primary)",
+                                      textDecoration: "underline",
+                                      fontSize: 12,
+                                      fontWeight: 600,
+                                      display: "inline-block",
+                                    }}
+                                  >
+                                    {fmt(count)}
+                                  </Link>
+                                ) : (
+                                  <Text size="xs" fw={600}>
+                                    {fmt(count)}
+                                  </Text>
+                                )}
+                                <Text size="xs" c="dimmed">
+                                  {share}%
+                                </Text>
+                              </Box>
+                            </Group>
+                            <Progress value={percent} size="sm" radius="xl" color="teal" />
+                          </Box>
+                        );
+                      })}
+                    </Stack>
+                  </Box>
+                );
+              })}
+            </Stack>
+          </Box>
+        )}
+
+        {/* Вложенные пользователи (user_technicians) для by_user_group */}
+        {userTechnicians && userTechnicians.length > 0 && (
+          <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
+            <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+              {getLanguageByKey("Users") || "Users"}
+            </Text>
+            <Stack gap="md">
+              {userTechnicians.map((ut, utIndex) => {
+                // Обрабатываем статистику пользователя
+                const userStats = (() => {
+                  if (!ut.stats || typeof ut.stats !== "object") return [];
+                  if (Array.isArray(ut.stats)) return ut.stats;
+                  return Object.entries(ut.stats).map(([channel, value]) => {
+                    if (value && typeof value === "object") {
+                      return {
+                        channel: value.sursa_lead || channel,
+                        count: Number.isFinite(value.count) ? value.count : 0,
+                        href: value.href,
+                      };
+                    }
+                    return {
+                      channel,
+                      count: Number.isFinite(value) ? value : 0,
+                    };
+                  });
+                })();
+
+                const normalizedUserStats = mapItems(userStats, limit);
+                const userTotal = normalizedUserStats.reduce((sum, item) => sum + (item.count || 0), 0);
+                const userMaxCount = Math.max(1, ...normalizedUserStats.map((item) => (Number.isFinite(item.count) ? item.count : 0)));
+
+                if (normalizedUserStats.length === 0) return null;
+
+                return (
+                  <Box key={`ut-${utIndex}`}>
+                    <Text fw={600} size="sm" mb="xs" c="dark">
+                      {ut.userName || `ID ${ut.userId}`}
+                    </Text>
+                    <Stack gap="xs">
+                      {normalizedUserStats.map((item, itemIndex) => {
+                        const count = Number.isFinite(item.count) ? item.count : 0;
+                        const percent = clampPercentage((count / userMaxCount) * 100);
+                        const share = userTotal > 0 ? Math.round((count / userTotal) * 100) : 0;
                         const channelLabel = item.channel || getLanguageByKey("No source");
                         const linkPath = item.href || null;
 

@@ -240,14 +240,49 @@ export const createGroupTitleWidgets = (data, widgetType, getLanguageByKey) => {
 /**
  * Создает виджеты для группы по user_group
  * Каждый элемент массива = 1 виджет
+ * Для виджетов со статистикой (ticket_source, ticket_marketing, ticket_platform_source)
+ * включает вложенные user_technicians в данные виджета
  */
-export const createUserGroupWidgets = (data, widgetType, getLanguageByKey) => {
+export const createUserGroupWidgets = (data, widgetType, getLanguageByKey, userNameById) => {
   const byUserGroup = safeArray(data.by_user_group);
   return byUserGroup.map((r, idx) => {
     const name = r.user_group_name ?? r.user_group ?? r.group ?? "-";
     // Для виджетов со статистикой (ticket_source, ticket_marketing, ticket_platform_source)
-    // данные могут быть в поле stats
+    // данные могут быть в поле stats, и нужно включить user_technicians
     const itemData = r.stats || r;
+    
+    // Проверяем, является ли это виджетом со статистикой
+    const isStatsWidget = widgetType === "ticket_source" || 
+                         widgetType === "ticket_marketing" || 
+                         widgetType === "ticket_platform_source";
+    
+    // Если это виджет со статистикой и есть user_technicians, добавляем их в данные
+    if (isStatsWidget && r.user_technicians && Array.isArray(r.user_technicians)) {
+      const widget = createWidgetFromData(
+        itemData, 
+        widgetType, 
+        getLanguageByKey, 
+        `ug-${idx}`, 
+        "User group", 
+        name || "-", 
+        BG_COLORS.by_user_group
+      );
+      
+      // Добавляем вложенных пользователей с их именами
+      return {
+        ...widget,
+        userTechnicians: r.user_technicians.map(ut => {
+          const uid = Number(ut.user_id);
+          const userName = userNameById?.get?.(uid) || (Number.isFinite(uid) ? `ID ${uid}` : "-");
+          return {
+            userId: uid,
+            userName,
+            stats: ut.stats || ut,
+          };
+        }),
+      };
+    }
+    
     return createWidgetFromData(
       itemData, 
       widgetType, 
