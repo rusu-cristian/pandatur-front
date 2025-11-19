@@ -240,9 +240,28 @@ export const createTicketStateData = (obj) => ({
 /**
  * Создает данные для tickets into work виджетов
  */
-export const createTicketsIntoWorkData = (obj) => ({
-  takenIntoWorkTickets: pickNum(obj, ["taken_into_work_tickets_count", "taken_into_work", "taken"]),
-});
+export const createTicketsIntoWorkData = (obj) => {
+  // Проверяем, является ли это объектом со stats (новый формат)
+  // где stats содержит taken_into_work с metric и count
+  const statsSource = obj?.stats ?? obj;
+
+  // Если это объект, где есть stats с taken_into_work
+  if (statsSource && typeof statsSource === "object" && !Array.isArray(statsSource)) {
+    const takenIntoWorkObj = statsSource.taken_into_work;
+
+    if (takenIntoWorkObj && typeof takenIntoWorkObj === "object") {
+      const count = pickNum(takenIntoWorkObj, ["count", "value", "total"]) || 0;
+      return {
+        takenIntoWorkTickets: count,
+      };
+    }
+  }
+
+  // Старый формат или прямой доступ
+  return {
+    takenIntoWorkTickets: pickNum(obj, ["taken_into_work_tickets_count", "taken_into_work", "taken"]) || 0,
+  };
+};
 
 /**
  * Создает данные для system usage виджетов
