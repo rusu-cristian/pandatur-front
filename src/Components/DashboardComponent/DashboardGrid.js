@@ -29,7 +29,7 @@ import { MessagesCard } from "./MessagesCard";
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const ROW_HEIGHT = 8;
-const MARGIN = [8, 8];
+const MARGIN = [40, 20];
 const PADDING = [8, 8];
 
 const COLS_MAX = 150;
