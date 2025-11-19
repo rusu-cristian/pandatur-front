@@ -1,8 +1,7 @@
 import React from "react";
 import {
-    Card, Group, Stack, Text, Progress, Divider, Badge, ThemeIcon, Tooltip, Box, Flex
+    Card, Group, Stack, Text, Progress, Divider, Badge, ThemeIcon, Box, Flex
 } from "@mantine/core";
-import { format } from "date-fns";
 import { getLanguageByKey } from "@utils";
 import { MdCall, MdCallReceived, MdCallMade, MdTrendingUp, MdTrendingDown } from "react-icons/md";
 
@@ -31,168 +30,332 @@ export const CallsCard = ({
     totalAll,
     totalIncoming,
     totalOutgoing,
-    dateRange,
     title,
     subtitle,
-    sizeInfo,
-    sizePx,
+    width,
+    height,
     bg,
     widgetType = "calls",
     previousData, // Для трендов в будущем
+    userGroups = [], // Вложенные группы пользователей для by_group_title
+    userTechnicians = [], // Вложенные пользователи для by_user_group
 }) => {
+    // Адаптивные размеры в зависимости от размера виджета
+    const isCompact = width < 40 || height < 15;
+    const isVeryCompact = width < 30 || height < 12;
+
+    const cardPadding = isVeryCompact ? "xs" : isCompact ? "sm" : "lg";
+    const titleSize = isVeryCompact ? "xs" : isCompact ? "xs" : "xs";
+    const subtitleSize = isVeryCompact ? "xs" : isCompact ? "sm" : "sm";
+    const totalSize = isVeryCompact ? 24 : isCompact ? 32 : 42;
+    const iconSize = isVeryCompact ? "md" : isCompact ? "lg" : "xl";
+    const callIconSize = isVeryCompact ? 14 : isCompact ? 16 : 20;
     const inPct = percent(totalIncoming, totalAll);
     const outPct = percent(totalOutgoing, totalAll);
-
-    const pxLabel =
-        sizePx && Number.isFinite(sizePx.width) && Number.isFinite(sizePx.height)
-            ? `${Math.round(sizePx.width)}×${Math.round(sizePx.height)}px`
-            : null;
 
     return (
         <Card
             withBorder
             radius="xl"
-            p="lg"
+            p={cardPadding}
             style={{
                 height: "100%",
                 display: "flex",
                 flexDirection: "column",
+                overflow: "hidden",
                 borderColor: "var(--crm-ui-kit-palette-border-default)",
                 transition: "all 0.2s ease",
             }}
         >
-            {/* Header */}
-            <Flex justify="space-between" align="flex-start" mb="md">
-                <Flex direction="column" gap="xs" style={{ flex: 1 }}>
-                    <Group gap="sm" align="center">
-                        <ThemeIcon
-                            size="xl"
-                            radius="xl"
-                            variant="gradient"
-                            gradient={{ from: CALLS_COLORS.totalAccent, to: CALLS_COLORS.totalAccent, deg: 45 }}
-                        >
-                            <MdCall size={20} />
-                        </ThemeIcon>
-                        <Box>
-                            <Text size="xs" c="dimmed" fw={700} tt="uppercase" style={{ letterSpacing: 0.8 }}>
-                                {title || getLanguageByKey("Total calls for the period")}
-                            </Text>
-                            {subtitle && (
-                                <Text size="sm" fw={600} c="dark" mt={2}>
-                                    {subtitle}
+            <Stack gap={isVeryCompact ? "xs" : "sm"} style={{ flex: 1, height: "100%", minHeight: 0 }}>
+                {/* Header */}
+                <Flex justify="space-between" align="flex-start" style={{ flexShrink: 0 }}>
+                    <Flex direction="column" gap="xs" style={{ flex: 1 }}>
+                        <Group gap="sm" align="center">
+                            <ThemeIcon
+                                size={iconSize}
+                                radius="xl"
+                                variant="gradient"
+                                gradient={{ from: CALLS_COLORS.totalAccent, to: CALLS_COLORS.totalAccent, deg: 45 }}
+                            >
+                                <MdCall size={callIconSize} />
+                            </ThemeIcon>
+                            <Box>
+                                <Text size={titleSize} c="dimmed" fw={700} tt="uppercase" style={{ letterSpacing: 0.8 }}>
+                                    {title || getLanguageByKey("Total calls for the period")}
                                 </Text>
-                            )}
-                        </Box>
-                    </Group>
+                                {subtitle && (
+                                    <Text size={subtitleSize} fw={600} c="dark" mt={2}>
+                                        {subtitle}
+                                    </Text>
+                                )}
+                            </Box>
+                        </Group>
 
-                    <Group gap={6} wrap="wrap" mt="xs">
-                        <Badge variant="light" color="blue" size="sm">
-                            {getLanguageByKey("Calls") || widgetType}
-                        </Badge>
-                        <Badge variant="light" color="gray" size="sm">
-                            {dateRange?.[0] ? format(dateRange[0], "dd.MM.yyyy") : "—"} →{" "}
-                            {dateRange?.[1] ? format(dateRange[1], "dd.MM.yyyy") : "—"}
-                        </Badge>
-                        {sizeInfo && (
-                            <Badge variant="outline" color="gray" size="sm">{sizeInfo}</Badge>
-                        )}
-                        {pxLabel && (
-                            <Tooltip label="Текущий размер в пикселях">
-                                <Badge variant="outline" color="gray" size="sm">{pxLabel}</Badge>
-                            </Tooltip>
-                        )}
-                    </Group>
+                        <Group gap={6} wrap="wrap" mt="xs">
+                            <Badge variant="light" color="blue" size="sm">
+                                {getLanguageByKey("Calls") || widgetType}
+                            </Badge>
+                        </Group>
+                    </Flex>
+
+                    <Box style={{ textAlign: "right" }}>
+                        <Group gap="xs" align="center" justify="flex-end">
+                            <Text fz={totalSize} fw={900} style={{ lineHeight: 1, color: `var(--mantine-color-${CALLS_COLORS.totalAccent}-6)` }}>
+                                {fmt(totalAll)}
+                            </Text>
+                            {getTrendIcon(totalAll, previousData?.totalAll)}
+                        </Group>
+                        <Text size="xs" c="dimmed" fw={600} mt={-4}>
+                            {getLanguageByKey("Total")}
+                        </Text>
+                    </Box>
                 </Flex>
 
-                <Box style={{ textAlign: "right" }}>
-                    <Group gap="xs" align="center" justify="flex-end">
-                        <Text fz={42} fw={900} style={{ lineHeight: 1, color: `var(--mantine-color-${CALLS_COLORS.totalAccent}-6)` }}>
-                            {fmt(totalAll)}
-                        </Text>
-                        {getTrendIcon(totalAll, previousData?.totalAll)}
-                    </Group>
-                    <Text size="xs" c="dimmed" fw={600} mt={-4}>
-                        {getLanguageByKey("Total")}
-                    </Text>
-                </Box>
-            </Flex>
+                <Divider my={isVeryCompact ? "xs" : "md"} />
 
-            <Divider my="md" />
-
-            {/* Body */}
-            <Stack gap="lg" style={{ flex: 1 }}>
-                {/* Incoming */}
-                <Box>
-                    <Flex justify="space-between" align="center" mb="xs">
-                        <Group gap="xs" align="center">
-                            <ThemeIcon
-                                size="md"
-                                radius="lg"
-                                variant="light"
+                {/* Прокручиваемая область с контентом */}
+                <Box style={{ flex: 1, overflowY: "auto", overflowX: "hidden", minHeight: 0 }}>
+                    <Stack gap={isVeryCompact ? "xs" : "lg"}>
+                        {/* Incoming */}
+                        <Box>
+                            <Flex justify="space-between" align="center" mb="xs">
+                                <Group gap="xs" align="center">
+                                    <ThemeIcon
+                                        size={isVeryCompact ? "sm" : "md"}
+                                        radius="lg"
+                                        variant="light"
+                                        color={CALLS_COLORS.in}
+                                        style={{ border: `1px solid var(--mantine-color-${CALLS_COLORS.in}-3)` }}
+                                    >
+                                        <MdCallReceived size={isVeryCompact ? 12 : 16} />
+                                    </ThemeIcon>
+                                    <Text size={isVeryCompact ? "xs" : "sm"} fw={600} c={`${CALLS_COLORS.in}.7`}>
+                                        {getLanguageByKey("Incoming")}
+                                    </Text>
+                                </Group>
+                                <Box style={{ textAlign: "right" }}>
+                                    <Text size={isVeryCompact ? "sm" : "lg"} fw={800} c={`${CALLS_COLORS.in}.6`}>
+                                        {fmt(totalIncoming)}
+                                    </Text>
+                                    <Text size="xs" c="dimmed">
+                                        {getLanguageByKey("calls")}
+                                    </Text>
+                                </Box>
+                            </Flex>
+                            <Progress
+                                value={inPct}
+                                size={isVeryCompact ? "xs" : "lg"}
+                                radius="xl"
                                 color={CALLS_COLORS.in}
-                                style={{ border: `1px solid var(--mantine-color-${CALLS_COLORS.in}-3)` }}
-                            >
-                                <MdCallReceived size={16} />
-                            </ThemeIcon>
-                            <Text size="sm" fw={600} c={`${CALLS_COLORS.in}.7`}>
-                                {getLanguageByKey("Incoming")}
-                            </Text>
-                        </Group>
-                        <Box style={{ textAlign: "right" }}>
-                            <Text size="lg" fw={800} c={`${CALLS_COLORS.in}.6`}>
-                                {fmt(totalIncoming)}
-                            </Text>
-                            <Text size="xs" c="dimmed">
-                                {getLanguageByKey("calls")}
-                            </Text>
+                                style={{
+                                    backgroundColor: `var(--mantine-color-${CALLS_COLORS.in}-1)`
+                                }}
+                            />
                         </Box>
-                    </Flex>
-                    <Progress
-                        value={inPct}
-                        size="lg"
-                        radius="xl"
-                        color={CALLS_COLORS.in}
-                        style={{
-                            backgroundColor: `var(--mantine-color-${CALLS_COLORS.in}-1)`
-                        }}
-                    />
-                </Box>
 
-                {/* Outgoing */}
-                <Box>
-                    <Flex justify="space-between" align="center" mb="xs">
-                        <Group gap="xs" align="center">
-                            <ThemeIcon
-                                size="md"
-                                radius="lg"
-                                variant="light"
+                        {/* Outgoing */}
+                        <Box>
+                            <Flex justify="space-between" align="center" mb="xs">
+                                <Group gap="xs" align="center">
+                                    <ThemeIcon
+                                        size={isVeryCompact ? "sm" : "md"}
+                                        radius="lg"
+                                        variant="light"
+                                        color={CALLS_COLORS.out}
+                                        style={{ border: `1px solid var(--mantine-color-${CALLS_COLORS.out}-3)` }}
+                                    >
+                                        <MdCallMade size={isVeryCompact ? 12 : 16} />
+                                    </ThemeIcon>
+                                    <Text size={isVeryCompact ? "xs" : "sm"} fw={600} c={`${CALLS_COLORS.out}.7`}>
+                                        {getLanguageByKey("Outgoing")}
+                                    </Text>
+                                </Group>
+                                <Box style={{ textAlign: "right" }}>
+                                    <Text size={isVeryCompact ? "sm" : "lg"} fw={800} c={`${CALLS_COLORS.out}.6`}>
+                                        {fmt(totalOutgoing)}
+                                    </Text>
+                                    <Text size="xs" c="dimmed">
+                                        {getLanguageByKey("calls")}
+                                    </Text>
+                                </Box>
+                            </Flex>
+                            <Progress
+                                value={outPct}
+                                size={isVeryCompact ? "xs" : "lg"}
+                                radius="xl"
                                 color={CALLS_COLORS.out}
-                                style={{ border: `1px solid var(--mantine-color-${CALLS_COLORS.out}-3)` }}
-                            >
-                                <MdCallMade size={16} />
-                            </ThemeIcon>
-                            <Text size="sm" fw={600} c={`${CALLS_COLORS.out}.7`}>
-                                {getLanguageByKey("Outgoing")}
-                            </Text>
-                        </Group>
-                        <Box style={{ textAlign: "right" }}>
-                            <Text size="lg" fw={800} c={`${CALLS_COLORS.out}.6`}>
-                                {fmt(totalOutgoing)}
-                            </Text>
-                            <Text size="xs" c="dimmed">
-                                {getLanguageByKey("calls")}
-                            </Text>
+                                style={{
+                                    backgroundColor: `var(--mantine-color-${CALLS_COLORS.out}-1)`
+                                }}
+                            />
                         </Box>
-                    </Flex>
-                    <Progress
-                        value={outPct}
-                        size="lg"
-                        radius="xl"
-                        color={CALLS_COLORS.out}
-                        style={{
-                            backgroundColor: `var(--mantine-color-${CALLS_COLORS.out}-1)`
-                        }}
-                    />
+
+                        {/* Вложенные группы пользователей (для by_group_title) */}
+                        {userGroups && userGroups.length > 0 && (
+                            <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
+                                <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+                                    {getLanguageByKey("User Groups") || "User Groups"}
+                                </Text>
+                                <Stack gap="md">
+                                    {userGroups.map((ug, ugIndex) => {
+                                        const groupIncoming = Number.isFinite(ug.incoming_calls_count) ? ug.incoming_calls_count : 0;
+                                        const groupOutgoing = Number.isFinite(ug.outgoing_calls_count) ? ug.outgoing_calls_count : 0;
+                                        const groupTotal = Number.isFinite(ug.total_calls_count) ? ug.total_calls_count : 0;
+                                        if (groupTotal === 0) return null;
+
+                                        const groupInPct = percent(groupIncoming, groupTotal);
+                                        const groupOutPct = percent(groupOutgoing, groupTotal);
+
+                                        return (
+                                            <Box key={`ug-${ugIndex}`}>
+                                                <Text fw={600} size="sm" mb="xs" c="dark">
+                                                    {ug.userGroupName || "-"}
+                                                </Text>
+                                                <Stack gap="xs">
+                                                    {/* Incoming для группы */}
+                                                    <Flex justify="space-between" align="center">
+                                                        <Group gap="xs" align="center">
+                                                            <ThemeIcon
+                                                                size="xs"
+                                                                radius="lg"
+                                                                variant="light"
+                                                                color={CALLS_COLORS.in}
+                                                            >
+                                                                <MdCallReceived size={10} />
+                                                            </ThemeIcon>
+                                                            <Text size="xs" fw={600} c={`${CALLS_COLORS.in}.7`}>
+                                                                {getLanguageByKey("Incoming")}
+                                                            </Text>
+                                                        </Group>
+                                                        <Text size="xs" fw={700} c={`${CALLS_COLORS.in}.6`}>
+                                                            {fmt(groupIncoming)}
+                                                        </Text>
+                                                    </Flex>
+                                                    <Progress
+                                                        value={groupInPct}
+                                                        size="xs"
+                                                        radius="xl"
+                                                        color={CALLS_COLORS.in}
+                                                    />
+                                                    {/* Outgoing для группы */}
+                                                    <Flex justify="space-between" align="center">
+                                                        <Group gap="xs" align="center">
+                                                            <ThemeIcon
+                                                                size="xs"
+                                                                radius="lg"
+                                                                variant="light"
+                                                                color={CALLS_COLORS.out}
+                                                            >
+                                                                <MdCallMade size={10} />
+                                                            </ThemeIcon>
+                                                            <Text size="xs" fw={600} c={`${CALLS_COLORS.out}.7`}>
+                                                                {getLanguageByKey("Outgoing")}
+                                                            </Text>
+                                                        </Group>
+                                                        <Text size="xs" fw={700} c={`${CALLS_COLORS.out}.6`}>
+                                                            {fmt(groupOutgoing)}
+                                                        </Text>
+                                                    </Flex>
+                                                    <Progress
+                                                        value={groupOutPct}
+                                                        size="xs"
+                                                        radius="xl"
+                                                        color={CALLS_COLORS.out}
+                                                    />
+                                                </Stack>
+                                            </Box>
+                                        );
+                                    })}
+                                </Stack>
+                            </Box>
+                        )}
+
+                        {/* Вложенные пользователи (для by_user_group) */}
+                        {userTechnicians && userTechnicians.length > 0 && (
+                            <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
+                                <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+                                    {getLanguageByKey("Users") || "Users"}
+                                </Text>
+                                <Stack gap="md">
+                                    {userTechnicians.map((ut, utIndex) => {
+                                        const userIncoming = Number.isFinite(ut.incoming_calls_count) ? ut.incoming_calls_count : 0;
+                                        const userOutgoing = Number.isFinite(ut.outgoing_calls_count) ? ut.outgoing_calls_count : 0;
+                                        const userTotal = Number.isFinite(ut.total_calls_count) ? ut.total_calls_count : 0;
+                                        if (userTotal === 0) return null;
+
+                                        const userInPct = percent(userIncoming, userTotal);
+                                        const userOutPct = percent(userOutgoing, userTotal);
+
+                                        return (
+                                            <Box key={`ut-${utIndex}`}>
+                                                <Text fw={600} size="sm" mb="xs" c="dark">
+                                                    {ut.userName || `ID ${ut.userId}`}
+                                                    {ut.sipuniId && (
+                                                        <Text component="span" size="xs" c="dimmed" ml="xs">
+                                                            ({ut.sipuniId})
+                                                        </Text>
+                                                    )}
+                                                </Text>
+                                                <Stack gap="xs">
+                                                    {/* Incoming для пользователя */}
+                                                    <Flex justify="space-between" align="center">
+                                                        <Group gap="xs" align="center">
+                                                            <ThemeIcon
+                                                                size="xs"
+                                                                radius="lg"
+                                                                variant="light"
+                                                                color={CALLS_COLORS.in}
+                                                            >
+                                                                <MdCallReceived size={10} />
+                                                            </ThemeIcon>
+                                                            <Text size="xs" fw={600} c={`${CALLS_COLORS.in}.7`}>
+                                                                {getLanguageByKey("Incoming")}
+                                                            </Text>
+                                                        </Group>
+                                                        <Text size="xs" fw={700} c={`${CALLS_COLORS.in}.6`}>
+                                                            {fmt(userIncoming)}
+                                                        </Text>
+                                                    </Flex>
+                                                    <Progress
+                                                        value={userInPct}
+                                                        size="xs"
+                                                        radius="xl"
+                                                        color={CALLS_COLORS.in}
+                                                    />
+                                                    {/* Outgoing для пользователя */}
+                                                    <Flex justify="space-between" align="center">
+                                                        <Group gap="xs" align="center">
+                                                            <ThemeIcon
+                                                                size="xs"
+                                                                radius="lg"
+                                                                variant="light"
+                                                                color={CALLS_COLORS.out}
+                                                            >
+                                                                <MdCallMade size={10} />
+                                                            </ThemeIcon>
+                                                            <Text size="xs" fw={600} c={`${CALLS_COLORS.out}.7`}>
+                                                                {getLanguageByKey("Outgoing")}
+                                                            </Text>
+                                                        </Group>
+                                                        <Text size="xs" fw={700} c={`${CALLS_COLORS.out}.6`}>
+                                                            {fmt(userOutgoing)}
+                                                        </Text>
+                                                    </Flex>
+                                                    <Progress
+                                                        value={userOutPct}
+                                                        size="xs"
+                                                        radius="xl"
+                                                        color={CALLS_COLORS.out}
+                                                    />
+                                                </Stack>
+                                            </Box>
+                                        );
+                                    })}
+                                </Stack>
+                            </Box>
+                        )}
+                    </Stack>
                 </Box>
             </Stack>
         </Card>

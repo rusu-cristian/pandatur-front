@@ -516,10 +516,12 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                         totalAll={Number.isFinite(w.total) ? w.total : 0}
                                         totalIncoming={Number.isFinite(w.incoming) ? w.incoming : 0}
                                         totalOutgoing={Number.isFinite(w.outgoing) ? w.outgoing : 0}
-                                        dateRange={dateRange}
-                                        sizeInfo={sizeInfo}
                                         bg={w.bg}
+                                        width={w.w}
+                                        height={w.h}
                                         widgetType={currentWidgetType}
+                                        userGroups={w.userGroups || []}
+                                        userTechnicians={w.userTechnicians || []}
                                     />
                                 </Box>,
                                 w.id
@@ -554,10 +556,12 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     totalAll={Number.isFinite(w.total) ? w.total : 0}
                                     totalIncoming={Number.isFinite(w.incoming) ? w.incoming : 0}
                                     totalOutgoing={Number.isFinite(w.outgoing) ? w.outgoing : 0}
-                                    dateRange={dateRange}
-                                    sizeInfo={sizeInfo}
                                     bg={w.bg}
+                                    width={w.w}
+                                    height={w.h}
                                     widgetType={currentWidgetType}
+                                    userGroups={w.userGroups || []}
+                                    userTechnicians={w.userTechnicians || []}
                                 />
                             </Box>,
                             w.id
