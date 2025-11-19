@@ -46,7 +46,7 @@ export const MessagesCard = ({
 
     const cardPadding = isVeryCompact ? "xs" : isCompact ? "sm" : "lg";
     const titleSize = isVeryCompact ? "xs" : isCompact ? "xs" : "xs";
-    const subtitleSize = isVeryCompact ? "xs" : isCompact ? "sm" : "sm";
+    const subtitleSize = "md"
     const totalSize = isVeryCompact ? 24 : isCompact ? 32 : 42;
     const iconSize = isVeryCompact ? "md" : isCompact ? "lg" : "xl";
     const messageIconSize = isVeryCompact ? 14 : isCompact ? 16 : 20;
@@ -106,7 +106,7 @@ export const MessagesCard = ({
                             </Text>
                             {getTrendIcon(totalAll, previousData?.totalAll)}
                         </Group>
-                        <Text size="xs" c="dimmed" fw={600} mt={-4}>
+                        <Text size="md" c="dimmed" fw={600} mt={-4}>
                             {getLanguageByKey("Total")}
                         </Text>
                     </Box>
@@ -138,7 +138,7 @@ export const MessagesCard = ({
                                     <Text size={isVeryCompact ? "sm" : "lg"} fw={800} c={`${MESSAGES_COLORS.in}.6`}>
                                         {fmt(totalIncoming)}
                                     </Text>
-                                    <Text size="xs" c="dimmed">
+                                    <Text size="md" c="dimmed">
                                         {getLanguageByKey("messages")}
                                     </Text>
                                 </Box>
@@ -175,7 +175,7 @@ export const MessagesCard = ({
                                     <Text size={isVeryCompact ? "sm" : "lg"} fw={800} c={`${MESSAGES_COLORS.out}.6`}>
                                         {fmt(totalOutgoing)}
                                     </Text>
-                                    <Text size="xs" c="dimmed">
+                                    <Text size="md" c="dimmed">
                                         {getLanguageByKey("messages")}
                                     </Text>
                                 </Box>
@@ -194,7 +194,7 @@ export const MessagesCard = ({
                         {/* Вложенные группы пользователей (для by_group_title) */}
                         {userGroups && userGroups.length > 0 && (
                             <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
-                                <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+                                <Text size="md" fw={700} c="dimmed" mb="sm" tt="uppercase">
                                     {getLanguageByKey("User Groups") || "User Groups"}
                                 </Text>
                                 <Stack gap="md">
@@ -209,7 +209,7 @@ export const MessagesCard = ({
 
                                         return (
                                             <Box key={`ug-${ugIndex}`}>
-                                                <Text fw={600} size="sm" mb="xs" c="dark">
+                                                <Text fw={600} size="md" mb="xs" c="dark">
                                                     {ug.userGroupName || "-"}
                                                 </Text>
                                                 <Stack gap="xs">
@@ -224,11 +224,11 @@ export const MessagesCard = ({
                                                             >
                                                                 <MdMessage size={10} />
                                                             </ThemeIcon>
-                                                            <Text size="xs" fw={600} c={`${MESSAGES_COLORS.in}.7`}>
+                                                            <Text size="md" fw={600} c={`${MESSAGES_COLORS.in}.7`}>
                                                                 {getLanguageByKey("Incoming")}
                                                             </Text>
                                                         </Group>
-                                                        <Text size="xs" fw={700} c={`${MESSAGES_COLORS.in}.6`}>
+                                                        <Text size="md" fw={700} c={`${MESSAGES_COLORS.in}.6`}>
                                                             {fmt(groupIncoming)}
                                                         </Text>
                                                     </Flex>
@@ -249,11 +249,11 @@ export const MessagesCard = ({
                                                             >
                                                                 <MdSend size={10} />
                                                             </ThemeIcon>
-                                                            <Text size="xs" fw={600} c={`${MESSAGES_COLORS.out}.7`}>
+                                                            <Text size="md" fw={600} c={`${MESSAGES_COLORS.out}.7`}>
                                                                 {getLanguageByKey("Outgoing")}
                                                             </Text>
                                                         </Group>
-                                                        <Text size="xs" fw={700} c={`${MESSAGES_COLORS.out}.6`}>
+                                                        <Text size="md" fw={700} c={`${MESSAGES_COLORS.out}.6`}>
                                                             {fmt(groupOutgoing)}
                                                         </Text>
                                                     </Flex>
@@ -274,7 +274,7 @@ export const MessagesCard = ({
                         {/* Вложенные пользователи (для by_user_group) */}
                         {userTechnicians && userTechnicians.length > 0 && (
                             <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
-                                <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+                                <Text size="md" fw={700} c="dimmed" mb="sm" tt="uppercase">
                                     {getLanguageByKey("Users") || "Users"}
                                 </Text>
                                 <Stack gap="md">
@@ -289,10 +289,10 @@ export const MessagesCard = ({
 
                                         return (
                                             <Box key={`ut-${utIndex}`}>
-                                                <Text fw={600} size="sm" mb="xs" c="dark">
+                                                <Text fw={600} size="md" mb="xs" c="dark">
                                                     {ut.userName || `ID ${ut.userId}`}
                                                     {ut.sipuniId && (
-                                                        <Text component="span" size="xs" c="dimmed" ml="xs">
+                                                        <Text component="span" size="md" c="dimmed" ml="xs">
                                                             ({ut.sipuniId})
                                                         </Text>
                                                     )}
@@ -309,11 +309,11 @@ export const MessagesCard = ({
                                                             >
                                                                 <MdMessage size={10} />
                                                             </ThemeIcon>
-                                                            <Text size="xs" fw={600} c={`${MESSAGES_COLORS.in}.7`}>
+                                                            <Text size="md" fw={600} c={`${MESSAGES_COLORS.in}.7`}>
                                                                 {getLanguageByKey("Incoming")}
                                                             </Text>
                                                         </Group>
-                                                        <Text size="xs" fw={700} c={`${MESSAGES_COLORS.in}.6`}>
+                                                        <Text size="md" fw={700} c={`${MESSAGES_COLORS.in}.6`}>
                                                             {fmt(userIncoming)}
                                                         </Text>
                                                     </Flex>
@@ -334,11 +334,11 @@ export const MessagesCard = ({
                                                             >
                                                                 <MdSend size={10} />
                                                             </ThemeIcon>
-                                                            <Text size="xs" fw={600} c={`${MESSAGES_COLORS.out}.7`}>
+                                                            <Text size="md" fw={600} c={`${MESSAGES_COLORS.out}.7`}>
                                                                 {getLanguageByKey("Outgoing")}
                                                             </Text>
                                                         </Group>
-                                                        <Text size="xs" fw={700} c={`${MESSAGES_COLORS.out}.6`}>
+                                                        <Text size="md" fw={700} c={`${MESSAGES_COLORS.out}.6`}>
                                                             {fmt(userOutgoing)}
                                                         </Text>
                                                     </Flex>
