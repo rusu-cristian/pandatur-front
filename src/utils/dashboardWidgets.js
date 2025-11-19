@@ -1130,13 +1130,17 @@ export const createUserWidgets = (data, widgetType, getLanguageByKey, userNameBy
  */
 export const createTopUsersWidget = (data, widgetType, getLanguageByKey, userNameById) => {
   const byUser = safeArray(data.by_user);
-  if (!byUser.length) return null;
+  const byUserGroup = safeArray(data.by_user_group);
+  
+  // Если нет данных ни в by_user, ни в by_user_group, возвращаем null
+  if (!byUser.length && !byUserGroup.length) return null;
 
   if (widgetType === "ticket_marketing" || widgetType === "ticket_source" || widgetType === "ticket_platform_source") {
     return null;
   }
 
-  const rows = byUser.map((r) => {
+  // Функция для создания объекта пользователя из данных
+  const createUserRow = (r) => {
     const uid = Number(r.user_id);
     
     switch (widgetType) {
@@ -1281,7 +1285,49 @@ export const createTopUsersWidget = (data, widgetType, getLanguageByKey, userNam
         };
       }
     }
+  };
+
+  // Собираем пользователей из by_user
+  const usersFromByUser = byUser.map(createUserRow);
+
+  // Собираем пользователей из by_user_group[].user_technicians[]
+  const usersFromByUserGroup = [];
+  byUserGroup.forEach((group) => {
+    const userTechnicians = safeArray(group.user_technicians);
+    userTechnicians.forEach((ut) => {
+      // Для user_technicians данные могут быть в поле stats
+      const itemData = ut.stats || ut;
+      const userRow = createUserRow({
+        ...itemData,
+        user_id: ut.user_id,
+        sipuni_id: ut.sipuni_id,
+      });
+      usersFromByUserGroup.push(userRow);
+    });
   });
+
+  // Объединяем пользователей из обоих источников
+  // Используем Map для удаления дубликатов (приоритет у by_user)
+  const usersMap = new Map();
+  
+  // Сначала добавляем пользователей из by_user_group (они могут быть перезаписаны)
+  usersFromByUserGroup.forEach((user) => {
+    const uid = user.user_id;
+    if (uid && !usersMap.has(uid)) {
+      usersMap.set(uid, user);
+    }
+  });
+  
+  // Затем добавляем пользователей из by_user (они имеют приоритет)
+  usersFromByUser.forEach((user) => {
+    const uid = user.user_id;
+    if (uid) {
+      usersMap.set(uid, user);
+    }
+  });
+
+  // Преобразуем Map обратно в массив
+  const rows = Array.from(usersMap.values());
 
   return {
     id: "top-users",

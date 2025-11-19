@@ -93,7 +93,7 @@ export const TopUsersCard = ({
     const subtitleSize = isVeryCompact ? "xs" : isCompact ? "sm" : "sm";
     const iconSize = isVeryCompact ? 14 : isCompact ? 16 : 18;
     const themeIconSize = isVeryCompact ? "md" : isCompact ? "lg" : "lg";
-    const limitCount = isVeryCompact ? 5 : isCompact ? 7 : 10;
+    const limitCount = 100;
 
     const data = useMemo(() => {
         const normal = (rows || []).map((r) => {
