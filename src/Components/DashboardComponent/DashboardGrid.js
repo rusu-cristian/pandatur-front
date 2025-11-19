@@ -173,10 +173,12 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     oldClientTickets={Number.isFinite(w.oldClientTickets) ? w.oldClientTickets : 0}
                                     newClientTickets={Number.isFinite(w.newClientTickets) ? w.newClientTickets : 0}
                                     totalTickets={Number.isFinite(w.totalTickets) ? w.totalTickets : 0}
-                                    dateRange={dateRange}
-                                    sizeInfo={sizeInfo}
                                     bg={w.bg}
+                                    width={w.w}
+                                    height={w.h}
                                     widgetType={w.type}
+                                    userGroups={w.userGroups || []}
+                                    userTechnicians={w.userTechnicians || []}
                                 />
                             </Box>,
                             w.id

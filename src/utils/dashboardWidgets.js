@@ -215,6 +215,7 @@ export const createGroupTitleWidgets = (data, widgetType, getLanguageByKey) => {
     const isTicketDistributionWidget = widgetType === "ticket_distribution";
     const isSystemUsageWidget = widgetType === "system_usage";
     const isCallsWidget = widgetType === "calls" || widgetType === "messages";
+    const isTicketStateWidget = widgetType === "ticket_state";
     
     // Если это calls виджет, обрабатываем вложенные user_groups
     if (isCallsWidget) {
@@ -245,6 +246,30 @@ export const createGroupTitleWidgets = (data, widgetType, getLanguageByKey) => {
       return {
         ...widget,
         userGroups,
+      };
+    }
+
+    // Если это ticket state виджет и есть user_groups, добавляем их в данные
+    if (isTicketStateWidget && r.user_groups && Array.isArray(r.user_groups)) {
+      const widget = createWidgetFromData(
+        itemData,
+        widgetType,
+        getLanguageByKey,
+        `gt-${shortName ?? idx}`,
+        "Group title",
+        fullName,
+        BG_COLORS.by_group_title
+      );
+
+      // Добавляем вложенные группы пользователей
+      return {
+        ...widget,
+        userGroups: r.user_groups.map(ug => ({
+          userGroupName: ug.user_group_name ?? ug.user_group ?? "-",
+          old_client_tickets_count: Number.isFinite(ug.old_client_tickets_count) ? ug.old_client_tickets_count : 0,
+          new_client_tickets_count: Number.isFinite(ug.new_client_tickets_count) ? ug.new_client_tickets_count : 0,
+          total_tickets_count: Number.isFinite(ug.total_tickets_count) ? ug.total_tickets_count : 0,
+        })),
       };
     }
     
@@ -605,6 +630,37 @@ export const createUserGroupWidgets = (data, widgetType, getLanguageByKey, userN
     const isTicketDistributionWidget = widgetType === "ticket_distribution";
     const isSystemUsageWidget = widgetType === "system_usage";
     const isCallsWidget = widgetType === "calls" || widgetType === "messages";
+    const isTicketStateWidget = widgetType === "ticket_state";
+    
+    // Если это ticket state виджет и есть user_technicians, добавляем их в данные
+    if (isTicketStateWidget && r.user_technicians && Array.isArray(r.user_technicians)) {
+      const widget = createWidgetFromData(
+        itemData,
+        widgetType,
+        getLanguageByKey,
+        `ug-${idx}`,
+        "User group",
+        name || "-",
+        BG_COLORS.by_user_group
+      );
+
+      // Добавляем вложенных пользователей с их именами
+      return {
+        ...widget,
+        userTechnicians: r.user_technicians.map(ut => {
+          const uid = Number(ut.user_id);
+          const userName = userNameById?.get?.(uid) || (Number.isFinite(uid) ? `ID ${uid}` : "-");
+          return {
+            userId: uid,
+            userName,
+            sipuniId: ut.sipuni_id || null,
+            old_client_tickets_count: Number.isFinite(ut.old_client_tickets_count) ? ut.old_client_tickets_count : 0,
+            new_client_tickets_count: Number.isFinite(ut.new_client_tickets_count) ? ut.new_client_tickets_count : 0,
+            total_tickets_count: Number.isFinite(ut.total_tickets_count) ? ut.total_tickets_count : 0,
+          };
+        }),
+      };
+    }
     
     // Если это calls виджет, обрабатываем вложенные user_technicians
     if (isCallsWidget) {
