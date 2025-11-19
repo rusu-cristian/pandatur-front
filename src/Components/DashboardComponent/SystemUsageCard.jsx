@@ -8,10 +8,10 @@ const fmt = (n) => (Number(n) || 0).toLocaleString();
 // Форматирование времени для system_usage
 const fmtTime = (hours) => {
   if (typeof hours !== "number" || hours === 0) return `0${getLanguageByKey("hours")}`;
-  
+
   const wholeHours = Math.floor(hours);
   const minutes = Math.round((hours - wholeHours) * 60);
-  
+
   if (minutes === 0) {
     return `${wholeHours}${getLanguageByKey("hours")}`;
   } else {
@@ -19,11 +19,11 @@ const fmtTime = (hours) => {
   }
 };
 
-export const SystemUsageCard = ({ 
-  title, 
-  subtitle, 
-  activityMinutes = 0, 
-  activityHours = 0, 
+export const SystemUsageCard = ({
+  title,
+  subtitle,
+  activityMinutes = 0,
+  activityHours = 0,
   bg,
   width,
   height,
@@ -54,7 +54,7 @@ export const SystemUsageCard = ({
       padding={cardPadding}
       radius="md"
       withBorder
-      style={{ 
+      style={{
         backgroundColor: "var(--crm-ui-kit-palette-background-primary)",
         height: "100%",
         display: "flex",
@@ -93,7 +93,7 @@ export const SystemUsageCard = ({
                   {getLanguageByKey("Activity hours")}
                 </Text>
               </Box>
-              
+
               <Stack gap="xs" align="flex-end">
                 <Group gap="xs" align="center">
                   {MinutesIconNode}
@@ -114,7 +114,7 @@ export const SystemUsageCard = ({
                   {getLanguageByKey("Hours")}
                 </Text>
               </Group>
-              
+
               <Text size={isVeryCompact ? "xs" : "sm"} c={colors.minutes}>
                 {fmt(activityMinutes)} {getLanguageByKey("min")}
               </Text>
