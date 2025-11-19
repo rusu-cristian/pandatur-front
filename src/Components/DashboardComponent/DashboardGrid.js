@@ -209,10 +209,12 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     subtitle={w.subtitle}
                                     activityMinutes={Number.isFinite(w.activityMinutes) ? w.activityMinutes : 0}
                                     activityHours={Number.isFinite(w.activityHours) ? w.activityHours : 0}
-                                    dateRange={dateRange}
-                                    sizeInfo={sizeInfo}
                                     bg={w.bg}
+                                    width={w.w}
+                                    height={w.h}
                                     widgetType={w.type}
+                                    userGroups={w.userGroups || []}
+                                    userTechnicians={w.userTechnicians || []}
                                 />
                             </Box>,
                             w.id
