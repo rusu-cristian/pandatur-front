@@ -208,6 +208,7 @@ export const createGroupTitleWidgets = (data, widgetType, getLanguageByKey) => {
     const isToChangeWidget = widgetType === "workflow_to_change";
     const isFromChangeWidget = widgetType === "workflow_from_change";
     const isRateWidget = widgetType === "ticket_rate";
+    const isLifetimeWidget = widgetType === "ticket_lifetime_stats";
     
     // Если это виджет со статистикой и есть user_groups, добавляем их в данные
     if (isStatsWidget && r.user_groups && Array.isArray(r.user_groups)) {
@@ -248,6 +249,29 @@ export const createGroupTitleWidgets = (data, widgetType, getLanguageByKey) => {
         ...widget,
         userGroups: r.user_groups.map(ug => ({
           userGroupName: ug.user_group_name ?? ug.user_group ?? "-",
+          stats: ug.stats || ug,
+        })),
+      };
+    }
+    
+    // Если это ticket lifetime stats виджет и есть user_groups, добавляем их в данные
+    if (isLifetimeWidget && r.user_groups && Array.isArray(r.user_groups)) {
+      const widget = createWidgetFromData(
+        itemData, 
+        widgetType, 
+        getLanguageByKey, 
+        `gt-${shortName ?? idx}`, 
+        "Group title", 
+        fullName, 
+        BG_COLORS.by_group_title
+      );
+      
+      // Добавляем вложенные группы пользователей
+      return {
+        ...widget,
+        userGroups: r.user_groups.map(ug => ({
+          userGroupName: ug.user_group_name ?? ug.user_group ?? "-",
+          tickets_processed: Number.isFinite(ug.tickets_processed) ? ug.tickets_processed : 0,
           stats: ug.stats || ug,
         })),
       };
@@ -424,6 +448,7 @@ export const createUserGroupWidgets = (data, widgetType, getLanguageByKey, userN
     const isToChangeWidget = widgetType === "workflow_to_change";
     const isFromChangeWidget = widgetType === "workflow_from_change";
     const isRateWidget = widgetType === "ticket_rate";
+    const isLifetimeWidget = widgetType === "ticket_lifetime_stats";
     
     // Если это виджет со статистикой и есть user_technicians, добавляем их в данные
     if (isStatsWidget && r.user_technicians && Array.isArray(r.user_technicians)) {
@@ -473,6 +498,34 @@ export const createUserGroupWidgets = (data, widgetType, getLanguageByKey, userN
           return {
             userId: uid,
             userName,
+            stats: ut.stats || ut,
+          };
+        }),
+      };
+    }
+    
+    // Если это ticket lifetime stats виджет и есть user_technicians, добавляем их в данные
+    if (isLifetimeWidget && r.user_technicians && Array.isArray(r.user_technicians)) {
+      const widget = createWidgetFromData(
+        itemData, 
+        widgetType, 
+        getLanguageByKey, 
+        `ug-${idx}`, 
+        "User group", 
+        name || "-", 
+        BG_COLORS.by_user_group
+      );
+      
+      // Добавляем вложенных пользователей с их именами
+      return {
+        ...widget,
+        userTechnicians: r.user_technicians.map(ut => {
+          const uid = Number(ut.user_id);
+          const userName = userNameById?.get?.(uid) || (Number.isFinite(uid) ? `ID ${uid}` : "-");
+          return {
+            userId: uid,
+            userName,
+            tickets_processed: Number.isFinite(ut.tickets_processed) ? ut.tickets_processed : 0,
             stats: ut.stats || ut,
           };
         }),
@@ -668,7 +721,8 @@ export const createUserWidgets = (data, widgetType, getLanguageByKey, userNameBy
     const isToChangeWidget = widgetType === "workflow_to_change";
     const isFromChangeWidget = widgetType === "workflow_from_change";
     const isRateWidget = widgetType === "ticket_rate";
-    const itemData = ((isStatsWidget || isDurationWidget || isCreationWidget || isToChangeWidget || isFromChangeWidget || isRateWidget || widgetType === "workflow_from_de_prelucrat") && r.stats) ? r.stats : r;
+    const isLifetimeWidget = widgetType === "ticket_lifetime_stats";
+    const itemData = ((isStatsWidget || isDurationWidget || isCreationWidget || isToChangeWidget || isFromChangeWidget || isRateWidget || isLifetimeWidget || widgetType === "workflow_from_de_prelucrat") && r.stats) ? r.stats : r;
     return createWidgetFromData(
       itemData, 
       widgetType, 

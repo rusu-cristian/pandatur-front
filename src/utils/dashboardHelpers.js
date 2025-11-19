@@ -290,13 +290,42 @@ export const createTicketsByDepartCountData = (obj) => ({
 /**
  * Создает данные для ticket lifetime stats виджетов
  */
-export const createTicketLifetimeStatsData = (obj) => ({
-  totalLifetimeMinutes: pickNum(obj, ["total_lifetime_minutes", "total_lifetime", "total"]),
-  averageLifetimeMinutes: pickNum(obj, ["average_lifetime_minutes", "average_lifetime", "average"]),
-  ticketsProcessed: pickNum(obj, ["tickets_processed", "processed", "count"]),
-  totalLifetimeHours: Math.round((pickNum(obj, ["total_lifetime_minutes", "total_lifetime", "total"]) || 0) / 60 * 10) / 10,
-  averageLifetimeHours: Math.round((pickNum(obj, ["average_lifetime_minutes", "average_lifetime", "average"]) || 0) / 60 * 10) / 10,
-});
+export const createTicketLifetimeStatsData = (obj) => {
+  // Проверяем, является ли это объектом со stats (новый формат)
+  // где stats содержит lifetime с total_minutes, average_minutes, count
+  const ticketsProcessed = pickNum(obj, ["tickets_processed", "processed", "count"]) || 0;
+  const statsSource = obj?.stats ?? obj;
+
+  // Если это объект, где есть stats с lifetime
+  if (statsSource && typeof statsSource === "object" && !Array.isArray(statsSource)) {
+    const lifetimeObj = statsSource.lifetime;
+
+    if (lifetimeObj && typeof lifetimeObj === "object") {
+      const totalMinutes = pickNum(lifetimeObj, ["total_minutes", "total", "value"]) || 0;
+      const averageMinutes = pickNum(lifetimeObj, ["average_minutes", "average", "avg"]) || 0;
+      const count = pickNum(lifetimeObj, ["count", "tickets_processed"]) || ticketsProcessed || 0;
+
+      return {
+        totalLifetimeMinutes: totalMinutes,
+        averageLifetimeMinutes: averageMinutes,
+        ticketsProcessed: count || ticketsProcessed,
+        totalLifetimeHours: Math.round((totalMinutes / 60) * 10) / 10,
+        averageLifetimeHours: Math.round((averageMinutes / 60) * 10) / 10,
+      };
+    }
+  }
+
+  // Старый формат или прямой доступ
+  const totalMinutes = pickNum(obj, ["total_lifetime_minutes", "total_lifetime", "total"]) || 0;
+  const averageMinutes = pickNum(obj, ["average_lifetime_minutes", "average_lifetime", "average"]) || 0;
+  return {
+    totalLifetimeMinutes: totalMinutes,
+    averageLifetimeMinutes: averageMinutes,
+    ticketsProcessed: ticketsProcessed || pickNum(obj, ["tickets_processed", "processed", "count"]) || 0,
+    totalLifetimeHours: Math.round((totalMinutes / 60) * 10) / 10,
+    averageLifetimeHours: Math.round((averageMinutes / 60) * 10) / 10,
+  };
+};
 
 /**
  * Создает данные для ticket rate виджетов

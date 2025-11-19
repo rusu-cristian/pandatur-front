@@ -283,7 +283,11 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     totalLifetimeHours={Number.isFinite(w.totalLifetimeHours) ? w.totalLifetimeHours : 0}
                                     averageLifetimeHours={Number.isFinite(w.averageLifetimeHours) ? w.averageLifetimeHours : 0}
                                     bg={w.bg}
+                                    width={w.w}
+                                    height={w.h}
                                     widgetType={w.type}
+                                    userGroups={w.userGroups || []}
+                                    userTechnicians={w.userTechnicians || []}
                                 />
                             </Box>,
                             w.id
