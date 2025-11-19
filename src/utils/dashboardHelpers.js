@@ -301,13 +301,51 @@ export const createTicketLifetimeStatsData = (obj) => ({
 /**
  * Создает данные для ticket rate виджетов
  */
-export const createTicketRateData = (obj) => ({
-  totalTransitions: pickNum(obj, ["total_transitions", "total", "count"]),
-  directlyClosedCount: pickNum(obj, ["directly_closed_count", "directly_closed", "closed"]),
-  directlyClosedPercentage: pickNum(obj, ["directly_closed_percentage", "closed_percentage", "closed_pct"]),
-  workedOnCount: pickNum(obj, ["worked_on_count", "worked_on", "worked"]),
-  workedOnPercentage: pickNum(obj, ["worked_on_percentage", "worked_percentage", "worked_pct"]),
-});
+export const createTicketRateData = (obj) => {
+  // Проверяем, является ли это объектом со stats (новый формат)
+  // где stats содержит directly_closed и worked_on с count и percentage
+  const statsSource = obj?.stats ?? obj;
+  const totalTransitions = pickNum(obj, ["total_transitions", "total", "count"]) || 0;
+
+  // Если это объект, где есть stats с directly_closed и worked_on
+  if (statsSource && typeof statsSource === "object" && !Array.isArray(statsSource)) {
+    const directlyClosedObj = statsSource.directly_closed;
+    const workedOnObj = statsSource.worked_on;
+
+    const directlyClosedCount = directlyClosedObj && typeof directlyClosedObj === "object"
+      ? (pickNum(directlyClosedObj, ["count", "value", "total"]) || 0)
+      : 0;
+    
+    const directlyClosedPercentage = directlyClosedObj && typeof directlyClosedObj === "object"
+      ? (pickNum(directlyClosedObj, ["percentage", "pct", "percent"]) || 0)
+      : 0;
+
+    const workedOnCount = workedOnObj && typeof workedOnObj === "object"
+      ? (pickNum(workedOnObj, ["count", "value", "total"]) || 0)
+      : 0;
+    
+    const workedOnPercentage = workedOnObj && typeof workedOnObj === "object"
+      ? (pickNum(workedOnObj, ["percentage", "pct", "percent"]) || 0)
+      : 0;
+
+    return {
+      totalTransitions: totalTransitions || (directlyClosedCount + workedOnCount),
+      directlyClosedCount,
+      directlyClosedPercentage,
+      workedOnCount,
+      workedOnPercentage,
+    };
+  }
+
+  // Старый формат или прямой доступ
+  return {
+    totalTransitions: totalTransitions || pickNum(obj, ["total_transitions", "total", "count"]) || 0,
+    directlyClosedCount: pickNum(obj, ["directly_closed_count", "directly_closed", "closed"]) || 0,
+    directlyClosedPercentage: pickNum(obj, ["directly_closed_percentage", "closed_percentage", "closed_pct"]) || 0,
+    workedOnCount: pickNum(obj, ["worked_on_count", "worked_on", "worked"]) || 0,
+    workedOnPercentage: pickNum(obj, ["worked_on_percentage", "worked_percentage", "worked_pct"]) || 0,
+  };
+};
 
 /**
  * Создает данные для workflow from change виджетов
