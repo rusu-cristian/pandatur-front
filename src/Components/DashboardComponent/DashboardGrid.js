@@ -90,9 +90,6 @@ const buildLayoutsAllBps = (widgets = []) => {
     return { lg: single, md: single, sm: single, xs: single, xxs: single };
 };
 
-const pickAnyBpLayout = (layouts) =>
-    layouts.lg || layouts.md || layouts.sm || layouts.xs || layouts.xxs || [];
-
 const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
     // Определяем текущий zoom из CSS для компенсации позиционирования
     const transformScale = useZoomScale(1);
@@ -123,7 +120,6 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
 
     const handleLayoutChange = useCallback((_curr, all) => setLayouts(all), []);
     const gridKey = useMemo(() => visibleWidgets.map((w) => w.id).join("|"), [visibleWidgets]);
-    const currentLayout = pickAnyBpLayout(layouts);
 
     return (
         <Box style={{ width: "100%", height: "100%" }}>
@@ -146,8 +142,6 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                 useCSSTransforms={true}
             >
                 {visibleWidgets.map((w) => {
-                    const li = currentLayout.find((l) => l.i === String(w.id));
-                    const sizeInfo = li ? `${li.w} × ${li.h}` : null;
 
                     if (w.type === "top_users") {
                         return renderWidgetWrapper(

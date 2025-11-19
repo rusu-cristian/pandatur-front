@@ -5932,5 +5932,10 @@ export const translations = {
     RO: "Program Instambul",
     RU: "Программа Инстамбул",
     EN: "Program Instambul"
+  },
+  "User Groups": {
+    RO: "Grupuri utilizatori",
+    RU: "Группы пользователей",
+    EN: "User Groups"
   }
 };

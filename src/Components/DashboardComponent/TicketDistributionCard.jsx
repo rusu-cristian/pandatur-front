@@ -109,7 +109,7 @@ export const TicketDistributionCard = ({
             {userGroups && userGroups.length > 0 && (
               <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
                 <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
-                  {getLanguageByKey("User Groups") || "User Groups"}
+                  {getLanguageByKey("User Groups")}
                 </Text>
                 <Stack gap="md">
                   {userGroups.map((ug, ugIndex) => {
