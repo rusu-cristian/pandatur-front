@@ -12,9 +12,21 @@ export const ClosedTicketsCountCard = ({
   newerThan11Days = 0,
   totalClosedTickets = 0,
   bg,
+  width,
+  height,
   icons = {},
   widgetType,
+  userGroups = [], // Вложенные группы пользователей для by_group_title
+  userTechnicians = [], // Вложенные пользователи для by_user_group
 }) => {
+  // Адаптивные размеры в зависимости от размера виджета
+  const isCompact = width < 40 || height < 15;
+  const isVeryCompact = width < 30 || height < 12;
+
+  const cardPadding = isVeryCompact ? "xs" : isCompact ? "sm" : "lg";
+  const titleSize = isVeryCompact ? "xs" : isCompact ? "sm" : "sm";
+  const subtitleSize = isVeryCompact ? "xs" : isCompact ? "sm" : "xs";
+  const totalSize = isVeryCompact ? 24 : isCompact ? 32 : 38;
   const colors = {
     older: "#F59E0B",    // amber-500
     newer: "#10B981",    // emerald-500
@@ -28,20 +40,21 @@ export const ClosedTicketsCountCard = ({
   return (
     <Card
       shadow="sm"
-      padding="lg"
+      padding={cardPadding}
       radius="md"
       withBorder
       style={{ 
         backgroundColor: "var(--crm-ui-kit-palette-background-primary)",
         height: "100%",
         display: "flex",
-        flexDirection: "column"
+        flexDirection: "column",
+        overflow: "hidden"
       }}
     >
-      <Stack gap="xs" style={{ flex: 1 }}>
-        <Group justify="space-between" align="flex-start">
+      <Stack gap={isVeryCompact ? "xs" : "sm"} style={{ flex: 1, height: "100%", minHeight: 0 }}>
+        <Group justify="space-between" align="flex-start" style={{ flexShrink: 0 }}>
           <Box>
-            <Text size="sm" fw={500} c="dimmed">
+            <Text size={titleSize} fw={500} c="dimmed">
               {title}
             </Text>
             <Group gap={6} wrap="wrap" mt={4}>
@@ -49,7 +62,7 @@ export const ClosedTicketsCountCard = ({
                 {getLanguageByKey("Closed Tickets Count") || widgetType || "Closed Tickets Count"}
               </Badge>
               {subtitle && (
-                <Text size="xs" c="dimmed">
+                <Text size={subtitleSize} c="dimmed">
                   {subtitle}
                 </Text>
               )}
@@ -57,54 +70,193 @@ export const ClosedTicketsCountCard = ({
           </Box>
         </Group>
 
-        <Group justify="space-between" align="center" style={{ flex: 1 }}>
-          <Box>
-            <Text fz={38} fw={900} style={{ lineHeight: 1 }}>
-              {fmt(totalClosedTickets)}
-            </Text>
-            <Text size="xs" c="dimmed" fw={500}>
-              {getLanguageByKey("Total closed tickets")}
-            </Text>
-          </Box>
-          
-          <Stack gap="xs" align="flex-end">
-            <Group gap="xs" align="center">
-              {TotalIconNode}
-              <Text size="sm" c={colors.total}>
-                {getLanguageByKey("Total")}
+        {/* Прокручиваемая область с контентом */}
+        <Box style={{ flex: 1, overflowY: "auto", overflowX: "hidden", minHeight: 0 }}>
+          <Stack gap={isVeryCompact ? "xs" : "sm"}>
+            <Group justify="space-between" align="center">
+              <Box>
+                <Text fz={totalSize} fw={900} style={{ lineHeight: 1 }}>
+                  {fmt(totalClosedTickets)}
+                </Text>
+                <Text size="xs" c="dimmed" fw={500}>
+                  {getLanguageByKey("Total closed tickets")}
+                </Text>
+              </Box>
+              
+              <Stack gap="xs" align="flex-end">
+                <Group gap="xs" align="center">
+                  {TotalIconNode}
+                  <Text size={isVeryCompact ? "xs" : "sm"} c={colors.total}>
+                    {getLanguageByKey("Total")}
+                  </Text>
+                </Group>
+                <Text size="xs" c="dimmed">
+                  {getLanguageByKey("tickets")}
+                </Text>
+              </Stack>
+            </Group>
+
+            <Group justify="space-between" align="center">
+              <Group gap="xs" align="center">
+                {OlderIconNode}
+                <Text size={isVeryCompact ? "xs" : "sm"} c={colors.older}>
+                  {getLanguageByKey("Older than 11 days")}
+                </Text>
+              </Group>
+              
+              <Text size={isVeryCompact ? "xs" : "sm"} c={colors.older}>
+                {fmt(olderThan11Days)}
               </Text>
             </Group>
-            <Text size="xs" c="dimmed">
-              {getLanguageByKey("tickets")}
-            </Text>
+
+            <Group justify="space-between" align="center">
+              <Group gap="xs" align="center">
+                {NewerIconNode}
+                <Text size={isVeryCompact ? "xs" : "sm"} c={colors.newer}>
+                  {getLanguageByKey("Newer than 11 days")}
+                </Text>
+              </Group>
+              
+              <Text size={isVeryCompact ? "xs" : "sm"} c={colors.newer}>
+                {fmt(newerThan11Days)}
+              </Text>
+            </Group>
+
+            {/* Вложенные группы пользователей (для by_group_title) */}
+            {userGroups && userGroups.length > 0 && (
+              <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
+                <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+                  {getLanguageByKey("User Groups") || "User Groups"}
+                </Text>
+                <Stack gap="md">
+                  {userGroups.map((ug, ugIndex) => {
+                    // Обрабатываем статистику группы
+                    const groupStats = (() => {
+                      if (!ug.stats || typeof ug.stats !== "object") return { olderThan11Days: 0, newerThan11Days: 0, totalClosedTickets: 0 };
+                      if (Array.isArray(ug.stats)) return { olderThan11Days: 0, newerThan11Days: 0, totalClosedTickets: 0 };
+                      const olderThan11DaysObj = ug.stats.older_than_11_days;
+                      const newerThan11DaysObj = ug.stats.newer_than_11_days;
+                      return {
+                        olderThan11Days: olderThan11DaysObj && typeof olderThan11DaysObj === "object" ? (Number.isFinite(olderThan11DaysObj.count) ? olderThan11DaysObj.count : 0) : 0,
+                        newerThan11Days: newerThan11DaysObj && typeof newerThan11DaysObj === "object" ? (Number.isFinite(newerThan11DaysObj.count) ? newerThan11DaysObj.count : 0) : 0,
+                        totalClosedTickets: Number.isFinite(ug.total_closed_tickets_count) ? ug.total_closed_tickets_count : 0,
+                      };
+                    })();
+
+                    if (groupStats.totalClosedTickets === 0) return null;
+
+                    return (
+                      <Box key={`ug-${ugIndex}`}>
+                        <Text fw={600} size="sm" mb="xs" c="dark">
+                          {ug.userGroupName || "-"}
+                        </Text>
+                        <Stack gap="xs">
+                          <Group justify="space-between" align="center">
+                            <Text size="xs" c="dimmed" fw={500}>
+                              {getLanguageByKey("Total closed tickets")}
+                            </Text>
+                            <Text fw={700} size="sm" c={colors.total}>
+                              {fmt(groupStats.totalClosedTickets)}
+                            </Text>
+                          </Group>
+                          <Group justify="space-between" align="center">
+                            <Group gap="xs" align="center">
+                              {OlderIconNode}
+                              <Text size="xs" c={colors.older}>
+                                {getLanguageByKey("Older than 11 days")}
+                              </Text>
+                            </Group>
+                            <Text size="xs" c={colors.older}>
+                              {fmt(groupStats.olderThan11Days)}
+                            </Text>
+                          </Group>
+                          <Group justify="space-between" align="center">
+                            <Group gap="xs" align="center">
+                              {NewerIconNode}
+                              <Text size="xs" c={colors.newer}>
+                                {getLanguageByKey("Newer than 11 days")}
+                              </Text>
+                            </Group>
+                            <Text size="xs" c={colors.newer}>
+                              {fmt(groupStats.newerThan11Days)}
+                            </Text>
+                          </Group>
+                        </Stack>
+                      </Box>
+                    );
+                  })}
+                </Stack>
+              </Box>
+            )}
+
+            {/* Вложенные пользователи (для by_user_group) */}
+            {userTechnicians && userTechnicians.length > 0 && (
+              <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
+                <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+                  {getLanguageByKey("Users") || "Users"}
+                </Text>
+                <Stack gap="md">
+                  {userTechnicians.map((ut, utIndex) => {
+                    // Обрабатываем статистику пользователя
+                    const userStats = (() => {
+                      if (!ut.stats || typeof ut.stats !== "object") return { olderThan11Days: 0, newerThan11Days: 0, totalClosedTickets: 0 };
+                      if (Array.isArray(ut.stats)) return { olderThan11Days: 0, newerThan11Days: 0, totalClosedTickets: 0 };
+                      const olderThan11DaysObj = ut.stats.older_than_11_days;
+                      const newerThan11DaysObj = ut.stats.newer_than_11_days;
+                      return {
+                        olderThan11Days: olderThan11DaysObj && typeof olderThan11DaysObj === "object" ? (Number.isFinite(olderThan11DaysObj.count) ? olderThan11DaysObj.count : 0) : 0,
+                        newerThan11Days: newerThan11DaysObj && typeof newerThan11DaysObj === "object" ? (Number.isFinite(newerThan11DaysObj.count) ? newerThan11DaysObj.count : 0) : 0,
+                        totalClosedTickets: Number.isFinite(ut.total_closed_tickets_count) ? ut.total_closed_tickets_count : 0,
+                      };
+                    })();
+
+                    if (userStats.totalClosedTickets === 0) return null;
+
+                    return (
+                      <Box key={`ut-${utIndex}`}>
+                        <Text fw={600} size="sm" mb="xs" c="dark">
+                          {ut.userName || `ID ${ut.userId}`}
+                        </Text>
+                        <Stack gap="xs">
+                          <Group justify="space-between" align="center">
+                            <Text size="xs" c="dimmed" fw={500}>
+                              {getLanguageByKey("Total closed tickets")}
+                            </Text>
+                            <Text fw={700} size="sm" c={colors.total}>
+                              {fmt(userStats.totalClosedTickets)}
+                            </Text>
+                          </Group>
+                          <Group justify="space-between" align="center">
+                            <Group gap="xs" align="center">
+                              {OlderIconNode}
+                              <Text size="xs" c={colors.older}>
+                                {getLanguageByKey("Older than 11 days")}
+                              </Text>
+                            </Group>
+                            <Text size="xs" c={colors.older}>
+                              {fmt(userStats.olderThan11Days)}
+                            </Text>
+                          </Group>
+                          <Group justify="space-between" align="center">
+                            <Group gap="xs" align="center">
+                              {NewerIconNode}
+                              <Text size="xs" c={colors.newer}>
+                                {getLanguageByKey("Newer than 11 days")}
+                              </Text>
+                            </Group>
+                            <Text size="xs" c={colors.newer}>
+                              {fmt(userStats.newerThan11Days)}
+                            </Text>
+                          </Group>
+                        </Stack>
+                      </Box>
+                    );
+                  })}
+                </Stack>
+              </Box>
+            )}
           </Stack>
-        </Group>
-
-        <Group justify="space-between" align="center">
-          <Group gap="xs" align="center">
-            {OlderIconNode}
-            <Text size="sm" c={colors.older}>
-              {getLanguageByKey("Older than 11 days")}
-            </Text>
-          </Group>
-          
-          <Text size="sm" c={colors.older}>
-            {fmt(olderThan11Days)}
-          </Text>
-        </Group>
-
-        <Group justify="space-between" align="center">
-          <Group gap="xs" align="center">
-            {NewerIconNode}
-            <Text size="sm" c={colors.newer}>
-              {getLanguageByKey("Newer than 11 days")}
-            </Text>
-          </Group>
-          
-          <Text size="sm" c={colors.newer}>
-            {fmt(newerThan11Days)}
-          </Text>
-        </Group>
+        </Box>
       </Stack>
     </Card>
   );

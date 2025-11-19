@@ -270,11 +270,41 @@ export const createTicketDistributionData = (obj) => ({
 /**
  * Создает данные для closed tickets count виджетов
  */
-export const createClosedTicketsCountData = (obj) => ({
-  olderThan11Days: pickNum(obj, ["older_than_11_days_count", "older_than_11_days", "older"]),
-  newerThan11Days: pickNum(obj, ["newer_than_11_days_count", "newer_than_11_days", "newer"]),
-  totalClosedTickets: pickNum(obj, ["total_closed_tickets_count", "total_closed_tickets", "total"]),
-});
+export const createClosedTicketsCountData = (obj) => {
+  // Проверяем, является ли это объектом со stats (новый формат)
+  // где stats содержит older_than_11_days и newer_than_11_days с time_range и count
+  const totalClosedTickets = pickNum(obj, ["total_closed_tickets_count", "total_closed_tickets", "total"]) || 0;
+  const statsSource = obj?.stats ?? obj;
+
+  // Если это объект, где есть stats с временными диапазонами
+  if (statsSource && typeof statsSource === "object" && !Array.isArray(statsSource)) {
+    const olderThan11DaysObj = statsSource.older_than_11_days;
+    const newerThan11DaysObj = statsSource.newer_than_11_days;
+
+    const olderThan11Days = olderThan11DaysObj && typeof olderThan11DaysObj === "object"
+      ? (pickNum(olderThan11DaysObj, ["count", "value", "total"]) || 0)
+      : 0;
+    
+    const newerThan11Days = newerThan11DaysObj && typeof newerThan11DaysObj === "object"
+      ? (pickNum(newerThan11DaysObj, ["count", "value", "total"]) || 0)
+      : 0;
+
+    return {
+      olderThan11Days,
+      newerThan11Days,
+      totalClosedTickets: totalClosedTickets || (olderThan11Days + newerThan11Days),
+    };
+  }
+
+  // Старый формат или прямой доступ
+  const olderThan11Days = pickNum(obj, ["older_than_11_days_count", "older_than_11_days", "older"]) || 0;
+  const newerThan11Days = pickNum(obj, ["newer_than_11_days_count", "newer_than_11_days", "newer"]) || 0;
+  return {
+    olderThan11Days,
+    newerThan11Days,
+    totalClosedTickets: totalClosedTickets || (olderThan11Days + newerThan11Days),
+  };
+};
 
 /**
  * Создает данные для tickets by depart count виджетов

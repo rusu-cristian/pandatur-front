@@ -243,10 +243,12 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     olderThan11Days={Number.isFinite(w.olderThan11Days) ? w.olderThan11Days : 0}
                                     newerThan11Days={Number.isFinite(w.newerThan11Days) ? w.newerThan11Days : 0}
                                     totalClosedTickets={Number.isFinite(w.totalClosedTickets) ? w.totalClosedTickets : 0}
-                                    dateRange={dateRange}
-                                    sizeInfo={sizeInfo}
                                     bg={w.bg}
+                                    width={w.w}
+                                    height={w.h}
                                     widgetType={w.type}
+                                    userGroups={w.userGroups || []}
+                                    userTechnicians={w.userTechnicians || []}
                                 />
                             </Box>,
                             w.id
