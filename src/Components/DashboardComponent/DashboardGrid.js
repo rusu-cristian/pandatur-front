@@ -567,7 +567,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                     // Остальные виджеты используют TotalCard
                     return renderWidgetWrapper(
                         <Box style={{ height: "100%" }}>
-                                <TotalCard
+                            <TotalCard
                                 title={w.title}
                                 subtitle={w.subtitle}
                                 totalAll={Number.isFinite(w.total) ? w.total : 0}
@@ -576,7 +576,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                 dateRange={dateRange}
                                 sizeInfo={sizeInfo}
                                 bg={w.bg}
-                                    widgetType={currentWidgetType}
+                                widgetType={currentWidgetType}
                             />
                         </Box>,
                         w.id
