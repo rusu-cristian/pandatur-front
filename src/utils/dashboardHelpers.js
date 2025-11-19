@@ -279,13 +279,49 @@ export const createClosedTicketsCountData = (obj) => ({
 /**
  * Создает данные для tickets by depart count виджетов
  */
-export const createTicketsByDepartCountData = (obj) => ({
-  lessThan14Days: pickNum(obj, ["less_than_14_days_count", "less_than_14_days", "less_14"]),
-  between14And30Days: pickNum(obj, ["between_14_30_days_count", "between_14_30_days", "between_14_30"]),
-  moreThan30Days: pickNum(obj, ["more_than_30_days_count", "more_than_30_days", "more_30"]),
-  totalTickets: pickNum(obj, ["total_tickets_count", "total_tickets", "total"]) ||
-    (pickNum(obj, ["less_than_14_days_count"]) + pickNum(obj, ["between_14_30_days_count"]) + pickNum(obj, ["more_than_30_days_count"])),
-});
+export const createTicketsByDepartCountData = (obj) => {
+  // Проверяем, является ли это объектом со stats (новый формат)
+  // где stats содержит less_than_14_days, between_14_30_days, more_than_30_days с time_range и count
+  const statsSource = obj?.stats ?? obj;
+
+  // Если это объект, где есть stats с временными диапазонами
+  if (statsSource && typeof statsSource === "object" && !Array.isArray(statsSource)) {
+    const lessThan14DaysObj = statsSource.less_than_14_days;
+    const between14And30DaysObj = statsSource.between_14_30_days;
+    const moreThan30DaysObj = statsSource.more_than_30_days;
+
+    const lessThan14Days = lessThan14DaysObj && typeof lessThan14DaysObj === "object"
+      ? (pickNum(lessThan14DaysObj, ["count", "value", "total"]) || 0)
+      : 0;
+    
+    const between14And30Days = between14And30DaysObj && typeof between14And30DaysObj === "object"
+      ? (pickNum(between14And30DaysObj, ["count", "value", "total"]) || 0)
+      : 0;
+    
+    const moreThan30Days = moreThan30DaysObj && typeof moreThan30DaysObj === "object"
+      ? (pickNum(moreThan30DaysObj, ["count", "value", "total"]) || 0)
+      : 0;
+
+    return {
+      lessThan14Days,
+      between14And30Days,
+      moreThan30Days,
+      totalTickets: lessThan14Days + between14And30Days + moreThan30Days,
+    };
+  }
+
+  // Старый формат или прямой доступ
+  const lessThan14Days = pickNum(obj, ["less_than_14_days_count", "less_than_14_days", "less_14"]) || 0;
+  const between14And30Days = pickNum(obj, ["between_14_30_days_count", "between_14_30_days", "between_14_30"]) || 0;
+  const moreThan30Days = pickNum(obj, ["more_than_30_days_count", "more_than_30_days", "more_30"]) || 0;
+  return {
+    lessThan14Days,
+    between14And30Days,
+    moreThan30Days,
+    totalTickets: pickNum(obj, ["total_tickets_count", "total_tickets", "total"]) ||
+      (lessThan14Days + between14And30Days + moreThan30Days),
+  };
+};
 
 /**
  * Создает данные для ticket lifetime stats виджетов

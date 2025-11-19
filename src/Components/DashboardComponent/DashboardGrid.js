@@ -264,7 +264,11 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                                     moreThan30Days={Number.isFinite(w.moreThan30Days) ? w.moreThan30Days : 0}
                                     totalTickets={Number.isFinite(w.totalTickets) ? w.totalTickets : 0}
                                     bg={w.bg}
+                                    width={w.w}
+                                    height={w.h}
                                     widgetType={w.type}
+                                    userGroups={w.userGroups || []}
+                                    userTechnicians={w.userTechnicians || []}
                                 />
                             </Box>,
                             w.id
