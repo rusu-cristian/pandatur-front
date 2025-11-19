@@ -232,9 +232,13 @@ export const createGroupTitleWidgets = (data, widgetType, getLanguageByKey) => {
       const userGroups = (r.user_groups && Array.isArray(r.user_groups))
         ? r.user_groups.map(ug => ({
             userGroupName: ug.user_group_name ?? ug.user_group ?? "-",
-            incoming_calls_count: Number.isFinite(ug.incoming_calls_count) ? ug.incoming_calls_count : 0,
-            outgoing_calls_count: Number.isFinite(ug.outgoing_calls_count) ? ug.outgoing_calls_count : 0,
-            total_calls_count: Number.isFinite(ug.total_calls_count) ? ug.total_calls_count : 0,
+            // Для messages используем incoming_messages_count, для calls - incoming_calls_count
+            incoming_messages_count: widgetType === "messages" && Number.isFinite(ug.incoming_messages_count) ? ug.incoming_messages_count : 0,
+            outgoing_messages_count: widgetType === "messages" && Number.isFinite(ug.outgoing_messages_count) ? ug.outgoing_messages_count : 0,
+            total_messages_count: widgetType === "messages" && Number.isFinite(ug.total_messages_count) ? ug.total_messages_count : 0,
+            incoming_calls_count: widgetType === "calls" && Number.isFinite(ug.incoming_calls_count) ? ug.incoming_calls_count : 0,
+            outgoing_calls_count: widgetType === "calls" && Number.isFinite(ug.outgoing_calls_count) ? ug.outgoing_calls_count : 0,
+            total_calls_count: widgetType === "calls" && Number.isFinite(ug.total_calls_count) ? ug.total_calls_count : 0,
           }))
         : [];
 
@@ -623,9 +627,13 @@ export const createUserGroupWidgets = (data, widgetType, getLanguageByKey, userN
               userId: uid,
               userName,
               sipuniId: ut.sipuni_id || null,
-              incoming_calls_count: Number.isFinite(ut.incoming_calls_count) ? ut.incoming_calls_count : 0,
-              outgoing_calls_count: Number.isFinite(ut.outgoing_calls_count) ? ut.outgoing_calls_count : 0,
-              total_calls_count: Number.isFinite(ut.total_calls_count) ? ut.total_calls_count : 0,
+              // Для messages используем incoming_messages_count, для calls - incoming_calls_count
+              incoming_messages_count: widgetType === "messages" && Number.isFinite(ut.incoming_messages_count) ? ut.incoming_messages_count : 0,
+              outgoing_messages_count: widgetType === "messages" && Number.isFinite(ut.outgoing_messages_count) ? ut.outgoing_messages_count : 0,
+              total_messages_count: widgetType === "messages" && Number.isFinite(ut.total_messages_count) ? ut.total_messages_count : 0,
+              incoming_calls_count: widgetType === "calls" && Number.isFinite(ut.incoming_calls_count) ? ut.incoming_calls_count : 0,
+              outgoing_calls_count: widgetType === "calls" && Number.isFinite(ut.outgoing_calls_count) ? ut.outgoing_calls_count : 0,
+              total_calls_count: widgetType === "calls" && Number.isFinite(ut.total_calls_count) ? ut.total_calls_count : 0,
             };
           })
         : [];

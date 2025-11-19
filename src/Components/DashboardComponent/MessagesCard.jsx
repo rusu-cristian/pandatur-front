@@ -3,7 +3,7 @@ import {
     Card, Group, Stack, Text, Progress, Divider, Badge, ThemeIcon, Box, Flex
 } from "@mantine/core";
 import { getLanguageByKey } from "@utils";
-import { MdCall, MdCallReceived, MdCallMade, MdMessage, MdSend, MdTrendingUp, MdTrendingDown } from "react-icons/md";
+import { MdMessage, MdSend, MdTrendingUp, MdTrendingDown } from "react-icons/md";
 
 const fmt = (n) => (typeof n === "number" ? n.toLocaleString() : "-");
 const percent = (part, total) => {
@@ -18,34 +18,15 @@ const getTrendIcon = (value, previousValue) => {
     return null;
 };
 
-// Функция для получения цветовой схемы на основе типа виджета
-const getWidgetColors = (widgetType) => {
-    switch (widgetType) {
-        case "messages":
-            return {
-                in: "green",
-                out: "blue",
-                totalAccent: "teal",
-                bg: "linear-gradient(135deg, rgba(34,197,94,0.08), rgba(59,130,246,0.08))"
-            };
-        case "calls":
-            return {
-                in: "green",        // изменен с emerald на green для лучшей видимости
-                out: "blue",        // изменен с cyan на blue для лучшей видимости
-                totalAccent: "indigo",
-                bg: "linear-gradient(135deg, rgba(99,102,241,0.06), rgba(45,212,191,0.06))"
-            };
-        default:
-            return {
-                in: "teal",
-                out: "blue",
-                totalAccent: "indigo",
-                bg: "linear-gradient(135deg, rgba(99,102,241,0.06), rgba(45,212,191,0.06))"
-            };
-    }
+// Цветовая схема для виджетов сообщений
+const MESSAGES_COLORS = {
+    in: "green",
+    out: "blue",
+    totalAccent: "teal",
+    bg: "linear-gradient(135deg, rgba(34,197,94,0.08), rgba(59,130,246,0.08))"
 };
 
-export const TotalCard = ({
+export const MessagesCard = ({
     totalAll,
     totalIncoming,
     totalOutgoing,
@@ -53,10 +34,8 @@ export const TotalCard = ({
     subtitle,
     width,
     height,
-    colors,
-    icons = {},
     bg,
-    widgetType = "calls",
+    widgetType = "messages",
     previousData, // Для трендов в будущем
     userGroups = [], // Вложенные группы пользователей для by_group_title
     userTechnicians = [], // Вложенные пользователи для by_user_group
@@ -70,34 +49,9 @@ export const TotalCard = ({
     const subtitleSize = isVeryCompact ? "xs" : isCompact ? "sm" : "sm";
     const totalSize = isVeryCompact ? 24 : isCompact ? 32 : 42;
     const iconSize = isVeryCompact ? "md" : isCompact ? "lg" : "xl";
-    const callIconSize = isVeryCompact ? 14 : isCompact ? 16 : 20;
+    const messageIconSize = isVeryCompact ? 14 : isCompact ? 16 : 20;
     const inPct = percent(totalIncoming, totalAll);
     const outPct = percent(totalOutgoing, totalAll);
-
-    // Используем динамические цвета или переданные
-    const widgetColors = colors || getWidgetColors(widgetType);
-
-    // Выбираем иконки в зависимости от типа виджета
-    const getDefaultIcons = (type) => {
-        if (type === "messages") {
-            return {
-                total: <MdMessage size={20} />,
-                incoming: <MdMessage size={16} />,
-                outgoing: <MdSend size={16} />
-            };
-        }
-        // По умолчанию для calls
-        return {
-            total: <MdCall size={20} />,
-            incoming: <MdCallReceived size={16} />,
-            outgoing: <MdCallMade size={16} />
-        };
-    };
-
-    const defaultIcons = getDefaultIcons(widgetType);
-    const TotalIconNode = icons.total ?? defaultIcons.total;
-    const IncomingIconNode = icons.incoming ?? defaultIcons.incoming;
-    const OutgoingIconNode = icons.outgoing ?? defaultIcons.outgoing;
 
     return (
         <Card
@@ -122,13 +76,13 @@ export const TotalCard = ({
                                 size={iconSize}
                                 radius="xl"
                                 variant="gradient"
-                                gradient={{ from: widgetColors.totalAccent, to: widgetColors.totalAccent, deg: 45 }}
+                                gradient={{ from: MESSAGES_COLORS.totalAccent, to: MESSAGES_COLORS.totalAccent, deg: 45 }}
                             >
-                                {TotalIconNode}
+                                <MdMessage size={messageIconSize} />
                             </ThemeIcon>
                             <Box>
                                 <Text size={titleSize} c="dimmed" fw={700} tt="uppercase" style={{ letterSpacing: 0.8 }}>
-                                    {title || (widgetType === "messages" ? getLanguageByKey("Total messages for the period") : getLanguageByKey("Total calls for the period"))}
+                                    {title || getLanguageByKey("Total messages for the period")}
                                 </Text>
                                 {subtitle && (
                                     <Text size={subtitleSize} fw={600} c="dark" mt={2}>
@@ -140,18 +94,14 @@ export const TotalCard = ({
 
                         <Group gap={6} wrap="wrap" mt="xs">
                             <Badge variant="light" color="blue" size="sm">
-                                {widgetType === "messages" 
-                                    ? getLanguageByKey("Messages") 
-                                    : widgetType === "calls" 
-                                        ? getLanguageByKey("Calls") 
-                                        : getLanguageByKey(widgetType) || widgetType}
+                                {getLanguageByKey("Messages") || widgetType}
                             </Badge>
                         </Group>
                     </Flex>
 
                     <Box style={{ textAlign: "right" }}>
                         <Group gap="xs" align="center" justify="flex-end">
-                            <Text fz={totalSize} fw={900} style={{ lineHeight: 1, color: `var(--mantine-color-${widgetColors.totalAccent}-6)` }}>
+                            <Text fz={totalSize} fw={900} style={{ lineHeight: 1, color: `var(--mantine-color-${MESSAGES_COLORS.totalAccent}-6)` }}>
                                 {fmt(totalAll)}
                             </Text>
                             {getTrendIcon(totalAll, previousData?.totalAll)}
@@ -175,21 +125,21 @@ export const TotalCard = ({
                                         size={isVeryCompact ? "sm" : "md"}
                                         radius="lg"
                                         variant="light"
-                                        color={widgetColors.in}
-                                        style={{ border: `1px solid var(--mantine-color-${widgetColors.in}-3)` }}
+                                        color={MESSAGES_COLORS.in}
+                                        style={{ border: `1px solid var(--mantine-color-${MESSAGES_COLORS.in}-3)` }}
                                     >
-                                        {IncomingIconNode}
+                                        <MdMessage size={isVeryCompact ? 12 : 16} />
                                     </ThemeIcon>
-                                    <Text size={isVeryCompact ? "xs" : "sm"} fw={600} c={`${widgetColors.in}.7`}>
+                                    <Text size={isVeryCompact ? "xs" : "sm"} fw={600} c={`${MESSAGES_COLORS.in}.7`}>
                                         {getLanguageByKey("Incoming")}
                                     </Text>
                                 </Group>
                                 <Box style={{ textAlign: "right" }}>
-                                    <Text size={isVeryCompact ? "sm" : "lg"} fw={800} c={`${widgetColors.in}.6`}>
+                                    <Text size={isVeryCompact ? "sm" : "lg"} fw={800} c={`${MESSAGES_COLORS.in}.6`}>
                                         {fmt(totalIncoming)}
                                     </Text>
                                     <Text size="xs" c="dimmed">
-                                        {widgetType === "messages" ? getLanguageByKey("messages") : getLanguageByKey("calls")}
+                                        {getLanguageByKey("messages")}
                                     </Text>
                                 </Box>
                             </Flex>
@@ -197,9 +147,9 @@ export const TotalCard = ({
                                 value={inPct}
                                 size={isVeryCompact ? "xs" : "lg"}
                                 radius="xl"
-                                color={widgetColors.in}
+                                color={MESSAGES_COLORS.in}
                                 style={{
-                                    backgroundColor: `var(--mantine-color-${widgetColors.in}-1)`
+                                    backgroundColor: `var(--mantine-color-${MESSAGES_COLORS.in}-1)`
                                 }}
                             />
                         </Box>
@@ -212,21 +162,21 @@ export const TotalCard = ({
                                         size={isVeryCompact ? "sm" : "md"}
                                         radius="lg"
                                         variant="light"
-                                        color={widgetColors.out}
-                                        style={{ border: `1px solid var(--mantine-color-${widgetColors.out}-3)` }}
+                                        color={MESSAGES_COLORS.out}
+                                        style={{ border: `1px solid var(--mantine-color-${MESSAGES_COLORS.out}-3)` }}
                                     >
-                                        {OutgoingIconNode}
+                                        <MdSend size={isVeryCompact ? 12 : 16} />
                                     </ThemeIcon>
-                                    <Text size={isVeryCompact ? "xs" : "sm"} fw={600} c={`${widgetColors.out}.7`}>
+                                    <Text size={isVeryCompact ? "xs" : "sm"} fw={600} c={`${MESSAGES_COLORS.out}.7`}>
                                         {getLanguageByKey("Outgoing")}
                                     </Text>
                                 </Group>
                                 <Box style={{ textAlign: "right" }}>
-                                    <Text size={isVeryCompact ? "sm" : "lg"} fw={800} c={`${widgetColors.out}.6`}>
+                                    <Text size={isVeryCompact ? "sm" : "lg"} fw={800} c={`${MESSAGES_COLORS.out}.6`}>
                                         {fmt(totalOutgoing)}
                                     </Text>
                                     <Text size="xs" c="dimmed">
-                                        {widgetType === "messages" ? getLanguageByKey("messages") : getLanguageByKey("calls")}
+                                        {getLanguageByKey("messages")}
                                     </Text>
                                 </Box>
                             </Flex>
@@ -234,9 +184,9 @@ export const TotalCard = ({
                                 value={outPct}
                                 size={isVeryCompact ? "xs" : "lg"}
                                 radius="xl"
-                                color={widgetColors.out}
+                                color={MESSAGES_COLORS.out}
                                 style={{
-                                    backgroundColor: `var(--mantine-color-${widgetColors.out}-1)`
+                                    backgroundColor: `var(--mantine-color-${MESSAGES_COLORS.out}-1)`
                                 }}
                             />
                         </Box>
@@ -249,9 +199,9 @@ export const TotalCard = ({
                                 </Text>
                                 <Stack gap="md">
                                     {userGroups.map((ug, ugIndex) => {
-                                        const groupIncoming = Number.isFinite(ug.incoming_messages_count) ? ug.incoming_messages_count : (Number.isFinite(ug.incoming_calls_count) ? ug.incoming_calls_count : 0);
-                                        const groupOutgoing = Number.isFinite(ug.outgoing_messages_count) ? ug.outgoing_messages_count : (Number.isFinite(ug.outgoing_calls_count) ? ug.outgoing_calls_count : 0);
-                                        const groupTotal = Number.isFinite(ug.total_messages_count) ? ug.total_messages_count : (Number.isFinite(ug.total_calls_count) ? ug.total_calls_count : 0);
+                                        const groupIncoming = Number.isFinite(ug.incoming_messages_count) ? ug.incoming_messages_count : 0;
+                                        const groupOutgoing = Number.isFinite(ug.outgoing_messages_count) ? ug.outgoing_messages_count : 0;
+                                        const groupTotal = Number.isFinite(ug.total_messages_count) ? ug.total_messages_count : 0;
                                         if (groupTotal === 0) return null;
 
                                         const groupInPct = percent(groupIncoming, groupTotal);
@@ -270,15 +220,15 @@ export const TotalCard = ({
                                                                 size="xs"
                                                                 radius="lg"
                                                                 variant="light"
-                                                                color={widgetColors.in}
+                                                                color={MESSAGES_COLORS.in}
                                                             >
-                                                                {IncomingIconNode}
+                                                                <MdMessage size={10} />
                                                             </ThemeIcon>
-                                                            <Text size="xs" fw={600} c={`${widgetColors.in}.7`}>
+                                                            <Text size="xs" fw={600} c={`${MESSAGES_COLORS.in}.7`}>
                                                                 {getLanguageByKey("Incoming")}
                                                             </Text>
                                                         </Group>
-                                                        <Text size="xs" fw={700} c={`${widgetColors.in}.6`}>
+                                                        <Text size="xs" fw={700} c={`${MESSAGES_COLORS.in}.6`}>
                                                             {fmt(groupIncoming)}
                                                         </Text>
                                                     </Flex>
@@ -286,7 +236,7 @@ export const TotalCard = ({
                                                         value={groupInPct}
                                                         size="xs"
                                                         radius="xl"
-                                                        color={widgetColors.in}
+                                                        color={MESSAGES_COLORS.in}
                                                     />
                                                     {/* Outgoing для группы */}
                                                     <Flex justify="space-between" align="center">
@@ -295,15 +245,15 @@ export const TotalCard = ({
                                                                 size="xs"
                                                                 radius="lg"
                                                                 variant="light"
-                                                                color={widgetColors.out}
+                                                                color={MESSAGES_COLORS.out}
                                                             >
-                                                                {OutgoingIconNode}
+                                                                <MdSend size={10} />
                                                             </ThemeIcon>
-                                                            <Text size="xs" fw={600} c={`${widgetColors.out}.7`}>
+                                                            <Text size="xs" fw={600} c={`${MESSAGES_COLORS.out}.7`}>
                                                                 {getLanguageByKey("Outgoing")}
                                                             </Text>
                                                         </Group>
-                                                        <Text size="xs" fw={700} c={`${widgetColors.out}.6`}>
+                                                        <Text size="xs" fw={700} c={`${MESSAGES_COLORS.out}.6`}>
                                                             {fmt(groupOutgoing)}
                                                         </Text>
                                                     </Flex>
@@ -311,7 +261,7 @@ export const TotalCard = ({
                                                         value={groupOutPct}
                                                         size="xs"
                                                         radius="xl"
-                                                        color={widgetColors.out}
+                                                        color={MESSAGES_COLORS.out}
                                                     />
                                                 </Stack>
                                             </Box>
@@ -329,9 +279,9 @@ export const TotalCard = ({
                                 </Text>
                                 <Stack gap="md">
                                     {userTechnicians.map((ut, utIndex) => {
-                                        const userIncoming = Number.isFinite(ut.incoming_messages_count) ? ut.incoming_messages_count : (Number.isFinite(ut.incoming_calls_count) ? ut.incoming_calls_count : 0);
-                                        const userOutgoing = Number.isFinite(ut.outgoing_messages_count) ? ut.outgoing_messages_count : (Number.isFinite(ut.outgoing_calls_count) ? ut.outgoing_calls_count : 0);
-                                        const userTotal = Number.isFinite(ut.total_messages_count) ? ut.total_messages_count : (Number.isFinite(ut.total_calls_count) ? ut.total_calls_count : 0);
+                                        const userIncoming = Number.isFinite(ut.incoming_messages_count) ? ut.incoming_messages_count : 0;
+                                        const userOutgoing = Number.isFinite(ut.outgoing_messages_count) ? ut.outgoing_messages_count : 0;
+                                        const userTotal = Number.isFinite(ut.total_messages_count) ? ut.total_messages_count : 0;
                                         if (userTotal === 0) return null;
 
                                         const userInPct = percent(userIncoming, userTotal);
@@ -355,15 +305,15 @@ export const TotalCard = ({
                                                                 size="xs"
                                                                 radius="lg"
                                                                 variant="light"
-                                                                color={widgetColors.in}
+                                                                color={MESSAGES_COLORS.in}
                                                             >
-                                                                {IncomingIconNode}
+                                                                <MdMessage size={10} />
                                                             </ThemeIcon>
-                                                            <Text size="xs" fw={600} c={`${widgetColors.in}.7`}>
+                                                            <Text size="xs" fw={600} c={`${MESSAGES_COLORS.in}.7`}>
                                                                 {getLanguageByKey("Incoming")}
                                                             </Text>
                                                         </Group>
-                                                        <Text size="xs" fw={700} c={`${widgetColors.in}.6`}>
+                                                        <Text size="xs" fw={700} c={`${MESSAGES_COLORS.in}.6`}>
                                                             {fmt(userIncoming)}
                                                         </Text>
                                                     </Flex>
@@ -371,7 +321,7 @@ export const TotalCard = ({
                                                         value={userInPct}
                                                         size="xs"
                                                         radius="xl"
-                                                        color={widgetColors.in}
+                                                        color={MESSAGES_COLORS.in}
                                                     />
                                                     {/* Outgoing для пользователя */}
                                                     <Flex justify="space-between" align="center">
@@ -380,15 +330,15 @@ export const TotalCard = ({
                                                                 size="xs"
                                                                 radius="lg"
                                                                 variant="light"
-                                                                color={widgetColors.out}
+                                                                color={MESSAGES_COLORS.out}
                                                             >
-                                                                {OutgoingIconNode}
+                                                                <MdSend size={10} />
                                                             </ThemeIcon>
-                                                            <Text size="xs" fw={600} c={`${widgetColors.out}.7`}>
+                                                            <Text size="xs" fw={600} c={`${MESSAGES_COLORS.out}.7`}>
                                                                 {getLanguageByKey("Outgoing")}
                                                             </Text>
                                                         </Group>
-                                                        <Text size="xs" fw={700} c={`${widgetColors.out}.6`}>
+                                                        <Text size="xs" fw={700} c={`${MESSAGES_COLORS.out}.6`}>
                                                             {fmt(userOutgoing)}
                                                         </Text>
                                                     </Flex>
@@ -396,7 +346,7 @@ export const TotalCard = ({
                                                         value={userOutPct}
                                                         size="xs"
                                                         radius="xl"
-                                                        color={widgetColors.out}
+                                                        color={MESSAGES_COLORS.out}
                                                     />
                                                 </Stack>
                                             </Box>
@@ -411,3 +361,4 @@ export const TotalCard = ({
         </Card>
     );
 };
+
