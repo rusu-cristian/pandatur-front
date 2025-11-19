@@ -32,7 +32,7 @@ export const TicketStateCard = ({
 
     const cardPadding = isVeryCompact ? "xs" : isCompact ? "sm" : "lg";
     const titleSize = isVeryCompact ? "xs" : isCompact ? "xs" : "xs";
-    const subtitleSize = isVeryCompact ? "xs" : isCompact ? "sm" : "sm";
+    const subtitleSize = "md"
     const totalSize = isVeryCompact ? 24 : isCompact ? 32 : 38;
     const iconSize = isVeryCompact ? "md" : isCompact ? "lg" : "lg";
     const totalIconSize = isVeryCompact ? 14 : isCompact ? 16 : 18;
@@ -87,7 +87,7 @@ export const TicketStateCard = ({
                         <Text fz={totalSize} fw={900} style={{ lineHeight: 1 }}>
                             {fmt(totalTickets)}
                         </Text>
-                        <Text size="xs" c="dimmed" fw={500}>
+                        <Text size="md" c="dimmed" fw={500}>
                             {getLanguageByKey("Total tickets")}
                         </Text>
                     </Box>
@@ -111,7 +111,7 @@ export const TicketStateCard = ({
                                 </Group>
                                 <Box style={{ textAlign: "right" }}>
                                     <Text size={isVeryCompact ? "xs" : "sm"} fw={700}>{fmt(oldClientTickets)}</Text>
-                                    <Text size="xs" c="dimmed">{getLanguageByKey("tickets")}</Text>
+                                    <Text size="md" c="dimmed">{getLanguageByKey("tickets")}</Text>
                                 </Box>
                             </Flex>
                             <Progress
@@ -135,7 +135,7 @@ export const TicketStateCard = ({
                                 </Group>
                                 <Box style={{ textAlign: "right" }}>
                                     <Text size={isVeryCompact ? "xs" : "sm"} fw={700}>{fmt(newClientTickets)}</Text>
-                                    <Text size="xs" c="dimmed">{getLanguageByKey("tickets")}</Text>
+                                    <Text size="md" c="dimmed">{getLanguageByKey("tickets")}</Text>
                                 </Box>
                             </Flex>
                             <Progress
@@ -149,7 +149,7 @@ export const TicketStateCard = ({
                         {/* Вложенные группы пользователей (для by_group_title) */}
                         {userGroups && userGroups.length > 0 && (
                             <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
-                                <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+                                <Text size="md" fw={700} c="dimmed" mb="sm" tt="uppercase">
                                     {getLanguageByKey("User Groups") || "User Groups"}
                                 </Text>
                                 <Stack gap="md">
@@ -164,7 +164,7 @@ export const TicketStateCard = ({
 
                                         return (
                                             <Box key={`ug-${ugIndex}`}>
-                                                <Text fw={600} size="sm" mb="xs" c="dark">
+                                                <Text fw={600} size="md" mb="xs" c="dark">
                                                     {ug.userGroupName || "-"}
                                                 </Text>
                                                 <Stack gap="xs">
@@ -179,11 +179,11 @@ export const TicketStateCard = ({
                                                             >
                                                                 <FaUser size={10} />
                                                             </ThemeIcon>
-                                                            <Text size="xs" fw={600} c={`${colors.old}.7`}>
+                                                            <Text size="md" fw={600} c={`${colors.old}.7`}>
                                                                 {getLanguageByKey("Old Clients")}
                                                             </Text>
                                                         </Group>
-                                                        <Text size="xs" fw={700} c={`${colors.old}.6`}>
+                                                        <Text size="md" fw={700} c={`${colors.old}.6`}>
                                                             {fmt(groupOld)}
                                                         </Text>
                                                     </Flex>
@@ -204,11 +204,11 @@ export const TicketStateCard = ({
                                                             >
                                                                 <FaUserPlus size={10} />
                                                             </ThemeIcon>
-                                                            <Text size="xs" fw={600} c={`${colors.new}.7`}>
+                                                            <Text size="md" fw={600} c={`${colors.new}.7`}>
                                                                 {getLanguageByKey("New Clients")}
                                                             </Text>
                                                         </Group>
-                                                        <Text size="xs" fw={700} c={`${colors.new}.6`}>
+                                                        <Text size="md" fw={700} c={`${colors.new}.6`}>
                                                             {fmt(groupNew)}
                                                         </Text>
                                                     </Flex>
@@ -229,7 +229,7 @@ export const TicketStateCard = ({
                         {/* Вложенные пользователи (для by_user_group) */}
                         {userTechnicians && userTechnicians.length > 0 && (
                             <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
-                                <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+                                <Text size="md" fw={700} c="dimmed" mb="sm" tt="uppercase">
                                     {getLanguageByKey("Users") || "Users"}
                                 </Text>
                                 <Stack gap="md">
@@ -244,10 +244,10 @@ export const TicketStateCard = ({
 
                                         return (
                                             <Box key={`ut-${utIndex}`}>
-                                                <Text fw={600} size="sm" mb="xs" c="dark">
+                                                <Text fw={600} size="md" mb="xs" c="dark">
                                                     {ut.userName || `ID ${ut.userId}`}
                                                     {ut.sipuniId && (
-                                                        <Text component="span" size="xs" c="dimmed" ml="xs">
+                                                        <Text component="span" size="md" c="dimmed" ml="xs">
                                                             ({ut.sipuniId})
                                                         </Text>
                                                     )}
@@ -264,11 +264,11 @@ export const TicketStateCard = ({
                                                             >
                                                                 <FaUser size={10} />
                                                             </ThemeIcon>
-                                                            <Text size="xs" fw={600} c={`${colors.old}.7`}>
+                                                            <Text size="md" fw={600} c={`${colors.old}.7`}>
                                                                 {getLanguageByKey("Old Clients")}
                                                             </Text>
                                                         </Group>
-                                                        <Text size="xs" fw={700} c={`${colors.old}.6`}>
+                                                        <Text size="md" fw={700} c={`${colors.old}.6`}>
                                                             {fmt(userOld)}
                                                         </Text>
                                                     </Flex>
@@ -289,11 +289,11 @@ export const TicketStateCard = ({
                                                             >
                                                                 <FaUserPlus size={10} />
                                                             </ThemeIcon>
-                                                            <Text size="xs" fw={600} c={`${colors.new}.7`}>
+                                                            <Text size="md" fw={600} c={`${colors.new}.7`}>
                                                                 {getLanguageByKey("New Clients")}
                                                             </Text>
                                                         </Group>
-                                                        <Text size="xs" fw={700} c={`${colors.new}.6`}>
+                                                        <Text size="md" fw={700} c={`${colors.new}.6`}>
                                                             {fmt(userNew)}
                                                         </Text>
                                                     </Flex>
