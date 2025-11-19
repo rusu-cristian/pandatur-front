@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Text, Group, Stack, Box, Badge } from "@mantine/core";
+import { Card, Text, Group, Stack, Box, Badge, Divider } from "@mantine/core";
 import { FaShare, FaTicketAlt } from "react-icons/fa";
 import { getLanguageByKey } from "@utils";
 
@@ -164,6 +164,7 @@ export const TicketDistributionCard = ({
                             </Text>
                           </Group>
                         </Stack>
+                        <Divider my="xs" />
                       </Box>
                     );
                   })}
