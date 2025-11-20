@@ -63,6 +63,40 @@ const WIDGET_API_MAP = {
 
 const MAX_VISIBLE_WIDGET_TAGS = 2;
 
+// Ключ для localStorage
+const STORAGE_KEY = "dashboard_filters";
+
+// Загрузка данных из localStorage
+const loadFromStorage = () => {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (!stored) return null;
+    const parsed = JSON.parse(stored);
+    // Преобразуем даты обратно в Date объекты
+    if (parsed.dateRange && Array.isArray(parsed.dateRange)) {
+      parsed.dateRange = parsed.dateRange.map((dateStr) => (dateStr ? new Date(dateStr) : null)).filter(Boolean);
+    }
+    return parsed;
+  } catch (e) {
+    console.warn("Ошибка загрузки из localStorage:", e);
+    return null;
+  }
+};
+
+// Сохранение данных в localStorage
+const saveToStorage = (data) => {
+  try {
+    // Преобразуем даты в строки для сериализации
+    const toSave = {
+      ...data,
+      dateRange: data.dateRange?.map((date) => (date instanceof Date ? date.toISOString() : date)),
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+  } catch (e) {
+    console.warn("Ошибка сохранения в localStorage:", e);
+  }
+};
+
 const WidgetTypeMultiValue = (props) => {
   const values = Array.isArray(props.selectProps?.value) ? props.selectProps.value : [];
   const remaining = values.length - MAX_VISIBLE_WIDGET_TAGS;
@@ -91,14 +125,17 @@ export const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [scrollHeight, setScrollHeight] = useState(400);
 
+  // Загружаем данные из localStorage при инициализации
+  const storedData = useMemo(() => loadFromStorage(), []);
+
   // типы виджетов
-  const [widgetTypes, setWidgetTypes] = useState(["calls"]);
+  const [widgetTypes, setWidgetTypes] = useState(storedData?.widgetTypes || ["calls"]);
 
   // состояние фильтра
-  const [selectedTechnicians, setSelectedTechnicians] = useState([]);
-  const [selectedUserGroups, setSelectedUserGroups] = useState([]);
-  const [selectedGroupTitles, setSelectedGroupTitles] = useState([]);
-  const [dateRange, setDateRange] = useState([]);
+  const [selectedTechnicians, setSelectedTechnicians] = useState(storedData?.selectedTechnicians || []);
+  const [selectedUserGroups, setSelectedUserGroups] = useState(storedData?.selectedUserGroups || []);
+  const [selectedGroupTitles, setSelectedGroupTitles] = useState(storedData?.selectedGroupTitles || []);
+  const [dateRange, setDateRange] = useState(storedData?.dateRange || []);
 
   const [filterOpened, setFilterOpened] = useState(false);
 
@@ -231,6 +268,16 @@ export const Dashboard = () => {
     };
   }, [recalcSizes]);
 
+  // Сохранение параметров фильтрации и типов виджетов в localStorage
+  useEffect(() => {
+    saveToStorage({
+      widgetTypes,
+      selectedTechnicians,
+      selectedUserGroups,
+      selectedGroupTitles,
+      dateRange,
+    });
+  }, [widgetTypes, selectedTechnicians, selectedUserGroups, selectedGroupTitles, dateRange]);
 
   // построение списка виджетов
   const widgets = useDashboardData(rawData, userNameById, widgetTypes, getLanguageByKey);
