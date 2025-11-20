@@ -88,9 +88,9 @@ export const TopUsersCard = ({
     const isCompact = width < 40 || height < 15;
     const isVeryCompact = width < 30 || height < 12;
     
-    const cardPadding = isVeryCompact ? "xs" : isCompact ? "sm" : "lg";
-    const titleSize = isVeryCompact ? "xs" : isCompact ? "sm" : "xs";
-    const subtitleSize = isVeryCompact ? "xs" : isCompact ? "sm" : "sm";
+    const cardPadding = isVeryCompact ? "md" : isCompact ? "sm" : "lg";
+    const titleSize = isVeryCompact ? "md" : isCompact ? "sm" : "md";
+    const subtitleSize = isVeryCompact ? "md" : isCompact ? "sm" : "sm";
     const iconSize = isVeryCompact ? 14 : isCompact ? 16 : 18;
     const themeIconSize = isVeryCompact ? "md" : isCompact ? "lg" : "lg";
     const limitCount = 100;
@@ -209,7 +209,7 @@ export const TopUsersCard = ({
                             {title}
                         </Text>
                         <Group gap={6} wrap="wrap" mt={4}>
-                            <Badge variant="light" color="blue" size={isVeryCompact ? "xs" : "sm"}>
+                            <Badge variant="light" color="blue" size={isVeryCompact ? "md" : "sm"}>
                                 {widgetType === "calls" 
                                     ? getLanguageByKey("Calls") 
                                     : widgetType === "messages"
@@ -244,7 +244,7 @@ export const TopUsersCard = ({
                                     ? getLanguageByKey("Ticket Destination")
                                     : getLanguageByKey(widgetType) || widgetType || "Top users"}
                             </Badge>
-                            {subtitle ? <Badge variant="light" size={isVeryCompact ? "xs" : "sm"}>{subtitle}</Badge> : null}
+                            {subtitle ? <Badge variant="light" size={isVeryCompact ? "md" : "sm"}>{subtitle}</Badge> : null}
                         </Group>
                     </div>
                 </Group>
@@ -259,7 +259,7 @@ export const TopUsersCard = ({
                                 : fmt(data.reduce((sum, u) => sum + (u.total || 0), 0))
                             }
                         </Text>
-                        <Text size="xs" c="dimmed" fw={500}>
+                        <Text size="md" c="dimmed" fw={500}>
                             {widgetType === "ticket_state" 
                                 ? getLanguageByKey("Total tickets") 
                                 : widgetType === "tickets_into_work"
@@ -301,7 +301,7 @@ export const TopUsersCard = ({
                     return (
                         <Box key={u.user_id ?? idx}>
                             <Group justify="space-between" align="center" mb={6} wrap="nowrap">
-                                <Group gap="xs" align="center" wrap="nowrap">
+                                <Group gap="md" align="center" wrap="nowrap">
                                     <Badge variant="light" radius="sm">{idx + 1}</Badge>
                                     <Text fw={600} size="sm" lineClamp={1}>
                                         {u.name || (Number.isFinite(Number(u.user_id)) ? `ID ${u.user_id}` : "-")}
@@ -316,7 +316,7 @@ export const TopUsersCard = ({
                                             : fmt(u.total)
                                         }
                                     </Text>
-                                    <Text size="xs" c="dimmed">
+                                    <Text size="md" c="dimmed">
                                         {widgetType === "ticket_state" 
                                             ? getLanguageByKey("tickets") 
                                             : widgetType === "tickets_into_work"

@@ -27,8 +27,8 @@ export const TicketsIntoWorkCard = ({
     const isCompact = width < 40 || height < 15;
     const isVeryCompact = width < 30 || height < 12;
 
-    const cardPadding = isVeryCompact ? "xs" : isCompact ? "sm" : "lg";
-    const titleSize = isVeryCompact ? "xs" : isCompact ? "xs" : "xs";
+    const cardPadding = isVeryCompact ? "md" : isCompact ? "sm" : "lg";
+    const titleSize = isVeryCompact ? "md" : isCompact ? "md" : "md";
     const totalSize = isVeryCompact ? 24 : isCompact ? 32 : 38;
     const TotalIconNode = icons.total ?? <FaBriefcase size={18} />;
 
@@ -48,9 +48,9 @@ export const TicketsIntoWorkCard = ({
                 borderColor: "var(--crm-ui-kit-palette-border-default)",
             }}
         >
-            <Stack gap={isVeryCompact ? "xs" : "sm"} style={{ flex: 1, height: "100%", minHeight: 0 }}>
+            <Stack gap={isVeryCompact ? "md" : "sm"} style={{ flex: 1, height: "100%", minHeight: 0 }}>
                 {/* Header */}
-                <Group justify="space-between" align="center" style={{ flexShrink: 0 }}>
+                <Group justify="space-between" align="center" style={{ flemdhrink: 0 }}>
                     <Group gap="sm" align="center">
                         <ThemeIcon size={isVeryCompact ? "md" : "lg"} radius="xl" variant="light" color={colors.totalAccent}>
                             {TotalIconNode}
@@ -64,7 +64,7 @@ export const TicketsIntoWorkCard = ({
                                 <Badge variant="light" color="blue" size="sm">
                                     {getLanguageByKey("Tickets Into Work") || widgetType || "Tickets Into Work"}
                                 </Badge>
-                                {subtitle ? <Badge variant="light" size={isVeryCompact ? "xs" : "sm"}>{subtitle}</Badge> : null}
+                                {subtitle ? <Badge variant="light" size={isVeryCompact ? "md" : "sm"}>{subtitle}</Badge> : null}
                             </Group>
                         </div>
                     </Group>
@@ -73,36 +73,36 @@ export const TicketsIntoWorkCard = ({
                         <Text fz={totalSize} fw={900} style={{ lineHeight: 1 }}>
                             {fmt(takenIntoWorkTickets)}
                         </Text>
-                        <Text size="xs" c="dimmed" fw={500}>
+                        <Text size="md" c="dimmed" fw={500}>
                             {getLanguageByKey("Tickets taken")}
                         </Text>
                     </div>
                 </Group>
 
-                <Divider my={isVeryCompact ? "xs" : "sm"} />
+                <Divider my={isVeryCompact ? "md" : "sm"} />
 
                 {/* Прокручиваемая область с контентом */}
                 <Box style={{ flex: 1, overflowY: "auto", overflowX: "hidden", minHeight: 0 }}>
-                    <Stack gap={isVeryCompact ? "xs" : "sm"}>
+                    <Stack gap={isVeryCompact ? "md" : "sm"}>
                         {/* Основная статистика */}
                         <Group justify="space-between" align="center">
                             <Group gap={8} align="center">
-                                <ThemeIcon size={isVeryCompact ? "xs" : "sm"} radius="xl" variant="light" color={colors.totalAccent}>
+                                <ThemeIcon size={isVeryCompact ? "md" : "sm"} radius="xl" variant="light" color={colors.totalAccent}>
                                     <FaTasks size={isVeryCompact ? 12 : 14} />
                                 </ThemeIcon>
-                                <Text size={isVeryCompact ? "xs" : "sm"} c={colors.totalAccent}>{getLanguageByKey("Taken into work")}</Text>
+                                <Text size={isVeryCompact ? "md" : "sm"} c={colors.totalAccent}>{getLanguageByKey("Taken into work")}</Text>
                             </Group>
                             <div style={{ textAlign: "right" }}>
-                                <Text size={isVeryCompact ? "xs" : "sm"} fw={700}>{fmt(takenIntoWorkTickets)}</Text>
-                                <Text size="xs" c="dimmed">{getLanguageByKey("tickets")}</Text>
+                                <Text size={isVeryCompact ? "md" : "sm"} fw={700}>{fmt(takenIntoWorkTickets)}</Text>
+                                <Text size="md" c="dimmed">{getLanguageByKey("tickets")}</Text>
                             </div>
                         </Group>
-                        <Progress value={100} size={isVeryCompact ? "xs" : "md"} radius="xl" color={colors.totalAccent} />
+                        <Progress value={100} size={isVeryCompact ? "md" : "md"} radius="xl" color={colors.totalAccent} />
 
                         {/* Вложенные группы пользователей (для by_group_title) */}
                         {userGroups && userGroups.length > 0 && (
                             <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
-                                <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+                                <Text size="md" fw={700} c="dimmed" mb="sm" tt="uppercase">
                                     {getLanguageByKey("User Groups") || "User Groups"}
                                 </Text>
                                 <Stack gap="md">
@@ -122,23 +122,23 @@ export const TicketsIntoWorkCard = ({
 
                                         return (
                                             <Box key={`ug-${ugIndex}`}>
-                                                <Text fw={600} size="sm" mb="xs" c="dark">
+                                                <Text fw={600} size="sm" mb="md" c="dark">
                                                     {ug.userGroupName || "-"}
                                                 </Text>
-                                                <Stack gap="xs">
+                                                <Stack gap="md">
                                                     <Group justify="space-between" align="center">
                                                         <Group gap={8} align="center">
-                                                            <ThemeIcon size="xs" radius="xl" variant="light" color={colors.totalAccent}>
+                                                            <ThemeIcon size="md" radius="xl" variant="light" color={colors.totalAccent}>
                                                                 <FaTasks size={10} />
                                                             </ThemeIcon>
-                                                            <Text size="xs" c={colors.totalAccent}>{getLanguageByKey("Taken into work")}</Text>
+                                                            <Text size="md" c={colors.totalAccent}>{getLanguageByKey("Taken into work")}</Text>
                                                         </Group>
                                                         <div style={{ textAlign: "right" }}>
-                                                            <Text size="xs" fw={700}>{fmt(groupCount)}</Text>
-                                                            <Text size="xs" c="dimmed">{getLanguageByKey("tickets")}</Text>
+                                                            <Text size="md" fw={700}>{fmt(groupCount)}</Text>
+                                                            <Text size="md" c="dimmed">{getLanguageByKey("tickets")}</Text>
                                                         </div>
                                                     </Group>
-                                                    <Progress value={100} size="xs" radius="xl" color={colors.totalAccent} />
+                                                    <Progress value={100} size="md" radius="xl" color={colors.totalAccent} />
                                                 </Stack>
                                             </Box>
                                         );
@@ -150,7 +150,7 @@ export const TicketsIntoWorkCard = ({
                         {/* Вложенные пользователи (для by_user_group) */}
                         {userTechnicians && userTechnicians.length > 0 && (
                             <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
-                                <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+                                <Text size="md" fw={700} c="dimmed" mb="sm" tt="uppercase">
                                     {getLanguageByKey("Users") || "Users"}
                                 </Text>
                                 <Stack gap="md">
@@ -170,23 +170,23 @@ export const TicketsIntoWorkCard = ({
 
                                         return (
                                             <Box key={`ut-${utIndex}`}>
-                                                <Text fw={600} size="sm" mb="xs" c="dark">
+                                                <Text fw={600} size="sm" mb="md" c="dark">
                                                     {ut.userName || `ID ${ut.userId}`}
                                                 </Text>
-                                                <Stack gap="xs">
+                                                <Stack gap="md">
                                                     <Group justify="space-between" align="center">
                                                         <Group gap={8} align="center">
-                                                            <ThemeIcon size="xs" radius="xl" variant="light" color={colors.totalAccent}>
+                                                            <ThemeIcon size="md" radius="xl" variant="light" color={colors.totalAccent}>
                                                                 <FaTasks size={10} />
                                                             </ThemeIcon>
-                                                            <Text size="xs" c={colors.totalAccent}>{getLanguageByKey("Taken into work")}</Text>
+                                                            <Text size="md" c={colors.totalAccent}>{getLanguageByKey("Taken into work")}</Text>
                                                         </Group>
                                                         <div style={{ textAlign: "right" }}>
-                                                            <Text size="xs" fw={700}>{fmt(userCount)}</Text>
-                                                            <Text size="xs" c="dimmed">{getLanguageByKey("tickets")}</Text>
+                                                            <Text size="md" fw={700}>{fmt(userCount)}</Text>
+                                                            <Text size="md" c="dimmed">{getLanguageByKey("tickets")}</Text>
                                                         </div>
                                                     </Group>
-                                                    <Progress value={100} size="xs" radius="xl" color={colors.totalAccent} />
+                                                    <Progress value={100} size="md" radius="xl" color={colors.totalAccent} />
                                                 </Stack>
                                             </Box>
                                         );

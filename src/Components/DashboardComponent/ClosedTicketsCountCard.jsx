@@ -23,9 +23,9 @@ export const ClosedTicketsCountCard = ({
   const isCompact = width < 40 || height < 15;
   const isVeryCompact = width < 30 || height < 12;
 
-  const cardPadding = isVeryCompact ? "xs" : isCompact ? "sm" : "lg";
-  const titleSize = isVeryCompact ? "xs" : isCompact ? "sm" : "sm";
-  const subtitleSize = isVeryCompact ? "xs" : isCompact ? "sm" : "xs";
+  const cardPadding = isVeryCompact ? "md" : isCompact ? "sm" : "lg";
+  const titleSize = isVeryCompact ? "md" : isCompact ? "sm" : "sm";
+  const subtitleSize = "md";
   const totalSize = isVeryCompact ? 24 : isCompact ? 32 : 38;
   const colors = {
     older: "#F59E0B",    // amber-500
@@ -51,8 +51,8 @@ export const ClosedTicketsCountCard = ({
         overflow: "hidden"
       }}
     >
-      <Stack gap={isVeryCompact ? "xs" : "sm"} style={{ flex: 1, height: "100%", minHeight: 0 }}>
-        <Group justify="space-between" align="flex-start" style={{ flexShrink: 0 }}>
+      <Stack gap={isVeryCompact ? "md" : "sm"} style={{ flex: 1, height: "100%", minHeight: 0 }}>
+        <Group justify="space-between" align="flex-start" style={{ flemdhrink: 0 }}>
           <Box>
             <Text size={titleSize} fw={500} c="dimmed">
               {title}
@@ -72,52 +72,52 @@ export const ClosedTicketsCountCard = ({
 
         {/* Прокручиваемая область с контентом */}
         <Box style={{ flex: 1, overflowY: "auto", overflowX: "hidden", minHeight: 0 }}>
-          <Stack gap={isVeryCompact ? "xs" : "sm"}>
+          <Stack gap={isVeryCompact ? "md" : "sm"}>
             <Group justify="space-between" align="center">
               <Box>
                 <Text fz={totalSize} fw={900} style={{ lineHeight: 1 }}>
                   {fmt(totalClosedTickets)}
                 </Text>
-                <Text size="xs" c="dimmed" fw={500}>
+                <Text size="md" c="dimmed" fw={500}>
                   {getLanguageByKey("Total closed tickets")}
                 </Text>
               </Box>
               
-              <Stack gap="xs" align="flex-end">
-                <Group gap="xs" align="center">
+              <Stack gap="md" align="flex-end">
+                <Group gap="md" align="center">
                   {TotalIconNode}
-                  <Text size={isVeryCompact ? "xs" : "sm"} c={colors.total}>
+                  <Text size={isVeryCompact ? "md" : "sm"} c={colors.total}>
                     {getLanguageByKey("Total")}
                   </Text>
                 </Group>
-                <Text size="xs" c="dimmed">
+                <Text size="md" c="dimmed">
                   {getLanguageByKey("tickets")}
                 </Text>
               </Stack>
             </Group>
 
             <Group justify="space-between" align="center">
-              <Group gap="xs" align="center">
+              <Group gap="md" align="center">
                 {OlderIconNode}
-                <Text size={isVeryCompact ? "xs" : "sm"} c={colors.older}>
+                <Text size={isVeryCompact ? "md" : "sm"} c={colors.older}>
                   {getLanguageByKey("Older than 11 days")}
                 </Text>
               </Group>
               
-              <Text size={isVeryCompact ? "xs" : "sm"} c={colors.older}>
+              <Text size={isVeryCompact ? "md" : "sm"} c={colors.older}>
                 {fmt(olderThan11Days)}
               </Text>
             </Group>
 
             <Group justify="space-between" align="center">
-              <Group gap="xs" align="center">
+              <Group gap="md" align="center">
                 {NewerIconNode}
-                <Text size={isVeryCompact ? "xs" : "sm"} c={colors.newer}>
+                <Text size={isVeryCompact ? "md" : "sm"} c={colors.newer}>
                   {getLanguageByKey("Newer than 11 days")}
                 </Text>
               </Group>
               
-              <Text size={isVeryCompact ? "xs" : "sm"} c={colors.newer}>
+              <Text size={isVeryCompact ? "md" : "sm"} c={colors.newer}>
                 {fmt(newerThan11Days)}
               </Text>
             </Group>
@@ -125,7 +125,7 @@ export const ClosedTicketsCountCard = ({
             {/* Вложенные группы пользователей (для by_group_title) */}
             {userGroups && userGroups.length > 0 && (
               <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
-                <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+                <Text size="md" fw={700} c="dimmed" mb="sm" tt="uppercase">
                   {getLanguageByKey("User Groups") || "User Groups"}
                 </Text>
                 <Stack gap="md">
@@ -147,12 +147,12 @@ export const ClosedTicketsCountCard = ({
 
                     return (
                       <Box key={`ug-${ugIndex}`}>
-                        <Text fw={600} size="sm" mb="xs" c="dark">
+                        <Text fw={600} size="sm" mb="md" c="dark">
                           {ug.userGroupName || "-"}
                         </Text>
-                        <Stack gap="xs">
+                        <Stack gap="md">
                           <Group justify="space-between" align="center">
-                            <Text size="xs" c="dimmed" fw={500}>
+                            <Text size="md" c="dimmed" fw={500}>
                               {getLanguageByKey("Total closed tickets")}
                             </Text>
                             <Text fw={700} size="sm" c={colors.total}>
@@ -160,24 +160,24 @@ export const ClosedTicketsCountCard = ({
                             </Text>
                           </Group>
                           <Group justify="space-between" align="center">
-                            <Group gap="xs" align="center">
+                            <Group gap="md" align="center">
                               {OlderIconNode}
-                              <Text size="xs" c={colors.older}>
+                              <Text size="md" c={colors.older}>
                                 {getLanguageByKey("Older than 11 days")}
                               </Text>
                             </Group>
-                            <Text size="xs" c={colors.older}>
+                            <Text size="md" c={colors.older}>
                               {fmt(groupStats.olderThan11Days)}
                             </Text>
                           </Group>
                           <Group justify="space-between" align="center">
-                            <Group gap="xs" align="center">
+                            <Group gap="md" align="center">
                               {NewerIconNode}
-                              <Text size="xs" c={colors.newer}>
+                              <Text size="md" c={colors.newer}>
                                 {getLanguageByKey("Newer than 11 days")}
                               </Text>
                             </Group>
-                            <Text size="xs" c={colors.newer}>
+                            <Text size="md" c={colors.newer}>
                               {fmt(groupStats.newerThan11Days)}
                             </Text>
                           </Group>
@@ -192,7 +192,7 @@ export const ClosedTicketsCountCard = ({
             {/* Вложенные пользователи (для by_user_group) */}
             {userTechnicians && userTechnicians.length > 0 && (
               <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
-                <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+                <Text size="md" fw={700} c="dimmed" mb="sm" tt="uppercase">
                   {getLanguageByKey("Users") || "Users"}
                 </Text>
                 <Stack gap="md">
@@ -214,12 +214,12 @@ export const ClosedTicketsCountCard = ({
 
                     return (
                       <Box key={`ut-${utIndex}`}>
-                        <Text fw={600} size="sm" mb="xs" c="dark">
+                        <Text fw={600} size="sm" mb="md" c="dark">
                           {ut.userName || `ID ${ut.userId}`}
                         </Text>
-                        <Stack gap="xs">
+                        <Stack gap="md">
                           <Group justify="space-between" align="center">
-                            <Text size="xs" c="dimmed" fw={500}>
+                            <Text size="md" c="dimmed" fw={500}>
                               {getLanguageByKey("Total closed tickets")}
                             </Text>
                             <Text fw={700} size="sm" c={colors.total}>
@@ -227,24 +227,24 @@ export const ClosedTicketsCountCard = ({
                             </Text>
                           </Group>
                           <Group justify="space-between" align="center">
-                            <Group gap="xs" align="center">
+                            <Group gap="md" align="center">
                               {OlderIconNode}
-                              <Text size="xs" c={colors.older}>
+                              <Text size="md" c={colors.older}>
                                 {getLanguageByKey("Older than 11 days")}
                               </Text>
                             </Group>
-                            <Text size="xs" c={colors.older}>
+                            <Text size="md" c={colors.older}>
                               {fmt(userStats.olderThan11Days)}
                             </Text>
                           </Group>
                           <Group justify="space-between" align="center">
-                            <Group gap="xs" align="center">
+                            <Group gap="md" align="center">
                               {NewerIconNode}
-                              <Text size="xs" c={colors.newer}>
+                              <Text size="md" c={colors.newer}>
                                 {getLanguageByKey("Newer than 11 days")}
                               </Text>
                             </Group>
-                            <Text size="xs" c={colors.newer}>
+                            <Text size="md" c={colors.newer}>
                               {fmt(userStats.newerThan11Days)}
                             </Text>
                           </Group>

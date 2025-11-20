@@ -22,11 +22,11 @@ export const WorkflowDurationCard = ({
   const isCompact = width < 40 || height < 15;
   const isVeryCompact = width < 30 || height < 12;
 
-  const cardPadding = isVeryCompact ? "xs" : isCompact ? "sm" : "lg";
-  const titleSize = isVeryCompact ? "xs" : isCompact ? "sm" : "sm";
-  const subtitleSize = isVeryCompact ? "xs" : isCompact ? "sm" : "lg";
-  const badgeSize = isVeryCompact ? "xs" : isCompact ? "sm" : "lg";
-  const statGap = isVeryCompact ? "xs" : isCompact ? "sm" : "sm";
+  const cardPadding = isVeryCompact ? "md" : isCompact ? "sm" : "lg";
+  const titleSize = isVeryCompact ? "md" : isCompact ? "sm" : "sm";
+  const subtitleSize = isVeryCompact ? "md" : isCompact ? "sm" : "lg";
+  const badgeSize = isVeryCompact ? "md" : isCompact ? "sm" : "lg";
+  const statGap = isVeryCompact ? "md" : isCompact ? "sm" : "sm";
 
   // Используем totalTickets или ticketsProcessed
   const totalValue = totalTickets || ticketsProcessed || 0;
@@ -59,7 +59,7 @@ export const WorkflowDurationCard = ({
     >
       <Stack gap={statGap} style={{ flex: 1, height: "100%", minHeight: 0 }}>
         {/* Заголовок */}
-        <Group justify="space-between" align="flex-start" style={{ flexShrink: 0 }}>
+        <Group justify="space-between" align="flex-start" style={{ flemdhrink: 0 }}>
           <Box>
             <Text fw={600} size={titleSize} c="dimmed">
               {title}
@@ -82,7 +82,7 @@ export const WorkflowDurationCard = ({
 
         {/* Прокручиваемая область с контентом */}
         <Box style={{ flex: 1, overflowY: "auto", overflowX: "hidden", minHeight: 0 }}>
-          <Stack gap={isVeryCompact ? "xs" : "sm"}>
+          <Stack gap={isVeryCompact ? "md" : "sm"}>
             {/* Статистика по buckets */}
             {displayBuckets.length > 0 ? (
               displayBuckets.map((bucket, index) => {
@@ -92,19 +92,19 @@ export const WorkflowDurationCard = ({
                 return (
                   <Box key={index}>
                     <Group justify="space-between" align="center" mb={4}>
-                      <Group gap="xs" align="center">
+                      <Group gap="md" align="center">
                         <FaClock size={isVeryCompact ? 10 : 12} color="#007bff" />
-                        <Text fw={500} size={isVeryCompact ? "xs" : "sm"} c="dark" lineClamp={1}>
+                        <Text fw={500} size={isVeryCompact ? "md" : "sm"} c="dark" lineClamp={1}>
                           {bucket.duration_bucket || "-"}
                         </Text>
                       </Group>
-                      <Text fw={700} size={isVeryCompact ? "xs" : "sm"} c="#007bff">
+                      <Text fw={700} size={isVeryCompact ? "md" : "sm"} c="#007bff">
                         {count}
                       </Text>
                     </Group>
                     <Progress
                       value={percent}
-                      size={isVeryCompact ? "xs" : "sm"}
+                      size={isVeryCompact ? "md" : "sm"}
                       color="blue"
                       radius="xl"
                     />
@@ -120,7 +120,7 @@ export const WorkflowDurationCard = ({
             {/* Вложенные группы пользователей (для by_group_title) */}
             {userGroups && userGroups.length > 0 && (
               <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
-                <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+                <Text size="md" fw={700} c="dimmed" mb="sm" tt="uppercase">
                   {getLanguageByKey("User Groups") || "User Groups"}
                 </Text>
                 <Stack gap="md">
@@ -158,29 +158,29 @@ export const WorkflowDurationCard = ({
 
                     return (
                       <Box key={`ug-${ugIndex}`}>
-                        <Text fw={600} size="sm" mb="xs" c="dark">
+                        <Text fw={600} size="sm" mb="md" c="dark">
                           {ug.userGroupName || "-"}
                         </Text>
-                        <Stack gap="xs">
+                        <Stack gap="md">
                           {displayGroupBuckets.map((bucket, bucketIndex) => {
                             const count = Number.isFinite(bucket.count) ? bucket.count : 0;
                             const percent = groupMaxCount > 0 ? Math.round((count / groupMaxCount) * 100) : 0;
                             return (
                               <Box key={`${bucketIndex}`} pl="md">
                                 <Group justify="space-between" align="center" mb={4}>
-                                  <Group gap="xs" align="center">
+                                  <Group gap="md" align="center">
                                     <FaClock size={isVeryCompact ? 8 : 10} color="#007bff" />
-                                    <Text fw={500} size={isVeryCompact ? "xs" : "xs"} c="dark" lineClamp={1}>
+                                    <Text fw={500} size={isVeryCompact ? "md" : "md"} c="dark" lineClamp={1}>
                                       {bucket.duration_bucket || "-"}
                                     </Text>
                                   </Group>
-                                  <Text fw={700} size={isVeryCompact ? "xs" : "xs"} c="#007bff">
+                                  <Text fw={700} size={isVeryCompact ? "md" : "md"} c="#007bff">
                                     {count}
                                   </Text>
                                 </Group>
                                 <Progress
                                   value={percent}
-                                  size="xs"
+                                  size="md"
                                   color="blue"
                                   radius="xl"
                                 />
@@ -198,7 +198,7 @@ export const WorkflowDurationCard = ({
             {/* Вложенные пользователи (для by_user_group) */}
             {userTechnicians && userTechnicians.length > 0 && (
               <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
-                <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+                <Text size="md" fw={700} c="dimmed" mb="sm" tt="uppercase">
                   {getLanguageByKey("Users") || "Users"}
                 </Text>
                 <Stack gap="md">
@@ -236,29 +236,29 @@ export const WorkflowDurationCard = ({
 
                     return (
                       <Box key={`ut-${utIndex}`}>
-                        <Text fw={600} size="sm" mb="xs" c="dark">
+                        <Text fw={600} size="sm" mb="md" c="dark">
                           {ut.userName || `ID ${ut.userId}`}
                         </Text>
-                        <Stack gap="xs">
+                        <Stack gap="md">
                           {displayUserBuckets.map((bucket, bucketIndex) => {
                             const count = Number.isFinite(bucket.count) ? bucket.count : 0;
                             const percent = userMaxCount > 0 ? Math.round((count / userMaxCount) * 100) : 0;
                             return (
                               <Box key={`${bucketIndex}`} pl="md">
                                 <Group justify="space-between" align="center" mb={4}>
-                                  <Group gap="xs" align="center">
+                                  <Group gap="md" align="center">
                                     <FaClock size={isVeryCompact ? 8 : 10} color="#007bff" />
-                                    <Text fw={500} size={isVeryCompact ? "xs" : "xs"} c="dark" lineClamp={1}>
+                                    <Text fw={500} size={isVeryCompact ? "md" : "md"} c="dark" lineClamp={1}>
                                       {bucket.duration_bucket || "-"}
                                     </Text>
                                   </Group>
-                                  <Text fw={700} size={isVeryCompact ? "xs" : "xs"} c="#007bff">
+                                  <Text fw={700} size={isVeryCompact ? "md" : "md"} c="#007bff">
                                     {count}
                                   </Text>
                                 </Group>
                                 <Progress
                                   value={percent}
-                                  size="xs"
+                                  size="md"
                                   color="blue"
                                   radius="xl"
                                 />

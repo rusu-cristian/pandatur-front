@@ -98,7 +98,7 @@ export const TicketDestinationCard = ({
             <FaMapMarkerAlt size={18} />
           </ThemeIcon>
           <Stack gap={4}>
-            <Text size="xs" c="dimmed" fw={700} tt="uppercase" style={{ letterSpacing: 0.8 }}>
+            <Text size="md" c="dimmed" fw={700} tt="uppercase" style={{ letterSpacing: 0.8 }}>
               {title || getLanguageByKey("Ticket Destination")}
             </Text>
             <Group gap={6} wrap="wrap">
@@ -117,7 +117,7 @@ export const TicketDestinationCard = ({
           <Text fz={36} fw={900} style={{ lineHeight: 1 }}>
             {fmt(summary.grandTotal)}
           </Text>
-          <Text size="xs" c="dimmed" fw={600}>
+          <Text size="md" c="dimmed" fw={600}>
             {getLanguageByKey("Total")}
           </Text>
         </Box>
@@ -132,7 +132,7 @@ export const TicketDestinationCard = ({
             return (
               <Box key={workflowBlock.workflow}>
                 <Group justify="space-between" align="center" mb={6}>
-                  <Group gap="xs" align="center">
+                  <Group gap="md" align="center">
                     <Badge variant="light" color={color} radius="sm">
                       {workflowLabel}
                     </Badge>
@@ -179,7 +179,7 @@ export const TicketDestinationCard = ({
                                   {fmt(item.count)}
                                 </Text>
                               )}
-                              <Text size="xs" c="dimmed">
+                              <Text size="md" c="dimmed">
                                 {share}%
                               </Text>
                             </Box>

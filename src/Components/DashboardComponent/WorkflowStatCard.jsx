@@ -28,8 +28,8 @@ export const WorkflowStatCard = ({
         border: "1px solid var(--crm-ui-kit-palette-border-default)",
       }}
     >
-      <Group justify="space-between" align="center" mb="xs">
-        <Group gap="xs">
+      <Group justify="space-between" align="center" mb="md">
+        <Group gap="md">
           <Icon size={16} color={iconColor} />
           <Text fw={600} size="sm" c="dark">
             {label}

@@ -19,11 +19,11 @@ export const WorkflowFromDePrelucratCard = ({
   const isCompact = width < 40 || height < 15;
   const isVeryCompact = width < 30 || height < 12;
 
-  const cardPadding = isVeryCompact ? "xs" : isCompact ? "sm" : "lg";
-  const titleSize = isVeryCompact ? "xs" : isCompact ? "sm" : "sm";
-  const subtitleSize = isVeryCompact ? "xs" : isCompact ? "sm" : "lg";
-  const badgeSize = isVeryCompact ? "xs" : isCompact ? "sm" : "lg";
-  const statGap = isVeryCompact ? "xs" : isCompact ? "sm" : "sm";
+  const cardPadding = isVeryCompact ? "md" : isCompact ? "sm" : "lg";
+  const titleSize = isVeryCompact ? "md" : isCompact ? "sm" : "sm";
+  const subtitleSize = isVeryCompact ? "md" : isCompact ? "sm" : "lg";
+  const badgeSize = isVeryCompact ? "md" : isCompact ? "sm" : "lg";
+  const statGap = isVeryCompact ? "md" : isCompact ? "sm" : "sm";
 
   // Сортируем изменения по количеству (по убыванию)
   const sortedChanges = [...workflowChanges].sort((a, b) => b.change_count - a.change_count);
@@ -48,7 +48,7 @@ export const WorkflowFromDePrelucratCard = ({
     >
       <Stack gap={statGap} style={{ flex: 1, height: "100%", minHeight: 0 }}>
         {/* Заголовок */}
-        <Group justify="space-between" align="flex-start" style={{ flexShrink: 0 }}>
+        <Group justify="space-between" align="flex-start" style={{ flemdhrink: 0 }}>
           <Box>
             <Text fw={600} size={titleSize} c="dimmed">
               {title}
@@ -71,7 +71,7 @@ export const WorkflowFromDePrelucratCard = ({
 
         {/* Прокручиваемая область с контентом */}
         <Box style={{ flex: 1, overflowY: "auto", overflowX: "hidden", minHeight: 0 }}>
-          <Stack gap={isVeryCompact ? "xs" : "sm"}>
+          <Stack gap={isVeryCompact ? "md" : "sm"}>
             {/* Статистика переходов */}
             {displayChanges.map((change, index) => {
               const percentage = totalChanges > 0 ? Math.round((change.change_count / totalChanges) * 100) : 0;
@@ -79,19 +79,19 @@ export const WorkflowFromDePrelucratCard = ({
               return (
                 <Box key={index}>
                   <Group justify="space-between" align="center" mb={4}>
-                    <Group gap="xs" align="center">
+                    <Group gap="md" align="center">
                       <FaPlay size={isVeryCompact ? 10 : 12} color="#007bff" />
-                      <Text fw={500} size={isVeryCompact ? "xs" : "sm"} c="dark" lineClamp={1}>
+                      <Text fw={500} size={isVeryCompact ? "md" : "sm"} c="dark" lineClamp={1}>
                         {change.destination_workflow || "-"}
                       </Text>
                     </Group>
-                    <Text fw={700} size={isVeryCompact ? "xs" : "sm"} c="#007bff">
+                    <Text fw={700} size={isVeryCompact ? "md" : "sm"} c="#007bff">
                       {change.change_count}
                     </Text>
                   </Group>
                   <Progress
                     value={percentage}
-                    size={isVeryCompact ? "xs" : "sm"}
+                    size={isVeryCompact ? "md" : "sm"}
                     color="blue"
                     radius="xl"
                   />
@@ -102,7 +102,7 @@ export const WorkflowFromDePrelucratCard = ({
             {/* Вложенные группы пользователей (для by_group_title) */}
             {userGroups && userGroups.length > 0 && (
               <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
-                <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+                <Text size="md" fw={700} c="dimmed" mb="sm" tt="uppercase">
                   {getLanguageByKey("User Groups") || "User Groups"}
                 </Text>
                 <Stack gap="md">
@@ -116,28 +116,28 @@ export const WorkflowFromDePrelucratCard = ({
 
                     return (
                       <Box key={`ug-${ugIndex}`}>
-                        <Text fw={600} size="sm" mb="xs" c="dark">
+                        <Text fw={600} size="sm" mb="md" c="dark">
                           {ug.userGroupName || "-"}
                         </Text>
-                        <Stack gap="xs">
+                        <Stack gap="md">
                           {displayGroupChanges.map((change, changeIndex) => {
                             const percentage = groupTotal > 0 ? Math.round((change.change_count / groupTotal) * 100) : 0;
                             return (
                               <Box key={`${changeIndex}`} pl="md">
                                 <Group justify="space-between" align="center" mb={4}>
-                                  <Group gap="xs" align="center">
+                                  <Group gap="md" align="center">
                                     <FaPlay size={isVeryCompact ? 8 : 10} color="#007bff" />
-                                    <Text fw={500} size={isVeryCompact ? "xs" : "xs"} c="dark" lineClamp={1}>
+                                    <Text fw={500} size={isVeryCompact ? "md" : "md"} c="dark" lineClamp={1}>
                                       {change.destination_workflow || "-"}
                                     </Text>
                                   </Group>
-                                  <Text fw={700} size={isVeryCompact ? "xs" : "xs"} c="#007bff">
+                                  <Text fw={700} size={isVeryCompact ? "md" : "md"} c="#007bff">
                                     {change.change_count}
                                   </Text>
                                 </Group>
                                 <Progress
                                   value={percentage}
-                                  size="xs"
+                                  size="md"
                                   color="blue"
                                   radius="xl"
                                 />
@@ -155,7 +155,7 @@ export const WorkflowFromDePrelucratCard = ({
             {/* Вложенные пользователи (для by_user_group) */}
             {userTechnicians && userTechnicians.length > 0 && (
               <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
-                <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+                <Text size="md" fw={700} c="dimmed" mb="sm" tt="uppercase">
                   {getLanguageByKey("Users") || "Users"}
                 </Text>
                 <Stack gap="md">
@@ -169,28 +169,28 @@ export const WorkflowFromDePrelucratCard = ({
 
                     return (
                       <Box key={`ut-${utIndex}`}>
-                        <Text fw={600} size="sm" mb="xs" c="dark">
+                        <Text fw={600} size="sm" mb="md" c="dark">
                           {ut.userName || `ID ${ut.userId}`}
                         </Text>
-                        <Stack gap="xs">
+                        <Stack gap="md">
                           {displayUserChanges.map((change, changeIndex) => {
                             const percentage = userTotal > 0 ? Math.round((change.change_count / userTotal) * 100) : 0;
                             return (
                               <Box key={`${changeIndex}`} pl="md">
                                 <Group justify="space-between" align="center" mb={4}>
-                                  <Group gap="xs" align="center">
+                                  <Group gap="md" align="center">
                                     <FaPlay size={isVeryCompact ? 8 : 10} color="#007bff" />
-                                    <Text fw={500} size={isVeryCompact ? "xs" : "xs"} c="dark" lineClamp={1}>
+                                    <Text fw={500} size={isVeryCompact ? "md" : "md"} c="dark" lineClamp={1}>
                                       {change.destination_workflow || "-"}
                                     </Text>
                                   </Group>
-                                  <Text fw={700} size={isVeryCompact ? "xs" : "xs"} c="#007bff">
+                                  <Text fw={700} size={isVeryCompact ? "md" : "md"} c="#007bff">
                                     {change.change_count}
                                   </Text>
                                 </Group>
                                 <Progress
                                   value={percentage}
-                                  size="xs"
+                                  size="md"
                                   color="blue"
                                   radius="xl"
                                 />

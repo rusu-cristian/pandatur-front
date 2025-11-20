@@ -18,11 +18,11 @@ export const WorkflowToChangeCard = ({
   const isCompact = width < 40 || height < 15;
   const isVeryCompact = width < 30 || height < 12;
 
-  const cardPadding = isVeryCompact ? "xs" : isCompact ? "sm" : "lg";
-  const titleSize = isVeryCompact ? "xs" : isCompact ? "sm" : "sm";
-  const subtitleSize = isVeryCompact ? "xs" : isCompact ? "sm" : "lg";
-  const badgeSize = isVeryCompact ? "xs" : isCompact ? "sm" : "lg";
-  const statGap = isVeryCompact ? "xs" : isCompact ? "sm" : "sm";
+  const cardPadding = isVeryCompact ? "md" : isCompact ? "sm" : "lg";
+  const titleSize = isVeryCompact ? "md" : isCompact ? "sm" : "sm";
+  const subtitleSize = isVeryCompact ? "md" : isCompact ? "sm" : "lg";
+  const badgeSize = isVeryCompact ? "md" : isCompact ? "sm" : "lg";
+  const statGap = isVeryCompact ? "md" : isCompact ? "sm" : "sm";
 
   return (
     <Card
@@ -40,7 +40,7 @@ export const WorkflowToChangeCard = ({
     >
       <Stack gap={statGap} style={{ flex: 1, height: "100%", minHeight: 0 }}>
         {/* Заголовок */}
-        <Group justify="space-between" align="flex-start" style={{ flexShrink: 0 }}>
+        <Group justify="space-between" align="flex-start" style={{ flemdhrink: 0 }}>
           <Box>
             <Text fw={600} size={titleSize} c="dimmed">
               {title}
@@ -63,17 +63,17 @@ export const WorkflowToChangeCard = ({
 
         {/* Прокручиваемая область с контентом */}
         <Box style={{ flex: 1, overflowY: "auto", overflowX: "hidden", minHeight: 0 }}>
-          <Stack gap={isVeryCompact ? "xs" : "sm"}>
+          <Stack gap={isVeryCompact ? "md" : "sm"}>
             {/* Статистика по "Contract încheiat" */}
-            <Group justify="space-between" align="center" p={isVeryCompact ? "xs" : "xs"} style={{ backgroundColor: "var(--crm-ui-kit-palette-background-primary-disabled)", borderRadius: "6px" }}>
-              <Group gap="xs">
+            <Group justify="space-between" align="center" p={isVeryCompact ? "md" : "md"} style={{ backgroundColor: "var(--crm-ui-kit-palette-background-primary-disabled)", borderRadius: "6px" }}>
+              <Group gap="md">
                 <FaFileContract size={isVeryCompact ? 12 : 14} color="#28a745" />
-                <Text fw={500} size={isVeryCompact ? "xs" : "xs"} c="dark">
+                <Text fw={500} size={isVeryCompact ? "md" : "md"} c="dark">
                   {getLanguageByKey("Contract încheiat")}
                 </Text>
               </Group>
-              <Group gap="xs" align="center">
-                <Text fw={700} size={isVeryCompact ? "xs" : "sm"} c="#28a745">
+              <Group gap="md" align="center">
+                <Text fw={700} size={isVeryCompact ? "md" : "sm"} c="#28a745">
                   {contractIncheiatChangedCount}
                 </Text>
               </Group>
@@ -82,7 +82,7 @@ export const WorkflowToChangeCard = ({
             {/* Вложенные группы пользователей (для by_group_title) */}
             {userGroups && userGroups.length > 0 && (
               <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
-                <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+                <Text size="md" fw={700} c="dimmed" mb="sm" tt="uppercase">
                   {getLanguageByKey("User Groups") || "User Groups"}
                 </Text>
                 <Stack gap="md">
@@ -102,14 +102,14 @@ export const WorkflowToChangeCard = ({
 
                     return (
                       <Box key={`ug-${ugIndex}`}>
-                        <Group justify="space-between" align="center" p={isVeryCompact ? "xs" : "xs"} style={{ backgroundColor: "var(--crm-ui-kit-palette-background-primary-disabled)", borderRadius: "6px" }}>
-                          <Group gap="xs">
+                        <Group justify="space-between" align="center" p={isVeryCompact ? "md" : "md"} style={{ backgroundColor: "var(--crm-ui-kit-palette-background-primary-disabled)", borderRadius: "6px" }}>
+                          <Group gap="md">
                             <FaFileContract size={isVeryCompact ? 10 : 12} color="#28a745" />
-                            <Text fw={600} size={isVeryCompact ? "xs" : "sm"} c="dark">
+                            <Text fw={600} size={isVeryCompact ? "md" : "sm"} c="dark">
                               {ug.userGroupName || "-"}
                             </Text>
                           </Group>
-                          <Text fw={700} size={isVeryCompact ? "xs" : "sm"} c="#28a745">
+                          <Text fw={700} size={isVeryCompact ? "md" : "sm"} c="#28a745">
                             {groupCount}
                           </Text>
                         </Group>
@@ -123,7 +123,7 @@ export const WorkflowToChangeCard = ({
             {/* Вложенные пользователи (для by_user_group) */}
             {userTechnicians && userTechnicians.length > 0 && (
               <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
-                <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+                <Text size="md" fw={700} c="dimmed" mb="sm" tt="uppercase">
                   {getLanguageByKey("Users") || "Users"}
                 </Text>
                 <Stack gap="md">
@@ -143,14 +143,14 @@ export const WorkflowToChangeCard = ({
 
                     return (
                       <Box key={`ut-${utIndex}`}>
-                        <Group justify="space-between" align="center" p={isVeryCompact ? "xs" : "xs"} style={{ backgroundColor: "var(--crm-ui-kit-palette-background-primary-disabled)", borderRadius: "6px" }}>
-                          <Group gap="xs">
+                        <Group justify="space-between" align="center" p={isVeryCompact ? "md" : "md"} style={{ backgroundColor: "var(--crm-ui-kit-palette-background-primary-disabled)", borderRadius: "6px" }}>
+                          <Group gap="md">
                             <FaFileContract size={isVeryCompact ? 10 : 12} color="#28a745" />
-                            <Text fw={600} size={isVeryCompact ? "xs" : "sm"} c="dark">
+                            <Text fw={600} size={isVeryCompact ? "md" : "sm"} c="dark">
                               {ut.userName || `ID ${ut.userId}`}
                             </Text>
                           </Group>
-                          <Text fw={700} size={isVeryCompact ? "xs" : "sm"} c="#28a745">
+                          <Text fw={700} size={isVeryCompact ? "md" : "sm"} c="#28a745">
                             {userCount}
                           </Text>
                         </Group>

@@ -44,8 +44,8 @@ export const CallsCard = ({
     const isCompact = width < 40 || height < 15;
     const isVeryCompact = width < 30 || height < 12;
 
-    const cardPadding = isVeryCompact ? "xs" : isCompact ? "sm" : "lg";
-    const titleSize = isVeryCompact ? "xs" : isCompact ? "xs" : "xs";
+    const cardPadding = isVeryCompact ? "md" : isCompact ? "sm" : "lg";
+    const titleSize = isVeryCompact ? "md" : isCompact ? "md" : "md";
     const subtitleSize = "md";
     const totalSize = isVeryCompact ? 24 : isCompact ? 32 : 42;
     const iconSize = isVeryCompact ? "md" : isCompact ? "lg" : "xl";
@@ -67,10 +67,10 @@ export const CallsCard = ({
                 transition: "all 0.2s ease",
             }}
         >
-            <Stack gap={isVeryCompact ? "xs" : "sm"} style={{ flex: 1, height: "100%", minHeight: 0 }}>
+            <Stack gap={isVeryCompact ? "md" : "sm"} style={{ flex: 1, height: "100%", minHeight: 0 }}>
                 {/* Header */}
-                <Flex justify="space-between" align="flex-start" style={{ flexShrink: 0 }}>
-                    <Flex direction="column" gap="xs" style={{ flex: 1 }}>
+                <Flex justify="space-between" align="flex-start" style={{ flemdhrink: 0 }}>
+                    <Flex direction="column" gap="md" style={{ flex: 1 }}>
                         <Group gap="sm" align="center">
                             <ThemeIcon
                                 size={iconSize}
@@ -92,7 +92,7 @@ export const CallsCard = ({
                             </Box>
                         </Group>
 
-                        <Group gap={6} wrap="wrap" mt="xs">
+                        <Group gap={6} wrap="wrap" mt="md">
                             <Badge variant="light" color="blue" size="sm">
                                 {getLanguageByKey("Calls") || widgetType}
                             </Badge>
@@ -100,7 +100,7 @@ export const CallsCard = ({
                     </Flex>
 
                     <Box style={{ textAlign: "right" }}>
-                        <Group gap="xs" align="center" justify="flex-end">
+                        <Group gap="md" align="center" justify="flex-end">
                             <Text fz={totalSize} fw={900} style={{ lineHeight: 1, color: `var(--mantine-color-${CALLS_COLORS.totalAccent}-6)` }}>
                                 {fmt(totalAll)}
                             </Text>
@@ -112,15 +112,15 @@ export const CallsCard = ({
                     </Box>
                 </Flex>
 
-                <Divider my={isVeryCompact ? "xs" : "md"} />
+                <Divider my={isVeryCompact ? "md" : "md"} />
 
                 {/* Прокручиваемая область с контентом */}
                 <Box style={{ flex: 1, overflowY: "auto", overflowX: "hidden", minHeight: 0 }}>
-                    <Stack gap={isVeryCompact ? "xs" : "lg"}>
+                    <Stack gap={isVeryCompact ? "md" : "lg"}>
                         {/* Incoming */}
                         <Box>
-                            <Flex justify="space-between" align="center" mb="xs">
-                                <Group gap="xs" align="center">
+                            <Flex justify="space-between" align="center" mb="md">
+                                <Group gap="md" align="center">
                                     <ThemeIcon
                                         size={isVeryCompact ? "sm" : "md"}
                                         radius="lg"
@@ -130,7 +130,7 @@ export const CallsCard = ({
                                     >
                                         <MdCallReceived size={isVeryCompact ? 12 : 16} />
                                     </ThemeIcon>
-                                    <Text size={isVeryCompact ? "xs" : "sm"} fw={600} c={`${CALLS_COLORS.in}.7`}>
+                                    <Text size={isVeryCompact ? "md" : "sm"} fw={600} c={`${CALLS_COLORS.in}.7`}>
                                         {getLanguageByKey("Incoming")}
                                     </Text>
                                 </Group>
@@ -138,14 +138,14 @@ export const CallsCard = ({
                                     <Text size={isVeryCompact ? "sm" : "lg"} fw={800} c={`${CALLS_COLORS.in}.6`}>
                                         {fmt(totalIncoming)}
                                     </Text>
-                                    <Text size="xs" c="dimmed">
+                                    <Text size="md" c="dimmed">
                                         {getLanguageByKey("calls")}
                                     </Text>
                                 </Box>
                             </Flex>
                             <Progress
                                 value={inPct}
-                                size={isVeryCompact ? "xs" : "lg"}
+                                size={isVeryCompact ? "md" : "lg"}
                                 radius="xl"
                                 color={CALLS_COLORS.in}
                                 style={{
@@ -156,8 +156,8 @@ export const CallsCard = ({
 
                         {/* Outgoing */}
                         <Box>
-                            <Flex justify="space-between" align="center" mb="xs">
-                                <Group gap="xs" align="center">
+                            <Flex justify="space-between" align="center" mb="md">
+                                <Group gap="md" align="center">
                                     <ThemeIcon
                                         size={isVeryCompact ? "sm" : "md"}
                                         radius="lg"
@@ -167,7 +167,7 @@ export const CallsCard = ({
                                     >
                                         <MdCallMade size={isVeryCompact ? 12 : 16} />
                                     </ThemeIcon>
-                                    <Text size={isVeryCompact ? "xs" : "sm"} fw={600} c={`${CALLS_COLORS.out}.7`}>
+                                    <Text size={isVeryCompact ? "md" : "sm"} fw={600} c={`${CALLS_COLORS.out}.7`}>
                                         {getLanguageByKey("Outgoing")}
                                     </Text>
                                 </Group>
@@ -175,14 +175,14 @@ export const CallsCard = ({
                                     <Text size={isVeryCompact ? "sm" : "lg"} fw={800} c={`${CALLS_COLORS.out}.6`}>
                                         {fmt(totalOutgoing)}
                                     </Text>
-                                    <Text size="xs" c="dimmed">
+                                    <Text size="md" c="dimmed">
                                         {getLanguageByKey("calls")}
                                     </Text>
                                 </Box>
                             </Flex>
                             <Progress
                                 value={outPct}
-                                size={isVeryCompact ? "xs" : "lg"}
+                                size={isVeryCompact ? "md" : "lg"}
                                 radius="xl"
                                 color={CALLS_COLORS.out}
                                 style={{
@@ -209,15 +209,15 @@ export const CallsCard = ({
 
                                         return (
                                             <Box key={`ug-${ugIndex}`}>
-                                                <Text fw={600} size="md" mb="xs" c="dark">
+                                                <Text fw={600} size="md" mb="md" c="dark">
                                                     {ug.userGroupName || "-"}
                                                 </Text>
-                                                <Stack gap="xs">
+                                                <Stack gap="md">
                                                     {/* Incoming для группы */}
                                                     <Flex justify="space-between" align="center">
-                                                        <Group gap="xs" align="center">
+                                                        <Group gap="md" align="center">
                                                             <ThemeIcon
-                                                                size="xs"
+                                                                size="md"
                                                                 radius="lg"
                                                                 variant="light"
                                                                 color={CALLS_COLORS.in}
@@ -234,15 +234,15 @@ export const CallsCard = ({
                                                     </Flex>
                                                     <Progress
                                                         value={groupInPct}
-                                                        size="xs"
+                                                        size="md"
                                                         radius="xl"
                                                         color={CALLS_COLORS.in}
                                                     />
                                                     {/* Outgoing для группы */}
                                                     <Flex justify="space-between" align="center">
-                                                        <Group gap="xs" align="center">
+                                                        <Group gap="md" align="center">
                                                             <ThemeIcon
-                                                                size="xs"
+                                                                size="md"
                                                                 radius="lg"
                                                                 variant="light"
                                                                 color={CALLS_COLORS.out}
@@ -259,7 +259,7 @@ export const CallsCard = ({
                                                     </Flex>
                                                     <Progress
                                                         value={groupOutPct}
-                                                        size="xs"
+                                                        size="md"
                                                         radius="xl"
                                                         color={CALLS_COLORS.out}
                                                     />
@@ -289,20 +289,20 @@ export const CallsCard = ({
 
                                         return (
                                             <Box key={`ut-${utIndex}`}>
-                                                <Text fw={600} size="md" mb="xs" c="dark">
+                                                <Text fw={600} size="md" mb="md" c="dark">
                                                     {ut.userName || `ID ${ut.userId}`}
                                                     {ut.sipuniId && (
-                                                        <Text component="span" size="md" c="dimmed" ml="xs">
+                                                        <Text component="span" size="md" c="dimmed" ml="md">
                                                             ({ut.sipuniId})
                                                         </Text>
                                                     )}
                                                 </Text>
-                                                <Stack gap="xs">
+                                                <Stack gap="md">
                                                     {/* Incoming для пользователя */}
                                                     <Flex justify="space-between" align="center">
-                                                        <Group gap="xs" align="center">
+                                                        <Group gap="md" align="center">
                                                             <ThemeIcon
-                                                                size="xs"
+                                                                size="md"
                                                                 radius="lg"
                                                                 variant="light"
                                                                 color={CALLS_COLORS.in}
@@ -313,21 +313,21 @@ export const CallsCard = ({
                                                                 {getLanguageByKey("Incoming")}
                                                             </Text>
                                                         </Group>
-                                                        <Text size="xs" fw={700} c={`${CALLS_COLORS.in}.6`}>
+                                                        <Text size="md" fw={700} c={`${CALLS_COLORS.in}.6`}>
                                                             {fmt(userIncoming)}
                                                         </Text>
                                                     </Flex>
                                                     <Progress
                                                         value={userInPct}
-                                                        size="xs"
+                                                        size="md"
                                                         radius="xl"
                                                         color={CALLS_COLORS.in}
                                                     />
                                                     {/* Outgoing для пользователя */}
                                                     <Flex justify="space-between" align="center">
-                                                        <Group gap="xs" align="center">
+                                                        <Group gap="md" align="center">
                                                             <ThemeIcon
-                                                                size="xs"
+                                                                size="md"
                                                                 radius="lg"
                                                                 variant="light"
                                                                 color={CALLS_COLORS.out}
@@ -338,13 +338,13 @@ export const CallsCard = ({
                                                                 {getLanguageByKey("Outgoing")}
                                                             </Text>
                                                         </Group>
-                                                        <Text size="xs" fw={700} c={`${CALLS_COLORS.out}.6`}>
+                                                        <Text size="md" fw={700} c={`${CALLS_COLORS.out}.6`}>
                                                             {fmt(userOutgoing)}
                                                         </Text>
                                                     </Flex>
                                                     <Progress
                                                         value={userOutPct}
-                                                        size="xs"
+                                                        size="md"
                                                         radius="xl"
                                                         color={CALLS_COLORS.out}
                                                     />

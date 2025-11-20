@@ -33,11 +33,11 @@ export const WorkflowFromChangeCard = ({
   const isCompact = width < 40 || height < 15;
   const isVeryCompact = width < 30 || height < 12;
   
-  const cardPadding = isVeryCompact ? "xs" : isCompact ? "sm" : "lg";
-  const titleSize = isVeryCompact ? "xs" : isCompact ? "sm" : "sm";
-  const subtitleSize = isVeryCompact ? "xs" : isCompact ? "sm" : "lg";
-  const badgeSize = isVeryCompact ? "xs" : isCompact ? "sm" : "lg";
-  const statGap = isVeryCompact ? "xs" : isCompact ? "sm" : "sm";
+  const cardPadding = isVeryCompact ? "md" : isCompact ? "sm" : "lg";
+  const titleSize = isVeryCompact ? "md" : isCompact ? "sm" : "sm";
+  const subtitleSize = isVeryCompact ? "md" : isCompact ? "sm" : "lg";
+  const badgeSize = isVeryCompact ? "md" : isCompact ? "sm" : "lg";
+  const statGap = isVeryCompact ? "md" : isCompact ? "sm" : "sm";
 
   return (
     <Card
@@ -55,7 +55,7 @@ export const WorkflowFromChangeCard = ({
     >
       <Stack gap={statGap} style={{ flex: 1, height: "100%", minHeight: 0 }}>
         {/* Заголовок */}
-        <Group justify="space-between" align="flex-start" style={{ flexShrink: 0 }}>
+        <Group justify="space-between" align="flex-start" style={{ flemdhrink: 0 }}>
           <Box>
             <Text fw={600} size={titleSize} c="dimmed">
               {title}
@@ -78,38 +78,38 @@ export const WorkflowFromChangeCard = ({
 
         {/* Прокручиваемая область с контентом */}
         <Box style={{ flex: 1, overflowY: "auto", overflowX: "hidden", minHeight: 0 }}>
-          <Stack gap={isVeryCompact ? "xs" : "sm"}>
+          <Stack gap={isVeryCompact ? "md" : "sm"}>
             {/* Статистика по "Luat în lucru" */}
-            <Group justify="space-between" align="center" p={isVeryCompact ? "xs" : "xs"} style={{ backgroundColor: "var(--crm-ui-kit-palette-background-primary-disabled)", borderRadius: "6px" }}>
-              <Group gap="xs">
+            <Group justify="space-between" align="center" p={isVeryCompact ? "md" : "md"} style={{ backgroundColor: "var(--crm-ui-kit-palette-background-primary-disabled)", borderRadius: "6px" }}>
+              <Group gap="md">
                 <FaHandPaper size={isVeryCompact ? 12 : 14} color="#28a745" />
-                <Text fw={500} size={isVeryCompact ? "xs" : "xs"} c="dark">
+                <Text fw={500} size={isVeryCompact ? "md" : "md"} c="dark">
                   {getLanguageByKey("Luat în lucru")}
                 </Text>
               </Group>
-              <Group gap="xs" align="center">
-                <Text fw={700} size={isVeryCompact ? "xs" : "sm"} c="#28a745">
+              <Group gap="md" align="center">
+                <Text fw={700} size={isVeryCompact ? "md" : "sm"} c="#28a745">
                   {luatInLucruChangedCount}
                 </Text>
-                <Badge size={isVeryCompact ? "xs" : "xs"} color={luatRating.color} variant="light">
+                <Badge size={isVeryCompact ? "md" : "md"} color={luatRating.color} variant="light">
                   {luatPercentage}%
                 </Badge>
               </Group>
             </Group>
 
             {/* Статистика по "Ofertă trimisă" */}
-            <Group justify="space-between" align="center" p={isVeryCompact ? "xs" : "xs"} style={{ backgroundColor: "var(--crm-ui-kit-palette-background-primary-disabled)", borderRadius: "6px" }}>
-              <Group gap="xs">
+            <Group justify="space-between" align="center" p={isVeryCompact ? "md" : "md"} style={{ backgroundColor: "var(--crm-ui-kit-palette-background-primary-disabled)", borderRadius: "6px" }}>
+              <Group gap="md">
                 <FaFileContract size={isVeryCompact ? 12 : 14} color="#007bff" />
-                <Text fw={500} size={isVeryCompact ? "xs" : "xs"} c="dark">
+                <Text fw={500} size={isVeryCompact ? "md" : "md"} c="dark">
                   {getLanguageByKey("Ofertă trimisă")}
                 </Text>
               </Group>
-              <Group gap="xs" align="center">
-                <Text fw={700} size={isVeryCompact ? "xs" : "sm"} c="#007bff">
+              <Group gap="md" align="center">
+                <Text fw={700} size={isVeryCompact ? "md" : "sm"} c="#007bff">
                   {ofertaTrimisaChangedCount}
                 </Text>
-                <Badge size={isVeryCompact ? "xs" : "xs"} color={ofertaRating.color} variant="light">
+                <Badge size={isVeryCompact ? "md" : "md"} color={ofertaRating.color} variant="light">
                   {ofertaPercentage}%
                 </Badge>
               </Group>
@@ -118,7 +118,7 @@ export const WorkflowFromChangeCard = ({
             {/* Вложенные группы пользователей (для by_group_title) */}
             {userGroups && userGroups.length > 0 && (
               <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
-                <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+                <Text size="md" fw={700} c="dimmed" mb="sm" tt="uppercase">
                   {getLanguageByKey("User Groups") || "User Groups"}
                 </Text>
                 <Stack gap="md">
@@ -145,40 +145,40 @@ export const WorkflowFromChangeCard = ({
 
                     return (
                       <Box key={`ug-${ugIndex}`}>
-                        <Text fw={600} size="sm" mb="xs" c="dark">
+                        <Text fw={600} size="sm" mb="md" c="dark">
                           {ug.userGroupName || "-"}
                         </Text>
-                        <Stack gap="xs">
+                        <Stack gap="md">
                           {/* Luat în lucru для группы */}
-                          <Group justify="space-between" align="center" p={isVeryCompact ? "xs" : "xs"} style={{ backgroundColor: "var(--crm-ui-kit-palette-background-primary-disabled)", borderRadius: "6px" }}>
-                            <Group gap="xs">
+                          <Group justify="space-between" align="center" p={isVeryCompact ? "md" : "md"} style={{ backgroundColor: "var(--crm-ui-kit-palette-background-primary-disabled)", borderRadius: "6px" }}>
+                            <Group gap="md">
                               <FaHandPaper size={isVeryCompact ? 10 : 12} color="#28a745" />
-                              <Text fw={500} size={isVeryCompact ? "xs" : "xs"} c="dark">
+                              <Text fw={500} size={isVeryCompact ? "md" : "md"} c="dark">
                                 {getLanguageByKey("Luat în lucru")}
                               </Text>
                             </Group>
-                            <Group gap="xs" align="center">
-                              <Text fw={700} size={isVeryCompact ? "xs" : "xs"} c="#28a745">
+                            <Group gap="md" align="center">
+                              <Text fw={700} size={isVeryCompact ? "md" : "md"} c="#28a745">
                                 {groupStats.luat}
                               </Text>
-                              <Badge size="xs" color={groupLuatRating.color} variant="light">
+                              <Badge size="md" color={groupLuatRating.color} variant="light">
                                 {groupLuatPercentage}%
                               </Badge>
                             </Group>
                           </Group>
                           {/* Ofertă trimisă для группы */}
-                          <Group justify="space-between" align="center" p={isVeryCompact ? "xs" : "xs"} style={{ backgroundColor: "var(--crm-ui-kit-palette-background-primary-disabled)", borderRadius: "6px" }}>
-                            <Group gap="xs">
+                          <Group justify="space-between" align="center" p={isVeryCompact ? "md" : "md"} style={{ backgroundColor: "var(--crm-ui-kit-palette-background-primary-disabled)", borderRadius: "6px" }}>
+                            <Group gap="md">
                               <FaFileContract size={isVeryCompact ? 10 : 12} color="#007bff" />
-                              <Text fw={500} size={isVeryCompact ? "xs" : "xs"} c="dark">
+                              <Text fw={500} size={isVeryCompact ? "md" : "md"} c="dark">
                                 {getLanguageByKey("Ofertă trimisă")}
                               </Text>
                             </Group>
-                            <Group gap="xs" align="center">
-                              <Text fw={700} size={isVeryCompact ? "xs" : "xs"} c="#007bff">
+                            <Group gap="md" align="center">
+                              <Text fw={700} size={isVeryCompact ? "md" : "md"} c="#007bff">
                                 {groupStats.oferta}
                               </Text>
-                              <Badge size="xs" color={groupOfertaRating.color} variant="light">
+                              <Badge size="md" color={groupOfertaRating.color} variant="light">
                                 {groupOfertaPercentage}%
                               </Badge>
                             </Group>
@@ -194,7 +194,7 @@ export const WorkflowFromChangeCard = ({
             {/* Вложенные пользователи (для by_user_group) */}
             {userTechnicians && userTechnicians.length > 0 && (
               <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
-                <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+                <Text size="md" fw={700} c="dimmed" mb="sm" tt="uppercase">
                   {getLanguageByKey("Users") || "Users"}
                 </Text>
                 <Stack gap="md">
@@ -221,40 +221,40 @@ export const WorkflowFromChangeCard = ({
 
                     return (
                       <Box key={`ut-${utIndex}`}>
-                        <Text fw={600} size="sm" mb="xs" c="dark">
+                        <Text fw={600} size="sm" mb="md" c="dark">
                           {ut.userName || `ID ${ut.userId}`}
                         </Text>
-                        <Stack gap="xs">
+                        <Stack gap="md">
                           {/* Luat în lucru для пользователя */}
-                          <Group justify="space-between" align="center" p={isVeryCompact ? "xs" : "xs"} style={{ backgroundColor: "var(--crm-ui-kit-palette-background-primary-disabled)", borderRadius: "6px" }}>
-                            <Group gap="xs">
+                          <Group justify="space-between" align="center" p={isVeryCompact ? "md" : "md"} style={{ backgroundColor: "var(--crm-ui-kit-palette-background-primary-disabled)", borderRadius: "6px" }}>
+                            <Group gap="md">
                               <FaHandPaper size={isVeryCompact ? 10 : 12} color="#28a745" />
-                              <Text fw={500} size={isVeryCompact ? "xs" : "xs"} c="dark">
+                              <Text fw={500} size={isVeryCompact ? "md" : "md"} c="dark">
                                 {getLanguageByKey("Luat în lucru")}
                               </Text>
                             </Group>
-                            <Group gap="xs" align="center">
-                              <Text fw={700} size={isVeryCompact ? "xs" : "xs"} c="#28a745">
+                            <Group gap="md" align="center">
+                              <Text fw={700} size={isVeryCompact ? "md" : "md"} c="#28a745">
                                 {userStats.luat}
                               </Text>
-                              <Badge size="xs" color={userLuatRating.color} variant="light">
+                              <Badge size="md" color={userLuatRating.color} variant="light">
                                 {userLuatPercentage}%
                               </Badge>
                             </Group>
                           </Group>
                           {/* Ofertă trimisă для пользователя */}
-                          <Group justify="space-between" align="center" p={isVeryCompact ? "xs" : "xs"} style={{ backgroundColor: "var(--crm-ui-kit-palette-background-primary-disabled)", borderRadius: "6px" }}>
-                            <Group gap="xs">
+                          <Group justify="space-between" align="center" p={isVeryCompact ? "md" : "md"} style={{ backgroundColor: "var(--crm-ui-kit-palette-background-primary-disabled)", borderRadius: "6px" }}>
+                            <Group gap="md">
                               <FaFileContract size={isVeryCompact ? 10 : 12} color="#007bff" />
-                              <Text fw={500} size={isVeryCompact ? "xs" : "xs"} c="dark">
+                              <Text fw={500} size={isVeryCompact ? "md" : "md"} c="dark">
                                 {getLanguageByKey("Ofertă trimisă")}
                               </Text>
                             </Group>
-                            <Group gap="xs" align="center">
-                              <Text fw={700} size={isVeryCompact ? "xs" : "xs"} c="#007bff">
+                            <Group gap="md" align="center">
+                              <Text fw={700} size={isVeryCompact ? "md" : "md"} c="#007bff">
                                 {userStats.oferta}
                               </Text>
-                              <Badge size="xs" color={userOfertaRating.color} variant="light">
+                              <Badge size="md" color={userOfertaRating.color} variant="light">
                                 {userOfertaPercentage}%
                               </Badge>
                             </Group>

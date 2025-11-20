@@ -30,8 +30,8 @@ export const TicketStateCard = ({
     const isCompact = width < 40 || height < 15;
     const isVeryCompact = width < 30 || height < 12;
 
-    const cardPadding = isVeryCompact ? "xs" : isCompact ? "sm" : "lg";
-    const titleSize = isVeryCompact ? "xs" : isCompact ? "xs" : "xs";
+    const cardPadding = isVeryCompact ? "md" : isCompact ? "sm" : "lg";
+    const titleSize = isVeryCompact ? "md" : isCompact ? "md" : "md";
     const subtitleSize = "md"
     const totalSize = isVeryCompact ? 24 : isCompact ? 32 : 38;
     const iconSize = isVeryCompact ? "md" : isCompact ? "lg" : "lg";
@@ -57,10 +57,10 @@ export const TicketStateCard = ({
                 borderColor: "var(--crm-ui-kit-palette-border-default)",
             }}
         >
-            <Stack gap={isVeryCompact ? "xs" : "sm"} style={{ flex: 1, height: "100%", minHeight: 0 }}>
+            <Stack gap={isVeryCompact ? "md" : "sm"} style={{ flex: 1, height: "100%", minHeight: 0 }}>
                 {/* Header */}
-                <Flex justify="space-between" align="flex-start" style={{ flexShrink: 0 }}>
-                    <Flex direction="column" gap="xs" style={{ flex: 1 }}>
+                <Flex justify="space-between" align="flex-start" style={{ flemdhrink: 0 }}>
+                    <Flex direction="column" gap="md" style={{ flex: 1 }}>
                         <Group gap="sm" align="center">
                             <ThemeIcon size={iconSize} radius="xl" variant="light" color={colors.totalAccent}>
                                 {TotalIconNode}
@@ -93,30 +93,30 @@ export const TicketStateCard = ({
                     </Box>
                 </Flex>
 
-                <Divider my={isVeryCompact ? "xs" : "sm"} />
+                <Divider my={isVeryCompact ? "md" : "sm"} />
 
                 {/* Прокручиваемая область с контентом */}
                 <Box style={{ flex: 1, overflowY: "auto", overflowX: "hidden", minHeight: 0 }}>
-                    <Stack gap={isVeryCompact ? "xs" : "sm"}>
+                    <Stack gap={isVeryCompact ? "md" : "sm"}>
                         {/* Old Clients */}
                         <Box>
-                            <Flex justify="space-between" align="center" mb="xs">
-                                <Group gap={isVeryCompact ? "xs" : 8} align="center">
-                                    <ThemeIcon size={isVeryCompact ? "xs" : "sm"} radius="xl" variant="light" color={colors.old}>
+                            <Flex justify="space-between" align="center" mb="md">
+                                <Group gap={isVeryCompact ? "md" : 8} align="center">
+                                    <ThemeIcon size={isVeryCompact ? "md" : "sm"} radius="xl" variant="light" color={colors.old}>
                                         {OldClientIconNode}
                                     </ThemeIcon>
-                                    <Text size={isVeryCompact ? "xs" : "sm"} c={colors.old}>
+                                    <Text size={isVeryCompact ? "md" : "sm"} c={colors.old}>
                                         {getLanguageByKey("Old Clients")} ({getLanguageByKey("Multiple tickets")})
                                     </Text>
                                 </Group>
                                 <Box style={{ textAlign: "right" }}>
-                                    <Text size={isVeryCompact ? "xs" : "sm"} fw={700}>{fmt(oldClientTickets)}</Text>
+                                    <Text size={isVeryCompact ? "md" : "sm"} fw={700}>{fmt(oldClientTickets)}</Text>
                                     <Text size="md" c="dimmed">{getLanguageByKey("tickets")}</Text>
                                 </Box>
                             </Flex>
                             <Progress
                                 value={oldPct}
-                                size={isVeryCompact ? "xs" : "md"}
+                                size={isVeryCompact ? "md" : "md"}
                                 radius="xl"
                                 color={colors.old}
                             />
@@ -124,23 +124,23 @@ export const TicketStateCard = ({
 
                         {/* New Clients */}
                         <Box>
-                            <Flex justify="space-between" align="center" mb="xs">
-                                <Group gap={isVeryCompact ? "xs" : 8} align="center">
-                                    <ThemeIcon size={isVeryCompact ? "xs" : "sm"} radius="xl" variant="light" color={colors.new}>
+                            <Flex justify="space-between" align="center" mb="md">
+                                <Group gap={isVeryCompact ? "md" : 8} align="center">
+                                    <ThemeIcon size={isVeryCompact ? "md" : "sm"} radius="xl" variant="light" color={colors.new}>
                                         {NewClientIconNode}
                                     </ThemeIcon>
-                                    <Text size={isVeryCompact ? "xs" : "sm"} c={colors.new}>
+                                    <Text size={isVeryCompact ? "md" : "sm"} c={colors.new}>
                                         {getLanguageByKey("New Clients")} ({getLanguageByKey("Single ticket")})
                                     </Text>
                                 </Group>
                                 <Box style={{ textAlign: "right" }}>
-                                    <Text size={isVeryCompact ? "xs" : "sm"} fw={700}>{fmt(newClientTickets)}</Text>
+                                    <Text size={isVeryCompact ? "md" : "sm"} fw={700}>{fmt(newClientTickets)}</Text>
                                     <Text size="md" c="dimmed">{getLanguageByKey("tickets")}</Text>
                                 </Box>
                             </Flex>
                             <Progress
                                 value={newPct}
-                                size={isVeryCompact ? "xs" : "md"}
+                                size={isVeryCompact ? "md" : "md"}
                                 radius="xl"
                                 color={colors.new}
                             />
@@ -164,15 +164,15 @@ export const TicketStateCard = ({
 
                                         return (
                                             <Box key={`ug-${ugIndex}`}>
-                                                <Text fw={600} size="md" mb="xs" c="dark">
+                                                <Text fw={600} size="md" mb="md" c="dark">
                                                     {ug.userGroupName || "-"}
                                                 </Text>
-                                                <Stack gap="xs">
+                                                <Stack gap="md">
                                                     {/* Old Clients для группы */}
                                                     <Flex justify="space-between" align="center">
-                                                        <Group gap="xs" align="center">
+                                                        <Group gap="md" align="center">
                                                             <ThemeIcon
-                                                                size="xs"
+                                                                size="md"
                                                                 radius="lg"
                                                                 variant="light"
                                                                 color={colors.old}
@@ -189,15 +189,15 @@ export const TicketStateCard = ({
                                                     </Flex>
                                                     <Progress
                                                         value={groupOldPct}
-                                                        size="xs"
+                                                        size="md"
                                                         radius="xl"
                                                         color={colors.old}
                                                     />
                                                     {/* New Clients для группы */}
                                                     <Flex justify="space-between" align="center">
-                                                        <Group gap="xs" align="center">
+                                                        <Group gap="md" align="center">
                                                             <ThemeIcon
-                                                                size="xs"
+                                                                size="md"
                                                                 radius="lg"
                                                                 variant="light"
                                                                 color={colors.new}
@@ -214,7 +214,7 @@ export const TicketStateCard = ({
                                                     </Flex>
                                                     <Progress
                                                         value={groupNewPct}
-                                                        size="xs"
+                                                        size="md"
                                                         radius="xl"
                                                         color={colors.new}
                                                     />
@@ -244,20 +244,20 @@ export const TicketStateCard = ({
 
                                         return (
                                             <Box key={`ut-${utIndex}`}>
-                                                <Text fw={600} size="md" mb="xs" c="dark">
+                                                <Text fw={600} size="md" mb="md" c="dark">
                                                     {ut.userName || `ID ${ut.userId}`}
                                                     {ut.sipuniId && (
-                                                        <Text component="span" size="md" c="dimmed" ml="xs">
+                                                        <Text component="span" size="md" c="dimmed" ml="md">
                                                             ({ut.sipuniId})
                                                         </Text>
                                                     )}
                                                 </Text>
-                                                <Stack gap="xs">
+                                                <Stack gap="md">
                                                     {/* Old Clients для пользователя */}
                                                     <Flex justify="space-between" align="center">
-                                                        <Group gap="xs" align="center">
+                                                        <Group gap="md" align="center">
                                                             <ThemeIcon
-                                                                size="xs"
+                                                                size="md"
                                                                 radius="lg"
                                                                 variant="light"
                                                                 color={colors.old}
@@ -274,15 +274,15 @@ export const TicketStateCard = ({
                                                     </Flex>
                                                     <Progress
                                                         value={userOldPct}
-                                                        size="xs"
+                                                        size="md"
                                                         radius="xl"
                                                         color={colors.old}
                                                     />
                                                     {/* New Clients для пользователя */}
                                                     <Flex justify="space-between" align="center">
-                                                        <Group gap="xs" align="center">
+                                                        <Group gap="md" align="center">
                                                             <ThemeIcon
-                                                                size="xs"
+                                                                size="md"
                                                                 radius="lg"
                                                                 variant="light"
                                                                 color={colors.new}
@@ -299,7 +299,7 @@ export const TicketStateCard = ({
                                                     </Flex>
                                                     <Progress
                                                         value={userNewPct}
-                                                        size="xs"
+                                                        size="md"
                                                         radius="xl"
                                                         color={colors.new}
                                                     />

@@ -24,11 +24,11 @@ export const TicketRateCard = ({
   const isCompact = width < 40 || height < 15;
   const isVeryCompact = width < 30 || height < 12;
 
-  const cardPadding = isVeryCompact ? "xs" : isCompact ? "sm" : "lg";
-  const titleSize = isVeryCompact ? "xs" : isCompact ? "sm" : "sm";
-  const subtitleSize = isVeryCompact ? "xs" : isCompact ? "sm" : "lg";
-  const badgeSize = isVeryCompact ? "xs" : isCompact ? "sm" : "lg";
-  const statGap = isVeryCompact ? "xs" : isCompact ? "sm" : "sm";
+  const cardPadding = isVeryCompact ? "md" : isCompact ? "sm" : "lg";
+  const titleSize = isVeryCompact ? "md" : isCompact ? "sm" : "sm";
+  const subtitleSize = isVeryCompact ? "md" : isCompact ? "sm" : "lg";
+  const badgeSize = isVeryCompact ? "md" : isCompact ? "sm" : "lg";
+  const statGap = isVeryCompact ? "md" : isCompact ? "sm" : "sm";
   const getQualityColor = (directlyClosedPct) => {
     if (directlyClosedPct <= 10) return "green"; // Хорошо - мало прямых закрытий
     if (directlyClosedPct <= 25) return "yellow"; // Нормально
@@ -58,7 +58,7 @@ export const TicketRateCard = ({
       style={{ backgroundColor: bg, height: "100%", display: "flex", flexDirection: "column", overflow: "hidden" }}
     >
       <Stack gap={statGap} style={{ flex: 1, height: "100%", minHeight: 0 }}>
-        <Group justify="space-between" align="flex-start" style={{ flexShrink: 0 }}>
+        <Group justify="space-between" align="flex-start" style={{ flemdhrink: 0 }}>
           <Stack gap={4}>
             <Text fw={600} size={titleSize} c="dimmed">
               {title}
@@ -81,22 +81,22 @@ export const TicketRateCard = ({
 
         {/* Прокручиваемая область с контентом */}
         <Box style={{ flex: 1, overflowY: "auto", overflowX: "hidden", minHeight: 0 }}>
-          <Stack gap={isVeryCompact ? "xs" : "sm"}>
+          <Stack gap={isVeryCompact ? "md" : "sm"}>
             {/* Обработано тикетов */}
             <Group justify="space-between" align="center">
-              <Group gap="xs">
-                <ThemeIcon color="green" variant="light" size={isVeryCompact ? "xs" : "sm"}>
+              <Group gap="md">
+                <ThemeIcon color="green" variant="light" size={isVeryCompact ? "md" : "sm"}>
                   <FaCheckCircle size={isVeryCompact ? 10 : 12} />
                 </ThemeIcon>
-                <Text size={isVeryCompact ? "xs" : "sm"} fw={500}>
+                <Text size={isVeryCompact ? "md" : "sm"} fw={500}>
                   {t("Worked on tickets")}
                 </Text>
               </Group>
-              <Group gap="xs">
-                <Text fw={600} size={isVeryCompact ? "xs" : "sm"}>
+              <Group gap="md">
+                <Text fw={600} size={isVeryCompact ? "md" : "sm"}>
                   {workedOnCount}
                 </Text>
-                <Text size="xs" c="dimmed">
+                <Text size="md" c="dimmed">
                   ({workedOnPercentage.toFixed(1)}%)
                 </Text>
               </Group>
@@ -104,25 +104,25 @@ export const TicketRateCard = ({
             <Progress
               value={workedOnPercentage}
               color="green"
-              size={isVeryCompact ? "xs" : "sm"}
+              size={isVeryCompact ? "md" : "sm"}
               radius="xl"
             />
 
             {/* Прямо закрытые тикеты */}
             <Group justify="space-between" align="center">
-              <Group gap="xs">
-                <ThemeIcon color="red" variant="light" size={isVeryCompact ? "xs" : "sm"}>
+              <Group gap="md">
+                <ThemeIcon color="red" variant="light" size={isVeryCompact ? "md" : "sm"}>
                   <FaTimes size={isVeryCompact ? 10 : 12} />
                 </ThemeIcon>
-                <Text size={isVeryCompact ? "xs" : "sm"} fw={500}>
+                <Text size={isVeryCompact ? "md" : "sm"} fw={500}>
                   {t("Directly closed tickets")}
                 </Text>
               </Group>
-              <Group gap="xs">
-                <Text fw={600} size={isVeryCompact ? "xs" : "sm"}>
+              <Group gap="md">
+                <Text fw={600} size={isVeryCompact ? "md" : "sm"}>
                   {directlyClosedCount}
                 </Text>
-                <Text size="xs" c="dimmed">
+                <Text size="md" c="dimmed">
                   ({directlyClosedPercentage.toFixed(1)}%)
                 </Text>
               </Group>
@@ -130,14 +130,14 @@ export const TicketRateCard = ({
             <Progress
               value={directlyClosedPercentage}
               color="red"
-              size={isVeryCompact ? "xs" : "sm"}
+              size={isVeryCompact ? "md" : "sm"}
               radius="xl"
             />
 
             {/* Вложенные группы пользователей (для by_group_title) */}
             {userGroups && userGroups.length > 0 && (
               <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
-                <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+                <Text size="md" fw={700} c="dimmed" mb="sm" tt="uppercase">
                   {getLanguageByKey("User Groups") || "User Groups"}
                 </Text>
                 <Stack gap="md">
@@ -165,25 +165,25 @@ export const TicketRateCard = ({
 
                     return (
                       <Box key={`ug-${ugIndex}`}>
-                        <Text fw={600} size="sm" mb="xs" c="dark">
+                        <Text fw={600} size="sm" mb="md" c="dark">
                           {ug.userGroupName || "-"}
                         </Text>
-                        <Stack gap="xs">
+                        <Stack gap="md">
                           {/* Worked on для группы */}
                           <Group justify="space-between" align="center">
-                            <Group gap="xs">
-                              <ThemeIcon color="green" variant="light" size="xs">
+                            <Group gap="md">
+                              <ThemeIcon color="green" variant="light" size="md">
                                 <FaCheckCircle size={10} />
                               </ThemeIcon>
-                              <Text size="xs" fw={500}>
+                              <Text size="md" fw={500}>
                                 {t("Worked on tickets")}
                               </Text>
                             </Group>
-                            <Group gap="xs">
-                              <Text fw={600} size="xs">
+                            <Group gap="md">
+                              <Text fw={600} size="md">
                                 {groupStats.workedOn.count}
                               </Text>
-                              <Text size="xs" c="dimmed">
+                              <Text size="md" c="dimmed">
                                 ({groupStats.workedOn.percentage.toFixed(1)}%)
                               </Text>
                             </Group>
@@ -191,24 +191,24 @@ export const TicketRateCard = ({
                           <Progress
                             value={groupStats.workedOn.percentage}
                             color="green"
-                            size="xs"
+                            size="md"
                             radius="xl"
                           />
                           {/* Directly closed для группы */}
                           <Group justify="space-between" align="center">
-                            <Group gap="xs">
-                              <ThemeIcon color="red" variant="light" size="xs">
+                            <Group gap="md">
+                              <ThemeIcon color="red" variant="light" size="md">
                                 <FaTimes size={10} />
                               </ThemeIcon>
-                              <Text size="xs" fw={500}>
+                              <Text size="md" fw={500}>
                                 {t("Directly closed tickets")}
                               </Text>
                             </Group>
-                            <Group gap="xs">
-                              <Text fw={600} size="xs">
+                            <Group gap="md">
+                              <Text fw={600} size="md">
                                 {groupStats.directlyClosed.count}
                               </Text>
-                              <Text size="xs" c="dimmed">
+                              <Text size="md" c="dimmed">
                                 ({groupStats.directlyClosed.percentage.toFixed(1)}%)
                               </Text>
                             </Group>
@@ -216,7 +216,7 @@ export const TicketRateCard = ({
                           <Progress
                             value={groupStats.directlyClosed.percentage}
                             color="red"
-                            size="xs"
+                            size="md"
                             radius="xl"
                           />
                         </Stack>
@@ -230,7 +230,7 @@ export const TicketRateCard = ({
             {/* Вложенные пользователи (для by_user_group) */}
             {userTechnicians && userTechnicians.length > 0 && (
               <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
-                <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+                <Text size="md" fw={700} c="dimmed" mb="sm" tt="uppercase">
                   {getLanguageByKey("Users") || "Users"}
                 </Text>
                 <Stack gap="md">
@@ -258,25 +258,25 @@ export const TicketRateCard = ({
 
                     return (
                       <Box key={`ut-${utIndex}`}>
-                        <Text fw={600} size="sm" mb="xs" c="dark">
+                        <Text fw={600} size="sm" mb="md" c="dark">
                           {ut.userName || `ID ${ut.userId}`}
                         </Text>
-                        <Stack gap="xs">
+                        <Stack gap="md">
                           {/* Worked on для пользователя */}
                           <Group justify="space-between" align="center">
-                            <Group gap="xs">
-                              <ThemeIcon color="green" variant="light" size="xs">
+                            <Group gap="md">
+                              <ThemeIcon color="green" variant="light" size="md">
                                 <FaCheckCircle size={10} />
                               </ThemeIcon>
-                              <Text size="xs" fw={500}>
+                              <Text size="md" fw={500}>
                                 {t("Worked on tickets")}
                               </Text>
                             </Group>
-                            <Group gap="xs">
-                              <Text fw={600} size="xs">
+                            <Group gap="md">
+                              <Text fw={600} size="md">
                                 {userStats.workedOn.count}
                               </Text>
-                              <Text size="xs" c="dimmed">
+                              <Text size="md" c="dimmed">
                                 ({userStats.workedOn.percentage.toFixed(1)}%)
                               </Text>
                             </Group>
@@ -284,24 +284,24 @@ export const TicketRateCard = ({
                           <Progress
                             value={userStats.workedOn.percentage}
                             color="green"
-                            size="xs"
+                            size="md"
                             radius="xl"
                           />
                           {/* Directly closed для пользователя */}
                           <Group justify="space-between" align="center">
-                            <Group gap="xs">
-                              <ThemeIcon color="red" variant="light" size="xs">
+                            <Group gap="md">
+                              <ThemeIcon color="red" variant="light" size="md">
                                 <FaTimes size={10} />
                               </ThemeIcon>
-                              <Text size="xs" fw={500}>
+                              <Text size="md" fw={500}>
                                 {t("Directly closed tickets")}
                               </Text>
                             </Group>
-                            <Group gap="xs">
-                              <Text fw={600} size="xs">
+                            <Group gap="md">
+                              <Text fw={600} size="md">
                                 {userStats.directlyClosed.count}
                               </Text>
-                              <Text size="xs" c="dimmed">
+                              <Text size="md" c="dimmed">
                                 ({userStats.directlyClosed.percentage.toFixed(1)}%)
                               </Text>
                             </Group>
@@ -309,7 +309,7 @@ export const TicketRateCard = ({
                           <Progress
                             value={userStats.directlyClosed.percentage}
                             color="red"
-                            size="xs"
+                            size="md"
                             radius="xl"
                           />
                         </Stack>
@@ -322,10 +322,10 @@ export const TicketRateCard = ({
 
             {/* Общая статистика */}
             <Group justify="space-between" align="center" mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
-              <Text size="xs" c="dimmed">
+              <Text size="md" c="dimmed">
                 {t("Total transitions")}
               </Text>
-              <Text fw={700} size={isVeryCompact ? "xs" : "sm"}>
+              <Text fw={700} size={isVeryCompact ? "md" : "sm"}>
                 {totalTransitions}
               </Text>
             </Group>

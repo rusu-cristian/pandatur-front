@@ -54,11 +54,11 @@ export const TicketLifetimeStatsCard = ({
   const isCompact = width < 40 || height < 15;
   const isVeryCompact = width < 30 || height < 12;
 
-  const cardPadding = isVeryCompact ? "xs" : isCompact ? "sm" : "lg";
-  const titleSize = isVeryCompact ? "xs" : isCompact ? "sm" : "sm";
-  const subtitleSize = isVeryCompact ? "xs" : isCompact ? "sm" : "lg";
-  const badgeSize = isVeryCompact ? "xs" : isCompact ? "sm" : "lg";
-  const statGap = isVeryCompact ? "xs" : isCompact ? "sm" : "sm";
+  const cardPadding = isVeryCompact ? "md" : isCompact ? "sm" : "lg";
+  const titleSize = isVeryCompact ? "md" : isCompact ? "sm" : "sm";
+  const subtitleSize = isVeryCompact ? "md" : isCompact ? "sm" : "lg";
+  const badgeSize = isVeryCompact ? "md" : isCompact ? "sm" : "lg";
+  const statGap = isVeryCompact ? "md" : isCompact ? "sm" : "sm";
 
   const getEfficiencyColor = (avgHours) => {
     if (avgHours <= 1) return "green"; // Очень быстро
@@ -76,7 +76,7 @@ export const TicketLifetimeStatsCard = ({
       style={{ backgroundColor: "var(--crm-ui-kit-palette-background-primary)", height: "100%", display: "flex", flexDirection: "column", overflow: "hidden" }}
     >
       <Stack gap={statGap} style={{ flex: 1, height: "100%", minHeight: 0 }}>
-        <Group justify="space-between" align="flex-start" style={{ flexShrink: 0 }}>
+        <Group justify="space-between" align="flex-start" style={{ flemdhrink: 0 }}>
           <Stack gap={4}>
             <Text fw={600} size={titleSize} c="dimmed">
               {title}
@@ -99,53 +99,53 @@ export const TicketLifetimeStatsCard = ({
 
         {/* Прокручиваемая область с контентом */}
         <Box style={{ flex: 1, overflowY: "auto", overflowX: "hidden", minHeight: 0 }}>
-          <Stack gap={isVeryCompact ? "xs" : "sm"}>
+          <Stack gap={isVeryCompact ? "md" : "sm"}>
             {/* Общее время обработки */}
             <Group justify="space-between" align="center">
-              <Group gap="xs">
-                <ThemeIcon color="blue" variant="light" size={isVeryCompact ? "xs" : "sm"}>
+              <Group gap="md">
+                <ThemeIcon color="blue" variant="light" size={isVeryCompact ? "md" : "sm"}>
                   <FaClock size={isVeryCompact ? 10 : 12} />
                 </ThemeIcon>
-                <Text size={isVeryCompact ? "xs" : "sm"} fw={500}>
+                <Text size={isVeryCompact ? "md" : "sm"} fw={500}>
                   {t("Total processing time")}
                 </Text>
               </Group>
-              <Text fw={600} size={isVeryCompact ? "xs" : "sm"}>
+              <Text fw={600} size={isVeryCompact ? "md" : "sm"}>
                 {fmtTime(totalLifetimeHours)}
               </Text>
             </Group>
             <Progress
               value={Math.min(100, (totalLifetimeHours / Math.max(totalLifetimeHours, 1)) * 100)}
               color="blue"
-              size={isVeryCompact ? "xs" : "sm"}
+              size={isVeryCompact ? "md" : "sm"}
               radius="xl"
             />
 
             {/* Среднее время обработки */}
             <Group justify="space-between" align="center">
-              <Group gap="xs">
-                <ThemeIcon color="green" variant="light" size={isVeryCompact ? "xs" : "sm"}>
+              <Group gap="md">
+                <ThemeIcon color="green" variant="light" size={isVeryCompact ? "md" : "sm"}>
                   <FaChartLine size={isVeryCompact ? 10 : 12} />
                 </ThemeIcon>
-                <Text size={isVeryCompact ? "xs" : "sm"} fw={500}>
+                <Text size={isVeryCompact ? "md" : "sm"} fw={500}>
                   {t("Average processing time")}
                 </Text>
               </Group>
-              <Text fw={600} size={isVeryCompact ? "xs" : "sm"}>
+              <Text fw={600} size={isVeryCompact ? "md" : "sm"}>
                 {fmtTime(averageLifetimeHours)}
               </Text>
             </Group>
             <Progress
               value={Math.min(100, (averageLifetimeHours / Math.max(averageLifetimeHours, 1)) * 100)}
               color={getEfficiencyColor(averageLifetimeHours)}
-              size={isVeryCompact ? "xs" : "sm"}
+              size={isVeryCompact ? "md" : "sm"}
               radius="xl"
             />
 
             {/* Вложенные группы пользователей (для by_group_title) */}
             {userGroups && userGroups.length > 0 && (
               <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
-                <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+                <Text size="md" fw={700} c="dimmed" mb="sm" tt="uppercase">
                   {getLanguageByKey("User Groups") || "User Groups"}
                 </Text>
                 <Stack gap="md">
@@ -172,48 +172,48 @@ export const TicketLifetimeStatsCard = ({
 
                     return (
                       <Box key={`ug-${ugIndex}`}>
-                        <Text fw={600} size="sm" mb="xs" c="dark">
+                        <Text fw={600} size="sm" mb="md" c="dark">
                           {ug.userGroupName || "-"}
                         </Text>
-                        <Stack gap="xs">
+                        <Stack gap="md">
                           {/* Total processing time для группы */}
                           <Group justify="space-between" align="center">
-                            <Group gap="xs">
-                              <ThemeIcon color="blue" variant="light" size="xs">
+                            <Group gap="md">
+                              <ThemeIcon color="blue" variant="light" size="md">
                                 <FaClock size={10} />
                               </ThemeIcon>
-                              <Text size="xs" fw={500}>
+                              <Text size="md" fw={500}>
                                 {t("Total processing time")}
                               </Text>
                             </Group>
-                            <Text fw={600} size="xs">
+                            <Text fw={600} size="md">
                               {fmtTime(groupTotalHours)}
                             </Text>
                           </Group>
                           <Progress
                             value={Math.min(100, (groupTotalHours / Math.max(groupTotalHours, 1)) * 100)}
                             color="blue"
-                            size="xs"
+                            size="md"
                             radius="xl"
                           />
                           {/* Average processing time для группы */}
                           <Group justify="space-between" align="center">
-                            <Group gap="xs">
-                              <ThemeIcon color="green" variant="light" size="xs">
+                            <Group gap="md">
+                              <ThemeIcon color="green" variant="light" size="md">
                                 <FaChartLine size={10} />
                               </ThemeIcon>
-                              <Text size="xs" fw={500}>
+                              <Text size="md" fw={500}>
                                 {t("Average processing time")}
                               </Text>
                             </Group>
-                            <Text fw={600} size="xs">
+                            <Text fw={600} size="md">
                               {fmtTime(groupAvgHours)}
                             </Text>
                           </Group>
                           <Progress
                             value={Math.min(100, (groupAvgHours / Math.max(groupAvgHours, 1)) * 100)}
                             color={getEfficiencyColor(groupAvgHours)}
-                            size="xs"
+                            size="md"
                             radius="xl"
                           />
                         </Stack>
@@ -227,7 +227,7 @@ export const TicketLifetimeStatsCard = ({
             {/* Вложенные пользователи (для by_user_group) */}
             {userTechnicians && userTechnicians.length > 0 && (
               <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
-                <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+                <Text size="md" fw={700} c="dimmed" mb="sm" tt="uppercase">
                   {getLanguageByKey("Users") || "Users"}
                 </Text>
                 <Stack gap="md">
@@ -254,48 +254,48 @@ export const TicketLifetimeStatsCard = ({
 
                     return (
                       <Box key={`ut-${utIndex}`}>
-                        <Text fw={600} size="sm" mb="xs" c="dark">
+                        <Text fw={600} size="sm" mb="md" c="dark">
                           {ut.userName || `ID ${ut.userId}`}
                         </Text>
-                        <Stack gap="xs">
+                        <Stack gap="md">
                           {/* Total processing time для пользователя */}
                           <Group justify="space-between" align="center">
-                            <Group gap="xs">
-                              <ThemeIcon color="blue" variant="light" size="xs">
+                            <Group gap="md">
+                              <ThemeIcon color="blue" variant="light" size="md">
                                 <FaClock size={10} />
                               </ThemeIcon>
-                              <Text size="xs" fw={500}>
+                              <Text size="md" fw={500}>
                                 {t("Total processing time")}
                               </Text>
                             </Group>
-                            <Text fw={600} size="xs">
+                            <Text fw={600} size="md">
                               {fmtTime(userTotalHours)}
                             </Text>
                           </Group>
                           <Progress
                             value={Math.min(100, (userTotalHours / Math.max(userTotalHours, 1)) * 100)}
                             color="blue"
-                            size="xs"
+                            size="md"
                             radius="xl"
                           />
                           {/* Average processing time для пользователя */}
                           <Group justify="space-between" align="center">
-                            <Group gap="xs">
-                              <ThemeIcon color="green" variant="light" size="xs">
+                            <Group gap="md">
+                              <ThemeIcon color="green" variant="light" size="md">
                                 <FaChartLine size={10} />
                               </ThemeIcon>
-                              <Text size="xs" fw={500}>
+                              <Text size="md" fw={500}>
                                 {t("Average processing time")}
                               </Text>
                             </Group>
-                            <Text fw={600} size="xs">
+                            <Text fw={600} size="md">
                               {fmtTime(userAvgHours)}
                             </Text>
                           </Group>
                           <Progress
                             value={Math.min(100, (userAvgHours / Math.max(userAvgHours, 1)) * 100)}
                             color={getEfficiencyColor(userAvgHours)}
-                            size="xs"
+                            size="md"
                             radius="xl"
                           />
                         </Stack>
@@ -308,20 +308,20 @@ export const TicketLifetimeStatsCard = ({
 
             {/* Общая статистика */}
             <Group justify="space-between" align="center" mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
-              <Text size="xs" c="dimmed">
+              <Text size="md" c="dimmed">
                 {t("Tickets processed")}
               </Text>
-              <Text fw={700} size={isVeryCompact ? "xs" : "sm"}>
+              <Text fw={700} size={isVeryCompact ? "md" : "sm"}>
                 {ticketsProcessed}
               </Text>
             </Group>
 
             {/* Дополнительная информация */}
             <Group justify="space-between" align="center">
-              <Text size="xs" c="dimmed">
+              <Text size="md" c="dimmed">
                 {t("Total time (minutes)")}
               </Text>
-              <Text fw={500} size="xs" c="dimmed">
+              <Text fw={500} size="md" c="dimmed">
                 {fmtMinutes(totalLifetimeMinutes)}
               </Text>
             </Group>

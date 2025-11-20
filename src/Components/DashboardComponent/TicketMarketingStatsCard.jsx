@@ -72,7 +72,7 @@ export const TicketMarketingStatsCard = ({
             <FaBullhorn size={18} />
           </ThemeIcon>
           <Stack gap={4}>
-            <Text size="xs" c="dimmed" fw={700} tt="uppercase" style={{ letterSpacing: 0.8 }}>
+            <Text size="md" c="dimmed" fw={700} tt="uppercase" style={{ letterSpacing: 0.8 }}>
               {title || getLanguageByKey("Ticket Marketing Stats")}
             </Text>
             <Group gap={6} wrap="wrap">
@@ -91,7 +91,7 @@ export const TicketMarketingStatsCard = ({
           <Text fz={36} fw={900} style={{ lineHeight: 1 }}>
             {fmt(totalValue)}
           </Text>
-          <Text size="xs" c="dimmed" fw={600}>
+          <Text size="md" c="dimmed" fw={600}>
             {getLanguageByKey("Total")}
           </Text>
         </Box>
@@ -109,7 +109,7 @@ export const TicketMarketingStatsCard = ({
             return (
               <Box key={`${item.channel}-${index}`}>
                 <Group justify="space-between" align="center" mb={6}>
-                  <Group gap="xs" align="center">
+                  <Group gap="md" align="center">
                     <Badge variant="light" radius="sm">
                       {index + 1}
                     </Badge>
@@ -138,7 +138,7 @@ export const TicketMarketingStatsCard = ({
                         {fmt(count)}
                       </Text>
                     )}
-                    <Text size="xs" c="dimmed">
+                    <Text size="md" c="dimmed">
                       {share}%
                     </Text>
                   </Box>
@@ -156,7 +156,7 @@ export const TicketMarketingStatsCard = ({
         {/* Вложенные группы пользователей (user_groups) для by_group_title */}
         {userGroups && userGroups.length > 0 && (
           <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
-            <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+            <Text size="md" fw={700} c="dimmed" mb="sm" tt="uppercase">
               {getLanguageByKey("User Groups") || "User Groups"}
             </Text>
             <Stack gap="md">
@@ -188,10 +188,10 @@ export const TicketMarketingStatsCard = ({
 
                 return (
                   <Box key={`ug-${ugIndex}`}>
-                    <Text fw={600} size="sm" mb="xs" c="dark">
+                    <Text fw={600} size="sm" mb="md" c="dark">
                       {ug.userGroupName}
                     </Text>
-                    <Stack gap="xs">
+                    <Stack gap="md">
                       {normalizedGroupStats.map((item, itemIndex) => {
                         const count = Number.isFinite(item.count) ? item.count : 0;
                         const percent = clampPercentage((count / groupMaxCount) * 100);
@@ -202,7 +202,7 @@ export const TicketMarketingStatsCard = ({
                         return (
                           <Box key={`${item.channel}-${itemIndex}`} pl="md">
                             <Group justify="space-between" align="center" mb={4}>
-                              <Text size="xs" fw={500}>
+                              <Text size="md" fw={500}>
                                 {channelLabel}
                               </Text>
                               <Box style={{ textAlign: "right" }}>
@@ -222,11 +222,11 @@ export const TicketMarketingStatsCard = ({
                                     {fmt(count)}
                                   </Link>
                                 ) : (
-                                  <Text size="xs" fw={600}>
+                                  <Text size="md" fw={600}>
                                     {fmt(count)}
                                   </Text>
                                 )}
-                                <Text size="xs" c="dimmed">
+                                <Text size="md" c="dimmed">
                                   {share}%
                                 </Text>
                               </Box>
@@ -246,7 +246,7 @@ export const TicketMarketingStatsCard = ({
         {/* Вложенные пользователи (user_technicians) для by_user_group */}
         {userTechnicians && userTechnicians.length > 0 && (
           <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
-            <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+            <Text size="md" fw={700} c="dimmed" mb="sm" tt="uppercase">
               {getLanguageByKey("Users") || "Users"}
             </Text>
             <Stack gap="md">
@@ -278,10 +278,10 @@ export const TicketMarketingStatsCard = ({
 
                 return (
                   <Box key={`ut-${utIndex}`}>
-                    <Text fw={600} size="sm" mb="xs" c="dark">
+                    <Text fw={600} size="sm" mb="md" c="dark">
                       {ut.userName || `ID ${ut.userId}`}
                     </Text>
-                    <Stack gap="xs">
+                    <Stack gap="md">
                       {normalizedUserStats.map((item, itemIndex) => {
                         const count = Number.isFinite(item.count) ? item.count : 0;
                         const percent = clampPercentage((count / userMaxCount) * 100);
@@ -292,7 +292,7 @@ export const TicketMarketingStatsCard = ({
                         return (
                           <Box key={`${item.channel}-${itemIndex}`} pl="md">
                             <Group justify="space-between" align="center" mb={4}>
-                              <Text size="xs" fw={500}>
+                              <Text size="md" fw={500}>
                                 {channelLabel}
                               </Text>
                               <Box style={{ textAlign: "right" }}>
@@ -312,11 +312,11 @@ export const TicketMarketingStatsCard = ({
                                     {fmt(count)}
                                   </Link>
                                 ) : (
-                                  <Text size="xs" fw={600}>
+                                  <Text size="md" fw={600}>
                                     {fmt(count)}
                                   </Text>
                                 )}
-                                <Text size="xs" c="dimmed">
+                                <Text size="md" c="dimmed">
                                   {share}%
                                 </Text>
                               </Box>

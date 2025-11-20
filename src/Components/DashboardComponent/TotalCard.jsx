@@ -65,9 +65,9 @@ export const TotalCard = ({
     const isCompact = width < 40 || height < 15;
     const isVeryCompact = width < 30 || height < 12;
 
-    const cardPadding = isVeryCompact ? "xs" : isCompact ? "sm" : "lg";
-    const titleSize = isVeryCompact ? "xs" : isCompact ? "xs" : "xs";
-    const subtitleSize = isVeryCompact ? "xs" : isCompact ? "sm" : "sm";
+    const cardPadding = isVeryCompact ? "md" : isCompact ? "sm" : "lg";
+    const titleSize = isVeryCompact ? "md" : isCompact ? "md" : "md";
+    const subtitleSize = isVeryCompact ? "md" : isCompact ? "sm" : "sm";
     const totalSize = isVeryCompact ? 24 : isCompact ? 32 : 42;
     const iconSize = isVeryCompact ? "md" : isCompact ? "lg" : "xl";
     const callIconSize = isVeryCompact ? 14 : isCompact ? 16 : 20;
@@ -113,10 +113,10 @@ export const TotalCard = ({
                 transition: "all 0.2s ease",
             }}
         >
-            <Stack gap={isVeryCompact ? "xs" : "sm"} style={{ flex: 1, height: "100%", minHeight: 0 }}>
+            <Stack gap={isVeryCompact ? "md" : "sm"} style={{ flex: 1, height: "100%", minHeight: 0 }}>
                 {/* Header */}
-                <Flex justify="space-between" align="flex-start" style={{ flexShrink: 0 }}>
-                    <Flex direction="column" gap="xs" style={{ flex: 1 }}>
+                <Flex justify="space-between" align="flex-start" style={{ flemdhrink: 0 }}>
+                    <Flex direction="column" gap="md" style={{ flex: 1 }}>
                         <Group gap="sm" align="center">
                             <ThemeIcon
                                 size={iconSize}
@@ -138,7 +138,7 @@ export const TotalCard = ({
                             </Box>
                         </Group>
 
-                        <Group gap={6} wrap="wrap" mt="xs">
+                        <Group gap={6} wrap="wrap" mt="md">
                             <Badge variant="light" color="blue" size="sm">
                                 {widgetType === "messages" 
                                     ? getLanguageByKey("Messages") 
@@ -150,27 +150,27 @@ export const TotalCard = ({
                     </Flex>
 
                     <Box style={{ textAlign: "right" }}>
-                        <Group gap="xs" align="center" justify="flex-end">
+                        <Group gap="md" align="center" justify="flex-end">
                             <Text fz={totalSize} fw={900} style={{ lineHeight: 1, color: `var(--mantine-color-${widgetColors.totalAccent}-6)` }}>
                                 {fmt(totalAll)}
                             </Text>
                             {getTrendIcon(totalAll, previousData?.totalAll)}
                         </Group>
-                        <Text size="xs" c="dimmed" fw={600} mt={-4}>
+                        <Text size="md" c="dimmed" fw={600} mt={-4}>
                             {getLanguageByKey("Total")}
                         </Text>
                     </Box>
                 </Flex>
 
-                <Divider my={isVeryCompact ? "xs" : "md"} />
+                <Divider my={isVeryCompact ? "md" : "md"} />
 
                 {/* Прокручиваемая область с контентом */}
                 <Box style={{ flex: 1, overflowY: "auto", overflowX: "hidden", minHeight: 0 }}>
-                    <Stack gap={isVeryCompact ? "xs" : "lg"}>
+                    <Stack gap={isVeryCompact ? "md" : "lg"}>
                         {/* Incoming */}
                         <Box>
-                            <Flex justify="space-between" align="center" mb="xs">
-                                <Group gap="xs" align="center">
+                            <Flex justify="space-between" align="center" mb="md">
+                                <Group gap="md" align="center">
                                     <ThemeIcon
                                         size={isVeryCompact ? "sm" : "md"}
                                         radius="lg"
@@ -180,7 +180,7 @@ export const TotalCard = ({
                                     >
                                         {IncomingIconNode}
                                     </ThemeIcon>
-                                    <Text size={isVeryCompact ? "xs" : "sm"} fw={600} c={`${widgetColors.in}.7`}>
+                                    <Text size={isVeryCompact ? "md" : "sm"} fw={600} c={`${widgetColors.in}.7`}>
                                         {getLanguageByKey("Incoming")}
                                     </Text>
                                 </Group>
@@ -188,14 +188,14 @@ export const TotalCard = ({
                                     <Text size={isVeryCompact ? "sm" : "lg"} fw={800} c={`${widgetColors.in}.6`}>
                                         {fmt(totalIncoming)}
                                     </Text>
-                                    <Text size="xs" c="dimmed">
+                                    <Text size="md" c="dimmed">
                                         {widgetType === "messages" ? getLanguageByKey("messages") : getLanguageByKey("calls")}
                                     </Text>
                                 </Box>
                             </Flex>
                             <Progress
                                 value={inPct}
-                                size={isVeryCompact ? "xs" : "lg"}
+                                size={isVeryCompact ? "md" : "lg"}
                                 radius="xl"
                                 color={widgetColors.in}
                                 style={{
@@ -206,8 +206,8 @@ export const TotalCard = ({
 
                         {/* Outgoing */}
                         <Box>
-                            <Flex justify="space-between" align="center" mb="xs">
-                                <Group gap="xs" align="center">
+                            <Flex justify="space-between" align="center" mb="md">
+                                <Group gap="md" align="center">
                                     <ThemeIcon
                                         size={isVeryCompact ? "sm" : "md"}
                                         radius="lg"
@@ -217,7 +217,7 @@ export const TotalCard = ({
                                     >
                                         {OutgoingIconNode}
                                     </ThemeIcon>
-                                    <Text size={isVeryCompact ? "xs" : "sm"} fw={600} c={`${widgetColors.out}.7`}>
+                                    <Text size={isVeryCompact ? "md" : "sm"} fw={600} c={`${widgetColors.out}.7`}>
                                         {getLanguageByKey("Outgoing")}
                                     </Text>
                                 </Group>
@@ -225,14 +225,14 @@ export const TotalCard = ({
                                     <Text size={isVeryCompact ? "sm" : "lg"} fw={800} c={`${widgetColors.out}.6`}>
                                         {fmt(totalOutgoing)}
                                     </Text>
-                                    <Text size="xs" c="dimmed">
+                                    <Text size="md" c="dimmed">
                                         {widgetType === "messages" ? getLanguageByKey("messages") : getLanguageByKey("calls")}
                                     </Text>
                                 </Box>
                             </Flex>
                             <Progress
                                 value={outPct}
-                                size={isVeryCompact ? "xs" : "lg"}
+                                size={isVeryCompact ? "md" : "lg"}
                                 radius="xl"
                                 color={widgetColors.out}
                                 style={{
@@ -244,7 +244,7 @@ export const TotalCard = ({
                         {/* Вложенные группы пользователей (для by_group_title) */}
                         {userGroups && userGroups.length > 0 && (
                             <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
-                                <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+                                <Text size="md" fw={700} c="dimmed" mb="sm" tt="uppercase">
                                     {getLanguageByKey("User Groups") || "User Groups"}
                                 </Text>
                                 <Stack gap="md">
@@ -259,57 +259,57 @@ export const TotalCard = ({
 
                                         return (
                                             <Box key={`ug-${ugIndex}`}>
-                                                <Text fw={600} size="sm" mb="xs" c="dark">
+                                                <Text fw={600} size="sm" mb="md" c="dark">
                                                     {ug.userGroupName || "-"}
                                                 </Text>
-                                                <Stack gap="xs">
+                                                <Stack gap="md">
                                                     {/* Incoming для группы */}
                                                     <Flex justify="space-between" align="center">
-                                                        <Group gap="xs" align="center">
+                                                        <Group gap="md" align="center">
                                                             <ThemeIcon
-                                                                size="xs"
+                                                                size="md"
                                                                 radius="lg"
                                                                 variant="light"
                                                                 color={widgetColors.in}
                                                             >
                                                                 {IncomingIconNode}
                                                             </ThemeIcon>
-                                                            <Text size="xs" fw={600} c={`${widgetColors.in}.7`}>
+                                                            <Text size="md" fw={600} c={`${widgetColors.in}.7`}>
                                                                 {getLanguageByKey("Incoming")}
                                                             </Text>
                                                         </Group>
-                                                        <Text size="xs" fw={700} c={`${widgetColors.in}.6`}>
+                                                        <Text size="md" fw={700} c={`${widgetColors.in}.6`}>
                                                             {fmt(groupIncoming)}
                                                         </Text>
                                                     </Flex>
                                                     <Progress
                                                         value={groupInPct}
-                                                        size="xs"
+                                                        size="md"
                                                         radius="xl"
                                                         color={widgetColors.in}
                                                     />
                                                     {/* Outgoing для группы */}
                                                     <Flex justify="space-between" align="center">
-                                                        <Group gap="xs" align="center">
+                                                        <Group gap="md" align="center">
                                                             <ThemeIcon
-                                                                size="xs"
+                                                                size="md"
                                                                 radius="lg"
                                                                 variant="light"
                                                                 color={widgetColors.out}
                                                             >
                                                                 {OutgoingIconNode}
                                                             </ThemeIcon>
-                                                            <Text size="xs" fw={600} c={`${widgetColors.out}.7`}>
+                                                            <Text size="md" fw={600} c={`${widgetColors.out}.7`}>
                                                                 {getLanguageByKey("Outgoing")}
                                                             </Text>
                                                         </Group>
-                                                        <Text size="xs" fw={700} c={`${widgetColors.out}.6`}>
+                                                        <Text size="md" fw={700} c={`${widgetColors.out}.6`}>
                                                             {fmt(groupOutgoing)}
                                                         </Text>
                                                     </Flex>
                                                     <Progress
                                                         value={groupOutPct}
-                                                        size="xs"
+                                                        size="md"
                                                         radius="xl"
                                                         color={widgetColors.out}
                                                     />
@@ -324,7 +324,7 @@ export const TotalCard = ({
                         {/* Вложенные пользователи (для by_user_group) */}
                         {userTechnicians && userTechnicians.length > 0 && (
                             <Box mt="md" pt="md" style={{ borderTop: "1px solid var(--crm-ui-kit-palette-border-default)" }}>
-                                <Text size="xs" fw={700} c="dimmed" mb="sm" tt="uppercase">
+                                <Text size="md" fw={700} c="dimmed" mb="sm" tt="uppercase">
                                     {getLanguageByKey("Users") || "Users"}
                                 </Text>
                                 <Stack gap="md">
@@ -339,62 +339,62 @@ export const TotalCard = ({
 
                                         return (
                                             <Box key={`ut-${utIndex}`}>
-                                                <Text fw={600} size="sm" mb="xs" c="dark">
+                                                <Text fw={600} size="sm" mb="md" c="dark">
                                                     {ut.userName || `ID ${ut.userId}`}
                                                     {ut.sipuniId && (
-                                                        <Text component="span" size="xs" c="dimmed" ml="xs">
+                                                        <Text component="span" size="md" c="dimmed" ml="md">
                                                             ({ut.sipuniId})
                                                         </Text>
                                                     )}
                                                 </Text>
-                                                <Stack gap="xs">
+                                                <Stack gap="md">
                                                     {/* Incoming для пользователя */}
                                                     <Flex justify="space-between" align="center">
-                                                        <Group gap="xs" align="center">
+                                                        <Group gap="md" align="center">
                                                             <ThemeIcon
-                                                                size="xs"
+                                                                size="md"
                                                                 radius="lg"
                                                                 variant="light"
                                                                 color={widgetColors.in}
                                                             >
                                                                 {IncomingIconNode}
                                                             </ThemeIcon>
-                                                            <Text size="xs" fw={600} c={`${widgetColors.in}.7`}>
+                                                            <Text size="md" fw={600} c={`${widgetColors.in}.7`}>
                                                                 {getLanguageByKey("Incoming")}
                                                             </Text>
                                                         </Group>
-                                                        <Text size="xs" fw={700} c={`${widgetColors.in}.6`}>
+                                                        <Text size="md" fw={700} c={`${widgetColors.in}.6`}>
                                                             {fmt(userIncoming)}
                                                         </Text>
                                                     </Flex>
                                                     <Progress
                                                         value={userInPct}
-                                                        size="xs"
+                                                        size="md"
                                                         radius="xl"
                                                         color={widgetColors.in}
                                                     />
                                                     {/* Outgoing для пользователя */}
                                                     <Flex justify="space-between" align="center">
-                                                        <Group gap="xs" align="center">
+                                                        <Group gap="md" align="center">
                                                             <ThemeIcon
-                                                                size="xs"
+                                                                size="md"
                                                                 radius="lg"
                                                                 variant="light"
                                                                 color={widgetColors.out}
                                                             >
                                                                 {OutgoingIconNode}
                                                             </ThemeIcon>
-                                                            <Text size="xs" fw={600} c={`${widgetColors.out}.7`}>
+                                                            <Text size="md" fw={600} c={`${widgetColors.out}.7`}>
                                                                 {getLanguageByKey("Outgoing")}
                                                             </Text>
                                                         </Group>
-                                                        <Text size="xs" fw={700} c={`${widgetColors.out}.6`}>
+                                                        <Text size="md" fw={700} c={`${widgetColors.out}.6`}>
                                                             {fmt(userOutgoing)}
                                                         </Text>
                                                     </Flex>
                                                     <Progress
                                                         value={userOutPct}
-                                                        size="xs"
+                                                        size="md"
                                                         radius="xl"
                                                         color={widgetColors.out}
                                                     />
