@@ -43,8 +43,8 @@ export const useGetTechniciansList = () => {
           const userId = item?.user?.id;
           if (!userId || processedUserIds.has(userId)) return; // Проверяем на дублирование
           
-          // Фильтруем только активных техников (статус true)
-          if (item.status !== true) return;
+          // НЕ фильтруем по статусу - берем всех пользователей
+          // Фильтрация по статусу будет в компоненте UserGroupMultiSelect
 
           processedUserIds.add(userId); // Добавляем ID в Set
           

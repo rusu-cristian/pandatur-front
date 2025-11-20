@@ -3,6 +3,20 @@ import { MultiSelect, Group, Text, Badge, Box } from "@mantine/core";
 import { FaUsers, FaUser, FaCheck } from "react-icons/fa";
 import { useUser } from "@hooks";
 
+/**
+ * Компонент для выбора пользователей и групп
+ * 
+ * ЛОГИКА РАБОТЫ:
+ * 1. В options включаем ВСЕХ пользователей (активных + неактивных)
+ *    - Это нужно чтобы в выбранных значениях (pills) показывались имена, а не ID
+ * 
+ * 2. В dropdown показываем только активных пользователей
+ *    - Фильтрация происходит в renderOption
+ *    - Выбранные неактивные пользователи НЕ показываются в dropdown, но остаются в pills
+ * 
+ * 3. При выборе группы добавляются ВСЕ пользователи группы (включая неактивных)
+ *    - Это нужно для сохранения выбранных значений
+ */
 export const UserGroupMultiSelect = ({
   value = [],
   onChange = () => { },
@@ -27,21 +41,50 @@ export const UserGroupMultiSelect = ({
     ? (placeholder === "Select users and groups" ? "Select user" : placeholder)
     : placeholder;
 
-  // Создаем опции для мультиселекта из реальных данных
+  // Создаем полный список опций (ВСЕХ пользователей - активных и неактивных)
+  // Это нужно чтобы в pills показывались имена, а не ID
   const options = useMemo(() => {
-    // Если есть отформатированные данные из useGetTechniciansList, используем их
+    // Вариант 1: Если есть techniciansData (отформатированные данные)
     if (techniciansData && techniciansData.length > 0) {
+      // Создаем Map всех пользователей (активных из techniciansData + неактивных из usersData)
+      const allUsersMap = new Map();
+      
+      // Добавляем всех пользователей из techniciansData
+      techniciansData.forEach(item => {
+        if (!item.value.startsWith("__group__")) {
+          allUsersMap.set(item.value, item);
+        }
+      });
+      
+      // Добавляем неактивных пользователей из usersData (если они есть)
+      if (usersData && usersData.length > 0) {
+        usersData.forEach(user => {
+          const userId = String(user.id);
+          // Если пользователь еще не добавлен, добавляем его
+          if (!allUsersMap.has(userId)) {
+            const name = `${user.name || ''} ${user.surname || ''}`.trim();
+            const sipuniId = user.sipuni_id ? ` (SIP: ${user.sipuni_id})` : '';
+            const userIdLabel = ` (ID: ${user.id})`;
+            
+            allUsersMap.set(userId, {
+              value: userId,
+              label: `${name}${sipuniId}${userIdLabel}`,
+              id: user.id,
+              sipuni_id: user.sipuni_id,
+              status: user.status, // Сохраняем статус для фильтрации
+              groupName: user.groups?.[0]?.name,
+              name: user.name,
+              surname: user.surname
+            });
+          }
+        });
+      }
+      
+      // Обрабатываем данные
       const filtered = techniciansData
         .filter(item => {
-          // Фильтруем только активных пользователей (статус true)
-          if (!item.value.startsWith("__group__")) {
-            // Проверяем статус пользователя - показываем только активных
-            if (item.status !== true && item.status !== undefined) {
-              return false;
-            }
-          }
-          
-          // Если есть фильтрация по allowedUserIds
+          // НЕ фильтруем по статусу - берем все
+          // Фильтрация по allowedUserIds
           if (allowedUserIds && !item.value.startsWith("__group__")) {
             return allowedUserIds.has(item.value);
           }
@@ -76,7 +119,8 @@ export const UserGroupMultiSelect = ({
             return {
               ...item,
               label: enhancedLabel,
-              disabled: false
+              disabled: false,
+              status: item.status // Сохраняем статус для фильтрации в dropdown
             };
           }
         });
@@ -106,18 +150,31 @@ export const UserGroupMultiSelect = ({
         const groupUsers = users.filter(user => user.groupName === group.label);
         result.push(...groupUsers);
       });
+      
+      // Добавляем неактивных пользователей из allUsersMap (которых нет в result)
+      allUsersMap.forEach((userItem, userId) => {
+        // Проверяем, есть ли пользователь уже в result
+        const existsInResult = result.some(opt => opt.value === userId);
+        if (!existsInResult) {
+          // Добавляем неактивного пользователя
+          result.push({
+            ...userItem,
+            disabled: false
+          });
+        }
+      });
 
       return result;
     }
 
-    // Если есть raw данные пользователей из API, используем их (показываем ВСЕ группы)
+    // Вариант 2: Если есть raw данные пользователей из API
     if (usersData && usersData.length > 0) {
-      // Фильтруем только активных пользователей (статус true)
-      const activeUsers = usersData.filter(user => user.status === true);
+      // Берем ВСЕХ пользователей (не фильтруем по статусу)
+      const allUsers = usersData;
       
-      // Собираем все уникальные группы из данных активных пользователей
+      // Собираем все уникальные группы
       const allGroups = new Map();
-      activeUsers.forEach(user => {
+      allUsers.forEach(user => {
         if (user.groups && user.groups.length > 0) {
           user.groups.forEach(group => {
             if (!allGroups.has(group.id)) {
@@ -150,7 +207,7 @@ export const UserGroupMultiSelect = ({
         });
 
         // Добавляем пользователей этой группы
-        const groupUsers = activeUsers.filter(user =>
+        const groupUsers = allUsers.filter(user =>
           user.groups && user.groups.some(g => g.id === group.id)
         );
 
@@ -167,7 +224,9 @@ export const UserGroupMultiSelect = ({
 
             options.push({
               value: String(user.id),
-              label: `${name}${sipuniId}${userId}`
+              label: `${name}${sipuniId}${userId}`,
+              status: user.status, // Сохраняем статус для фильтрации
+              groupName: group.name
             });
           });
       });
@@ -244,36 +303,20 @@ export const UserGroupMultiSelect = ({
     if (isGroup) {
       // Если выбрана группа, добавляем или убираем всех пользователей из группы
       const groupId = last.replace("__group__", "");
+      
+      // Находим название группы
+      const groupOption = options.find(opt => opt.value === `__group__${groupId}`);
+      const groupName = groupOption?.label;
 
-      // Находим всех пользователей из этой группы
-      let groupUsers = [];
-      
-      // Сначала пробуем найти в techniciansData
-      if (techniciansData && techniciansData.length > 0) {
-        groupUsers = techniciansData
-          ?.filter(item => {
-            // Пропускаем группы, берем только пользователей
-            if (item.value.startsWith("__group__")) return false;
-            // Проверяем, принадлежит ли пользователь к выбранной группе
-            return item.groupName && item.groupName === techniciansData.find(g => g.value === `__group__${groupId}`)?.label;
-          })
-          ?.map(item => item.value) || [];
-      }
-      
-      // Если не нашли в techniciansData, пробуем в usersData (только активные пользователи)
-      if (groupUsers.length === 0 && usersData && usersData.length > 0) {
-        groupUsers = usersData
-          .filter(user => user.status === true && user.groups && user.groups.some(g => g.id === groupId))
-          .map(user => String(user.id));
-      }
-      
-      // Если не нашли в usersData, пробуем в userGroups (fallback)
-      if (groupUsers.length === 0 && userGroups && userGroups.length > 0) {
-        const group = userGroups.find(g => g.id === groupId);
-        if (group && group.users) {
-          groupUsers = group.users.map(userId => String(userId));
-        }
-      }
+      // Находим всех пользователей этой группы в options (включая неактивных)
+      const groupUsers = options
+        .filter(opt => {
+          // Пропускаем группы, берем только пользователей
+          if (opt.value.startsWith("__group__")) return false;
+          // Проверяем принадлежность к группе
+          return opt.groupName === groupName;
+        })
+        .map(opt => opt.value);
 
       const current = selectedValues || [];
 
@@ -303,6 +346,15 @@ export const UserGroupMultiSelect = ({
   const renderOption = ({ option, checked }) => {
     const isGroup = option.value.startsWith("__group__");
     const isDisabled = option.disabled;
+    
+    // ФИЛЬТРАЦИЯ: Скрываем неактивных пользователей в dropdown
+    // Но НЕ скрываем выбранных (чтобы можно было снять галочку)
+    if (!isGroup && !checked) {
+      const isActive = option.status === true || option.status === undefined;
+      if (!isActive) {
+        return null; // Не показываем неактивного пользователя
+      }
+    }
 
     return (
       <Group
@@ -379,25 +431,16 @@ export const UserGroupMultiSelect = ({
             color={checked ? "blue" : "green"}
           >
             {(() => {
-              const groupId = option.value.replace("__group__", "");
-              let userCount = 0;
+              const groupName = option.label;
               
-              // Считаем активных пользователей в группе из разных источников данных
-              if (techniciansData && techniciansData.length > 0) {
-                const groupName = techniciansData.find(g => g.value === `__group__${groupId}`)?.label;
-                userCount = techniciansData.filter(item => {
-                  return !item.value.startsWith("__group__") && 
-                         item.groupName === groupName && 
-                         item.status === true;
-                }).length;
-              } else if (usersData && usersData.length > 0) {
-                userCount = usersData.filter(user => 
-                  user.status === true && user.groups && user.groups.some(g => g.id === groupId)
-                ).length;
-              } else if (userGroups && userGroups.length > 0) {
-                const group = userGroups.find(g => g.id === groupId);
-                userCount = group?.users?.length || 0;
-              }
+              // Считаем только активных пользователей в группе из options
+              const userCount = options.filter(opt => {
+                // Пропускаем группы, берем только пользователей
+                if (opt.value.startsWith("__group__")) return false;
+                // Проверяем принадлежность к группе и активный статус
+                const isActive = opt.status === true || opt.status === undefined;
+                return opt.groupName === groupName && isActive;
+              }).length;
               
               return `${userCount} users`;
             })()}
