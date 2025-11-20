@@ -19,6 +19,12 @@ export const WEBHOOK_PAGES_CONFIG = {
       group_title: ["MD", "HR", "Marketing", "IndividualGroups", "BusinessGroups", "Franchise", "Agency"]
     },
     {
+      page_id: "112573875171623",
+      page_name: "Panda Tour Brasov",
+      type: "facebook",
+      group_title: ["RO"]
+    },
+    {
       page_id: "671031122758947",
       page_name: "Rascani",
       type: "facebook",
