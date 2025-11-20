@@ -3,7 +3,6 @@ import {
   MultiSelect,
   TagsInput,
   Select,
-  Divider,
 } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
@@ -19,7 +18,6 @@ import { getLanguageByKey } from "../../utils";
 import { useGetTechniciansList } from "../../../hooks";
 import { AppContext } from "../../../contexts/AppContext";
 import {
-  getGroupUserMap,
   formatMultiSelectData,
 } from "../../utils/multiSelectUtils";
 import {
@@ -28,6 +26,11 @@ import {
 } from "../../LeadsComponent/utils";
 import { YYYY_MM_DD_DASH } from "../../../app-constants";
 import { UserGroupMultiSelect } from "../../ChatComponent/components/UserGroupMultiSelect/UserGroupMultiSelect";
+import {
+  workflowOptionsByGroupTitle,
+  workflowOptionsLimitedByGroupTitle,
+  TikTokworkflowOptionsByGroupTitle
+} from "../../utils/workflowUtils";
 
 const GENERAL_FORM_FILTER_ID = "GENERAL_FORM_FILTER_ID";
 
@@ -35,11 +38,12 @@ export const BasicGeneralFormFilter = forwardRef(({ loading, data, formId }, ref
   const idForm = formId || GENERAL_FORM_FILTER_ID;
   const { technicians } = useGetTechniciansList();
   const {
-    workflowOptions,
     accessibleGroupTitles,
     customGroupTitle,
     groupTitleForApi,
     setCustomGroupTitle,
+    isAdmin,
+    userGroups,
   } = useContext(AppContext);
 
   const form = useForm({
@@ -92,6 +96,34 @@ export const BasicGeneralFormFilter = forwardRef(({ loading, data, formId }, ref
 
   const selectedGroupTitle = customGroupTitle ?? groupTitleForApi ?? null;
 
+  // Определяем, находится ли пользователь в группе TikTok Manager
+  const isTikTokManager = useMemo(() => {
+    return userGroups?.some((group) => group.name === "TikTok Manager");
+  }, [userGroups]);
+
+  // Функция для получения правильного workflowMap на основе прав пользователя
+  const getWorkflowMap = useMemo(() => {
+    if (isAdmin) {
+      return workflowOptionsByGroupTitle;
+    }
+    if (isTikTokManager) {
+      return TikTokworkflowOptionsByGroupTitle;
+    }
+    return workflowOptionsLimitedByGroupTitle;
+  }, [isAdmin, isTikTokManager]);
+
+  // Получаем workflow опции на основе выбранного group_title
+  const filteredWorkflowOptions = useMemo(() => {
+    if (!selectedGroupTitle) {
+      return [];
+    }
+
+    // Получаем workflow опции для выбранного group_title
+    const workflowsForGroup = getWorkflowMap[selectedGroupTitle] || getWorkflowMap.Default || [];
+
+    return workflowsForGroup;
+  }, [selectedGroupTitle, getWorkflowMap]);
+
   const handleGroupTitleChange = (val) => {
     let valueToSet = null;
 
@@ -110,11 +142,31 @@ export const BasicGeneralFormFilter = forwardRef(({ loading, data, formId }, ref
     }
   };
 
+  // Сбрасываем workflow при изменении group_title, если текущие workflow не подходят
+  useEffect(() => {
+    if (!selectedGroupTitle) return;
+
+    const currentWorkflows = form.values.workflow || [];
+
+    if (currentWorkflows.length > 0) {
+      const workflowsForGroup = getWorkflowMap[selectedGroupTitle] || getWorkflowMap.Default || [];
+
+      // Фильтруем workflow, оставляя только те, которые подходят для нового group_title
+      const validWorkflows = currentWorkflows.filter((w) => workflowsForGroup.includes(w));
+
+      // Если есть невалидные workflow, обновляем значение
+      if (validWorkflows.length !== currentWorkflows.length) {
+        form.setFieldValue("workflow", validWorkflows);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedGroupTitle, getWorkflowMap]);
+
   form.watch("workflow", ({ value }) => {
     if (Array.isArray(value) && value.includes(getLanguageByKey("selectAll"))) {
-      // Убираем selectAll из значения и добавляем все workflowOptions
+      // Убираем selectAll из значения и добавляем все filteredWorkflowOptions
       const filteredValue = value.filter(v => v !== getLanguageByKey("selectAll"));
-      const uniqueValue = Array.from(new Set([...filteredValue, ...workflowOptions]));
+      const uniqueValue = Array.from(new Set([...filteredValue, ...filteredWorkflowOptions]));
       form.setFieldValue("workflow", uniqueValue);
     } else {
       form.setFieldValue("workflow", value);
@@ -134,6 +186,7 @@ export const BasicGeneralFormFilter = forwardRef(({ loading, data, formId }, ref
         last_interaction_date: convertDateToArrayFilter(data.last_interaction_date),
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   useImperativeHandle(ref, () => ({
@@ -158,7 +211,7 @@ export const BasicGeneralFormFilter = forwardRef(({ loading, data, formId }, ref
         mt="md"
         label={getLanguageByKey("Workflow")}
         placeholder={getLanguageByKey("Selectează flux de lucru")}
-        data={[getLanguageByKey("selectAll"), ...workflowOptions]}
+        data={[getLanguageByKey("selectAll"), ...filteredWorkflowOptions]}
         clearable
         key={form.key("workflow")}
         {...form.getInputProps("workflow")}
