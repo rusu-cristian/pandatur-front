@@ -156,7 +156,7 @@ const SchedulesGroupList = ({ reload, setInGroupView }) => {
           <Loader />
         </Group>
       ) : (
-        <ScrollArea h="90vh" type="auto">
+        <ScrollArea h="calc(130vh - 100px)" type="auto">
           <Stack spacing="md">
             {groups.map((group) => {
               const groupUsers = technicians.filter((u) =>
