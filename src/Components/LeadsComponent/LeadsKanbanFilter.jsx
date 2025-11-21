@@ -19,7 +19,7 @@ export const LeadsKanbanFilter = ({
   fetchTickets
 }) => {
   const [activeTab, setActiveTab] = useState("filter_ticket");
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [, setSearchParams] = useSearchParams();
 
   const ticketFormRef = useRef();
   const messageFormRef = useRef();
@@ -42,7 +42,20 @@ export const LeadsKanbanFilter = ({
     setKanbanFilters({});
     setKanbanFilterActive(false);
     setKanbanTickets([]);
-    setSearchParams({ view: "kanban" }, { replace: true });
+    
+    // Сохраняем только view и group_title (если есть), остальные фильтры удаляем
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams();
+      newParams.set("view", "kanban");
+      
+      const groupTitle = prev.get("group_title");
+      if (groupTitle) {
+        newParams.set("group_title", groupTitle);
+      }
+      
+      return newParams;
+    }, { replace: true });
+    
     fetchTickets();
     onClose?.();
   };

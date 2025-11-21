@@ -243,23 +243,33 @@ export const Leads = () => {
   const handleChangeViewMode = (mode) => {
     const upperMode = mode.toUpperCase();
     setViewMode(upperMode);
-    setSearchParams(() => {
-      const newParams = new URLSearchParams();
-      newParams.set("view", upperMode);
+    
+    // Сохраняем фильтры из URL и только меняем view и type
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev);
+      newParams.set("view", upperMode.toLowerCase());
+      
+      // Меняем тип в зависимости от режима
+      if (upperMode === VIEW_MODE.LIST) {
+        newParams.set("type", "hard");
+      } else {
+        newParams.set("type", "light");
+      }
+      
       return newParams;
-    });
+    }, { replace: true });
 
     if (upperMode === VIEW_MODE.LIST) {
       setCurrentPage(1);
-      setHardTicketFilters({});
       setSearchTerm("");
+      // НЕ сбрасываем hardTicketFilters - они будут применены из URL через useLeadsUrlSync
     } else {
-      // kanban reset до дефолтной глобальной ленты
-      setKanbanFilters({});
+      // kanban - сбрасываем локальный поиск, но фильтры остаются в URL
       setKanbanSearchTerm("");
-      setKanbanFilterActive(false);
-      setKanbanTickets([]);
-      if (!didLoadGlobalTicketsRef.current) {
+      // НЕ сбрасываем kanbanFilters - они будут применены из URL через useLeadsUrlSync
+      
+      if (!didLoadGlobalTicketsRef.current && !searchParams.get("workflow")) {
+        // Загружаем глобальные тикеты только если нет фильтров в URL
         fetchTickets().then(() => {
           didLoadGlobalTicketsRef.current = true;
         });
