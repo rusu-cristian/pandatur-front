@@ -324,7 +324,7 @@ export const AppProvider = ({ children }) => {
   const hasLeadsFilterInUrl = () => {
     const params = new URLSearchParams(window.location.search);
     const filterKeys = Array.from(params.keys()).filter(
-      (key) => key !== "view" && key !== "type"
+      (key) => key !== "view" && key !== "type" && key !== "group_title"
     );
     return filterKeys.length > 0;
   };

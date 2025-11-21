@@ -13,6 +13,7 @@ import {
   forwardRef,
   useImperativeHandle,
 } from "react";
+import { useSearchParams } from "react-router-dom";
 import { priorityOptions, groupTitleOptions } from "../../../FormOptions";
 import { getLanguageByKey } from "../../utils";
 import { useGetTechniciansList } from "../../../hooks";
@@ -45,6 +46,7 @@ export const BasicGeneralFormFilter = forwardRef(({ loading, data, formId }, ref
     isAdmin,
     userGroups,
   } = useContext(AppContext);
+  const [, setSearchParams] = useSearchParams();
 
   const form = useForm({
     mode: "controlled",
@@ -132,6 +134,19 @@ export const BasicGeneralFormFilter = forwardRef(({ loading, data, formId }, ref
         ? val
         : accessibleGroupTitles[0] || null;
     }
+
+    // Обновляем URL вместе со стейтом, чтобы избежать конфликтов с синхронизацией
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev);
+      
+      if (valueToSet && accessibleGroupTitles.includes(valueToSet)) {
+        newParams.set("group_title", valueToSet);
+      } else {
+        newParams.delete("group_title");
+      }
+      
+      return newParams;
+    }, { replace: true });
 
     if (valueToSet && accessibleGroupTitles.includes(valueToSet)) {
       setCustomGroupTitle(valueToSet);

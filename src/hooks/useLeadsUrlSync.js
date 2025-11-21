@@ -59,7 +59,9 @@ export const useLeadsUrlSync = ({
         const parsed = parseFiltersFromUrl(searchParams);
         const urlGroupTitle = parsed.group_title ?? null;
         const type = searchParams.get("type");
-        const hasUrlFilters = Object.keys(parsed).length > 0;
+        // group_title не считается фильтром, это параметр контекста
+        const { group_title, ...actualFilters } = parsed;
+        const hasUrlFilters = Object.keys(actualFilters).length > 0;
 
         // 1) сначала пробуем синхронизировать group_title из URL
         if (
