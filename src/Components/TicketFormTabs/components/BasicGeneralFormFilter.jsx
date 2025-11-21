@@ -142,26 +142,6 @@ export const BasicGeneralFormFilter = forwardRef(({ loading, data, formId }, ref
     }
   };
 
-  // Сбрасываем workflow при изменении group_title, если текущие workflow не подходят
-  useEffect(() => {
-    if (!selectedGroupTitle) return;
-
-    const currentWorkflows = form.values.workflow || [];
-
-    if (currentWorkflows.length > 0) {
-      const workflowsForGroup = getWorkflowMap[selectedGroupTitle] || getWorkflowMap.Default || [];
-
-      // Фильтруем workflow, оставляя только те, которые подходят для нового group_title
-      const validWorkflows = currentWorkflows.filter((w) => workflowsForGroup.includes(w));
-
-      // Если есть невалидные workflow, обновляем значение
-      if (validWorkflows.length !== currentWorkflows.length) {
-        form.setFieldValue("workflow", validWorkflows);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedGroupTitle, getWorkflowMap]);
-
   useEffect(() => {
     if (data) {
       form.setValues({
