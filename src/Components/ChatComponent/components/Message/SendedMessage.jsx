@@ -1,6 +1,5 @@
 import { Flex, Text, Image, Box, Tooltip } from "@mantine/core";
 import { CiWarning } from "react-icons/ci";
-import { FaHeadphones } from "react-icons/fa6";
 import { IoMdCheckmark } from "react-icons/io";
 import { IoCheckmarkDoneSharp } from "react-icons/io5";
 import { IoInformationCircleOutline } from "react-icons/io5";
@@ -13,7 +12,7 @@ import { parseCallParticipants } from "../../../utils/callUtils";
 import { getPageById } from "../../../../constants/webhookPagesConfig";
 import "./Message.css";
 
-const DEFAULT_SENDER_NAME = "Panda Tur";
+const DEFAULT_SENDER_NAME = "SYSTEM TECHNICIAN";
 
 const MESSAGE_STATUS_ICONS = {
   [MESSAGES_STATUS.PENDING]: <IoMdCheckmark size={20} style={{ color: "var(--crm-ui-kit-palette-text-secondary-dark)" }} />,
