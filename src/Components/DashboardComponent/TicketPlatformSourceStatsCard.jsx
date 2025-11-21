@@ -3,6 +3,7 @@ import { Card, Group, Stack, Text, Badge, Progress, ThemeIcon, Box } from "@mant
 import { FaShareAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { getLanguageByKey } from "@utils";
+import { normalizeCategoricalStats } from "../../utils/dashboardHelpers";
 
 const fmt = (n) => (typeof n === "number" ? n.toLocaleString() : "-");
 
@@ -161,24 +162,8 @@ export const TicketPlatformSourceStatsCard = ({
             </Text>
             <Stack gap="md">
               {userGroups.map((ug, ugIndex) => {
-                // Обрабатываем статистику группы
-                const groupStats = (() => {
-                  if (!ug.stats || typeof ug.stats !== "object") return [];
-                  if (Array.isArray(ug.stats)) return ug.stats;
-                  return Object.entries(ug.stats).map(([channel, value]) => {
-                    if (value && typeof value === "object") {
-                      return {
-                        channel: value.platform_source || channel,
-                        count: Number.isFinite(value.count) ? value.count : 0,
-                        href: value.href,
-                      };
-                    }
-                    return {
-                      channel,
-                      count: Number.isFinite(value) ? value : 0,
-                    };
-                  });
-                })();
+                // Обрабатываем статистику группы через normalizeCategoricalStats
+                const groupStats = normalizeCategoricalStats(ug.stats);
 
                 const normalizedGroupStats = mapItems(groupStats, limit);
                 const groupTotal = normalizedGroupStats.reduce((sum, item) => sum + (item.count || 0), 0);
@@ -251,24 +236,8 @@ export const TicketPlatformSourceStatsCard = ({
             </Text>
             <Stack gap="md">
               {userTechnicians.map((ut, utIndex) => {
-                // Обрабатываем статистику пользователя
-                const userStats = (() => {
-                  if (!ut.stats || typeof ut.stats !== "object") return [];
-                  if (Array.isArray(ut.stats)) return ut.stats;
-                  return Object.entries(ut.stats).map(([channel, value]) => {
-                    if (value && typeof value === "object") {
-                      return {
-                        channel: value.platform_source || channel,
-                        count: Number.isFinite(value.count) ? value.count : 0,
-                        href: value.href,
-                      };
-                    }
-                    return {
-                      channel,
-                      count: Number.isFinite(value) ? value : 0,
-                    };
-                  });
-                })();
+                // Обрабатываем статистику пользователя через normalizeCategoricalStats
+                const userStats = normalizeCategoricalStats(ut.stats);
 
                 const normalizedUserStats = mapItems(userStats, limit);
                 const userTotal = normalizedUserStats.reduce((sum, item) => sum + (item.count || 0), 0);

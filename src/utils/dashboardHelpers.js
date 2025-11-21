@@ -47,7 +47,7 @@ const getCategoricalChannelName = (value, fallback) => {
     return String(fallback ?? "-");
   }
 
-  const keys = ["channel", "marketing", "name", "title", "label", "source", "platform", "category"];
+  const keys = ["channel", "marketing", "sursa_lead", "platform_source", "name", "title", "label", "source", "platform", "category"];
   for (const key of keys) {
     const candidate = value[key];
     if (candidate !== undefined && candidate !== null && String(candidate).trim()) {
@@ -86,7 +86,7 @@ const extractPercentage = (value) => {
 /**
  * Преобразует маркетинговую статистику в массив [{ channel, count }]
  */
-const normalizeCategoricalStats = (stats) => {
+export const normalizeCategoricalStats = (stats) => {
   if (!stats) return [];
   if (Array.isArray(stats)) {
     return stats

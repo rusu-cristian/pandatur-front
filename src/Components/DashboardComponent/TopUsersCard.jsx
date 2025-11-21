@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { Card, Box, Group, Stack, Text, Badge, Progress, ThemeIcon } from "@mantine/core";
 import { MdCall, MdMessage } from "react-icons/md";
-import { FaTicketAlt, FaHandPaper, FaFileContract, FaClock, FaChartPie, FaCheckCircle, FaPlane, FaHourglassHalf, FaExchangeAlt, FaCogs, FaPlus, FaPlay, FaMapMarkerAlt, FaBullhorn } from "react-icons/fa";
+import { FaTicketAlt, FaHandPaper, FaFileContract, FaClock, FaChartPie, FaCheckCircle, FaPlane, FaHourglassHalf, FaExchangeAlt, FaCogs, FaPlus, FaPlay, FaMapMarkerAlt, FaBullhorn, FaShareAlt } from "react-icons/fa";
 import { getLanguageByKey } from "@utils";
 
 const fmt = (n) => (typeof n === "number" ? n.toLocaleString() : "-");
@@ -71,9 +71,9 @@ const getWidgetIconAndColor = (widgetType) => {
     case "ticket_marketing":
       return { icon: FaBullhorn, color: "blue" };
     case "ticket_source":
-      return { icon: FaMapMarkerAlt, color: "cyan" };
+      return { icon: FaShareAlt, color: "teal" };
     case "ticket_platform_source":
-      return { icon: FaPlane, color: "teal" };
+      return { icon: FaShareAlt, color: "teal" };
     default:
       return { icon: MdCall, color: "blue" };
   }
