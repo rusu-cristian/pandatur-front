@@ -1135,15 +1135,52 @@ export const createTopUsersWidget = (data, widgetType, getLanguageByKey, userNam
   // Если нет данных ни в by_user, ни в by_user_group, возвращаем null
   if (!byUser.length && !byUserGroup.length) return null;
 
-  if (widgetType === "ticket_marketing" || widgetType === "ticket_source" || widgetType === "ticket_platform_source") {
-    return null;
-  }
-
   // Функция для создания объекта пользователя из данных
   const createUserRow = (r) => {
     const uid = Number(r.user_id);
     
     switch (widgetType) {
+      case "ticket_marketing": {
+        // Для ticket_marketing данные находятся в поле stats
+        // Если r.stats существует, используем его напрямую (это объект со статистикой)
+        // Иначе используем весь объект r (для случаев, когда stats уже распакован)
+        const statsSource = r.stats || r;
+        const statsData = createTicketMarketingStatsData(statsSource);
+        const total = statsData.totalMarketing || 0;
+        return {
+          user_id: uid,
+          name: userNameById.get(uid) || (Number.isFinite(uid) ? `ID ${uid}` : "-"),
+          sipuni_id: r.sipuni_id,
+          ...statsData,
+          total,
+        };
+      }
+      case "ticket_source": {
+        // Для ticket_source данные находятся в поле stats
+        const statsSource = r.stats || r;
+        const statsData = createTicketSourceStatsData(statsSource);
+        const total = statsData.totalSources || 0;
+        return {
+          user_id: uid,
+          name: userNameById.get(uid) || (Number.isFinite(uid) ? `ID ${uid}` : "-"),
+          sipuni_id: r.sipuni_id,
+          ...statsData,
+          total,
+        };
+      }
+      case "ticket_platform_source": {
+        // Для ticket_platform_source данные находятся в поле stats
+        const statsSource = r.stats || r;
+        const statsData = createTicketPlatformSourceStatsData(statsSource);
+        const total = statsData.totalPlatformSources || 0;
+        return {
+          user_id: uid,
+          name: userNameById.get(uid) || (Number.isFinite(uid) ? `ID ${uid}` : "-"),
+          sipuni_id: r.sipuni_id,
+          ...statsData,
+          total,
+        };
+      }
       case "ticket_state": {
         const ts = createTicketStateData(r);
         return {
@@ -1295,14 +1332,26 @@ export const createTopUsersWidget = (data, widgetType, getLanguageByKey, userNam
   byUserGroup.forEach((group) => {
     const userTechnicians = safeArray(group.user_technicians);
     userTechnicians.forEach((ut) => {
-      // Для user_technicians данные могут быть в поле stats
-      const itemData = ut.stats || ut;
-      const userRow = createUserRow({
-        ...itemData,
-        user_id: ut.user_id,
-        sipuni_id: ut.sipuni_id,
-      });
-      usersFromByUserGroup.push(userRow);
+      // Для типов виджетов со статистикой данные находятся в поле stats
+      // Для остальных типов данные могут быть напрямую в объекте
+      if (widgetType === "ticket_marketing" || widgetType === "ticket_source" || widgetType === "ticket_platform_source") {
+        // Для этих типов передаем объект с явно указанным stats
+        const userRow = createUserRow({
+          user_id: ut.user_id,
+          sipuni_id: ut.sipuni_id,
+          stats: ut.stats || ut,
+        });
+        usersFromByUserGroup.push(userRow);
+      } else {
+        // Для остальных типов используем стандартную обработку
+        const itemData = ut.stats || ut;
+        const userRow = createUserRow({
+          ...itemData,
+          user_id: ut.user_id,
+          sipuni_id: ut.sipuni_id,
+        });
+        usersFromByUserGroup.push(userRow);
+      }
     });
   });
 

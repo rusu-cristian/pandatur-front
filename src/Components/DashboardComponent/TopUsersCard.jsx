@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { Card, Box, Group, Stack, Text, Badge, Progress, ThemeIcon } from "@mantine/core";
 import { MdCall, MdMessage } from "react-icons/md";
-import { FaTicketAlt, FaHandPaper, FaFileContract, FaClock, FaChartPie, FaCheckCircle, FaPlane, FaHourglassHalf, FaExchangeAlt, FaCogs, FaPlus, FaPlay, FaMapMarkerAlt } from "react-icons/fa";
+import { FaTicketAlt, FaHandPaper, FaFileContract, FaClock, FaChartPie, FaCheckCircle, FaPlane, FaHourglassHalf, FaExchangeAlt, FaCogs, FaPlus, FaPlay, FaMapMarkerAlt, FaBullhorn } from "react-icons/fa";
 import { getLanguageByKey } from "@utils";
 
 const fmt = (n) => (typeof n === "number" ? n.toLocaleString() : "-");
@@ -68,6 +68,12 @@ const getWidgetIconAndColor = (widgetType) => {
       return { icon: FaClock, color: "teal" };
     case "ticket_destination":
       return { icon: FaMapMarkerAlt, color: "purple" };
+    case "ticket_marketing":
+      return { icon: FaBullhorn, color: "blue" };
+    case "ticket_source":
+      return { icon: FaMapMarkerAlt, color: "cyan" };
+    case "ticket_platform_source":
+      return { icon: FaPlane, color: "teal" };
     default:
       return { icon: MdCall, color: "blue" };
   }
@@ -165,6 +171,21 @@ export const TopUsersCard = ({
             } else if (widgetType === "ticket_destination") {
                 // Для ticket_destination нет пользовательских данных, возвращаем пустой массив
                 return null;
+            } else if (widgetType === "ticket_marketing") {
+                return {
+                    ...r,
+                    total: Number(r.total ?? r.totalMarketing ?? 0),
+                };
+            } else if (widgetType === "ticket_source") {
+                return {
+                    ...r,
+                    total: Number(r.total ?? r.totalSources ?? 0),
+                };
+            } else if (widgetType === "ticket_platform_source") {
+                return {
+                    ...r,
+                    total: Number(r.total ?? r.totalPlatformSources ?? 0),
+                };
             } else {
                 return {
                     ...r,
@@ -242,6 +263,12 @@ export const TopUsersCard = ({
                                     ? getLanguageByKey("Workflow Duration")
                                     : widgetType === "ticket_destination"
                                     ? getLanguageByKey("Ticket Destination")
+                                    : widgetType === "ticket_marketing"
+                                    ? getLanguageByKey("Statistica Marketing")
+                                    : widgetType === "ticket_source"
+                                    ? getLanguageByKey("Sursă Lead")
+                                    : widgetType === "ticket_platform_source"
+                                    ? getLanguageByKey("Platformă lead")
                                     : getLanguageByKey(widgetType) || widgetType || "Top users"}
                             </Badge>
                             {subtitle ? <Badge variant="light" size={isVeryCompact ? "md" : "sm"}>{subtitle}</Badge> : null}
@@ -288,6 +315,12 @@ export const TopUsersCard = ({
                                 ? getLanguageByKey("Average processing time")
                                 : widgetType === "ticket_destination"
                                 ? getLanguageByKey("By country")
+                                : widgetType === "ticket_marketing"
+                                ? getLanguageByKey("Total tickets by marketing")
+                                : widgetType === "ticket_source"
+                                ? getLanguageByKey("Total tickets by source")
+                                : widgetType === "ticket_platform_source"
+                                ? getLanguageByKey("Total tickets by platform")
                                 : getLanguageByKey("Total calls")
                             }
                         </Text>
@@ -345,6 +378,12 @@ export const TopUsersCard = ({
                                             ? ""
                                             : widgetType === "ticket_destination"
                                             ? getLanguageByKey("tickets by country")
+                                            : widgetType === "ticket_marketing"
+                                            ? getLanguageByKey("tickets")
+                                            : widgetType === "ticket_source"
+                                            ? getLanguageByKey("tickets")
+                                            : widgetType === "ticket_platform_source"
+                                            ? getLanguageByKey("tickets")
                                             : getLanguageByKey("calls")
                                         }
                                     </Text>
