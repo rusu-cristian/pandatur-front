@@ -5937,5 +5937,15 @@ export const translations = {
     RO: "Grupuri utilizatori",
     RU: "Группы пользователей",
     EN: "User Groups"
+  },
+  "Contract_semnat": {
+    RO: "Contract semnat",
+    RU: "Подписанный контракт",
+    EN: "Contract signed"
+  },
+  "Plată_primită": {
+    RO: "Plată primită",
+    RU: "Платеж получен",
+    EN: "Payment received"
   }
 };

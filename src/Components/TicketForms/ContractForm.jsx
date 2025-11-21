@@ -126,7 +126,7 @@ export const ContractForm = ({
       <LabelSwitch
         mt="md"
         color="var(--crm-ui-kit-palette-link-primary)"
-        label={getLanguageByKey("Contract semnat")}
+        label={getLanguageByKey("Contract_semnat")}
         key={formInstance.key("contract_semnat")}
         {...formInstance.getInputProps("contract_semnat", {
           type: "checkbox",
@@ -181,8 +181,8 @@ export const ContractForm = ({
 
       <Select
         mt="md"
-        label={getLanguageByKey("Plată primită")}
-        placeholder={getLanguageByKey("Plată primită")}
+        label={getLanguageByKey("Plată_primită")}
+        placeholder={getLanguageByKey("Plată_primită")}
         data={paymentStatusOptions}
         clearable
         key={formInstance.key("statutul_platii")}
