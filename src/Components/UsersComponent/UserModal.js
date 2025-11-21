@@ -480,13 +480,16 @@ const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
           onChange={updateRoleMatrix}
         />
       )}
-
-      <Button fullWidth mt="sm" onClick={handleCreate} loading={isSubmitting}>
-        {initialUser
-          ? getLanguageByKey("Salvează")
-          : getLanguageByKey("Creează")}
-      </Button>
     </Stack>
+  );
+
+  // Кнопка сохранения, зафиксированная вверху
+  const saveButton = (
+    <Button fullWidth onClick={handleCreate} loading={isSubmitting}>
+      {initialUser
+        ? getLanguageByKey("Salvează")
+        : getLanguageByKey("Creează")}
+    </Button>
   );
 
   return isMobile ? (
@@ -547,36 +550,49 @@ const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
       styles={{
         body: {
           padding: 0,
-          height: 'calc(100vh - 60px)',
-          overflow: 'hidden'
+          overflow: 'hidden',
+          height: '100%'
         },
         content: {
           height: '100vh',
           display: 'flex',
           flexDirection: 'column',
-          zIndex: 10000
+          zIndex: 10000,
+          overflow: 'hidden'
         },
         header: {
           padding: '16px 20px',
           borderBottom: '1px solid var(--crm-ui-kit-palette-border-primary)',
           backgroundColor: 'var(--crm-ui-kit-palette-background-primary)',
-          zIndex: 10001
+          zIndex: 10001,
+          flexShrink: 0
         },
         overlay: {
           zIndex: 9999
         }
       }}
     >
+      {/* Фиксированная кнопка сохранения вверху */}
+      <div style={{
+        padding: '16px 20px',
+        borderBottom: '1px solid var(--crm-ui-kit-palette-border-primary)',
+        backgroundColor: 'var(--crm-ui-kit-palette-background-primary)',
+        flexShrink: 0,
+        zIndex: 10000
+      }}>
+        {saveButton}
+      </div>
+      {/* Прокручиваемая область с формой */}
       <ScrollArea
         style={{
-          height: 'calc(100vh - 80px)',
-          flex: 1
+          flex: 1,
+          minHeight: 0
         }}
         type="scroll"
         scrollbarSize={8}
         scrollHideDelay={0}
       >
-        <div style={{ padding: '16px', paddingBottom: '80px' }}>
+        <div style={{ padding: '16px', paddingBottom: '20px' }}>
           <Stack spacing="md">
             {formContent}
           </Stack>
@@ -595,8 +611,48 @@ const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
       }
       padding="lg"
       size="lg"
+      styles={{
+        body: {
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          padding: 0,
+          overflow: 'hidden'
+        },
+        content: {
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          overflow: 'hidden'
+        }
+      }}
     >
-      {formContent}
+      {/* Фиксированная кнопка сохранения вверху */}
+      <div style={{
+        padding: '0px 24px 16px 24px',
+        borderBottom: '1px solid var(--crm-ui-kit-palette-border-primary)',
+        backgroundColor: 'var(--crm-ui-kit-palette-background-primary)',
+        flexShrink: 0,
+        zIndex: 100
+      }}>
+        {saveButton}
+      </div>
+      {/* Прокручиваемая область с формой */}
+      <ScrollArea
+        style={{
+          flex: 1,
+          minHeight: 0
+        }}
+        type="scroll"
+        scrollbarSize={8}
+        scrollHideDelay={0}
+      >
+        <div style={{ padding: '24px' }}>
+          <Stack spacing="md">
+            {formContent}
+          </Stack>
+        </div>
+      </ScrollArea>
     </Drawer>
   );
 };
