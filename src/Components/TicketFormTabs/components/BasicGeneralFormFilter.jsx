@@ -162,17 +162,6 @@ export const BasicGeneralFormFilter = forwardRef(({ loading, data, formId }, ref
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedGroupTitle, getWorkflowMap]);
 
-  form.watch("workflow", ({ value }) => {
-    if (Array.isArray(value) && value.includes(getLanguageByKey("selectAll"))) {
-      // Убираем selectAll из значения и добавляем все filteredWorkflowOptions
-      const filteredValue = value.filter(v => v !== getLanguageByKey("selectAll"));
-      const uniqueValue = Array.from(new Set([...filteredValue, ...filteredWorkflowOptions]));
-      form.setFieldValue("workflow", uniqueValue);
-    } else {
-      form.setFieldValue("workflow", value);
-    }
-  });
-
   useEffect(() => {
     if (data) {
       form.setValues({
