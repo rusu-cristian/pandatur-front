@@ -88,8 +88,8 @@
 }
 
 .react-datepicker__day:hover:not(.react-datepicker__day--disabled):not(.react-datepicker__day--selected):not(.react-datepicker__day--in-range):not(.react-datepicker__day--in-selecting-range):not(.react-datepicker__day--range-start):not(.react-datepicker__day--range-end) {
-    background-color: var(--crm-ui-kit-palette-background-primary) !important;
-    color: #ffffff !important;
+    background-color: var(--crm-ui-kit-palette-surface-hover-background-color) !important;
+    color: var(--crm-ui-kit-palette-text-primary) !important;
     border-radius: 4px;
 }
 
@@ -102,9 +102,15 @@
 }
 
 .react-datepicker__day--selected:hover,
-.react-datepicker__day--in-selecting-range:hover,
 .react-datepicker__day--in-range:hover {
     background-color: var(--crm-ui-kit-palette-link-hover-primary);
+}
+
+/* Убираем hover для дней в процессе выбора, чтобы не мигало */
+.react-datepicker__day--in-selecting-range {
+    background-color: var(--crm-ui-kit-palette-link-primary) !important;
+    color: #ffffff !important;
+    font-weight: 600;
 }
 
 /* Начало и конец диапазона */
@@ -128,8 +134,8 @@
 }
 
 .react-datepicker__day--today:hover:not(.react-datepicker__day--disabled):not(.react-datepicker__day--selected):not(.react-datepicker__day--in-range):not(.react-datepicker__day--in-selecting-range):not(.react-datepicker__day--range-start):not(.react-datepicker__day--range-end) {
-    background-color: var(--crm-ui-kit-palette-background-primary) !important;
-    color: #ffffff !important;
+    background-color: var(--crm-ui-kit-palette-surface-hover-background-color) !important;
+    color: var(--crm-ui-kit-palette-text-primary) !important;
     border-radius: 4px;
 }
 
@@ -151,8 +157,8 @@
 }
 
 .react-datepicker__day--outside-month:hover:not(.react-datepicker__day--disabled) {
-    background-color: var(--crm-ui-kit-palette-background-primary) !important;
-    color: #ffffff !important;
+    background-color: var(--crm-ui-kit-palette-surface-hover-background-color) !important;
+    color: var(--crm-ui-kit-palette-text-primary) !important;
     opacity: 1 !important;
     border-radius: 4px;
 }
