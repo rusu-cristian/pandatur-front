@@ -3,9 +3,10 @@ import {
   Select,
   NumberInput,
   Flex,
+  Text,
 } from "@mantine/core";
-import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
+import { DateRangePicker } from "../../DateRangePicker/DateRangePicker";
 import {
   useEffect,
   forwardRef,
@@ -16,7 +17,6 @@ import dayjs from "dayjs";
 import { getLanguageByKey } from "../../utils";
 import { LabelSwitch } from "../../LabelSwitch";
 import { paymentStatusOptions } from "../../../FormOptions";
-import { YYYY_MM_DD } from "../../../app-constants";
 import {
   formatDateOrUndefinedFilter,
   formatNumericValue,
@@ -119,16 +119,61 @@ export const ContractFormFilter = forwardRef(
       getValues: () => form.getTransformedValues(),
     }));
 
-    const getDayPropsWithHighlight = (date) => {
-      const isToday = dayjs(date).isSame(dayjs(), 'day');
-      return {
-        style: isToday ? {
-          backgroundColor: 'var(--mantine-color-blue-1)',
-          fontWeight: 700,
-          border: '2px solid var(--mantine-color-blue-6)',
-          borderRadius: '50%',
-        } : undefined,
-      };
+    // Функции для преобразования между форматом формы и DateRangePicker
+    const getDateRangeValue = (dateArray) => {
+      if (!dateArray || !Array.isArray(dateArray) || dateArray.length === 0) {
+        return [];
+      }
+      const [startDate, endDate] = dateArray;
+      
+      // Преобразуем startDate в Date объект
+      let start = null;
+      if (startDate) {
+        if (startDate instanceof Date) {
+          start = startDate;
+        } else if (dayjs.isDayjs(startDate)) {
+          start = startDate.toDate();
+        } else {
+          start = dayjs(startDate).toDate();
+        }
+      }
+      
+      // Преобразуем endDate в Date объект
+      let end = null;
+      if (endDate) {
+        if (endDate instanceof Date) {
+          end = endDate;
+        } else if (dayjs.isDayjs(endDate)) {
+          end = endDate.toDate();
+        } else {
+          end = dayjs(endDate).toDate();
+        }
+      }
+      
+      if (start && end) {
+        return [start, end];
+      } else if (start) {
+        return [start, null];
+      }
+      return [];
+    };
+
+    const handleDateRangeChange = (fieldName) => (range) => {
+      if (!range || (Array.isArray(range) && range.length === 0)) {
+        form.setFieldValue(fieldName, []);
+        return;
+      }
+
+      if (Array.isArray(range)) {
+        const [startDate, endDate] = range;
+        if (startDate && endDate) {
+          form.setFieldValue(fieldName, [startDate, endDate]);
+        } else if (startDate && !endDate) {
+          form.setFieldValue(fieldName, [startDate, null]);
+        } else {
+          form.setFieldValue(fieldName, []);
+        }
+      }
     };
 
     return (
@@ -140,41 +185,47 @@ export const ContractFormFilter = forwardRef(
             {...form.getInputProps("numar_de_contract")}
           />
 
-          <DatePickerInput
-            type="range"
-            minDate={setMinDate}
-            valueFormat={YYYY_MM_DD}
-            clearable
-            mt="md"
-            label={getLanguageByKey("Data contractului")}
-            placeholder={getLanguageByKey("Data contractului")}
-            getDayProps={getDayPropsWithHighlight}
-            {...form.getInputProps("data_contractului")}
-          />
+          <div style={{ marginTop: "1rem" }}>
+            <Text size="sm" fw={500} mb={4}>
+              {getLanguageByKey("Data contractului")}
+            </Text>
+            <DateRangePicker
+              value={getDateRangeValue(form.values.data_contractului)}
+              onChange={handleDateRangeChange("data_contractului")}
+              isClearable={true}
+              dateFormat="yyyy-MM-dd"
+              placeholder={getLanguageByKey("Data contractului")}
+              minDate={setMinDate}
+            />
+          </div>
 
-          <DatePickerInput
-            type="range"
-            minDate={setMinDate}
-            valueFormat={YYYY_MM_DD}
-            clearable
-            mt="md"
-            label={getLanguageByKey("Data avansului")}
-            placeholder={getLanguageByKey("Data avansului")}
-            getDayProps={getDayPropsWithHighlight}
-            {...form.getInputProps("data_avansului")}
-          />
+          <div style={{ marginTop: "1rem" }}>
+            <Text size="sm" fw={500} mb={4}>
+              {getLanguageByKey("Data avansului")}
+            </Text>
+            <DateRangePicker
+              value={getDateRangeValue(form.values.data_avansului)}
+              onChange={handleDateRangeChange("data_avansului")}
+              isClearable={true}
+              dateFormat="yyyy-MM-dd"
+              placeholder={getLanguageByKey("Data avansului")}
+              minDate={setMinDate}
+            />
+          </div>
 
-          <DatePickerInput
-            type="range"
-            minDate={setMinDate}
-            valueFormat={YYYY_MM_DD}
-            clearable
-            mt="md"
-            label={getLanguageByKey("Data de plată integrală")}
-            placeholder={getLanguageByKey("Data de plată integrală")}
-            getDayProps={getDayPropsWithHighlight}
-            {...form.getInputProps("data_de_plata_integrala")}
-          />
+          <div style={{ marginTop: "1rem" }}>
+            <Text size="sm" fw={500} mb={4}>
+              {getLanguageByKey("Data de plată integrală")}
+            </Text>
+            <DateRangePicker
+              value={getDateRangeValue(form.values.data_de_plata_integrala)}
+              onChange={handleDateRangeChange("data_de_plata_integrala")}
+              isClearable={true}
+              dateFormat="yyyy-MM-dd"
+              placeholder={getLanguageByKey("Data de plată integrală")}
+              minDate={setMinDate}
+            />
+          </div>
 
           <LabelSwitch
             mt="md"
@@ -186,7 +237,7 @@ export const ContractFormFilter = forwardRef(
           <LabelSwitch
             mt="md"
             color="var(--crm-ui-kit-palette-link-primary)"
-            label={getLanguageByKey("Contract semnat")}
+            label={getLanguageByKey("Contract_semnat")}
             {...form.getInputProps("contract_semnat", { type: "checkbox" })}
           />
 
@@ -229,8 +280,8 @@ export const ContractFormFilter = forwardRef(
 
           <Select
             mt="md"
-            label={getLanguageByKey("Plată primită")}
-            placeholder={getLanguageByKey("Plată primită")}
+            label={getLanguageByKey("Plată_primită")}
+            placeholder={getLanguageByKey("Plată_primită")}
 
             data={paymentStatusOptions}
             clearable

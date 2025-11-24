@@ -3,9 +3,10 @@ import {
   Flex,
   NumberInput,
   MultiSelect,
+  Text,
 } from "@mantine/core";
-import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
+import { DateRangePicker } from "../../DateRangePicker/DateRangePicker";
 import {
   useEffect,
   forwardRef,
@@ -30,7 +31,6 @@ import {
   nameExcursionOptions,
   purchaseProcessingOptions,
 } from "../../../FormOptions";
-import { YYYY_MM_DD } from "../../../app-constants";
 
 const TICKET_FORM_FILTER_ID = "TICKET_FORM_FILTER_ID";
 
@@ -96,16 +96,61 @@ export const TicketInfoFormFilter = forwardRef(
       getValues: () => form.getTransformedValues(),
     }));
 
-    const getDayPropsWithHighlight = (date) => {
-      const isToday = dayjs(date).isSame(dayjs(), 'day');
-      return {
-        style: isToday ? {
-          backgroundColor: 'var(--mantine-color-blue-1)',
-          fontWeight: 700,
-          border: '2px solid var(--mantine-color-blue-6)',
-          borderRadius: '50%',
-        } : undefined,
-      };
+    // Функции для преобразования между форматом формы и DateRangePicker
+    const getDateRangeValue = (dateArray) => {
+      if (!dateArray || !Array.isArray(dateArray) || dateArray.length === 0) {
+        return [];
+      }
+      const [startDate, endDate] = dateArray;
+      
+      // Преобразуем startDate в Date объект
+      let start = null;
+      if (startDate) {
+        if (startDate instanceof Date) {
+          start = startDate;
+        } else if (dayjs.isDayjs(startDate)) {
+          start = startDate.toDate();
+        } else {
+          start = dayjs(startDate).toDate();
+        }
+      }
+      
+      // Преобразуем endDate в Date объект
+      let end = null;
+      if (endDate) {
+        if (endDate instanceof Date) {
+          end = endDate;
+        } else if (dayjs.isDayjs(endDate)) {
+          end = endDate.toDate();
+        } else {
+          end = dayjs(endDate).toDate();
+        }
+      }
+      
+      if (start && end) {
+        return [start, end];
+      } else if (start) {
+        return [start, null];
+      }
+      return [];
+    };
+
+    const handleDateRangeChange = (fieldName) => (range) => {
+      if (!range || (Array.isArray(range) && range.length === 0)) {
+        form.setFieldValue(fieldName, [null, null]);
+        return;
+      }
+
+      if (Array.isArray(range)) {
+        const [startDate, endDate] = range;
+        if (startDate && endDate) {
+          form.setFieldValue(fieldName, [startDate, endDate]);
+        } else if (startDate && !endDate) {
+          form.setFieldValue(fieldName, [startDate, null]);
+        } else {
+          form.setFieldValue(fieldName, [null, null]);
+        }
+      }
     };
 
     return (
@@ -122,57 +167,61 @@ export const TicketInfoFormFilter = forwardRef(
             {...form.getInputProps("buget")}
           />
 
-          <DatePickerInput
-            type="range"
-            minDate={setMinDate}
-            valueFormat={YYYY_MM_DD}
-            clearable
-            mt="md"
-            label={getLanguageByKey("Data venit in oficiu")}
-            placeholder={getLanguageByKey("Selectează data venirii în oficiu")}
-            key={form.key("data_venit_in_oficiu")}
-            {...form.getInputProps("data_venit_in_oficiu")}
-            getDayProps={getDayPropsWithHighlight}
-          />
+          <div style={{ marginTop: "1rem" }}>
+            <Text size="sm" fw={500} mb={4}>
+              {getLanguageByKey("Data venit in oficiu")}
+            </Text>
+            <DateRangePicker
+              value={getDateRangeValue(form.values.data_venit_in_oficiu)}
+              onChange={handleDateRangeChange("data_venit_in_oficiu")}
+              isClearable={true}
+              dateFormat="yyyy-MM-dd"
+              placeholder={getLanguageByKey("Selectează data venirii în oficiu")}
+              minDate={setMinDate}
+            />
+          </div>
 
-          <DatePickerInput
-            type="range"
-            minDate={setMinDate}
-            clearable
-            valueFormat={YYYY_MM_DD}
-            mt="md"
-            label={getLanguageByKey("Data și ora plecării")}
-            placeholder={getLanguageByKey("Data și ora plecării")}
-            key={form.key("data_plecarii")}
-            {...form.getInputProps("data_plecarii")}
-            getDayProps={getDayPropsWithHighlight}
-          />
+          <div style={{ marginTop: "1rem" }}>
+            <Text size="sm" fw={500} mb={4}>
+              {getLanguageByKey("Data și ora plecării")}
+            </Text>
+            <DateRangePicker
+              value={getDateRangeValue(form.values.data_plecarii)}
+              onChange={handleDateRangeChange("data_plecarii")}
+              isClearable={true}
+              dateFormat="yyyy-MM-dd"
+              placeholder={getLanguageByKey("Data și ora plecării")}
+              minDate={setMinDate}
+            />
+          </div>
 
-          <DatePickerInput
-            type="range"
-            minDate={setMinDate}
-            clearable
-            valueFormat={YYYY_MM_DD}
-            mt="md"
-            label={getLanguageByKey("Data și ora întoarcerii")}
-            placeholder={getLanguageByKey("Data și ora întoarcerii")}
-            key={form.key("data_intoarcerii")}
-            {...form.getInputProps("data_intoarcerii")}
-            getDayProps={getDayPropsWithHighlight}
-          />
+          <div style={{ marginTop: "1rem" }}>
+            <Text size="sm" fw={500} mb={4}>
+              {getLanguageByKey("Data și ora întoarcerii")}
+            </Text>
+            <DateRangePicker
+              value={getDateRangeValue(form.values.data_intoarcerii)}
+              onChange={handleDateRangeChange("data_intoarcerii")}
+              isClearable={true}
+              dateFormat="yyyy-MM-dd"
+              placeholder={getLanguageByKey("Data și ora întoarcerii")}
+              minDate={setMinDate}
+            />
+          </div>
 
-          <DatePickerInput
-            type="range"
-            minDate={setMinDate}
-            clearable
-            valueFormat={YYYY_MM_DD}
-            mt="md"
-            label={getLanguageByKey("Data cererii de retur")}
-            placeholder={getLanguageByKey("Data cererii de retur")}
-            key={form.key("data_cererii_de_retur")}
-            {...form.getInputProps("data_cererii_de_retur")}
-            getDayProps={getDayPropsWithHighlight}
-          />
+          <div style={{ marginTop: "1rem" }}>
+            <Text size="sm" fw={500} mb={4}>
+              {getLanguageByKey("Data cererii de retur")}
+            </Text>
+            <DateRangePicker
+              value={getDateRangeValue(form.values.data_cererii_de_retur)}
+              onChange={handleDateRangeChange("data_cererii_de_retur")}
+              isClearable={true}
+              dateFormat="yyyy-MM-dd"
+              placeholder={getLanguageByKey("Data cererii de retur")}
+              minDate={setMinDate}
+            />
+          </div>
 
           {!hideDisabledInput && (
             <Select

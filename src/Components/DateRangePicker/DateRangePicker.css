@@ -9,7 +9,6 @@
     border-radius: 4px;
     font-size: 14px;
     width: 599px;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .DateRangePicker .react-datepicker__input-container input::placeholder {
@@ -84,7 +83,6 @@
 .react-datepicker__day {
     color: var(--crm-ui-kit-palette-text-primary);
     border-radius: 4px;
-    transition: all 0.2s ease;
 }
 
 .react-datepicker__day:hover:not(.react-datepicker__day--disabled):not(.react-datepicker__day--selected):not(.react-datepicker__day--in-range):not(.react-datepicker__day--in-selecting-range):not(.react-datepicker__day--range-start):not(.react-datepicker__day--range-end) {
