@@ -79,8 +79,8 @@ export const translations = {
     RU: "Платеж получен / 2 дня",
     EN: "Payment received / 2 days"
   },
-  "Factura trimisă": {
-    RO: "Factura trimisǎ",
+  "Factură trimisă": {
+    RO: "Factură trimisă",
     RU: "Отправлена фактура",
     EN: "Invoice sent"
   },
