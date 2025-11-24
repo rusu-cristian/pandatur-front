@@ -4,19 +4,19 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_id: "142678122441525",
       page_name: "Panda Tur MD",
       type: "facebook",
-      group_title: ["MD", "HR", "Marketing", "IndividualGroups", "BusinessGroups", "Franchise", "Agency"]
+      group_title: ["MD", "HR", "MARKETING", "INDIVIDUALGROUPS", "BUSINESSGROUPS", "FRANCHISE", "AGENCY"]
     },
     {
       page_id: "110499316273706",
       page_name: "Panda Tur Chisinau",
       type: "facebook",
-      group_title: ["MD", "HR", "Marketing", "IndividualGroups", "BusinessGroups", "Franchise", "Agency"]
+      group_title: ["MD", "HR", "MARKETING", "INDIVIDUALGROUPS", "BUSINESSGROUPS", "FRANCHISE", "AGENCY"]
     },
     {
       page_id: "583828601488213",
       page_name: "Oferte Pandatur",
       type: "facebook",
-      group_title: ["MD", "HR", "Marketing", "IndividualGroups", "BusinessGroups", "Franchise", "Agency"]
+      group_title: ["MD", "HR", "MARKETING", "INDIVIDUALGROUPS", "BUSINESSGROUPS", "FRANCHISE", "AGENCY"]
     },
     {
       page_id: "112573875171623",
@@ -198,13 +198,13 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_id: "17841474040991649",
       page_name: "Panda Tur MD",
       type: "instagram",
-      group_title: ["MD", "HR", "Marketing", "IndividualGroups", "BusinessGroups", "Franchise", "Agency"]
+      group_title: ["MD", "HR", "MARKETING", "INDIVIDUALGROUPS", "BUSINESSGROUPS", "FRANCHISE", "AGENCY"]
     },
     {
       page_id: "17841473358875325",
       page_name: "Oferte Pandatur",
       type: "instagram",
-      group_title: ["MD", "HR", "Marketing", "IndividualGroups", "BusinessGroups", "Franchise", "Agency"]
+      group_title: ["MD", "HR", "MARKETING", "INDIVIDUALGROUPS", "BUSINESSGROUPS", "FRANCHISE", "AGENCY"]
     },
     {
       page_id: "17841475266910359",
@@ -356,13 +356,13 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_id: "37360991919",
       page_name: "Chisinau - 37360991919",
       type: "phone",
-      group_title: ["MD", "HR", "Marketing", "IndividualGroups", "BusinessGroups", "Franchise", "Agency"]
+      group_title: ["MD", "HR", "MARKETING", "INDIVIDUALGROUPS", "BUSINESSGROUPS", "FRANCHISE", "AGENCY"]
     },
     {
       page_id: "37369440400",
       page_name: "Chisinau - 37369440400",
       type: "phone",
-      group_title: ["MD", "HR", "Marketing", "IndividualGroups", "BusinessGroups", "Franchise", "Agency"]
+      group_title: ["MD", "HR", "MARKETING", "INDIVIDUALGROUPS", "BUSINESSGROUPS", "FRANCHISE", "AGENCY"]
     },
     {
       page_id: "37361161919",
@@ -460,7 +460,7 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_id: "37360991919",
       page_name: "Chisinau - 37360991919",
       type: "phone",
-      group_title: ["MD", "HR", "Marketing", "IndividualGroups", "BusinessGroups", "Franchise", "Agency"]
+      group_title: ["MD", "HR", "MARKETING", "INDIVIDUALGROUPS", "BUSINESSGROUPS", "FRANCHISE", "AGENCY"]
     },
     {
       page_id: "37361161919",
@@ -516,7 +516,7 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_id: "viber-bot-pandatur",
       page_name: "Chisinau - viber-bot-pandatur",
       type: "viber-bot",
-      group_title: ["MD", "HR", "Marketing", "IndividualGroups", "BusinessGroups", "Franchise", "Agency"]
+      group_title: ["MD", "HR", "MARKETING", "INDIVIDUALGROUPS", "BUSINESSGROUPS", "FRANCHISE", "AGENCY"]
     }
   ],
   telegrams: [
@@ -524,7 +524,7 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_id: "37360991919",
       page_name: "Chisinau - 37360991919",
       type: "telegram",
-      group_title: ["MD", "HR", "Marketing", "IndividualGroups", "BusinessGroups", "Franchise", "Agency"]
+      group_title: ["MD", "HR", "MARKETING", "INDIVIDUALGROUPS", "BUSINESSGROUPS", "FRANCHISE", "AGENCY"]
     },
     // {
     //   page_id: "37360361919",
