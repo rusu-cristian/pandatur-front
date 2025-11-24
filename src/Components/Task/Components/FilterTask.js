@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect, useMemo, useRef } from "react";
-import { Group, Button, Flex, MultiSelect, Select, Modal } from "@mantine/core";
-import { DatePickerInput } from "@mantine/dates";
+import { Group, Button, Flex, MultiSelect, Select, Modal, Text } from "@mantine/core";
 import { translations, showServerError } from "../../utils";
+import { DateRangePicker } from "../../DateRangePicker/DateRangePicker";
 import { TypeTask } from "../OptionsTaskType";
 import { useGetTechniciansList, useUser } from "../../../hooks";
 import dayjs from "dayjs";
@@ -108,25 +108,79 @@ const TaskFilterModal = ({ opened, onClose, filters, onApply }) => {
     onClose();
   };
 
-  const getDateRangeValue = (dateFrom, dateTo) => {
+  // Мемоизируем значение дат для DateRangePicker
+  const dateRangeValue = useMemo(() => {
+    const dateFrom = localFilters.date_from;
+    const dateTo = localFilters.date_to;
+    
     if (dateFrom && dateTo) {
-      return [
-        dayjs(dateFrom, "DD-MM-YYYY").toDate(),
-        dayjs(dateTo, "DD-MM-YYYY").toDate(),
-      ];
+      const parsedFrom = dayjs(dateFrom, "DD-MM-YYYY", true);
+      const parsedTo = dayjs(dateTo, "DD-MM-YYYY", true);
+      
+      // Проверяем, что даты валидны
+      if (parsedFrom.isValid() && parsedTo.isValid()) {
+        return [parsedFrom.toDate(), parsedTo.toDate()];
+      }
     }
-    return undefined;
-  };
+    // Если есть только первая дата, возвращаем её с null для второй
+    if (dateFrom) {
+      const parsedFrom = dayjs(dateFrom, "DD-MM-YYYY", true);
+      if (parsedFrom.isValid()) {
+        return [parsedFrom.toDate(), null];
+      }
+    }
+    return [];
+  }, [localFilters.date_from, localFilters.date_to]);
 
   const handleDateRangeChange = (range) => {
-    handleChange(
-      "date_from",
-      range?.[0] ? dayjs(range[0]).format("DD-MM-YYYY") : null,
-    );
-    handleChange(
-      "date_to",
-      range?.[1] ? dayjs(range[1]).format("DD-MM-YYYY") : null,
-    );
+    // DateRangePicker передает массив дат или null/undefined
+    if (!range || (Array.isArray(range) && range.length === 0)) {
+      // Если диапазон очищен
+      setLocalFilters((prev) => ({
+        ...prev,
+        date_from: null,
+        date_to: null,
+      }));
+      return;
+    }
+
+    if (Array.isArray(range)) {
+      const [startDate, endDate] = range;
+      
+      // Обновляем оба значения за один раз, чтобы избежать лишних ре-рендеров
+      setLocalFilters((prev) => {
+        if (startDate && endDate) {
+          // Если выбраны обе даты
+          return {
+            ...prev,
+            date_from: dayjs(startDate).format("DD-MM-YYYY"),
+            date_to: dayjs(endDate).format("DD-MM-YYYY"),
+          };
+        } else if (startDate && !endDate) {
+          // Выбрана только первая дата - сохраняем её, date_to оставляем как есть
+          // Это позволяет DateRangePicker правильно отобразить выбранную первую дату
+          return {
+            ...prev,
+            date_from: dayjs(startDate).format("DD-MM-YYYY"),
+            // Не трогаем date_to, чтобы не сбрасывать выбор
+          };
+        } else {
+          // Массив пустой или обе даты null
+          return {
+            ...prev,
+            date_from: null,
+            date_to: null,
+          };
+        }
+      });
+    } else {
+      // Если передан не массив (не должно быть, но на всякий случай)
+      setLocalFilters((prev) => ({
+        ...prev,
+        date_from: null,
+        date_to: null,
+      }));
+    }
   };
 
   useEffect(() => {
@@ -180,11 +234,13 @@ const TaskFilterModal = ({ opened, onClose, filters, onApply }) => {
       withCloseButton
       centered
       size="lg"
+      closeOnClickOutside={false}
       styles={{
         content: {
           height: "700px",
           display: "flex",
           flexDirection: "column",
+          zIndex: 200,
         },
         body: {
           flex: 1,
@@ -198,18 +254,18 @@ const TaskFilterModal = ({ opened, onClose, filters, onApply }) => {
     >
       <Flex direction="column" style={{ height: "100%" }}>
         <Flex gap="sm" direction="column" style={{ flex: 1, overflowY: "auto" }}>
-          <DatePickerInput
-            type="range"
-            label={translations["intervalDate"][language]}
-            value={getDateRangeValue(
-              localFilters.date_from,
-              localFilters.date_to,
-            )}
-            onChange={handleDateRangeChange}
-            clearable
-            valueFormat="DD-MM-YYYY"
-            placeholder={translations["intervalDate"][language]}
-          />
+          <div>
+            <Text size="sm" fw={500} mb={4}>
+              {translations["intervalDate"][language]}
+            </Text>
+            <DateRangePicker
+              value={dateRangeValue}
+              onChange={handleDateRangeChange}
+              isClearable={true}
+              dateFormat="dd-MM-yyyy"
+              placeholder={translations["intervalDate"][language]}
+            />
+          </div>
 
           <MultiSelect
             label={translations["Autor"][language]}
