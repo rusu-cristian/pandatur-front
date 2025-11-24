@@ -136,47 +136,24 @@ export const BasicGeneralFormFilter = forwardRef(({ loading, data, formId }, ref
         : accessibleGroupTitles[0] || null;
     }
 
-    // Получаем валидные workflow для новой группы
-    const validWorkflowsForNewGroup = valueToSet
-      ? (getWorkflowMap[valueToSet] || getWorkflowMap.Default || [])
-      : [];
-
     // Обновляем URL вместе со стейтом, чтобы избежать конфликтов с синхронизацией
     setSearchParams((prev) => {
       const newParams = new URLSearchParams(prev);
 
       if (valueToSet && accessibleGroupTitles.includes(valueToSet)) {
         newParams.set("group_title", valueToSet);
-
-        // Очищаем невалидные workflow из URL
-        const currentWorkflows = prev.getAll("workflow");
-        if (currentWorkflows.length > 0) {
-          // Удаляем все workflow
-          newParams.delete("workflow");
-
-          // Добавляем только те, которые валидны для новой группы
-          currentWorkflows.forEach((wf) => {
-            if (validWorkflowsForNewGroup.includes(wf)) {
-              newParams.append("workflow", wf);
-            }
-          });
-        }
+        // Полностью очищаем workflow при смене группы
+        newParams.delete("workflow");
       } else {
         newParams.delete("group_title");
-        newParams.delete("workflow"); // Очищаем workflow при сбросе группы
+        newParams.delete("workflow");
       }
 
       return newParams;
     }, { replace: true });
 
-    // Очищаем workflow в форме, если они невалидны для новой группы
-    const currentFormWorkflows = form.values.workflow || [];
-    const validFormWorkflows = currentFormWorkflows.filter((wf) =>
-      validWorkflowsForNewGroup.includes(wf)
-    );
-    if (currentFormWorkflows.length !== validFormWorkflows.length) {
-      form.setFieldValue("workflow", validFormWorkflows);
-    }
+    // Очищаем workflow в форме при смене группы
+    form.setFieldValue("workflow", []);
 
     if (valueToSet && accessibleGroupTitles.includes(valueToSet)) {
       setCustomGroupTitle(valueToSet);

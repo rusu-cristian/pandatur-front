@@ -6,10 +6,10 @@ export const useChatUrlSync = ({
   chatFilters,
   isFiltered,
   
-  // Состояние поиска
+  // Состояние поиска (НЕ синхронизируется с URL, только локальное)
   rawSearchQuery,
   
-  // Состояние "Мои тикеты"
+  // Состояние "Мои тикеты" (НЕ синхронизируется с URL, только локальное)
   showMyTickets,
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -32,13 +32,21 @@ export const useChatUrlSync = ({
     setSearchParams((prev) => {
       const newParams = new URLSearchParams();
       
-      // НЕ добавляем поиск и "Мои тикеты" - они локальные
-      // Добавляем только серверные фильтры
+      // Сохраняем group_title из предыдущего URL (если есть)
+      // group_title управляется через BasicGeneralFormFilter, мы его не трогаем
+      const urlGroupTitle = prev.get("group_title");
+      if (urlGroupTitle) {
+        newParams.set("group_title", urlGroupTitle);
+      }
+      
+      // Добавляем только серверные фильтры (search и showMyTickets - локальные)
       if (state.isFiltered && Object.keys(state.filters).length > 0) {
         newParams.set("is_filtered", "true");
         
-        // Добавляем каждый фильтр в URL
+        // Добавляем каждый фильтр в URL (исключаем group_title - он отдельно)
         Object.entries(state.filters).forEach(([key, value]) => {
+          if (key === "group_title") return; // group_title управляется отдельно
+          
           if (value !== undefined && value !== null && value !== "") {
             if (Array.isArray(value)) {
               value.forEach((val) => newParams.append(key, val));
@@ -50,17 +58,27 @@ export const useChatUrlSync = ({
             }
           }
         });
+      } else {
+        // Если фильтры не активны, сохраняем только group_title
+        // (все остальные параметры удаляются)
       }
       
       return newParams;
-    });
+    }, { replace: true });
     
     lastStateRef.current = { ...state };
   }, [setSearchParams]);
 
-  // Функция для сброса URL
+  // Функция для сброса URL (сохраняем только group_title)
   const resetUrl = () => {
-    setSearchParams(() => new URLSearchParams());
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams();
+      const urlGroupTitle = prev.get("group_title");
+      if (urlGroupTitle) {
+        newParams.set("group_title", urlGroupTitle);
+      }
+      return newParams;
+    }, { replace: true });
     lastStateRef.current = {};
   };
 
@@ -72,10 +90,10 @@ export const useChatUrlSync = ({
     const urlShowMyTickets = searchParams.get("show_my_tickets") === "true";
     const urlIsFiltered = searchParams.get("is_filtered") === "true";
     
-    // Парсим фильтры из URL
+    // Парсим фильтры из URL (group_title не считается фильтром)
     const urlFilters = {};
     for (const [key, value] of searchParams.entries()) {
-      if (key === "search" || key === "show_my_tickets" || key === "is_filtered") continue;
+      if (key === "search" || key === "show_my_tickets" || key === "is_filtered" || key === "group_title") continue;
       
       if (key.endsWith("_from") || key.endsWith("_to")) {
         const baseKey = key.replace(/_from$|_to$/, "");

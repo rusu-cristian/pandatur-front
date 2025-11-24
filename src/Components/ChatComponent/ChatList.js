@@ -1,4 +1,5 @@
 import { useState, useRef, useMemo, useCallback, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { FixedSizeList } from "react-window";
 import { LuFilter } from "react-icons/lu";
 import {
@@ -118,8 +119,21 @@ const searchTickets = (index, query) => {
 };
 
 const ChatList = ({ ticketId }) => {
-  const { tickets, chatFilteredTickets, fetchChatFilteredTickets, chatSpinner, isChatFiltered, setIsChatFiltered, workflowOptions, currentChatFilters } = useApp();
+  const { 
+    tickets, 
+    chatFilteredTickets, 
+    fetchChatFilteredTickets, 
+    chatSpinner, 
+    isChatFiltered, 
+    setIsChatFiltered, 
+    workflowOptions, 
+    currentChatFilters,
+    accessibleGroupTitles,
+    customGroupTitle,
+    setCustomGroupTitle,
+  } = useApp();
   const { userId } = useUser();
+  const [searchParams] = useSearchParams();
 
   const [openFilter, setOpenFilter] = useState(false);
   const [rawSearchQuery, setRawSearchQuery] = useState("");
@@ -183,16 +197,32 @@ const ChatList = ({ ticketId }) => {
     showMyTickets: false,
   });
 
+  // Синхронизация group_title из URL в контекст (как в useLeadsUrlSync)
+  useEffect(() => {
+    const urlGroupTitle = searchParams.get("group_title");
+    
+    // Если в URL есть group_title и он доступен по правам, синхронизируем его
+    if (
+      urlGroupTitle &&
+      Array.isArray(accessibleGroupTitles) &&
+      accessibleGroupTitles.includes(urlGroupTitle) &&
+      customGroupTitle !== urlGroupTitle
+    ) {
+      setCustomGroupTitle(urlGroupTitle);
+    }
+  }, [searchParams, accessibleGroupTitles, customGroupTitle, setCustomGroupTitle]);
+
   // Восстановление состояния из URL при первой загрузке (только серверные фильтры)
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const urlIsFiltered = urlParams.get("is_filtered") === "true";
 
     // Восстанавливаем только серверные фильтры (НЕ локальные: search, show_my_tickets)
+    // group_title управляется отдельно через эффект выше
     if (urlIsFiltered && !isChatFiltered && isInitialLoad) {
       const urlFilters = {};
       for (const [key, value] of urlParams.entries()) {
-        if (key === "search" || key === "show_my_tickets" || key === "is_filtered") continue;
+        if (key === "search" || key === "show_my_tickets" || key === "is_filtered" || key === "group_title") continue;
 
         if (key.endsWith("_from") || key.endsWith("_to")) {
           const baseKey = key.replace(/_from$|_to$/, "");
