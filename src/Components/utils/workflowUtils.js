@@ -19,7 +19,7 @@ export const workflowOptionsSalesRO = [
     "Luat în lucru",
     "Ofertă trimisă",
     "Aprobat cu client",
-    "Factura trimisă",
+    "Factură trimisă",
     "Contract încheiat",
     "Realizat cu succes",
     "Închis și nerealizat"
@@ -177,7 +177,7 @@ export const workflowOptionsLimitedSalesRO = [
     "Luat în lucru",
     "Ofertă trimisă",
     "Aprobat cu client",
-    "Factura trimisă",
+    "Factură trimisă",
     "Contract încheiat",
     "Realizat cu succes",
     "Închis și nerealizat"

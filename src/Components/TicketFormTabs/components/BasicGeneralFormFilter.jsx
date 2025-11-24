@@ -224,7 +224,7 @@ export const BasicGeneralFormFilter = forwardRef(({ loading, data, formId }, ref
         mt="md"
         label={getLanguageByKey("Workflow")}
         placeholder={getLanguageByKey("Selectează flux de lucru")}
-        data={[getLanguageByKey("selectAll"), ...filteredWorkflowOptions]}
+        data={filteredWorkflowOptions}
         clearable
         key={form.key("workflow")}
         {...form.getInputProps("workflow")}
