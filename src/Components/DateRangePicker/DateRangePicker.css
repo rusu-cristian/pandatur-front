@@ -26,6 +26,23 @@
     border-color: var(--crm-ui-kit-palette-border-primary);
 }
 
+/* Контейнер для календаря (popper) - всегда под инпутом */
+.DateRangePicker .react-datepicker-popper {
+    position: absolute !important;
+    top: 31% !important;
+    left: 19% !important;
+    transform: translate3d(0px, 4px, 0px) !important;
+    margin-top: 0 !important;
+    z-index: 9999;
+    will-change: transform;
+}
+
+/* Отключаем автоматическое переворачивание через data-placement */
+.DateRangePicker .react-datepicker-popper[data-placement^="top"] {
+    transform: translate3d(0px, 4px, 0px) !important;
+    top: 100% !important;
+}
+
 /* Стили для календаря */
 .react-datepicker {
     font-family: inherit;

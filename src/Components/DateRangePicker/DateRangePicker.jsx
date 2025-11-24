@@ -145,6 +145,7 @@ export const DateRangePicker = ({
         isClearable={isClearable}
         placeholderText={placeholder}
         dateFormat={dateFormat}
+        popperPlacement="bottom-start"
       />
     </Box>
   );
