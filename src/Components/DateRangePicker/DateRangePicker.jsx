@@ -147,7 +147,6 @@ export const DateRangePicker = ({
         dateFormat={dateFormat}
         popperPlacement="bottom-start"
         popperContainer={({ children }) => {
-          // Рендерим popper в body документа, чтобы избежать проблем с overflow и zoom
           return <div style={{ position: 'relative', zIndex: 9999 }}>{children}</div>;
         }}
       />
