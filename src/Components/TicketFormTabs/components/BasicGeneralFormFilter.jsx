@@ -3,9 +3,11 @@ import {
   MultiSelect,
   TagsInput,
   Select,
+  Text,
 } from "@mantine/core";
-import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
+import { DateRangePicker } from "../../DateRangePicker/DateRangePicker";
+import dayjs from "dayjs";
 import {
   useEffect,
   useMemo,
@@ -25,7 +27,6 @@ import {
   formatDateOrUndefinedFilter,
   convertDateToArrayFilter,
 } from "../../LeadsComponent/utils";
-import { YYYY_MM_DD_DASH } from "../../../app-constants";
 import { UserGroupMultiSelect } from "../../ChatComponent/components/UserGroupMultiSelect/UserGroupMultiSelect";
 import {
   workflowOptionsByGroupTitle,
@@ -143,16 +144,16 @@ export const BasicGeneralFormFilter = forwardRef(({ loading, data, formId }, ref
     // Обновляем URL вместе со стейтом, чтобы избежать конфликтов с синхронизацией
     setSearchParams((prev) => {
       const newParams = new URLSearchParams(prev);
-      
+
       if (valueToSet && accessibleGroupTitles.includes(valueToSet)) {
         newParams.set("group_title", valueToSet);
-        
+
         // Очищаем невалидные workflow из URL
         const currentWorkflows = prev.getAll("workflow");
         if (currentWorkflows.length > 0) {
           // Удаляем все workflow
           newParams.delete("workflow");
-          
+
           // Добавляем только те, которые валидны для новой группы
           currentWorkflows.forEach((wf) => {
             if (validWorkflowsForNewGroup.includes(wf)) {
@@ -164,7 +165,7 @@ export const BasicGeneralFormFilter = forwardRef(({ loading, data, formId }, ref
         newParams.delete("group_title");
         newParams.delete("workflow"); // Очищаем workflow при сбросе группы
       }
-      
+
       return newParams;
     }, { replace: true });
 
@@ -205,6 +206,67 @@ export const BasicGeneralFormFilter = forwardRef(({ loading, data, formId }, ref
   useImperativeHandle(ref, () => ({
     getValues: () => form.getTransformedValues(),
   }));
+
+  // Функции для преобразования между форматом формы и DateRangePicker
+  const getDateRangeValue = (dateArray) => {
+    if (!dateArray || !Array.isArray(dateArray) || dateArray.length === 0) {
+      return [];
+    }
+    const [startDate, endDate] = dateArray;
+
+    // Преобразуем startDate в Date объект
+    let start = null;
+    if (startDate) {
+      if (startDate instanceof Date) {
+        start = startDate;
+      } else if (dayjs.isDayjs(startDate)) {
+        start = startDate.toDate();
+      } else {
+        // Если это строка или другой формат, пытаемся распарсить
+        start = dayjs(startDate).toDate();
+      }
+    }
+
+    // Преобразуем endDate в Date объект
+    let end = null;
+    if (endDate) {
+      if (endDate instanceof Date) {
+        end = endDate;
+      } else if (dayjs.isDayjs(endDate)) {
+        end = endDate.toDate();
+      } else {
+        // Если это строка или другой формат, пытаемся распарсить
+        end = dayjs(endDate).toDate();
+      }
+    }
+
+    if (start && end) {
+      return [start, end];
+    } else if (start) {
+      return [start, null];
+    }
+    return [];
+  };
+
+  const handleDateRangeChange = (fieldName) => (range) => {
+    if (!range || (Array.isArray(range) && range.length === 0)) {
+      form.setFieldValue(fieldName, []);
+      return;
+    }
+
+    if (Array.isArray(range)) {
+      const [startDate, endDate] = range;
+      if (startDate && endDate) {
+        // Сохраняем как массив Date объектов
+        form.setFieldValue(fieldName, [startDate, endDate]);
+      } else if (startDate && !endDate) {
+        // Сохраняем только первую дату
+        form.setFieldValue(fieldName, [startDate, null]);
+      } else {
+        form.setFieldValue(fieldName, []);
+      }
+    }
+  };
 
   return (
     <form id={idForm}>
@@ -271,25 +333,31 @@ export const BasicGeneralFormFilter = forwardRef(({ loading, data, formId }, ref
         mode="multi"
       />
 
-      <DatePickerInput
-        type="range"
-        valueFormat={YYYY_MM_DD_DASH}
-        clearable
-        mt="md"
-        label={getLanguageByKey("Data creării")}
-        placeholder={getLanguageByKey("Data creării")}
-        {...form.getInputProps("creation_date")}
-      />
+      <div style={{ marginTop: "1rem" }}>
+        <Text size="sm" fw={500} mb={4}>
+          {getLanguageByKey("Data creării")}
+        </Text>
+        <DateRangePicker
+          value={getDateRangeValue(form.values.creation_date)}
+          onChange={handleDateRangeChange("creation_date")}
+          isClearable={true}
+          dateFormat="yyyy-MM-dd"
+          placeholder={getLanguageByKey("Data creării")}
+        />
+      </div>
 
-      <DatePickerInput
-        type="range"
-        valueFormat={YYYY_MM_DD_DASH}
-        clearable
-        mt="md"
-        label={getLanguageByKey("Ultima modificare")}
-        placeholder={getLanguageByKey("Ultima modificare")}
-        {...form.getInputProps("last_interaction_date")}
-      />
+      <div style={{ marginTop: "1rem" }}>
+        <Text size="sm" fw={500} mb={4}>
+          {getLanguageByKey("Ultima modificare")}
+        </Text>
+        <DateRangePicker
+          value={getDateRangeValue(form.values.last_interaction_date)}
+          onChange={handleDateRangeChange("last_interaction_date")}
+          isClearable={true}
+          dateFormat="yyyy-MM-dd"
+          placeholder={getLanguageByKey("Ultima modificare")}
+        />
+      </div>
 
       <Select
         name="has_tasks"

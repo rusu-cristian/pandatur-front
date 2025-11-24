@@ -28,7 +28,11 @@
 
 /* Контейнер для календаря (popper) - всегда под инпутом */
 .DateRangePicker .react-datepicker-popper {
-    position: absolute !important;
+    z-index: 9999 !important;
+}
+
+/* Для портала календаря */
+.react-datepicker__portal {
     z-index: 9999 !important;
 }
 
@@ -38,7 +42,6 @@
     background-color: var(--crm-ui-kit-palette-background-primary);
     border: 1px solid var(--crm-ui-kit-palette-border-default);
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .react-datepicker__header {
@@ -79,13 +82,14 @@
 
 /* Дни месяца */
 .react-datepicker__day {
-    color: black;
+    color: var(--crm-ui-kit-palette-text-primary);
     border-radius: 4px;
     transition: all 0.2s ease;
 }
 
-.react-datepicker__day:hover {
-    background-color: var(--crm-ui-kit-palette-surface-hover-background-color);
+.react-datepicker__day:hover:not(.react-datepicker__day--disabled):not(.react-datepicker__day--selected):not(.react-datepicker__day--in-range):not(.react-datepicker__day--in-selecting-range):not(.react-datepicker__day--range-start):not(.react-datepicker__day--range-end) {
+    background-color: var(--crm-ui-kit-palette-background-primary) !important;
+    color: #ffffff !important;
     border-radius: 4px;
 }
 
@@ -120,6 +124,13 @@
 .react-datepicker__day--today {
     font-weight: 600;
     border: 1px solid var(--crm-ui-kit-palette-link-primary);
+    color: black;
+}
+
+.react-datepicker__day--today:hover:not(.react-datepicker__day--disabled):not(.react-datepicker__day--selected):not(.react-datepicker__day--in-range):not(.react-datepicker__day--in-selecting-range):not(.react-datepicker__day--range-start):not(.react-datepicker__day--range-end) {
+    background-color: var(--crm-ui-kit-palette-background-primary) !important;
+    color: #ffffff !important;
+    border-radius: 4px;
 }
 
 /* Отключенные дни */
@@ -137,6 +148,13 @@
 .react-datepicker__day--outside-month {
     color: var(--crm-ui-kit-palette-text-secondary-light);
     opacity: 0.5;
+}
+
+.react-datepicker__day--outside-month:hover:not(.react-datepicker__day--disabled) {
+    background-color: var(--crm-ui-kit-palette-background-primary) !important;
+    color: #ffffff !important;
+    opacity: 1 !important;
+    border-radius: 4px;
 }
 
 /* Кнопка очистки */
