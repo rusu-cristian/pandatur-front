@@ -30,7 +30,7 @@ export const ChatModal = ({ opened, onClose, children }) => {
         height: "133vh",
         top: 0,
         backgroundColor: "var(--crm-ui-kit-palette-background-primary)",
-        zIndex: 1001,
+        zIndex: 100,
       }}
     >
       {children}
