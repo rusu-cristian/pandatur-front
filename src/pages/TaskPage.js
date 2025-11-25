@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Modal } from "@mantine/core";
 import TaskComponent from "../Components/Task/TaskComponent";
 import SingleChat from "@components/ChatComponent/SingleChat";
+import { ChatModal } from "../Components/ChatComponent/ChatModal";
 import { useGetTechniciansList } from "../hooks";
 
 export const TaskPage = () => {
@@ -16,25 +16,9 @@ export const TaskPage = () => {
   return (
     <>
       <TaskComponent tasks={tasks} setTasks={setTasks} />
-      <Modal
-        opened={!!ticketId}
-        onClose={handleCloseModal}
-        size="100%"
-        fullScreen
-        withCloseButton={false}
-        styles={{
-          content: {
-            height: "100vh",
-            maxHeight: "100vh",
-          },
-          body: {
-            height: "100%",
-            padding: 0,
-          },
-        }}
-      >
+      <ChatModal opened={!!ticketId} onClose={handleCloseModal}>
         <SingleChat ticketId={ticketId} onClose={handleCloseModal} tasks={tasks} technicians={technicians} />
-      </Modal>
+      </ChatModal>
     </>
   );
 };
