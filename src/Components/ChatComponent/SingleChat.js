@@ -10,15 +10,27 @@ const SingleChat = ({ technicians, ticketId, onClose, tasks = [] }) => {
   const { getTicketById, fetchSingleTicket, tickets } = useApp();
   const { getUserMessages, messages } = useMessagesContext();
   const [isLoadingTicket, setIsLoadingTicket] = useState(false);
+  const [loadedTicket, setLoadedTicket] = useState(null);
 
   // ВАЖНО: Всегда получаем тикет из AppContext
   // Ищем в массиве tickets, чтобы компонент автоматически перерисовывался при обновлении
   // Тикет обновляется через TICKET_UPDATE и fetchSingleTicket
   const currentTicket = React.useMemo(() => {
-    if (!ticketId || !tickets?.length) return null;
+    if (!ticketId) return null;
     const ticketIdNum = Number(ticketId);
-    return tickets.find(t => t.id === ticketIdNum) || getTicketById(ticketIdNum);
-  }, [ticketId, tickets, getTicketById]); // Подписываемся на tickets для автоматической перерисовки
+    
+    // Сначала используем загруженный тикет
+    if (loadedTicket && loadedTicket.id === ticketIdNum) {
+      return loadedTicket;
+    }
+    
+    // Затем ищем в массиве tickets
+    const ticketFromArray = tickets?.find(t => t.id === ticketIdNum);
+    if (ticketFromArray) return ticketFromArray;
+    
+    // Затем ищем через getTicketById (hash map)
+    return getTicketById(ticketIdNum);
+  }, [ticketId, tickets, getTicketById, loadedTicket]);
 
   // Получаем последнее сообщение по времени для автоматического выбора платформы и контакта
   const lastMessage = React.useMemo(() => {
@@ -75,16 +87,29 @@ const SingleChat = ({ technicians, ticketId, onClose, tasks = [] }) => {
   // Это гарантирует, что action_needed и другие поля будут актуальными
   // После этого тикет будет автоматически обновляться через TICKET_UPDATE от сервера
   useEffect(() => {
-    if (!ticketId) return;
+    if (!ticketId) {
+      setLoadedTicket(null);
+      return;
+    }
 
     const ticketIdNum = Number(ticketId);
-    if (!ticketIdNum) return;
+    if (!ticketIdNum) {
+      setLoadedTicket(null);
+      return;
+    }
 
     setIsLoadingTicket(true);
+    setLoadedTicket(null);
 
     // ВСЕГДА запрашиваем актуальный тикет при открытии компонента
-    // fetchSingleTicket из AppContext правильно обновит тикет во всех местах
+    // Сохраняем результат запроса для заполнения формы
     fetchSingleTicket(ticketIdNum)
+      .then((ticket) => {
+        // Сохраняем загруженный тикет для использования в форме
+        if (ticket) {
+          setLoadedTicket(ticket);
+        }
+      })
       .finally(() => {
         setIsLoadingTicket(false);
       });
