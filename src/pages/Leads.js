@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { Divider, Modal, Button, ActionIcon, Input, SegmentedControl, Flex, Select } from "@mantine/core";
+import { ChatModal } from "../Components/ChatComponent/ChatModal";
 import { useDOMElementHeight, useApp, useConfirmPopup, useGetTechniciansList, useDebounce } from "@hooks";
 import { priorityOptions, groupTitleOptions } from "../FormOptions";
 import { workflowOptions as defaultWorkflowOptions } from "../FormOptions/workflowOptions";
@@ -605,25 +606,9 @@ export const Leads = () => {
       {spinnerTickets && <SpinnerRightBottom />}
       {kanbanSpinner && viewMode === VIEW_MODE.KANBAN && <SpinnerRightBottom />}
 
-      <Modal
-        opened={isChatOpen && !!ticketId}
-        onClose={closeChatModal}
-        size="100%"
-        fullScreen
-        withCloseButton={false}
-        styles={{
-          content: {
-            height: "100vh",
-            maxHeight: "100vh",
-          },
-          body: {
-            height: "100%",
-            padding: 0,
-          },
-        }}
-      >
+      <ChatModal opened={isChatOpen && !!ticketId} onClose={closeChatModal}>
         <SingleChat ticketId={ticketId} onClose={closeChatModal} technicians={technicians} />
-      </Modal>
+      </ChatModal>
 
       <Modal
         opened={isOpenAddLeadModal}
