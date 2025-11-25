@@ -120,7 +120,6 @@ export const BasicGeneralFormFilter = forwardRef(
         return [];
       }
 
-      // Получаем workflow опции для выбранного group_title
       const workflowsForGroup =
         getWorkflowMap[selectedGroupTitle] || getWorkflowMap.Default || [];
 
@@ -136,14 +135,12 @@ export const BasicGeneralFormFilter = forwardRef(
           : accessibleGroupTitles[0] || null;
       }
 
-      // Обновляем URL вместе со стейтом, чтобы избежать конфликтов с синхронизацией
       setSearchParams(
         (prev) => {
           const newParams = new URLSearchParams(prev);
 
           if (valueToSet && accessibleGroupTitles.includes(valueToSet)) {
             newParams.set("group_title", valueToSet);
-            // Полностью очищаем workflow при смене группы
             newParams.delete("workflow");
           } else {
             newParams.delete("group_title");
@@ -155,7 +152,6 @@ export const BasicGeneralFormFilter = forwardRef(
         { replace: true }
       );
 
-      // Очищаем workflow в форме при смене группы
       form.setFieldValue("workflow", []);
 
       if (valueToSet && accessibleGroupTitles.includes(valueToSet)) {
@@ -249,15 +245,33 @@ export const BasicGeneralFormFilter = forwardRef(
     const selectAllLabel = getLanguageByKey("selectAll");
 
     form.watch("workflow", ({ value }) => {
-      if (Array.isArray(value) && value.includes(selectAllLabel)) {
-        // убираем selectAll и добавляем все доступные workflow для выбранного group_title
-        const filteredValue = value.filter((v) => v !== selectAllLabel);
-        const uniqueValue = Array.from(
-          new Set([...filteredValue, ...filteredWorkflowOptions])
-        );
-        form.setFieldValue("workflow", uniqueValue);
+      if (!Array.isArray(value)) return;
+
+      if (value.includes(selectAllLabel)) {
+        // текущие выбранные кроме selectAll
+        const workflowsSelected = value.filter((v) => v !== selectAllLabel);
+
+        // выбраны ли все доступные workflow (до клика по selectAll они уже были все в value)
+        const allSelected =
+          filteredWorkflowOptions.length > 0 &&
+          workflowsSelected.length === filteredWorkflowOptions.length &&
+          filteredWorkflowOptions.every((wf) =>
+            workflowsSelected.includes(wf)
+          );
+
+        if (allSelected) {
+          // второе нажатие — снять всё
+          form.setFieldValue("workflow", []);
+        } else {
+          // первое нажатие — выбрать все
+          const uniqueValue = Array.from(
+            new Set([...workflowsSelected, ...filteredWorkflowOptions])
+          );
+          form.setFieldValue("workflow", uniqueValue);
+        }
       } else {
-        form.setFieldValue("workflow", value);
+        // когда selectAll не выбран – просто ничего не делаем, Mantine сам хранит value
+        // важно: НЕ вызывать тут setFieldValue, чтобы не ловить лишние циклы
       }
     });
     // =============================================
@@ -280,7 +294,6 @@ export const BasicGeneralFormFilter = forwardRef(
           mt="md"
           label={getLanguageByKey("Workflow")}
           placeholder={getLanguageByKey("Selectează flux de lucru")}
-          // добавляем пункт "selectAll" + все воркфлоу для выбранной группы
           data={[selectAllLabel, ...filteredWorkflowOptions]}
           clearable
           key={form.key("workflow")}
