@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { Divider, Modal, Button, ActionIcon, Input, SegmentedControl, Flex, Select } from "@mantine/core";
-import { useDOMElementHeight, useApp, useConfirmPopup, useGetTechniciansList, useDebounce } from "@hooks";
+import { useDOMElementHeight, useTickets, useUI, useUser, useConfirmPopup, useGetTechniciansList, useDebounce } from "@hooks";
 import { priorityOptions, groupTitleOptions } from "../FormOptions";
 import { workflowOptions as defaultWorkflowOptions } from "../FormOptions/workflowOptions";
 import { SpinnerRightBottom, AddLeadModal, PageHeader, Spin } from "@components";
@@ -35,17 +35,16 @@ export const Leads = () => {
   const navigate = useNavigate();
   const leadsFilterHeight = useDOMElementHeight(refLeadsHeader);
 
-  const {
-    tickets,
-    spinnerTickets,
-    fetchTickets,
-    groupTitleForApi,
-    workflowOptions,
-    isCollapsed,
-    accessibleGroupTitles,
-    customGroupTitle,
-    setCustomGroupTitle,
-  } = useApp();
+  // Используем новые контексты вместо монолитного useApp
+  const { spinnerTickets, fetchTickets } = useTickets();
+  const { isCollapsed } = useUI();
+  const { 
+    groupTitleForApi, 
+    workflowOptions, 
+    accessibleGroupTitles, 
+    customGroupTitle, 
+    setCustomGroupTitle 
+  } = useUser();
 
   const { ticketId } = useParams();
   const { technicians } = useGetTechniciansList();
@@ -199,6 +198,19 @@ export const Leads = () => {
       loadTicketGroup();
     }
   }, [ticketId, accessibleGroupTitles, groupTitleForApi, customGroupTitle, setCustomGroupTitle]);
+
+  // загрузка глобальных тикетов для Kanban при первой загрузке или смене группы
+  useEffect(() => {
+    if (viewMode === VIEW_MODE.KANBAN && filtersReady && groupTitleForApi) {
+      // Если нет фильтров в URL и ещё не загружали - загружаем глобальные тикеты
+      if (!didLoadGlobalTicketsRef.current && !kanbanFilterActive) {
+        fetchTickets().then(() => {
+          didLoadGlobalTicketsRef.current = true;
+        });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [viewMode, filtersReady, groupTitleForApi, kanbanFilterActive]);
 
   // загрузка таблицы (hard) при готовности фильтров/смене зависимостей
   useEffect(() => {

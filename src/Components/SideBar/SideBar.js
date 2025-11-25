@@ -18,7 +18,7 @@ import { Badge, Flex, Divider, Select, Burger } from "@mantine/core";
 import { clearCookies } from "@utils";
 import { api } from "@api";
 import { LoadingOverlay } from "@components";
-import { useApp, useLanguageToggle, useUser, useMobile, useTheme } from "../../hooks";
+import { useUI, useTickets, useLanguageToggle, useUser, useMobile, useTheme } from "../../hooks";
 import { getLanguageByKey } from "@utils";
 import Can from "../CanComponent/Can";
 import "./SideBar.css";
@@ -26,7 +26,6 @@ import { safeParseJson } from "../UsersComponent/rolesUtils";
 import { convertRolesToMatrix } from "../UsersComponent/rolesUtils";
 import { hasRouteAccess, hasStrictPermission } from "../utils/permissions";
 import { groupTitleOptions } from "../../FormOptions/GroupTitleOptions";
-import { AppContext } from "../../contexts/AppContext";
 import { SocketContext } from "../../contexts/SocketContext";
 
 const LOGO = "/logo.png";
@@ -57,7 +56,9 @@ const ConnectionIndicator = ({ isConnected }) => {
 
 export const SideBar = () => {
   const location = useLocation();
-  const { unreadCount, isCollapsed, setIsCollapsed } = useApp();
+  // Используем новые контексты вместо useApp
+  const { isCollapsed, setIsCollapsed } = useUI();
+  const { unreadCount } = useTickets();
   const { surname, name, userId, userRoles } = useUser();
   const [loading, setLoading] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -65,7 +66,7 @@ export const SideBar = () => {
   const { setLanguage, selectedLanguage, LANGUAGE_OPTIONS, LANGUAGES } = useLanguageToggle();
   const { toggleTheme, isDark } = useTheme();
 
-  const { customGroupTitle, groupTitleForApi } = useContext(AppContext);
+  const { customGroupTitle, groupTitleForApi } = useUser();
   const { isConnected } = useContext(SocketContext);
   const currentGroupTitle = customGroupTitle || groupTitleForApi;
   const currentGroupTitleLabel = useMemo(() => {

@@ -5,15 +5,14 @@ import {
   TagsInput,
   Box,
 } from "@mantine/core";
-import { useEffect, useContext, useRef, useMemo, useState } from "react";
+import { useEffect, useRef, useMemo, useState } from "react";
 import {
   priorityOptions,
   groupTitleOptions,
 } from "../../FormOptions";
 import { getLanguageByKey } from "../utils";
-import { useGetTechniciansList } from "../../hooks";
+import { useGetTechniciansList, useUser } from "../../hooks";
 import { parseTags } from "../../stringUtils";
-import { AppContext } from "../../contexts/AppContext";
 import { UserGroupMultiSelect } from "../ChatComponent/components/UserGroupMultiSelect/UserGroupMultiSelect";
 import { formatMultiSelectData } from "../utils/multiSelectUtils";
 import {
@@ -26,7 +25,7 @@ const FINAL_WORKFLOWS = ["Realizat cu succes", "Închis și nerealizat"];
 
 export const GeneralForm = ({ data, formInstance }) => {
   const { technicians } = useGetTechniciansList();
-  const { accessibleGroupTitles, isAdmin, userGroups } = useContext(AppContext);
+  const { accessibleGroupTitles, isAdmin, userGroups } = useUser();
   const isInitialized = useRef(false);
 
   // Используем состояние для отслеживания изменений group_title

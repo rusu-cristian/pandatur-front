@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSnackbar } from "notistack";
-import { useApp, useDebounce } from "@hooks";
+import { useUser, useTickets, useFilters, useDebounce } from "@hooks";
 import { api } from "../api";
 import { showServerError, getLanguageByKey } from "@utils";
 
@@ -9,12 +9,9 @@ import { showServerError, getLanguageByKey } from "@utils";
  */
 export const useLeadsKanban = () => {
     const { enqueueSnackbar } = useSnackbar();
-    const {
-        tickets: globalTickets,
-        fetchTickets: fetchGlobalLight,
-        groupTitleForApi,
-        setLightTicketFilters,
-    } = useApp();
+    const { groupTitleForApi } = useUser();
+    const { tickets: globalTickets, fetchTickets: fetchGlobalLight } = useTickets();
+    const { setLightTicketFilters } = useFilters();
 
     // local state
     const [kanbanTickets, setKanbanTickets] = useState([]);

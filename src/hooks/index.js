@@ -19,3 +19,8 @@ export * from "./useMobile";
 export * from "./useZoomScale";
 export * from "./useTheme";
 export * from "./useChatUrlSync";
+
+// Re-export new context hooks
+export { useUI } from "../contexts/UIContext";
+export { useFilters } from "../contexts/FiltersContext";
+export { useTickets } from "../contexts/TicketsContext";

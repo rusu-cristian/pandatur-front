@@ -1,10 +1,9 @@
 import { MultiSelect } from "@mantine/core";
-import { useContext } from "react";
-import { AppContext } from "../contexts/AppContext";
+import { useUser } from "../hooks";
 import { getLanguageByKey } from "./utils";
 
 export const SelectWorkflow = ({ onChange, selectedValues, ...props }) => {
-  const { workflowOptions } = useContext(AppContext);
+  const { workflowOptions } = useUser();
 
   const selectAllLabel = getLanguageByKey("selectAll");
   const options = workflowOptions || [];

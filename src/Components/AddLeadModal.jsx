@@ -9,13 +9,12 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
-import { useEffect, useContext } from "react";
+import { useEffect } from "react";
 import { useSnackbar } from "notistack";
 import { getLanguageByKey, showServerError } from "@utils";
 import { priorityOptions, groupTitleOptions } from "../FormOptions";
 import { api } from "@api";
 import { useUser } from "@hooks";
-import { AppContext } from "../contexts/AppContext";
 import { useNavigate } from "react-router-dom";
 
 export const AddLeadModal = ({
@@ -24,10 +23,9 @@ export const AddLeadModal = ({
   selectedGroupTitle,
   fetchTickets,
 }) => {
-  const { userId } = useUser();
+  const { userId, workflowOptions, groupTitleForApi } = useUser();
   const { enqueueSnackbar } = useSnackbar();
   const [loading, handlers] = useDisclosure(false);
-  const { workflowOptions, groupTitleForApi } = useContext(AppContext);
   const navigate = useNavigate();
 
   const form = useForm({

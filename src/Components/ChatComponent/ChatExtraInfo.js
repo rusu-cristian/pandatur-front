@@ -14,7 +14,8 @@ import { getLanguageByKey, showServerError } from "@utils";
 import { api } from "../../api";
 import {
   useFormTicket,
-  useApp,
+  useTickets,
+  useUser,
   useMessagesContext,
 } from "@hooks";
 import { PersonalData4ClientForm, Merge, Media } from "./components";
@@ -41,7 +42,8 @@ const ChatExtraInfo = ({
   const [isLoadingCombineClient, setIsLoadingClient] = useState(false);
   const [isLoadingInfoTicket, setIsLoadingInfoTicket] = useState(false);
 
-  const { setTickets, isAdmin } = useApp();
+  const { setTickets } = useTickets();
+  const { isAdmin } = useUser();
   const { getUserMessages, mediaFiles } = useMessagesContext();
 
   const {

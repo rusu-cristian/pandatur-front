@@ -1,7 +1,7 @@
 import { Flex } from "@mantine/core";
 import { useRef, useEffect } from "react";
 import { WorkflowColumn } from "./components";
-import { useGetTechniciansList, useApp } from "../../hooks";
+import { useGetTechniciansList, useUI, useUser } from "../../hooks";
 import "./WorkflowColumns.css";
 
 export const WorkflowColumns = ({
@@ -14,7 +14,8 @@ export const WorkflowColumns = ({
   selectedWorkflow,
 }) => {
   const { technicians } = useGetTechniciansList();
-  const { workflowOptions, isCollapsed } = useApp();
+  const { isCollapsed } = useUI();
+  const { workflowOptions } = useUser();
 
   const wrapperRef = useRef(null);
   const dragRef = useRef({

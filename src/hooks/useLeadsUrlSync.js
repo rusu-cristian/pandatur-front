@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useApp } from "@hooks";
+import { useUser } from "@hooks";
 import { parseFiltersFromUrl } from "../Components/utils/parseFiltersFromUrl";
 import { VIEW_MODE } from "@components/LeadsComponent/utils";
 
@@ -23,7 +23,7 @@ export const useLeadsUrlSync = ({
     setCustomGroupTitle,
 }) => {
     const [searchParams] = useSearchParams();
-    const { groupTitleForApi, workflowOptions } = useApp();
+    const { groupTitleForApi, workflowOptions } = useUser();
 
     const [filtersReady, setFiltersReady] = useState(false);
 

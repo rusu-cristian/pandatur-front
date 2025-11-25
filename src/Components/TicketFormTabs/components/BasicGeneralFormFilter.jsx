@@ -11,15 +11,13 @@ import dayjs from "dayjs";
 import {
   useEffect,
   useMemo,
-  useContext,
   forwardRef,
   useImperativeHandle,
 } from "react";
 import { useSearchParams } from "react-router-dom";
 import { priorityOptions, groupTitleOptions } from "../../../FormOptions";
 import { getLanguageByKey } from "../../utils";
-import { useGetTechniciansList } from "../../../hooks";
-import { AppContext } from "../../../contexts/AppContext";
+import { useGetTechniciansList, useUser } from "../../../hooks";
 import {
   formatMultiSelectData,
 } from "../../utils/multiSelectUtils";
@@ -46,7 +44,7 @@ export const BasicGeneralFormFilter = forwardRef(({ loading, data, formId }, ref
     setCustomGroupTitle,
     isAdmin,
     userGroups,
-  } = useContext(AppContext);
+  } = useUser();
   const [, setSearchParams] = useSearchParams();
 
   const form = useForm({

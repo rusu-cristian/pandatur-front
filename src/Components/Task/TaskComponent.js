@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextInput,
   SegmentedControl,
@@ -24,7 +24,6 @@ import { PageHeader } from "../PageHeader";
 import { useUser } from "../../hooks";
 import { useSnackbar } from "notistack";
 import { showServerError } from "../utils";
-import { AppContext } from "../../contexts/AppContext";
 
 const language = localStorage.getItem("language") || "RO";
 
@@ -35,8 +34,7 @@ const TaskComponent = ({
   setTasks, // Используется для обратной совместимости, но не напрямую
   setFetchTasksRef,
 }) => {
-  const { userId: currentUserId } = useUser();
-  const { accessibleGroupTitles, workflowOptions } = useContext(AppContext);
+  const { userId: currentUserId, accessibleGroupTitles, workflowOptions } = useUser();
 
   // Отдельные фильтры для kanban и list
   const [kanbanFilters, setKanbanFilters] = useState(null);

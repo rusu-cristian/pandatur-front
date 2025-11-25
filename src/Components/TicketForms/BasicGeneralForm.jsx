@@ -6,11 +6,10 @@ import {
   Button,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { useEffect, useContext } from "react";
+import { useEffect } from "react";
 import { priorityOptions } from "../../FormOptions";
 import { getLanguageByKey } from "../utils";
-import { useGetTechniciansList } from "../../hooks";
-import { AppContext } from "../../contexts/AppContext";
+import { useGetTechniciansList, useUser } from "../../hooks";
 
 const GENERAL_FORM_FILTER_ID = "GENERAL_FORM_FILTER_ID";
 
@@ -24,7 +23,7 @@ export const BasicGeneralForm = ({
 }) => {
   const idForm = formId || GENERAL_FORM_FILTER_ID;
   const { technicians } = useGetTechniciansList();
-  const { workflowOptions } = useContext(AppContext);
+  const { workflowOptions } = useUser();
 
   const form = useForm({
     mode: "uncontrolled",

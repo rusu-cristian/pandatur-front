@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { Flex, ActionIcon, Box } from "@mantine/core";
-import { useApp, useClientContacts, useMessagesContext } from "@hooks";
+import { useTickets, useFilters, useUser, useClientContacts, useMessagesContext } from "@hooks";
 import { useGetTechniciansList } from "../hooks";
 import ChatExtraInfo from "../Components/ChatComponent/ChatExtraInfo";
 import ChatList from "../Components/ChatComponent/ChatList";
@@ -10,15 +10,14 @@ import { ChatMessages } from "../Components/ChatComponent/components/ChatMessage
 import Can from "@components/CanComponent/Can";
 
 export const Chat = () => {
-  const {
-    isChatFiltered,
-    getTicketByIdWithFilters,
-    fetchSingleTicket,
-    groupTitleForApi,
-    accessibleGroupTitles,
-    customGroupTitle,
-    setCustomGroupTitle,
-  } = useApp();
+  const { isChatFiltered } = useFilters();
+  const { getTicketByIdWithFilters, fetchSingleTicket } = useTickets();
+  const { 
+    groupTitleForApi, 
+    accessibleGroupTitles, 
+    customGroupTitle, 
+    setCustomGroupTitle 
+  } = useUser();
   const { messages } = useMessagesContext();
   const { ticketId: ticketIdParam } = useParams();
   const ticketId = useMemo(() => {

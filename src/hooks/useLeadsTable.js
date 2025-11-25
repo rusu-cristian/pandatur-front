@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useSnackbar } from "notistack";
-import { useApp } from "./useApp";
+import { useUser } from "./useUser";
 import { api } from "../api";
 import { showServerError } from "../Components/utils";
 
@@ -13,7 +13,7 @@ import { showServerError } from "../Components/utils";
  */
 export const useLeadsTable = (debouncedSearchTerm = "") => {
     const { enqueueSnackbar } = useSnackbar();
-    const { groupTitleForApi, workflowOptions } = useApp();
+    const { groupTitleForApi, workflowOptions } = useUser();
 
     const [hardTickets, setHardTickets] = useState([]);
     const [hardTicketFilters, setHardTicketFilters] = useState({});

@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { Group, Button, Flex, MultiSelect, Select, Modal, Text } from "@mantine/core";
 import { translations, showServerError } from "../../utils";
 import { DateRangePicker } from "../../DateRangePicker/DateRangePicker";
@@ -10,7 +10,6 @@ import { useSnackbar } from "notistack";
 import { SelectWorkflow } from "../../SelectWorkflow";
 import { groupTitleOptions } from "../../../FormOptions";
 import { convertRolesToMatrix, safeParseJson } from "../../UsersComponent/rolesUtils";
-import { AppContext } from "../../../contexts/AppContext";
 import { formatMultiSelectData } from "../../utils/multiSelectUtils";
 import { UserGroupMultiSelect } from "../../ChatComponent/components/UserGroupMultiSelect/UserGroupMultiSelect";
 
@@ -24,7 +23,7 @@ const taskTypeOptions = TypeTask.map((task) => ({
 const TaskFilterModal = ({ opened, onClose, filters, onApply }) => {
   const [localFilters, setLocalFilters] = useState({});
   const { technicians, loading: loadingTechnicians } = useGetTechniciansList();
-  const { userId, user, teamUserIds } = useUser();
+  const { userId, user, teamUserIds, workflowOptions, accessibleGroupTitles } = useUser();
   const [groupOptions, setGroupOptions] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
   const rolesMatrix = convertRolesToMatrix(safeParseJson(user?.roles || "[]"));
@@ -38,8 +37,6 @@ const TaskFilterModal = ({ opened, onClose, filters, onApply }) => {
 
   // Ref для отслеживания предыдущих значений, чтобы избежать бесконечных циклов
   const prevCreatedForRef = useRef(null);
-
-  const { workflowOptions, accessibleGroupTitles } = useContext(AppContext);
 
   const allowedGroupTitleOptions = groupTitleOptions.filter((g) =>
     accessibleGroupTitles.includes(g.value)

@@ -1,9 +1,9 @@
 import { SideBar } from "@components";
-import { useApp } from "@hooks";
+import { useUI } from "@hooks";
 import "./AppLayout.css";
 
 export const AppLayout = ({ children }) => {
-  const { isCollapsed } = useApp();
+  const { isCollapsed } = useUI();
 
   return (
     <div className="app-container">

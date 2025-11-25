@@ -3,11 +3,11 @@ import React, { useEffect, useState } from "react";
 import { Flex, ActionIcon, Box } from "@mantine/core";
 import ChatExtraInfo from "./ChatExtraInfo";
 import { ChatMessages } from "./components";
-import { useApp, useClientContacts, useMessagesContext } from "@hooks";
+import { useTickets, useClientContacts, useMessagesContext } from "@hooks";
 import Can from "@components/CanComponent/Can";
 
 const SingleChat = ({ technicians, ticketId, onClose, tasks = [] }) => {
-  const { getTicketById, fetchSingleTicket, tickets } = useApp();
+  const { getTicketById, fetchSingleTicket, tickets } = useTickets();
   const { getUserMessages, messages } = useMessagesContext();
   const [isLoadingTicket, setIsLoadingTicket] = useState(false);
 

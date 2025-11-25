@@ -18,7 +18,7 @@ import {
 } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { getLanguageByKey } from "../utils";
-import { useUser, useApp, useDOMElementHeight, useChatUrlSync } from "../../hooks";
+import { useUser, useTickets, useUI, useFilters, useDOMElementHeight, useChatUrlSync } from "../../hooks";
 import { ChatListItem } from "./components";
 import { TicketFormTabs } from "../TicketFormTabs";
 import { MessageFilterForm } from "../LeadsComponent/MessageFilterForm";
@@ -119,20 +119,17 @@ const searchTickets = (index, query) => {
 };
 
 const ChatList = ({ ticketId }) => {
+  // Используем новые контексты вместо монолитного useApp
+  const { tickets, chatFilteredTickets, fetchChatFilteredTickets } = useTickets();
+  const { chatSpinner } = useUI();
+  const { isChatFiltered, setIsChatFiltered, currentChatFilters } = useFilters();
   const { 
-    tickets, 
-    chatFilteredTickets, 
-    fetchChatFilteredTickets, 
-    chatSpinner, 
-    isChatFiltered, 
-    setIsChatFiltered, 
+    userId, 
     workflowOptions, 
-    currentChatFilters,
-    accessibleGroupTitles,
-    customGroupTitle,
-    setCustomGroupTitle,
-  } = useApp();
-  const { userId } = useUser();
+    accessibleGroupTitles, 
+    customGroupTitle, 
+    setCustomGroupTitle 
+  } = useUser();
   const [searchParams] = useSearchParams();
 
   const [openFilter, setOpenFilter] = useState(false);
