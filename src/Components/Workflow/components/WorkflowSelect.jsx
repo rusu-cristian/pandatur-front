@@ -1,13 +1,14 @@
 import { useState, useRef, useEffect } from "react";
 import { getColorByWorkflowType, getBrightByWorkflowType } from "./WorkflowTag";
 import "./WorkflowSelect.css";
+import { getLanguageByKey } from "../../utils";
 
 export const WorkflowSelect = ({ 
   workflowOptions = [], 
   value, 
   onChange, 
   label,
-  placeholder = "Selectează flux de lucru",
+  placeholder = getLanguageByKey("Selectează flux de lucru"),
   disabled = false,
   clearable = true,
   ...props 
@@ -78,8 +79,8 @@ export const WorkflowSelect = ({
         className={`workflow-select-trigger ${disabled ? "disabled" : ""}`}
         onClick={() => !disabled && setIsOpen(!isOpen)}
         style={{
-          backgroundColor: selectedWorkflow ? backgroundColor : "#fff",
-          borderColor: selectedWorkflow ? borderColor : "#ccc",
+          backgroundColor: selectedWorkflow ? backgroundColor : "var(--crm-ui-kit-palette-background-primary)",
+          borderColor: selectedWorkflow ? borderColor : "var(--crm-ui-kit-palette-border-default)",
           border: `1px solid ${selectedWorkflow ? borderColor : "#ccc"}`,
           cursor: disabled ? "not-allowed" : "pointer",
         }}
