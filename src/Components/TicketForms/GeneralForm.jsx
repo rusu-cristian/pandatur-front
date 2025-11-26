@@ -35,6 +35,10 @@ export const GeneralForm = ({ data, formInstance }) => {
 
   const formattedTechnicians = formatMultiSelectData(technicians);
 
+  // Ref для отслеживания предыдущего group_title (инициализируется после загрузки данных)
+  const prevGroupTitleRef = useRef(null);
+  const isGroupTitleInitialized = useRef(false);
+
   useEffect(() => {
     if (data && !isInitialized.current) {
       // Инициализируем форму только один раз при первой загрузке данных
@@ -48,6 +52,9 @@ export const GeneralForm = ({ data, formInstance }) => {
         description: data.description,
       });
       setCurrentGroupTitle(data.group_title);
+      // Инициализируем prevGroupTitleRef после загрузки данных
+      prevGroupTitleRef.current = data.group_title;
+      isGroupTitleInitialized.current = true;
       isInitialized.current = true;
     }
   }, [data, formInstance]);
@@ -72,21 +79,17 @@ export const GeneralForm = ({ data, formInstance }) => {
     return workflowOptionsLimitedByGroupTitle;
   }, [isAdmin, isTikTokManager]);
 
-  // Сбрасываем workflow при изменении group_title, если текущий workflow не подходит
+  // Сбрасываем workflow при изменении group_title (только после инициализации)
   useEffect(() => {
-    if (!isInitialized.current) return;
-
-    const currentWorkflow = formInstance.getValues().workflow;
-
-    if (currentWorkflow && currentGroupTitle) {
-      const workflowsForGroup = getWorkflowMap[currentGroupTitle] || getWorkflowMap.Default || [];
-
-      // Если текущий workflow не входит в список для нового group_title, сбрасываем его
-      if (!workflowsForGroup.includes(currentWorkflow)) {
-        formInstance.setFieldValue("workflow", undefined);
-      }
+    if (!isInitialized.current || !isGroupTitleInitialized.current) return;
+    
+    // Если group_title изменился, сбрасываем workflow
+    if (prevGroupTitleRef.current !== currentGroupTitle && prevGroupTitleRef.current !== null) {
+      formInstance.setFieldValue("workflow", undefined);
     }
-  }, [currentGroupTitle, getWorkflowMap, formInstance]);
+    
+    prevGroupTitleRef.current = currentGroupTitle;
+  }, [currentGroupTitle, formInstance]);
 
   // Получаем workflow опции на основе выбранного group_title
   const filteredWorkflowOptions = useMemo(() => {
