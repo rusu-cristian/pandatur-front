@@ -7,7 +7,7 @@ import { useGetTechniciansList, useUser } from "../../../hooks";
 import dayjs from "dayjs";
 import { api } from "../../../api";
 import { useSnackbar } from "notistack";
-import { SelectWorkflow } from "../../SelectWorkflow";
+import { WorkflowMultiSelect } from "../../Workflow/components/WorkflowMultiSelect";
 import { groupTitleOptions } from "../../../FormOptions";
 import { convertRolesToMatrix, safeParseJson } from "../../UsersComponent/rolesUtils";
 import { AppContext } from "../../../contexts/AppContext";
@@ -338,10 +338,14 @@ const TaskFilterModal = ({ opened, onClose, filters, onApply }) => {
             disabled={accessibleGroupTitles.length === 1}
           />
 
-          <SelectWorkflow
-            selectedValues={localFilters.workflows || []}
+          <WorkflowMultiSelect
+            label={translations["Workflow"]?.[language] || "Workflow"}
+            placeholder={translations["Alege workflow pentru afisare in sistem"]?.[language] || "Alege workflow pentru afisare in sistem"}
+            workflowOptions={workflowOptions || []}
+            value={localFilters.workflows || []}
             onChange={(val) => handleChange("workflows", val)}
-            options={workflowOptions}
+            selectAllLabel={translations["selectAll"]?.[language] || "Selectează tot"}
+            clearable
           />
 
           <Select

@@ -5923,7 +5923,7 @@ export const translations = {
     RU: "Новый год Инстамбул",
     EN: "New Year Instambul"
   },
-  "program_brasov": { 
+  "program_brasov": {
     RO: "Program Brasov",
     RU: "Программа Брашов",
     EN: "Program Brasov"
@@ -5947,5 +5947,15 @@ export const translations = {
     RO: "Plată primită",
     RU: "Платеж получен",
     EN: "Payment received"
+  },
+  "Nu s-au găsit rezultate": {
+    RO: "Nu s-au găsit rezultate",
+    RU: "Не найдено результатов",
+    EN: "No results found"
+  },
+  "Caută...": {
+    RO: "Caută...",
+    RU: "Найти...",
+    EN: "Search..."
   }
 };

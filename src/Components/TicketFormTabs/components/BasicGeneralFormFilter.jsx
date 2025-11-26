@@ -31,6 +31,7 @@ import {
   workflowOptionsLimitedByGroupTitle,
   TikTokworkflowOptionsByGroupTitle,
 } from "../../utils/workflowUtils";
+import { WorkflowMultiSelect } from "../../Workflow/components/WorkflowMultiSelect";
 
 const GENERAL_FORM_FILTER_ID = "GENERAL_FORM_FILTER_ID";
 
@@ -242,38 +243,8 @@ export const BasicGeneralFormFilter = forwardRef(
     };
 
     // ========== Логика SELECT ALL для workflow ==========
+    // Теперь логика Select All встроена в WorkflowMultiSelect
     const selectAllLabel = getLanguageByKey("selectAll");
-
-    form.watch("workflow", ({ value }) => {
-      if (!Array.isArray(value)) return;
-
-      if (value.includes(selectAllLabel)) {
-        // текущие выбранные кроме selectAll
-        const workflowsSelected = value.filter((v) => v !== selectAllLabel);
-
-        // выбраны ли все доступные workflow (до клика по selectAll они уже были все в value)
-        const allSelected =
-          filteredWorkflowOptions.length > 0 &&
-          workflowsSelected.length === filteredWorkflowOptions.length &&
-          filteredWorkflowOptions.every((wf) =>
-            workflowsSelected.includes(wf)
-          );
-
-        if (allSelected) {
-          // второе нажатие — снять всё
-          form.setFieldValue("workflow", []);
-        } else {
-          // первое нажатие — выбрать все
-          const uniqueValue = Array.from(
-            new Set([...workflowsSelected, ...filteredWorkflowOptions])
-          );
-          form.setFieldValue("workflow", uniqueValue);
-        }
-      } else {
-        // когда selectAll не выбран – просто ничего не делаем, Mantine сам хранит value
-        // важно: НЕ вызывать тут setFieldValue, чтобы не ловить лишние циклы
-      }
-    });
     // =============================================
 
     return (
@@ -289,17 +260,19 @@ export const BasicGeneralFormFilter = forwardRef(
           onChange={handleGroupTitleChange}
         />
 
-        <MultiSelect
-          name="workflow"
-          mt="md"
-          label={getLanguageByKey("Workflow")}
-          placeholder={getLanguageByKey("Selectează flux de lucru")}
-          data={[selectAllLabel, ...filteredWorkflowOptions]}
-          clearable
-          key={form.key("workflow")}
-          {...form.getInputProps("workflow")}
-          searchable
-        />
+        <div style={{ marginTop: "1rem" }}>
+          <WorkflowMultiSelect
+            label={getLanguageByKey("Workflow")}
+            placeholder={getLanguageByKey("Selectează flux de lucru")}
+            workflowOptions={filteredWorkflowOptions}
+            value={form.values.workflow}
+            onChange={(value) => {
+              form.setFieldValue("workflow", value);
+            }}
+            selectAllLabel={selectAllLabel}
+            clearable
+          />
+        </div>
 
         <MultiSelect
           name="priority"
