@@ -5,7 +5,7 @@ import {
   TagsInput,
   Box,
 } from "@mantine/core";
-import { useEffect, useContext, useRef, useMemo, useState } from "react";
+import { useEffect, useContext, useRef, useMemo, useCallback } from "react";
 import {
   priorityOptions,
   groupTitleOptions,
@@ -19,29 +19,29 @@ import { formatMultiSelectData } from "../utils/multiSelectUtils";
 import {
   workflowOptionsByGroupTitle,
   workflowOptionsLimitedByGroupTitle,
-  TikTokworkflowOptionsByGroupTitle
+  TikTokworkflowOptionsByGroupTitle,
 } from "../utils/workflowUtils";
 import { WorkflowSelect } from "../Workflow/components/WorkflowSelect";
 
 const FINAL_WORKFLOWS = ["Realizat cu succes", "Închis și nerealizat"];
 
+// Стили вынесены за пределы компонента
+const boxStyle = { borderRadius: 8 };
+const errorStyle = { color: "red", fontSize: "12px", marginTop: "4px" };
+
 export const GeneralForm = ({ data, formInstance }) => {
   const { technicians } = useGetTechniciansList();
   const { accessibleGroupTitles, isAdmin, userGroups } = useContext(AppContext);
-  const isInitialized = useRef(false);
 
-  // Используем состояние для отслеживания изменений group_title
-  const [currentGroupTitle, setCurrentGroupTitle] = useState(formInstance.getValues().group_title);
+  // Флаг, чтобы один раз инициализировать форму из data
+  const isInitializedRef = useRef(false);
 
-  const formattedTechnicians = formatMultiSelectData(technicians);
+  // Реактивные значения формы
+  const { group_title, workflow, technician_id } = formInstance.values;
 
-  // Ref для отслеживания предыдущего group_title (инициализируется после загрузки данных)
-  const prevGroupTitleRef = useRef(null);
-  const isGroupTitleInitialized = useRef(false);
-
+  // --- ИНИЦИАЛИЗАЦИЯ ИЗ data ---
   useEffect(() => {
-    if (data && !isInitialized.current) {
-      // Инициализируем форму только один раз при первой загрузке данных
+    if (data && !isInitializedRef.current) {
       formInstance.setValues({
         technician_id: data.technician_id ? `${data.technician_id}` : undefined,
         tags: parseTags(data.tags),
@@ -51,64 +51,91 @@ export const GeneralForm = ({ data, formInstance }) => {
         group_title: data.group_title,
         description: data.description,
       });
-      setCurrentGroupTitle(data.group_title);
-      // Инициализируем prevGroupTitleRef после загрузки данных
-      prevGroupTitleRef.current = data.group_title;
-      isGroupTitleInitialized.current = true;
-      isInitialized.current = true;
+
+      isInitializedRef.current = true;
     }
   }, [data, formInstance]);
 
-  const filteredGroupTitleOptions = groupTitleOptions.filter((g) =>
-    accessibleGroupTitles.includes(g.value)
+  // --- MEMO ДЛЯ ТЕХНИКОВ И ГРУПП ---
+  const formattedTechnicians = useMemo(
+    () => formatMultiSelectData(technicians),
+    [technicians]
+  );
+
+  const filteredGroupTitleOptions = useMemo(
+    () => groupTitleOptions.filter((g) => accessibleGroupTitles.includes(g.value)),
+    [accessibleGroupTitles]
   );
 
   // Определяем, находится ли пользователь в группе TikTok Manager
-  const isTikTokManager = useMemo(() => {
-    return userGroups?.some((group) => group.name === "TikTok Manager");
-  }, [userGroups]);
+  const isTikTokManager = useMemo(
+    () => userGroups?.some((group) => group.name === "TikTok Manager"),
+    [userGroups]
+  );
 
-  // Функция для получения правильного workflowMap
-  const getWorkflowMap = useMemo(() => {
-    if (isAdmin) {
-      return workflowOptionsByGroupTitle;
-    }
-    if (isTikTokManager) {
-      return TikTokworkflowOptionsByGroupTitle;
-    }
+  // Получаем правильный workflowMap
+  const workflowMap = useMemo(() => {
+    if (isAdmin) return workflowOptionsByGroupTitle;
+    if (isTikTokManager) return TikTokworkflowOptionsByGroupTitle;
     return workflowOptionsLimitedByGroupTitle;
   }, [isAdmin, isTikTokManager]);
 
-  // Сбрасываем workflow при изменении group_title (только после инициализации)
-  useEffect(() => {
-    if (!isInitialized.current || !isGroupTitleInitialized.current) return;
-    
-    // Если group_title изменился, сбрасываем workflow
-    if (prevGroupTitleRef.current !== currentGroupTitle && prevGroupTitleRef.current !== null) {
-      formInstance.setFieldValue("workflow", undefined);
-    }
-    
-    prevGroupTitleRef.current = currentGroupTitle;
-  }, [currentGroupTitle, formInstance]);
-
-  // Получаем workflow опции на основе выбранного group_title
+  // Опции workflow по текущему group_title
   const filteredWorkflowOptions = useMemo(() => {
-    if (!currentGroupTitle) {
-      return [];
-    }
+    if (!group_title) return [];
+    return workflowMap[group_title] || workflowMap.Default || [];
+  }, [group_title, workflowMap]);
 
-    // Получаем workflow опции для выбранного group_title
-    const workflowsForGroup = getWorkflowMap[currentGroupTitle] || getWorkflowMap.Default || [];
+  // Блокируем workflow, если он финальный и пользователь не админ
+  const isWorkflowDisabled = useMemo(() => {
+    return !isAdmin && FINAL_WORKFLOWS.includes(workflow);
+  }, [workflow, isAdmin]);
 
-    return workflowsForGroup;
-  }, [currentGroupTitle, getWorkflowMap]);
+  // Значение для UserGroupMultiSelect
+  const technicianValue = useMemo(
+    () => (technician_id ? [technician_id] : []),
+    [technician_id]
+  );
 
-  const currentWorkflow = formInstance.getValues().workflow;
-  const isFinalWorkflow = FINAL_WORKFLOWS.includes(currentWorkflow);
-  const isWorkflowDisabled = !isAdmin && isFinalWorkflow;
+  // --- ОБРАБОТЧИКИ ---
+
+  // Здесь и делаем нужный сброс workflow ТОЛЬКО при реальном изменении group_title
+  const handleGroupTitleChange = useCallback(
+    (value) => {
+      const prev = formInstance.values.group_title;
+
+      formInstance.setFieldValue("group_title", value);
+
+      // Сбрасываем workflow, только если был старый group_title и он реально изменился
+      if (prev && prev !== value) {
+        formInstance.setFieldValue("workflow", undefined);
+        formInstance.clearFieldError("workflow");
+      }
+    },
+    [formInstance]
+  );
+
+  const handleWorkflowChange = useCallback(
+    (value) => {
+      formInstance.setFieldValue("workflow", value);
+      formInstance.clearFieldError("workflow");
+    },
+    [formInstance]
+  );
+
+  const handleTechnicianChange = useCallback(
+    (value) => {
+      formInstance.setFieldValue("technician_id", value[0] || undefined);
+    },
+    [formInstance]
+  );
 
   return (
-    <Box bg="var(--crm-ui-kit-palette-background-primary-disabled)" p="md" style={{ borderRadius: 8 }}>
+    <Box
+      bg="var(--crm-ui-kit-palette-background-primary-disabled)"
+      p="md"
+      style={boxStyle}
+    >
       <Select
         label={getLanguageByKey("Grup")}
         placeholder={getLanguageByKey("selectGroup")}
@@ -117,11 +144,8 @@ export const GeneralForm = ({ data, formInstance }) => {
         required
         clearable
         key={formInstance.key("group_title")}
-        value={formInstance.getValues().group_title}
-        onChange={(value) => {
-          formInstance.setFieldValue("group_title", value);
-          setCurrentGroupTitle(value);
-        }}
+        value={group_title}
+        onChange={handleGroupTitleChange}
         error={formInstance.errors.group_title}
         mb="md"
       />
@@ -131,17 +155,12 @@ export const GeneralForm = ({ data, formInstance }) => {
           label={getLanguageByKey("Workflow")}
           placeholder={getLanguageByKey("Selectează flux de lucru")}
           workflowOptions={filteredWorkflowOptions}
-          value={formInstance.getValues().workflow}
-          onChange={(value) => {
-            formInstance.setFieldValue("workflow", value);
-            formInstance.clearFieldError("workflow");
-          }}
+          value={workflow}
+          onChange={handleWorkflowChange}
           disabled={isWorkflowDisabled}
         />
         {formInstance.errors.workflow && (
-          <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
-            {formInstance.errors.workflow}
-          </div>
+          <div style={errorStyle}>{formInstance.errors.workflow}</div>
         )}
       </Box>
 
@@ -149,8 +168,8 @@ export const GeneralForm = ({ data, formInstance }) => {
         mt="md"
         label={getLanguageByKey("Responsabil")}
         placeholder={getLanguageByKey("Selectează responsabil")}
-        value={formInstance.getValues().technician_id ? [formInstance.getValues().technician_id] : []}
-        onChange={(value) => formInstance.setFieldValue("technician_id", value[0] || undefined)}
+        value={technicianValue}
+        onChange={handleTechnicianChange}
         techniciansData={formattedTechnicians}
         mode="single"
       />
@@ -182,8 +201,6 @@ export const GeneralForm = ({ data, formInstance }) => {
         key={formInstance.key("tags")}
         {...formInstance.getInputProps("tags")}
       />
-
-
 
       <Textarea
         mt="md"
