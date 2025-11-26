@@ -8,7 +8,7 @@ import "./Login.css";
 
 const setCookieToken = (token) => {
   Cookies.set("jwt", token, {
-    secure: window.location.protocol === "https:",
+    secure: false, // Force HTTP for testing
     sameSite: "Lax",
     expires: 1,
     path: "/",
