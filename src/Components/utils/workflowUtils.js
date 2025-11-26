@@ -135,6 +135,7 @@ export const workflowOptionsHR = [
 
 export const workflowOptionsFranchisePandaTur = [
     "Interesat",
+    "Apel de intrare",
     "De prelucrat",
     "Luat în lucru",
     "Ofertă trimisă",

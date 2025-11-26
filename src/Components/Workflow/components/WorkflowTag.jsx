@@ -1,6 +1,6 @@
 import { Tag } from "../../Tag";
 
-const colorsWorkflow = {
+export const colorsWorkflow = {
   Interesat: {
     color: "#ffffcc",
     bright: "#ffff99",
@@ -44,6 +44,70 @@ const colorsWorkflow = {
   "Închis și nerealizat": {
     color: "#ff9999",
     bright: "#ff4d4d",
+  },
+  "Factură trimisă": {
+    color: "#e6f3ff",
+    bright: "#b3d9ff",
+  },
+  Contactate: {
+    color: "#e1d5f7",
+    bright: "#c4a8ef",
+  },
+  "In procesare": {
+    color: "#fff4e6",
+    bright: "#ffe0b3",
+  },
+  Contract: {
+    color: "#d4f1f4",
+    bright: "#a8e3e9",
+  },
+  "Creat Cont In sistem": {
+    color: "#f0e6ff",
+    bright: "#e0ccff",
+  },
+  Rezervari: {
+    color: "#ffe6f2",
+    bright: "#ffb3d9",
+  },
+  "În lucru GC": {
+    color: "#e6f7ff",
+    bright: "#b3e6ff",
+  },
+  "Colectare date": {
+    color: "#fff9e6",
+    bright: "#fff3b3",
+  },
+  "Cumpărat (ani anteriori)": {
+    color: "#e6ffe6",
+    bright: "#b3ffb3",
+  },
+  "Cumpărat (anul curent)": {
+    color: "#d4fcd4",
+    bright: "#8bf58b",
+  },
+  "В работе GC": {
+    color: "#e6f7ff",
+    bright: "#b3e6ff",
+  },
+  "Сбор данных": {
+    color: "#fff9e6",
+    bright: "#fff3b3",
+  },
+  "КУПИЛИ (предыдущие года)": {
+    color: "#e6ffe6",
+    bright: "#b3ffb3",
+  },
+  "Купил (текущий год)": {
+    color: "#d4fcd4",
+    bright: "#8bf58b",
+  },
+  Primit: {
+    color: "#e6f2ff",
+    bright: "#b3d9ff",
+  },
+  Nou: {
+    color: "#fff4e6",
+    bright: "#ffe0b3",
   },
   default: {
     color: "#ddd",

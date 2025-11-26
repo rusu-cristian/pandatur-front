@@ -21,6 +21,7 @@ import {
   workflowOptionsLimitedByGroupTitle,
   TikTokworkflowOptionsByGroupTitle
 } from "../utils/workflowUtils";
+import { WorkflowSelect } from "../Workflow/components/WorkflowSelect";
 
 const FINAL_WORKFLOWS = ["Realizat cu succes", "Închis și nerealizat"];
 
@@ -96,7 +97,7 @@ export const GeneralForm = ({ data, formInstance }) => {
     // Получаем workflow опции для выбранного group_title
     const workflowsForGroup = getWorkflowMap[currentGroupTitle] || getWorkflowMap.Default || [];
 
-    return workflowsForGroup.map((w) => ({ value: w, label: w }));
+    return workflowsForGroup;
   }, [currentGroupTitle, getWorkflowMap]);
 
   const currentWorkflow = formInstance.getValues().workflow;
@@ -122,17 +123,24 @@ export const GeneralForm = ({ data, formInstance }) => {
         mb="md"
       />
 
-      <Select
-        label={getLanguageByKey("Workflow")}
-        placeholder={getLanguageByKey("Selectează flux de lucru")}
-        data={filteredWorkflowOptions}
-        clearable
-        searchable
-        required
-        disabled={isWorkflowDisabled}
-        key={formInstance.key("workflow")}
-        {...formInstance.getInputProps("workflow", { type: "select" })}
-      />
+      <Box mt="md">
+        <WorkflowSelect
+          label={getLanguageByKey("Workflow")}
+          placeholder={getLanguageByKey("Selectează flux de lucru")}
+          workflowOptions={filteredWorkflowOptions}
+          value={formInstance.getValues().workflow}
+          onChange={(value) => {
+            formInstance.setFieldValue("workflow", value);
+            formInstance.clearFieldError("workflow");
+          }}
+          disabled={isWorkflowDisabled}
+        />
+        {formInstance.errors.workflow && (
+          <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+            {formInstance.errors.workflow}
+          </div>
+        )}
+      </Box>
 
       <UserGroupMultiSelect
         mt="md"
