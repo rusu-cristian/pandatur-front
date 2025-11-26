@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams, Link } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { Divider, Modal, Button, ActionIcon, Input, SegmentedControl, Flex, Select } from "@mantine/core";
 import { ChatModal } from "../Components/ChatComponent/ChatModal";
@@ -180,7 +180,7 @@ export const Leads = () => {
   useEffect(() => {
     if (ticketId) {
       setIsChatOpen(true);
-      
+
       // Загружаем тикет, чтобы узнать его группу
       const loadTicketGroup = async () => {
         try {
@@ -196,7 +196,7 @@ export const Leads = () => {
           console.error("Failed to load ticket group:", error);
         }
       };
-      
+
       loadTicketGroup();
     }
   }, [ticketId, accessibleGroupTitles, groupTitleForApi, customGroupTitle, setCustomGroupTitle]);
@@ -244,19 +244,19 @@ export const Leads = () => {
   const handleChangeViewMode = (mode) => {
     const upperMode = mode.toUpperCase();
     setViewMode(upperMode);
-    
+
     // Сохраняем фильтры из URL и только меняем view и type
     setSearchParams((prev) => {
       const newParams = new URLSearchParams(prev);
       newParams.set("view", upperMode.toLowerCase());
-      
+
       // Меняем тип в зависимости от режима
       if (upperMode === VIEW_MODE.LIST) {
         newParams.set("type", "hard");
       } else {
         newParams.set("type", "light");
       }
-      
+
       return newParams;
     }, { replace: true });
 
@@ -268,7 +268,7 @@ export const Leads = () => {
       // kanban - сбрасываем локальный поиск, но фильтры остаются в URL
       setKanbanSearchTerm("");
       // НЕ сбрасываем kanbanFilters - они будут применены из URL через useLeadsUrlSync
-      
+
       if (!didLoadGlobalTicketsRef.current && !searchParams.get("workflow")) {
         // Загружаем глобальные тикеты только если нет фильтров в URL
         fetchTickets().then(() => {
@@ -498,7 +498,7 @@ export const Leads = () => {
                 onChange={(val) => {
                   // Безопасность: всегда проверяем значение против списка доступных прав
                   let valueToSet = null;
-                  
+
                   if (val) {
                     // Если значение указано - проверяем доступность по правам
                     if (accessibleGroupTitles.includes(val)) {
@@ -544,14 +544,48 @@ export const Leads = () => {
                 }}
               />
 
-              <SegmentedControl
-                onChange={handleChangeViewMode}
-                value={viewMode}
-                data={[
-                  { value: VIEW_MODE.KANBAN, label: <TbLayoutKanbanFilled /> },
-                  { value: VIEW_MODE.LIST, label: <FaList /> },
-                ]}
-              />
+              {(() => {
+                const basePath = `/leads${ticketId ? `/${ticketId}` : ''}`;
+                const kanbanParams = new URLSearchParams(searchParams);
+                kanbanParams.set("view", "kanban");
+                kanbanParams.set("type", "light");
+                const listParams = new URLSearchParams(searchParams);
+                listParams.set("view", "list");
+                listParams.set("type", "hard");
+
+                return (
+                  <SegmentedControl
+                    onChange={handleChangeViewMode}
+                    value={viewMode}
+                    data={[
+                      {
+                        value: VIEW_MODE.KANBAN,
+                        label: (
+                          <Link
+                            to={`${basePath}?${kanbanParams.toString()}`}
+                            onClick={(e) => e.stopPropagation()}
+                            style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+                          >
+                            <TbLayoutKanbanFilled color="var(--crm-ui-kit-palette-text-primary)"/>
+                          </Link>
+                        )
+                      },
+                      {
+                        value: VIEW_MODE.LIST,
+                        label: (
+                          <Link
+                            to={`${basePath}?${listParams.toString()}`}
+                            onClick={(e) => e.stopPropagation()}
+                            style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+                          >
+                            <FaList color="var(--crm-ui-kit-palette-text-primary)"/>
+                          </Link>
+                        )
+                      },
+                    ]}
+                  />
+                );
+              })()}
 
               <Can permission={{ module: "leads", action: "create" }}>
                 <Button onClick={openCreateTicketModal} leftSection={<IoMdAdd size={16} />}>
