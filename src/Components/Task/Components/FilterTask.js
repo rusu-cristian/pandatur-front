@@ -112,11 +112,11 @@ const TaskFilterModal = ({ opened, onClose, filters, onApply }) => {
   const dateRangeValue = useMemo(() => {
     const dateFrom = localFilters.date_from;
     const dateTo = localFilters.date_to;
-    
+
     if (dateFrom && dateTo) {
       const parsedFrom = dayjs(dateFrom, "DD-MM-YYYY", true);
       const parsedTo = dayjs(dateTo, "DD-MM-YYYY", true);
-      
+
       // Проверяем, что даты валидны
       if (parsedFrom.isValid() && parsedTo.isValid()) {
         return [parsedFrom.toDate(), parsedTo.toDate()];
@@ -146,7 +146,7 @@ const TaskFilterModal = ({ opened, onClose, filters, onApply }) => {
 
     if (Array.isArray(range)) {
       const [startDate, endDate] = range;
-      
+
       // Обновляем оба значения за один раз, чтобы избежать лишних ре-рендеров
       setLocalFilters((prev) => {
         if (startDate && endDate) {
@@ -266,6 +266,32 @@ const TaskFilterModal = ({ opened, onClose, filters, onApply }) => {
               placeholder={translations["intervalDate"][language]}
             />
           </div>
+          
+          <MultiSelect
+            label={translations["groupTitle"][language]}
+            placeholder={translations["groupTitle"][language]}
+            data={allowedGroupTitleOptions}
+            value={localFilters.group_titles?.length ? localFilters.group_titles : accessibleGroupTitles}
+            onChange={(val) =>
+              handleChange(
+                "group_titles",
+                val.length > 0 ? val : accessibleGroupTitles
+              )
+            }
+            clearable={false}
+            searchable
+            disabled={accessibleGroupTitles.length === 1}
+          />
+
+          <WorkflowMultiSelect
+            label={translations["Workflow"]?.[language] || "Workflow"}
+            placeholder={translations["Alege workflow pentru afisare in sistem"]?.[language] || "Alege workflow pentru afisare in sistem"}
+            workflowOptions={workflowOptions || []}
+            value={localFilters.workflows || []}
+            onChange={(val) => handleChange("workflows", val)}
+            selectAllLabel={translations["selectAll"]?.[language] || "Selectează tot"}
+            clearable
+          />
 
           <MultiSelect
             label={translations["Autor"][language]}
@@ -320,32 +346,6 @@ const TaskFilterModal = ({ opened, onClose, filters, onApply }) => {
             clearable
             searchable
             nothingFoundMessage={translations["noResult"][language]}
-          />
-
-          <MultiSelect
-            label={translations["groupTitle"][language]}
-            placeholder={translations["groupTitle"][language]}
-            data={allowedGroupTitleOptions}
-            value={localFilters.group_titles?.length ? localFilters.group_titles : accessibleGroupTitles}
-            onChange={(val) =>
-              handleChange(
-                "group_titles",
-                val.length > 0 ? val : accessibleGroupTitles
-              )
-            }
-            clearable={false}
-            searchable
-            disabled={accessibleGroupTitles.length === 1}
-          />
-
-          <WorkflowMultiSelect
-            label={translations["Workflow"]?.[language] || "Workflow"}
-            placeholder={translations["Alege workflow pentru afisare in sistem"]?.[language] || "Alege workflow pentru afisare in sistem"}
-            workflowOptions={workflowOptions || []}
-            value={localFilters.workflows || []}
-            onChange={(val) => handleChange("workflows", val)}
-            selectAllLabel={translations["selectAll"]?.[language] || "Selectează tot"}
-            clearable
           />
 
           <Select
