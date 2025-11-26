@@ -132,7 +132,8 @@ export const WorkflowTag = ({ type }) => {
       style={{
         backgroundColor: getColorByWorkflowType(type),
         borderColor: getBrightByWorkflowType(type),
-        color: "#17a2b8",
+        color: "#000000",
+        fontSize: "16px",
       }}
     >
       {type}
