@@ -135,6 +135,7 @@ export const workflowOptionsHR = [
 
 export const workflowOptionsFranchisePandaTur = [
     "Interesat",
+    "Apel de intrare",
     "De prelucrat",
     "Luat în lucru",
     "Ofertă trimisă",
@@ -486,7 +487,7 @@ export const userGroupsToGroupTitle = {
         "REZINA", "RASCANI", "FRANCHISETIMISOARA", "NISPORENI", "FRANCHISECLUJ", "STAUCENI",
         "HANCESTI", "CIMISLIA", "HR", "FRANCHISEPANDATUR", "GLODENI", "QUALITYDEPARTMENT"
     ],
-    
+
     "Marketing": [
         "MD", "RO", "FILIALE", "MARKETING", "INDIVIDUALGROUPS", "AGENCY", "GREENCARD", "CATALAN",
         "ORHEI", "CANTEMIR", "EDINET", "DROCHIA", "IALOVENI", "BUIUCANI", "CAUSENI", "SOLDANESTI",
