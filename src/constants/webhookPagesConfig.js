@@ -441,6 +441,12 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_name: "Catalan - 380984284284",
       type: "phone",
       group_title: ["CATALAN"]
+    },
+    {
+      page_id: "37362161919",
+      page_name: "Orhei - 37362161919",
+      type: "phone",
+      group_title: ["ORHEI"]
     }
   ],
   vibers: [
@@ -509,6 +515,12 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_name: "Ungheni - 37360225253",
       type: "phone",
       group_title: ["FILIALE"]
+    },
+    {
+      page_id: "37362161919",
+      page_name: "Orhei - 37362161919",
+      type: "phone",
+      group_title: ["ORHEI"]
     }
   ],
   "viber-bots": [
