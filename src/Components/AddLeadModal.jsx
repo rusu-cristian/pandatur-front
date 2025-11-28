@@ -161,7 +161,11 @@ export const AddLeadModal = ({
           w="100%"
           label={getLanguageByKey("Workflow")}
           placeholder={getLanguageByKey("Selectează flux de lucru")}
-          data={workflowOptions.map((step) => ({ value: step, label: step }))}
+          data={workflowOptions.map((step, index) => ({ 
+            value: step, 
+            label: step,
+            disabled: index !== 0 
+          }))}
           key={form.key("workflow")}
           {...form.getInputProps("workflow")}
         />
