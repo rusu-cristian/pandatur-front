@@ -3,4 +3,4 @@
 /build
 .env
 .prettierignore
-.cursorrules
+.DS_Store
