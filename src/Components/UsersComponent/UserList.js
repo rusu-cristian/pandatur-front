@@ -1,95 +1,211 @@
-import { RcTable } from "../RcTable";
-import { Button, Menu, Checkbox, Flex, Card, Text, Stack, Group, Badge, ActionIcon } from "@mantine/core";
+import React, { useState, useMemo, useCallback } from "react";
+import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import {
-  IoEllipsisHorizontal,
-  IoCheckmarkCircle,
-  IoPencil,
-  IoTrash,
-} from "react-icons/io5";
+  Button,
+  Typography,
+  Box,
+  Badge,
+  ThemeProvider,
+  createTheme,
+} from "@mui/material";
+import {
+  CheckCircle as CheckCircleIcon,
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+} from "@mui/icons-material";
 import { translations } from "../utils/translations";
 import { getLanguageByKey } from "../utils/getLanguageByKey";
 import { api } from "../../api";
 import { useSnackbar } from "notistack";
-import { useState } from "react";
 import GroupChangeModal from "./GroupsUsers/GroupChangeModal";
-import { useConfirmPopup, useMobile } from "../../hooks";
+import { useConfirmPopup } from "../../hooks";
 import PermissionGroupAssignModal from "./Roles/PermissionGroupAssignModal";
 import { useUser } from "../../hooks";
 import { hasStrictPermission } from "../utils/permissions";
+
 const language = localStorage.getItem("language") || "RO";
 
-const extractId = (u) => u.id?.user?.id || u.id?.id || u.id;
+// безопасный extractId
+const extractId = (u) =>
+  u?.id?.user?.id ??
+  u?.id?.id ??
+  u?.id ??
+  u?.user_id ??
+  null;
+
+// Темная тема MUI для DataGrid (каноничный подход)
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+    primary: {
+      main: "#10b981", // твой "link primary"
+    },
+    background: {
+      default: "#0f2231", // основной фон
+      paper: "#153043",   // фон карточек / таблиц
+    },
+    text: {
+      primary: "#f2f2f2",
+      secondary: "#7f8ba4",
+    },
+    divider: "#596683",
+  },
+  components: {
+    MuiDataGrid: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          backgroundColor: theme.palette.background.paper,
+          border: `1px solid ${theme.palette.divider}`,
+
+          "& .MuiDataGrid-cell": {
+            borderRight: `1px solid ${theme.palette.divider}`,
+            color: theme.palette.text.primary,
+            "&:focus, &:focus-within": {
+              outline: "none",
+              border: "none",
+              boxShadow: "none",
+            },
+            "&.MuiDataGrid-cell--editable": {
+              "&:focus, &:focus-within": {
+                outline: "none",
+                border: "none",
+                boxShadow: "none",
+              },
+            },
+          },
+
+          "& .MuiDataGrid-columnHeaders": {
+            borderBottom: `2px solid ${theme.palette.divider}`,
+            backgroundColor: theme.palette.background.default,
+            "& .MuiDataGrid-columnHeader": {
+              color: theme.palette.text.primary,
+              "& .MuiDataGrid-columnHeaderTitleContainer": {
+                color: theme.palette.text.primary,
+              },
+              "& .MuiDataGrid-columnHeaderTitle": {
+                color: theme.palette.text.primary,
+                fontWeight: 600,
+              },
+            },
+          },
+
+          "& .MuiDataGrid-row": {
+            "&:hover": {
+              backgroundColor: theme.palette.action.hover,
+            },
+            "&.Mui-selected": {
+              backgroundColor: theme.palette.action.selected,
+              "&:hover": {
+                backgroundColor: theme.palette.action.selected,
+              },
+            },
+          },
+
+          "& .MuiDataGrid-checkboxInput": {
+            color: theme.palette.primary.main,
+            "&.Mui-checked": {
+              color: theme.palette.primary.main,
+            },
+          },
+
+          "& .MuiDataGrid-menuIcon, & .MuiDataGrid-sortIcon": {
+            color: theme.palette.text.primary,
+          },
+
+          "& .MuiDataGrid-footerContainer": {
+            borderTop: `1px solid ${theme.palette.divider}`,
+            backgroundColor: theme.palette.background.default,
+          },
+        }),
+      },
+    },
+  },
+});
 
 const UserList = ({
-  users,
+  users = [],
   loading,
   fetchUsers = () => { },
   openEditUser = () => { },
 }) => {
   const { enqueueSnackbar } = useSnackbar();
-  const [selectedIds, setSelectedIds] = useState([]);
+  // MUI v8 требует формат { type: 'include', ids: Set }
+  const [rowSelectionModel, setRowSelectionModel] = useState({
+    type: "include",
+    ids: new Set(),
+  });
   const [groupModalOpen, setGroupModalOpen] = useState(false);
   const [permissionModalOpen, setPermissionModalOpen] = useState(false);
   const { userRoles } = useUser();
-  const isMobile = useMobile();
-  const canDelete = hasStrictPermission(userRoles, "USERS", "DELETE", "ALLOWED");
-  const canEdit = hasStrictPermission(userRoles, "USERS", "EDIT", "ALLOWED");
 
-  const allIds = users.map(extractId).filter(Boolean);
-  const allSelected =
-    allIds.length > 0 && allIds.every((id) => selectedIds.includes(id));
+  const canDelete = hasStrictPermission(
+    userRoles,
+    "USERS",
+    "DELETE",
+    "ALLOWED"
+  );
+  const canEdit = hasStrictPermission(
+    userRoles,
+    "USERS",
+    "EDIT",
+    "ALLOWED"
+  );
 
-  const toggleSelect = (userId) => {
-    setSelectedIds((prev) =>
-      prev.includes(userId)
-        ? prev.filter((id) => id !== userId)
-        : [...prev, userId],
-    );
+  // Получаем массив для обратной совместимости с остальным кодом
+  const selectedIds = Array.from(rowSelectionModel.ids);
+
+  const handleRowSelectionModelChange = (newSelection) => {
+    // MUI v8 отдаёт объект { type: 'include', ids: Set }
+    setRowSelectionModel(newSelection);
   };
 
-  const toggleSelectAll = () => {
-    setSelectedIds(allSelected ? [] : allIds);
-  };
-
-  const toggleUserStatus = async (id, currentStatus) => {
-    try {
-      const newStatus = (!currentStatus).toString();
-      await api.users.updateTechnician(id, { status: newStatus });
-      fetchUsers();
+  const toggleUserStatus = useCallback(
+    async (id, currentStatus) => {
+      try {
+        const newStatus = (!currentStatus).toString();
+        await api.users.updateTechnician(id, { status: newStatus });
+        fetchUsers();
         enqueueSnackbar(
           currentStatus
             ? getLanguageByKey("Utilizator dezactivat")
             : getLanguageByKey("Utilizator activat"),
-          { variant: "success" },
+          { variant: "success" }
         );
-    } catch (err) {
-      enqueueSnackbar(
-        getLanguageByKey("Eroare la actualizarea statusului"),
-        { variant: "error" },
-      );
-    }
-  };
+      } catch (err) {
+        enqueueSnackbar(
+          getLanguageByKey("Eroare la actualizarea statusului"),
+          { variant: "error" }
+        );
+      }
+    },
+    [fetchUsers, enqueueSnackbar]
+  );
 
   const handleToggleStatusSelected = async () => {
     try {
       const payload = {
-        users: selectedIds.map((id) => {
-          const user = users.find((u) => extractId(u) === id);
-          const newStatus = (!user?.status).toString();
-          return { id, status: newStatus };
-        }),
+        users: selectedIds
+          .map((id) => {
+            const user = users.find((u) => extractId(u) === id);
+            if (!user) return null;
+            const newStatus = (!user.status).toString();
+            return { id, status: newStatus };
+          })
+          .filter(Boolean),
       };
+
+      if (!payload.users.length) return;
 
       await api.users.updateMultipleTechnicians(payload);
       enqueueSnackbar(getLanguageByKey("Statuturi actualizate"), {
         variant: "success",
       });
       fetchUsers();
-      setSelectedIds([]);
+      setRowSelectionModel({ type: "include", ids: new Set() });
     } catch (err) {
       enqueueSnackbar(
         getLanguageByKey("Eroare la schimbarea statusului"),
-        { variant: "error" },
+        { variant: "error" }
       );
     }
   };
@@ -104,27 +220,40 @@ const UserList = ({
     loading: false,
   });
 
-  const handleDeleteUsersWithConfirm = (userIds) => {
-    confirmDeleteUsers(async () => {
-      try {
-        await api.users.deleteMultipleUsers({ user_ids: userIds });
-        enqueueSnackbar(getLanguageByKey("Utilizator șters"), {
-          variant: "success",
-        });
-        fetchUsers();
-        if (userIds.length > 1) setSelectedIds([]);
-      } catch (err) {
-        enqueueSnackbar(getLanguageByKey("Eroare la ștergere"), {
-          variant: "error",
-        });
-      }
-    });
-  };
+  const handleDeleteUsersWithConfirm = useCallback(
+    (userIds) => {
+      if (!userIds?.length) return;
+
+      confirmDeleteUsers(async () => {
+        try {
+          await api.users.deleteMultipleUsers({ user_ids: userIds });
+          enqueueSnackbar(getLanguageByKey("Utilizator șters"), {
+            variant: "success",
+          });
+          fetchUsers();
+          if (userIds.length > 1)
+            setRowSelectionModel({ type: "include", ids: new Set() });
+        } catch (err) {
+          enqueueSnackbar(getLanguageByKey("Eroare la ștergere"), {
+            variant: "error",
+          });
+        }
+      });
+    },
+    [confirmDeleteUsers, fetchUsers, enqueueSnackbar]
+  );
 
   const handleChangeGroup = async (groupName) => {
     try {
       const allGroups = await api.user.getGroupsList();
       const selectedGroup = allGroups.find((g) => g.name === groupName);
+
+      if (!selectedGroup) {
+        enqueueSnackbar(getLanguageByKey("Grupul nu a fost găsit"), {
+          variant: "error",
+        });
+        return;
+      }
 
       await api.users.updateUsersGroup({
         group_id: selectedGroup.id,
@@ -136,7 +265,7 @@ const UserList = ({
       });
 
       fetchUsers();
-      setSelectedIds([]);
+      setRowSelectionModel({ type: "include", ids: new Set() });
     } catch (err) {
       enqueueSnackbar(
         getLanguageByKey("Eroare la actualizarea grupului"),
@@ -149,338 +278,253 @@ const UserList = ({
     try {
       await api.permissions.batchAssignPermissionGroup(
         permissionGroupId,
-        selectedIds,
+        selectedIds
       );
       enqueueSnackbar(getLanguageByKey("Grup de permisiuni atribuit"), {
         variant: "success",
       });
       fetchUsers();
-      setSelectedIds([]);
+      setRowSelectionModel({ type: "include", ids: new Set() });
     } catch (err) {
-      enqueueSnackbar(getLanguageByKey("Eroare la atribuirea grupului"), {
-        variant: "error",
-      });
+      enqueueSnackbar(
+        getLanguageByKey("Eroare la atribuirea grupului"),
+        { variant: "error" }
+      );
     }
   };
 
-  // Мобильный компонент карточки пользователя
-  const MobileUserCard = ({ user }) => {
-    const userId = extractId(user);
-    const isSelected = selectedIds.includes(userId);
 
-    return (
-      <Card
-        shadow="sm"
-        padding="md"
-        radius="md"
-        withBorder
-        style={{
-          opacity: isSelected ? 0.7 : 1,
-          borderColor: isSelected ? '#0f824c' : undefined
-        }}
-      >
-        <Flex justify="space-between" align="flex-start" mb="sm">
-          <Flex align="center" gap="sm">
-            {(canEdit || canDelete) && (
-              <Checkbox
-                color="var(--crm-ui-kit-palette-link-primary)"
-                checked={isSelected}
-                onChange={() => toggleSelect(userId)}
-              />
-            )}
-            <Text fw={600} size="sm">
-              {user.name} {user.surname}
-            </Text>
-          </Flex>
-          <Menu shadow="md" width={200} position="bottom-end">
-            <Menu.Target>
-              <ActionIcon variant="default" size="sm">
-                <IoEllipsisHorizontal size={16} />
-              </ActionIcon>
-            </Menu.Target>
-            <Menu.Dropdown>
-              {canEdit && (
-                <Menu.Item
-                  leftSection={<IoCheckmarkCircle size={16} />}
-                  onClick={() => toggleUserStatus(user.id, user.status)}
-                >
-                  {user.status
-                    ? getLanguageByKey("Dezactivați")
-                    : getLanguageByKey("Activați")}
-                </Menu.Item>
-              )}
-              {canEdit && (
-                <Menu.Item
-                  leftSection={<IoPencil size={16} />}
-                  onClick={() => openEditUser(user)}
-                >
-                  {getLanguageByKey("Modificați")}
-                </Menu.Item>
-              )}
-              {canDelete && (
-                <Menu.Item
-                  leftSection={<IoTrash size={16} />}
-                  onClick={() => handleDeleteUsersWithConfirm([user.id])}
-                  color="red"
-                >
-                  {getLanguageByKey("Ștergeți")}
-                </Menu.Item>
-              )}
-            </Menu.Dropdown>
-          </Menu>
-        </Flex>
-
-        <Stack gap="xs">
-          <Group justify="space-between">
-            <Text size="xs" c="dimmed">ID:</Text>
-            <Text size="xs">{user.id}</Text>
-          </Group>
-
-          <Group justify="space-between">
-            <Text size="xs" c="dimmed">{getLanguageByKey("Email")}:</Text>
-            <Text size="xs" style={{ wordBreak: 'break-word' }}>{user.email || "—"}</Text>
-          </Group>
-
-          <Group justify="space-between">
-            <Text size="xs" c="dimmed">Username:</Text>
-            <Text size="xs">{user.username || "—"}</Text>
-          </Group>
-
-          <Group justify="space-between">
-            <Text size="xs" c="dimmed">{getLanguageByKey("Grup")}:</Text>
-            <Text size="xs">
-              {Array.isArray(user.groups)
-                ? user.groups.map((g) => (typeof g === "string" ? g : g.name)).join(", ")
-                : "—"}
-            </Text>
-          </Group>
-
-          <Group justify="space-between">
-            <Text size="xs" c="dimmed">{getLanguageByKey("Grup permisiuni")}:</Text>
-            <Text size="xs">
-              {Array.isArray(user.permissions) && user.permissions.length > 0
-                ? user.permissions[0].name
-                : "—"}
-            </Text>
-          </Group>
-
-          <Group justify="space-between">
-            <Text size="xs" c="dimmed">{getLanguageByKey("Funcție")}:</Text>
-            <Text size="xs">{user.jobTitle || "—"}</Text>
-          </Group>
-
-          {user.department && (
-            <Group justify="space-between">
-              <Text size="xs" c="dimmed">{translations["Departament"]?.[language] || "Departament"}:</Text>
-              <Text size="xs">{user.department}</Text>
-            </Group>
-          )}
-
-          <Group justify="space-between">
-            <Text size="xs" c="dimmed">{getLanguageByKey("Status")}:</Text>
-            <Badge
-              size="xs"
-              color={user.status ? "green" : "red"}
+  const columns = useMemo(() => {
+    const baseColumns = [
+      {
+        field: "id",
+        headerName: getLanguageByKey("ID"),
+        width: 90,
+        align: "center",
+        headerAlign: "center",
+        // MUI DataGrid автоматически использует row.id (служебное поле)
+        // Оно совпадает с нашим user.id, поэтому значение отображается автоматически
+      },
+      {
+        field: "name",
+        headerName: getLanguageByKey("Nume"),
+        width: 150,
+        align: "center",
+        headerAlign: "center",
+      },
+      {
+        field: "surname",
+        headerName: getLanguageByKey("Prenume"),
+        width: 150,
+        align: "center",
+        headerAlign: "center",
+      },
+      {
+        field: "email",
+        headerName: getLanguageByKey("Email"),
+        width: 250,
+        align: "center",
+        headerAlign: "center",
+        renderCell: (params) => {
+          if (!params) return "—";
+          return (
+            <div
+              style={{
+                wordBreak: "break-word",
+                width: "100%",
+                textAlign: "center",
+              }}
             >
-              {user.status
-                ? getLanguageByKey("Activ")
-                : getLanguageByKey("Inactiv")}
+              {params.value || "—"}
+            </div>
+          );
+        },
+      },
+      {
+        field: "groupsDisplay",
+        headerName: getLanguageByKey("Grup utilizator"),
+        width: 200,
+        align: "center",
+        headerAlign: "center",
+        renderCell: (params) => (
+          <Typography variant="body2" sx={{ color: "text.primary" }}>
+            {params.value}
+          </Typography>
+        ),
+      },
+      {
+        field: "permissionsDisplay",
+        headerName: getLanguageByKey("Grup permisiuni"),
+        width: 200,
+        align: "center",
+        headerAlign: "center",
+        renderCell: (params) => (
+          <Typography variant="body2" sx={{ color: "text.primary" }}>
+            {params.value}
+          </Typography>
+        ),
+      },
+      {
+        field: "jobTitleDisplay",
+        headerName: getLanguageByKey("Funcție"),
+        width: 200,
+        align: "center",
+        headerAlign: "center",
+        renderCell: (params) => (
+          <Typography variant="body2" sx={{ color: "text.primary" }}>
+            {params.value}
+          </Typography>
+        ),
+      },
+      {
+        field: "departmentDisplay",
+        headerName:
+          translations["Departament"]?.[language] || "Departament",
+        width: 150,
+        align: "center",
+        headerAlign: "center",
+        renderCell: (params) => (
+          <Typography variant="body2" sx={{ color: "text.primary" }}>
+            {params.value}
+          </Typography>
+        ),
+      },
+      {
+        field: "status",
+        headerName: getLanguageByKey("Status"),
+        width: 110,
+        align: "center",
+        headerAlign: "center",
+        renderCell: (params) => {
+          if (!params) return "—";
+          return (
+            <Badge
+              color={params.value ? "success" : "error"}
+              variant="dot"
+              sx={{
+                "& .MuiBadge-badge": {
+                  position: "static",
+                  transform: "none",
+                  bgcolor: params.value ? "primary.main" : "error.main",
+                },
+              }}
+            >
+              <Typography variant="body2" sx={{ color: "text.primary" }}>
+                {params.value
+                  ? getLanguageByKey("Activ")
+                  : getLanguageByKey("Inactiv")}
+              </Typography>
             </Badge>
-          </Group>
+          );
+        },
+      },
+      {
+        field: "sipuni_id",
+        headerName: "Sipuni ID",
+        width: 100,
+        align: "center",
+        headerAlign: "center",
+        valueGetter: (params) => {
+          if (!params?.row) return "—";
+          return params.row?.sipuni_id || "—";
+        },
+      },
+    ];
 
-          {user.sipuni_id && (
-            <Group justify="space-between">
-              <Text size="xs" c="dimmed">Sipuni ID:</Text>
-              <Text size="xs">{user.sipuni_id}</Text>
-            </Group>
-          )}
-        </Stack>
-      </Card>
-    );
-  };
+    if (canEdit || canDelete) {
+      baseColumns.push({
+        field: "actions",
+        type: "actions",
+        headerName: getLanguageByKey("Acțiune"),
+        width: 100,
+        align: "center",
+        headerAlign: "center",
+        getActions: (params) => {
+          if (!params?.row) return [];
+          const row = params.row;
+          const rowId = extractId(row);
+          if (!rowId) return [];
 
-  const columns = [
-    ...(canEdit || canDelete
-      ? [
-        {
-          title: (
-            <Checkbox
-              color="var(--crm-ui-kit-palette-link-primary)"
-              checked={allSelected}
-              indeterminate={selectedIds.length > 0 && !allSelected}
-              onChange={toggleSelectAll}
-            />
-          ),
-          dataIndex: "select",
-          key: "select",
-          width: 50,
-          render: (_, row) => {
-            const rowId = extractId(row);
-            return (
-              <Checkbox
-                color="var(--crm-ui-kit-palette-link-primary)"
-                checked={selectedIds.includes(rowId)}
-                onChange={() => toggleSelect(rowId)}
+          const actions = [];
+
+          if (canEdit) {
+            actions.push(
+              <GridActionsCellItem
+                key="toggle-status"
+                icon={<CheckCircleIcon fontSize="small" />}
+                label={
+                  row.status
+                    ? getLanguageByKey("Dezactivați")
+                    : getLanguageByKey("Activați")
+                }
+                onClick={() => toggleUserStatus(rowId, row.status)}
+                showInMenu
               />
             );
-          },
-        },
-      ]
-      : []),
-    {
-      align: "center",
-      title: getLanguageByKey("ID"),
-      dataIndex: "id",
-      key: "id",
-      width: 90,
-      render: (id) => id,
-    },
-    {
-      align: "center",
-      title: getLanguageByKey("Nume"),
-      dataIndex: "name",
-      key: "name",
-      width: 150,
-    },
-    {
-      align: "center",
-      title: getLanguageByKey("Prenume"),
-      dataIndex: "surname",
-      key: "surname",
-      width: 150,
-    },
-    {
-      align: "center",
-      title: getLanguageByKey("Email"),
-      dataIndex: "email",
-      key: "email",
-      width: 250,
-      render: (email) => <div className="break-word">{email || "—"}</div>,
-    },
-    {
-      align: "center",
-      title: getLanguageByKey("Grup utilizator"),
-      dataIndex: "groups",
-      key: "groups",
-      width: 200,
-      render: (groups) =>
-        Array.isArray(groups)
-          ? groups.map((g) => (typeof g === "string" ? g : g.name)).join(", ")
-          : "—",
-    },
-    {
-      align: "center",
-      title: getLanguageByKey("Grup permisiuni"),
-      dataIndex: "permissions",
-      key: "permissions",
-      width: 200,
-      render: (permissions) =>
-        Array.isArray(permissions) && permissions.length > 0
-          ? permissions[0].name
-          : "—",
-    },
-    {
-      align: "center",
-      title: getLanguageByKey("Funcție"),
-      dataIndex: "job_title",
-      key: "job_title",
-      width: 200,
-      render: (_, row) => row.jobTitle || "—",
-    },
-    {
-      align: "center",
-      title: translations["Departament"]?.[language] || "Departament",
-      dataIndex: "department",
-      key: "department",
-      width: 150,
-      render: (department) => department || "—",
-    },
-    {
-      align: "center",
-      title: getLanguageByKey("Status"),
-      dataIndex: "status",
-      key: "status",
-      width: 110,
-      render: (status) =>
-        status
-          ? getLanguageByKey("Activ")
-          : getLanguageByKey("Inactiv"),
-    },
-    {
-      align: "center",
-      title: "Sipuni ID",
-      dataIndex: "sipuni_id",
-      key: "sipuni_id",
-      width: 100,
-      render: (sipuni_id) => <Flex justify="center">{sipuni_id || "—"}</Flex>,
-    },
-    ...(canEdit || canDelete
-      ? [
-        {
-          title: getLanguageByKey("Acțiune"),
-          dataIndex: "action",
-          key: "action",
-          width: 100,
-          align: "center",
-          render: (_, row) => (
-            <Menu shadow="md" width={200} position="bottom-end">
-              <Menu.Target>
-                <Button
-                  variant="default"
-                  className="action-button-task"
-                  size="xs"
-                  p="xs"
-                >
-                  <IoEllipsisHorizontal size={18} />
-                </Button>
-              </Menu.Target>
+            actions.push(
+              <GridActionsCellItem
+                key="edit"
+                icon={<EditIcon fontSize="small" />}
+                label={getLanguageByKey("Modificați")}
+                onClick={() => openEditUser(row)}
+                showInMenu
+              />
+            );
+          }
 
-              <Menu.Dropdown>
-                {canEdit && (
-                  <Menu.Item
-                    leftSection={<IoCheckmarkCircle size={16} />}
-                    onClick={() => toggleUserStatus(row.id, row.status)}
-                  >
-                    {row.status
-                      ? getLanguageByKey("Dezactivați")
-                      : getLanguageByKey("Activați")}
-                  </Menu.Item>
-                )}
-                {canEdit && (
-                  <Menu.Item
-                    leftSection={<IoPencil size={16} />}
-                    onClick={() => openEditUser(row)}
-                  >
-                    {getLanguageByKey("Modificați")}
-                  </Menu.Item>
-                )}
-                {canDelete && (
-                  <Menu.Item
-                    leftSection={<IoTrash size={16} />}
-                    onClick={() => handleDeleteUsersWithConfirm([row.id])}
-                    color="red"
-                  >
-                    {getLanguageByKey("Ștergeți")}
-                  </Menu.Item>
-                )}
-              </Menu.Dropdown>
-            </Menu>
-          ),
+          if (canDelete) {
+            actions.push(
+              <GridActionsCellItem
+                key="delete"
+                icon={<DeleteIcon fontSize="small" />}
+                label={getLanguageByKey("Ștergeți")}
+                onClick={() => handleDeleteUsersWithConfirm([rowId])}
+                showInMenu
+                sx={{ color: "error.main" }}
+              />
+            );
+          }
+
+          return actions;
         },
-      ]
-      : []),
-  ];
+      });
+    }
+
+    return baseColumns;
+  }, [
+    canEdit,
+    canDelete,
+    handleDeleteUsersWithConfirm,
+    openEditUser,
+    toggleUserStatus,
+  ]);
 
   return (
     <>
       {selectedIds.length > 0 && (
-        <div style={{ marginBottom: 16, display: "flex", gap: 8, flexWrap: "wrap" }}>
+        <Box
+          sx={{
+            mb: 2,
+            display: "flex",
+            gap: 1,
+            flexWrap: "wrap",
+          }}
+        >
           {canEdit && (
             <Button
-              variant="outline"
-              color="blue"
+              variant="outlined"
               onClick={handleToggleStatusSelected}
-              size={isMobile ? "sm" : "md"}
+              size="medium"
+              sx={{
+                borderColor: "var(--crm-ui-kit-palette-link-primary)",
+                color: "var(--crm-ui-kit-palette-link-primary)",
+                "&:hover": {
+                  borderColor:
+                    "var(--crm-ui-kit-palette-link-hover-primary)",
+                  backgroundColor:
+                    "var(--crm-ui-kit-palette-button-classic-hover-background)",
+                },
+              }}
             >
               {getLanguageByKey("Schimbǎ status")}
             </Button>
@@ -488,9 +532,17 @@ const UserList = ({
 
           {canEdit && (
             <Button
-              // variant="outline"
+              variant="contained"
               onClick={() => setGroupModalOpen(true)}
-              size={isMobile ? "sm" : "md"}
+              size="medium"
+              sx={{
+                backgroundColor: "var(--crm-ui-kit-palette-link-primary)",
+                color: "#fff",
+                "&:hover": {
+                  backgroundColor:
+                    "var(--crm-ui-kit-palette-link-hover-primary)",
+                },
+              }}
             >
               {getLanguageByKey("Schimbă grupul")}
             </Button>
@@ -498,10 +550,17 @@ const UserList = ({
 
           {canEdit && (
             <Button
-              variant="warning"
-              color="grape"
+              variant="contained"
               onClick={() => setPermissionModalOpen(true)}
-              size={isMobile ? "sm" : "md"}
+              size="medium"
+              sx={{
+                backgroundColor: "var(--crm-ui-kit-palette-link-primary)",
+                color: "#fff",
+                "&:hover": {
+                  backgroundColor:
+                    "var(--crm-ui-kit-palette-link-hover-primary)",
+                },
+              }}
             >
               {getLanguageByKey("Schimbǎ grup de permisiuni")}
             </Button>
@@ -509,15 +568,21 @@ const UserList = ({
 
           {canDelete && (
             <Button
-              variant="danger"
-              color="red"
+              variant="contained"
               onClick={() => handleDeleteUsersWithConfirm(selectedIds)}
-              size={isMobile ? "sm" : "md"}
+              size="medium"
+              sx={{
+                backgroundColor: "#ef4444",
+                color: "#fff",
+                "&:hover": {
+                  backgroundColor: "#dc2626",
+                },
+              }}
             >
               {getLanguageByKey("Șterge")}
             </Button>
           )}
-        </div>
+        </Box>
       )}
 
       <GroupChangeModal
@@ -532,40 +597,51 @@ const UserList = ({
         onConfirm={handleAssignPermissionGroup}
       />
 
-      {isMobile ? (
-        <div
-          style={{
-            height: "calc(133.33vh - 400px)", // Компенсируем zoom: 0.75
-            overflowY: "auto",
-            paddingRight: "8px"
-          }}
-          className="mobile-scroll-container"
-        >
-          <Stack gap="md">
-            {users.map((user) => (
-              <MobileUserCard key={extractId(user)} user={user} />
-            ))}
-          </Stack>
-        </div>
-      ) : (
-        <div style={{ height: "calc(120vh)" }}>
-          <RcTable
-            rowKey={(row) => extractId(row)}
-            columns={columns}
-            data={users}
-            loading={loading}
-            bordered
-            selectedRow={[]}
-            pagination={false}
-            scroll={{ y: "100%" }}
-            onRow={(row) => ({
-              onDoubleClick: () => {
-                if (canEdit) openEditUser(row);
-              },
+      <ThemeProvider theme={darkTheme}>
+        <div style={{ height: "calc(120vh)", width: "100%" }}>
+          <DataGrid
+            rows={users.map((user, idx) => {
+              // После нормализации в Users.js id уже на верхнем уровне
+              const safeId = extractId(user) ?? user.id ?? `tmp-${idx}`;
+              
+              // Вычисляем отображаемые значения для сложных полей
+              const groupsDisplay = Array.isArray(user.groups) && user.groups.length > 0
+                ? user.groups
+                    .map((g) => (typeof g === "string" ? g : g?.name))
+                    .filter(Boolean)
+                    .join(", ")
+                : "—";
+              
+              const permissionsDisplay = Array.isArray(user.permissions) && user.permissions[0]?.name
+                ? user.permissions[0].name
+                : "—";
+              
+              return {
+                ...user,
+                id: safeId,
+                groupsDisplay,
+                permissionsDisplay,
+                jobTitleDisplay: user.jobTitle || "—",
+                departmentDisplay: user.department || "—",
+              };
             })}
+            columns={columns}
+            loading={loading}
+            checkboxSelection={canEdit || canDelete}
+            disableRowSelectionOnClick
+            disableRowSelectionExcludeModel
+            rowSelectionModel={rowSelectionModel}
+            onRowSelectionModelChange={handleRowSelectionModelChange}
+            onRowDoubleClick={(params) => {
+              if (canEdit && params?.row) {
+                openEditUser(params.row);
+              }
+            }}
+            hideFooter
+            disableCellSelection
           />
         </div>
-      )}
+      </ThemeProvider>
     </>
   );
 };
