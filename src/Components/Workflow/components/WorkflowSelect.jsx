@@ -92,7 +92,7 @@ export const WorkflowSelect = ({
               fontSize: "14px",
             }}
           >
-            {selectedWorkflow}
+            {getLanguageByKey(selectedWorkflow)}
           </span>
         ) : (
           <span className="workflow-select-placeholder">{placeholder}</span>
@@ -121,7 +121,7 @@ export const WorkflowSelect = ({
           <input
             type="text"
             className="workflow-select-search"
-            placeholder="Caută..."
+            placeholder={getLanguageByKey("Caută...")}
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
             onClick={(e) => e.stopPropagation()}
@@ -150,7 +150,7 @@ export const WorkflowSelect = ({
                         fontSize: "14px",
                       }}
                     >
-                      {option}
+                      {getLanguageByKey(option)}
                     </span>
                     {isSelected && <span className="workflow-select-check">✓</span>}
                   </div>
@@ -158,7 +158,7 @@ export const WorkflowSelect = ({
               })
             ) : (
               <div className="workflow-select-no-results">
-                Nu s-au găsit rezultate
+                {getLanguageByKey("Nu s-au găsit rezultate")}
               </div>
             )}
           </div>
