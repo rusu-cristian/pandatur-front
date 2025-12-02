@@ -434,9 +434,20 @@ const UserList = ({
         width: 100,
         align: "center",
         headerAlign: "center",
-        valueGetter: (params) => {
-          if (!params?.row) return "—";
-          return params.row?.sipuni_id || "—";
+        renderCell: (params) => {
+          <Box
+            sx={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography variant="body2" sx={{ color: "text.primary" }}>
+              {params.value || "—"}
+            </Typography>
+          </Box>
         },
       },
     ];
