@@ -33,92 +33,22 @@ const extractId = (u) =>
   u?.user_id ??
   null;
 
-// Темная тема MUI для DataGrid (каноничный подход)
+// Базовая тема Material UI
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
     primary: {
-      main: "#10b981", // твой "link primary"
+      main: "#10b981",
     },
     background: {
-      default: "#0f2231", // основной фон
-      paper: "#153043",   // фон карточек / таблиц
+      default: "#0f2231",
+      paper: "#153043",
     },
     text: {
       primary: "#f2f2f2",
       secondary: "#7f8ba4",
     },
     divider: "#596683",
-  },
-  components: {
-    MuiDataGrid: {
-      styleOverrides: {
-        root: ({ theme }) => ({
-          backgroundColor: theme.palette.background.paper,
-          border: `1px solid ${theme.palette.divider}`,
-
-          "& .MuiDataGrid-cell": {
-            borderRight: `1px solid ${theme.palette.divider}`,
-            color: theme.palette.text.primary,
-            "&:focus, &:focus-within": {
-              outline: "none",
-              border: "none",
-              boxShadow: "none",
-            },
-            "&.MuiDataGrid-cell--editable": {
-              "&:focus, &:focus-within": {
-                outline: "none",
-                border: "none",
-                boxShadow: "none",
-              },
-            },
-          },
-
-          "& .MuiDataGrid-columnHeaders": {
-            borderBottom: `2px solid ${theme.palette.divider}`,
-            backgroundColor: theme.palette.background.default,
-            "& .MuiDataGrid-columnHeader": {
-              color: theme.palette.text.primary,
-              "& .MuiDataGrid-columnHeaderTitleContainer": {
-                color: theme.palette.text.primary,
-              },
-              "& .MuiDataGrid-columnHeaderTitle": {
-                color: theme.palette.text.primary,
-                fontWeight: 600,
-              },
-            },
-          },
-
-          "& .MuiDataGrid-row": {
-            "&:hover": {
-              backgroundColor: theme.palette.action.hover,
-            },
-            "&.Mui-selected": {
-              backgroundColor: theme.palette.action.selected,
-              "&:hover": {
-                backgroundColor: theme.palette.action.selected,
-              },
-            },
-          },
-
-          "& .MuiDataGrid-checkboxInput": {
-            color: theme.palette.primary.main,
-            "&.Mui-checked": {
-              color: theme.palette.primary.main,
-            },
-          },
-
-          "& .MuiDataGrid-menuIcon, & .MuiDataGrid-sortIcon": {
-            color: theme.palette.text.primary,
-          },
-
-          "& .MuiDataGrid-footerContainer": {
-            borderTop: `1px solid ${theme.palette.divider}`,
-            backgroundColor: theme.palette.background.default,
-          },
-        }),
-      },
-    },
   },
 });
 
