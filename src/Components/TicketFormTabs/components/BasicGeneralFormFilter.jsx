@@ -244,7 +244,7 @@ export const BasicGeneralFormFilter = forwardRef(
 
     // ========== Логика SELECT ALL для workflow ==========
     // Теперь логика Select All встроена в WorkflowMultiSelect
-    const selectAllLabel = getLanguageByKey("selectAll");
+    const selectAllLabel = getLanguageByKey("Select all");
     // =============================================
 
     return (

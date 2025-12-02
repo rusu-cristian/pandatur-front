@@ -137,7 +137,7 @@ export const WorkflowMultiSelect = ({
                     }}
                   >
                     <span style={{ color: "#000000", fontSize: "14px",fontWeight: "600" }}>
-                      {option}
+                      {getLanguageByKey(option)}
                     </span>
                     {!disabled && (
                       <span
@@ -213,7 +213,7 @@ export const WorkflowMultiSelect = ({
                         fontWeight: option === selectAllLabel ? "600" : "normal",
                       }}
                     >
-                      {option}
+                      {getLanguageByKey(option)}
                     </span>
                     {isOptionSelected && <span className="workflow-multiselect-check">✓</span>}
                   </div>
