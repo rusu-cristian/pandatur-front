@@ -50,6 +50,30 @@ const darkTheme = createTheme({
     },
     divider: "#596683",
   },
+  components: {
+    MuiDataGrid: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          "& .MuiDataGrid-cell": {
+            borderRight: `1px solid ${theme.palette.divider}`,
+            borderBottom: `1px solid ${theme.palette.divider}`,
+            "&:focus": {
+              outline: "none",
+              border: `2px solid ${theme.palette.primary.main} !important`,
+              zIndex: 1,
+              position: "relative",
+            },
+            "&:focus-within": {
+              outline: "none",
+              border: `2px solid ${theme.palette.primary.main} !important`,
+              zIndex: 1,
+              position: "relative",
+            },
+          },
+        }),
+      },
+    },
+  },
 });
 
 const UserList = ({
@@ -533,19 +557,19 @@ const UserList = ({
             rows={users.map((user, idx) => {
               // После нормализации в Users.js id уже на верхнем уровне
               const safeId = extractId(user) ?? user.id ?? `tmp-${idx}`;
-              
+
               // Вычисляем отображаемые значения для сложных полей
               const groupsDisplay = Array.isArray(user.groups) && user.groups.length > 0
                 ? user.groups
-                    .map((g) => (typeof g === "string" ? g : g?.name))
-                    .filter(Boolean)
-                    .join(", ")
+                  .map((g) => (typeof g === "string" ? g : g?.name))
+                  .filter(Boolean)
+                  .join(", ")
                 : "—";
-              
+
               const permissionsDisplay = Array.isArray(user.permissions) && user.permissions[0]?.name
                 ? user.permissions[0].name
                 : "—";
-              
+
               return {
                 ...user,
                 id: safeId,
