@@ -324,7 +324,7 @@ export const LeadTable = ({
       dataIndex: "tip_de_transport",
       align: "center",
       width: 150,
-      render: (tip_de_transport) => cleanValue(tip_de_transport),
+      render: (tip_de_transport) => tip_de_transport ? (getLanguageByKey(tip_de_transport) || tip_de_transport) : cleanValue(),
     },
     {
       title: getLanguageByKey("Vacanță"),
@@ -338,7 +338,7 @@ export const LeadTable = ({
       dataIndex: "f_valuta_contului",
       align: "center",
       width: 150,
-      render: (valuta_contului) => cleanValue(valuta_contului),
+      render: (valuta_contului) => valuta_contului ? (getLanguageByKey(valuta_contului) || valuta_contului) : cleanValue(),
     },
     {
       title: getLanguageByKey("Acțiune"),
