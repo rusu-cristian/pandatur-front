@@ -70,6 +70,22 @@ const darkTheme = createTheme({
               position: "relative",
             },
           },
+          "& .MuiDataGrid-columnHeader": {
+            borderRight: `1px solid ${theme.palette.divider}`,
+            borderBottom: `1px solid ${theme.palette.divider}`,
+            "&:focus": {
+              outline: "none",
+              border: `2px solid ${theme.palette.primary.main} !important`,
+              zIndex: 1,
+              position: "relative",
+            },
+            "&:focus-within": {
+              outline: "none",
+              border: `2px solid ${theme.palette.primary.main} !important`,
+              zIndex: 1,
+              position: "relative",
+            },
+          },
         }),
       },
     },
@@ -301,7 +317,7 @@ const UserList = ({
         align: "center",
         headerAlign: "center",
         renderCell: (params) => (
-          <Typography variant="body2" sx={{ color: "text.primary" }}>
+          <Typography variant="body2" sx={{ color: "text.primary", }}>
             {params.value}
           </Typography>
         ),
