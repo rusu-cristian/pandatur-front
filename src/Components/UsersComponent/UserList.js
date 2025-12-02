@@ -317,9 +317,19 @@ const UserList = ({
         align: "center",
         headerAlign: "center",
         renderCell: (params) => (
-          <Typography variant="body2" sx={{ color: "text.primary", }}>
-            {params.value}
-          </Typography>
+          <Box
+            sx={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography variant="body2" sx={{ color: "text.primary" }}>
+              {params.value}
+            </Typography>
+          </Box>
         ),
       },
       {
@@ -329,9 +339,19 @@ const UserList = ({
         align: "center",
         headerAlign: "center",
         renderCell: (params) => (
-          <Typography variant="body2" sx={{ color: "text.primary" }}>
-            {params.value}
-          </Typography>
+          <Box
+            sx={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography variant="body2" sx={{ color: "text.primary" }}>
+              {params.value}
+            </Typography>
+          </Box>
         ),
       },
       {
@@ -341,9 +361,19 @@ const UserList = ({
         align: "center",
         headerAlign: "center",
         renderCell: (params) => (
-          <Typography variant="body2" sx={{ color: "text.primary" }}>
-            {params.value}
-          </Typography>
+          <Box
+            sx={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography variant="body2" sx={{ color: "text.primary" }}>
+              {params.value}
+            </Typography>
+          </Box>
         ),
       },
       {
@@ -354,9 +384,19 @@ const UserList = ({
         align: "center",
         headerAlign: "center",
         renderCell: (params) => (
-          <Typography variant="body2" sx={{ color: "text.primary" }}>
-            {params.value}
-          </Typography>
+          <Box
+            sx={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography variant="body2" sx={{ color: "text.primary" }}>
+              {params.value}
+            </Typography>
+          </Box>
         ),
       },
       {
