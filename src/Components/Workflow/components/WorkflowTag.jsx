@@ -1,4 +1,5 @@
 import { Tag } from "../../Tag";
+import { getLanguageByKey } from "../../utils";
 
 export const colorsWorkflow = {
   Interesat: {
@@ -127,6 +128,9 @@ export const getBrightByWorkflowType = (type) => {
 };
 
 export const WorkflowTag = ({ type }) => {
+  // Получаем переведенное значение workflow, если перевода нет - используем исходное значение
+  const translatedType = getLanguageByKey(type) || type;
+  
   return (
     <Tag
       style={{
@@ -136,7 +140,7 @@ export const WorkflowTag = ({ type }) => {
         fontSize: "16px",
       }}
     >
-      {type}
+      {translatedType}
     </Tag>
   );
 };
