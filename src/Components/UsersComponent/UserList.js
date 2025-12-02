@@ -269,7 +269,7 @@ const UserList = ({
       {
         field: "id",
         headerName: getLanguageByKey("ID"),
-        width: 90,
+        width: 110,
         align: "center",
         headerAlign: "center",
         // MUI DataGrid автоматически использует row.id (служебное поле)
@@ -278,21 +278,21 @@ const UserList = ({
       {
         field: "name",
         headerName: getLanguageByKey("Nume"),
-        width: 150,
+        width: 200,
         align: "center",
         headerAlign: "center",
       },
       {
         field: "surname",
         headerName: getLanguageByKey("Prenume"),
-        width: 150,
+        width: 200,
         align: "center",
         headerAlign: "center",
       },
       {
         field: "email",
         headerName: getLanguageByKey("Email"),
-        width: 250,
+        width: 297,
         align: "center",
         headerAlign: "center",
         renderCell: (params) => {
@@ -313,7 +313,7 @@ const UserList = ({
       {
         field: "groupsDisplay",
         headerName: getLanguageByKey("Grup utilizator"),
-        width: 200,
+        width: 250,
         align: "center",
         headerAlign: "center",
         renderCell: (params) => (
@@ -335,7 +335,7 @@ const UserList = ({
       {
         field: "permissionsDisplay",
         headerName: getLanguageByKey("Grup permisiuni"),
-        width: 200,
+        width: 250,
         align: "center",
         headerAlign: "center",
         renderCell: (params) => (
@@ -357,7 +357,7 @@ const UserList = ({
       {
         field: "jobTitleDisplay",
         headerName: getLanguageByKey("Funcție"),
-        width: 200,
+        width: 350,
         align: "center",
         headerAlign: "center",
         renderCell: (params) => (
@@ -380,7 +380,7 @@ const UserList = ({
         field: "departmentDisplay",
         headerName:
           translations["Departament"]?.[language] || "Departament",
-        width: 150,
+        width: 250,
         align: "center",
         headerAlign: "center",
         renderCell: (params) => (
