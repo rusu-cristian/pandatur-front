@@ -1,8 +1,9 @@
-import { Flex, Text, Image, Box } from "@mantine/core";
-import { Tooltip, Typography } from "@mui/material";
-import { ReportRounded, InfoOutlined } from "@mui/icons-material";
+import { Flex, Text, Image, Box, Tooltip as MantineTooltip } from "@mantine/core";
+import { Tooltip, Box as MuiBox } from "@mui/material";
+import { ReportRounded } from "@mui/icons-material";
 import { IoMdCheckmark } from "react-icons/io";
 import { IoCheckmarkDoneSharp } from "react-icons/io5";
+import { IoInformationCircleOutline } from "react-icons/io5";
 import { renderContent } from "../../renderContent";
 import { HH_mm, MEDIA_TYPE, DEFAULT_PHOTO } from "../../../../app-constants";
 import { parseServerDate, MESSAGES_STATUS, getFullName, getLanguageByKey } from "../../../utils";
@@ -14,30 +15,9 @@ import "./Message.css";
 
 const DEFAULT_SENDER_NAME = "SYSTEM TECHNICIAN";
 
-// Функция для получения иконки ошибки с tooltip
-const getErrorIcon = (errorMessage) => {
-  const icon = <ReportRounded size={24} style={{ color: "var(--mantine-color-red-6)" }} />;
-  
-  if (errorMessage) {
-    return (
-      <Tooltip 
-        title={errorMessage}
-        arrow
-        placement="top"
-      >
-        <span style={{ display: "flex", alignItems: "center" }}>
-          {icon}
-        </span>
-      </Tooltip>
-    );
-  }
-  
-  return icon;
-};
-
 const MESSAGE_STATUS_ICONS = {
   [MESSAGES_STATUS.PENDING]: <IoMdCheckmark size={20} style={{ color: "var(--crm-ui-kit-palette-text-secondary-dark)" }} />,
-  [MESSAGES_STATUS.ERROR]: null, // Будет обрабатываться отдельно с учетом error_message
+  [MESSAGES_STATUS.ERROR]: <ReportRounded sx={{ fontSize: 24, color: "var(--mantine-color-red-6)" }} />,
   [MESSAGES_STATUS.SUCCESS]: <IoCheckmarkDoneSharp size={20} style={{ color: "var(--crm-ui-kit-palette-link-primary)" }} />,
   [MESSAGES_STATUS.SEEN]: <IoCheckmarkDoneSharp size={20} style={{ color: "var(--mantine-color-blue-6)" }} />,
 };
@@ -175,10 +155,15 @@ export const SendedMessage = ({
               <Flex justify="end" align="center" gap={4}>
                 <Flex align="center" gap={3}>
                   <Flex align="center">
-                    {messageStatus === MESSAGES_STATUS.ERROR 
-                      ? getErrorIcon(msg.error_message)
-                      : MESSAGE_STATUS_ICONS[messageStatus]
-                    }
+                    {messageStatus === MESSAGES_STATUS.ERROR && msg.error_message ? (
+                      <Tooltip title={msg.error_message} arrow>
+                        <MuiBox sx={{ display: "flex", alignItems: "center", cursor: "help" }}>
+                          {MESSAGE_STATUS_ICONS[messageStatus]}
+                        </MuiBox>
+                      </Tooltip>
+                    ) : (
+                      MESSAGE_STATUS_ICONS[messageStatus]
+                    )}
                   </Flex>
                   {MESSAGE_STATUS_LABELS[messageStatus] && (
                     <Text size="xs" c="var(--crm-ui-kit-palette-text-secondary-dark)">
@@ -192,25 +177,24 @@ export const SendedMessage = ({
                 </Text>
 
                 {(msg.from_reference || msg.to_reference) && (
-                  <Tooltip
-                    title={
+                  <MantineTooltip
+                    label={
                       <Box>
                         {fromPage && (
-                          <Typography variant="caption" component="div">From: {fromPage.page_name} ({fromPage.page_id})</Typography>
+                          <Text size="xs">From: {fromPage.page_name} ({fromPage.page_id})</Text>
                         )}
                         {!fromPage && msg.from_reference && (
-                          <Typography variant="caption" component="div">From: {msg.from_reference}</Typography>
+                          <Text size="xs">From: {msg.from_reference}</Text>
                         )}
                         {toPage && (
-                          <Typography variant="caption" component="div">To: {toPage.page_name} ({toPage.page_id})</Typography>
+                          <Text size="xs">To: {toPage.page_name} ({toPage.page_id})</Text>
                         )}
                         {!toPage && msg.to_reference && (
-                          <Typography variant="caption" component="div">To: {msg.to_reference}</Typography>
+                          <Text size="xs">To: {msg.to_reference}</Text>
                         )}
                       </Box>
                     }
-                    arrow
-                    placement="top"
+                    withArrow
                   >
                     <Box
                       style={{
@@ -219,9 +203,9 @@ export const SendedMessage = ({
                         alignItems: "center",
                       }}
                     >
-                      <InfoOutlined size={18} style={{ color: "var(--crm-ui-kit-palette-text-secondary-dark)" }} />
+                      <IoInformationCircleOutline size={18} style={{ color: "var(--crm-ui-kit-palette-text-secondary-dark)" }} />
                     </Box>
-                  </Tooltip>
+                  </MantineTooltip>
                 )}
               </Flex>
             </Flex>
