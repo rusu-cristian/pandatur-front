@@ -1,5 +1,5 @@
-import { Flex, Text, Image, Box, Tooltip as MantineTooltip } from "@mantine/core";
-import { Tooltip, Box as MuiBox } from "@mui/material";
+import { Flex, Text, Image, Box } from "@mantine/core";
+import { Tooltip, Box as MuiBox, Typography } from "@mui/material";
 import { ReportRounded } from "@mui/icons-material";
 import { IoMdCheckmark } from "react-icons/io";
 import { IoCheckmarkDoneSharp } from "react-icons/io5";
@@ -190,24 +190,24 @@ export const SendedMessage = ({
                 </Text>
 
                 {(msg.from_reference || msg.to_reference) && (
-                  <MantineTooltip
-                    label={
+                  <Tooltip
+                    title={
                       <Box>
                         {fromPage && (
-                          <Text size="xs">From: {fromPage.page_name} ({fromPage.page_id})</Text>
+                          <Typography fontSize="0.75rem">From: {fromPage.page_name} ({fromPage.page_id})</Typography>
                         )}
                         {!fromPage && msg.from_reference && (
-                          <Text size="xs">From: {msg.from_reference}</Text>
+                          <Typography fontSize="0.75rem">From: {msg.from_reference}</Typography>
                         )}
                         {toPage && (
-                          <Text size="xs">To: {toPage.page_name} ({toPage.page_id})</Text>
+                          <Typography fontSize="0.75rem">To: {toPage.page_name} ({toPage.page_id})</Typography>
                         )}
                         {!toPage && msg.to_reference && (
-                          <Text size="xs">To: {msg.to_reference}</Text>
+                          <Typography fontSize="0.75rem">To: {msg.to_reference}</Typography>
                         )}
                       </Box>
                     }
-                    withArrow
+                    arrow
                   >
                     <Box
                       style={{
@@ -218,7 +218,7 @@ export const SendedMessage = ({
                     >
                       <InfoOutlineRounded sx={{ fontSize: 24, color: "var(--crm-ui-kit-palette-text-secondary-dark)" }} />
                     </Box>
-                  </MantineTooltip>
+                  </Tooltip>
                 )}
               </Flex>
             </Flex>
