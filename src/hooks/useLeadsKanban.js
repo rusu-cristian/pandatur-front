@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSnackbar } from "notistack";
-import { useApp, useDebounce } from "@hooks";
+import { useApp } from "@hooks";
 import { api } from "../api";
 import { showServerError, getLanguageByKey } from "@utils";
 
@@ -26,7 +26,6 @@ export const useLeadsKanban = () => {
     const [choiceWorkflow, setChoiceWorkflow] = useState([]);     // прокидывается в WorkflowColumns
 
     const isSearching = !!kanbanSearchTerm?.trim();
-    const debouncedSearch = useDebounce(kanbanSearchTerm, 2000);
     
     // Защита от "гонки" - отслеживаем актуальный запрос
     const kanbanReqIdRef = useRef(0);
@@ -92,23 +91,23 @@ export const useLeadsKanban = () => {
         }
     }, [enqueueSnackbar, groupTitleForApi]);
 
-    // искать по дебаунсу
-    useEffect(() => {
+    // ручной запуск поиска (вызывается при нажатии на кнопку поиска)
+    const triggerSearch = useCallback(() => {
         if (!groupTitleForApi) return;
 
-        if (debouncedSearch.trim()) {
+        const searchValue = kanbanSearchTerm?.trim();
+        if (searchValue) {
             setKanbanFilterActive(true);
             fetchKanbanTickets({
                 ...kanbanFilters,
-                search: debouncedSearch.trim(),
+                search: searchValue,
             });
         } else {
             // очищаем локальный список и выключаем флаг активного фильтра
             setKanbanTickets([]);
             setKanbanFilterActive(false);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [debouncedSearch, groupTitleForApi]);
+    }, [kanbanSearchTerm, kanbanFilters, groupTitleForApi, fetchKanbanTickets]);
 
     // синхронизация локального состояния канбана с глобальным при обновлении тикетов
     useEffect(() => {
@@ -135,13 +134,13 @@ export const useLeadsKanban = () => {
 
     // вычисление видимых тикетов
     const visibleTickets = useMemo(() => {
-        return (isSearching || kanbanSpinner || kanbanFilterActive) ? kanbanTickets : globalTickets;
-    }, [isSearching, kanbanSpinner, kanbanFilterActive, kanbanTickets, globalTickets]);
+        return (kanbanFilterActive || kanbanSpinner) ? kanbanTickets : globalTickets;
+    }, [kanbanFilterActive, kanbanSpinner, kanbanTickets, globalTickets]);
 
     // какой метод подхватит WorkflowColumns при "обновить"
     const currentFetchTickets = useMemo(() => {
-        return kanbanSearchTerm?.trim() ? fetchKanbanTickets : fetchGlobalLight;
-    }, [kanbanSearchTerm, fetchKanbanTickets, fetchGlobalLight]);
+        return kanbanFilterActive ? fetchKanbanTickets : fetchGlobalLight;
+    }, [kanbanFilterActive, fetchKanbanTickets, fetchGlobalLight]);
 
     // программное применение фильтров из модалки
     const applyKanbanFilters = useCallback((selectedFilters) => {
@@ -179,8 +178,8 @@ export const useLeadsKanban = () => {
         // search
         kanbanSearchTerm,
         setKanbanSearchTerm,
-        debouncedSearch,
         isSearching,
+        triggerSearch,
 
         // actions
         fetchKanbanTickets,

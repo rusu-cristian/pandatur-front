@@ -11,7 +11,7 @@ import { showServerError } from "../Components/utils";
  * - иначе, если поиск включён -> используем полный workflowOptions
  * - иначе -> workflowOptions без [Realizat..., Închis...]
  */
-export const useLeadsTable = (debouncedSearchTerm = "") => {
+export const useLeadsTable = () => {
     const { enqueueSnackbar } = useSnackbar();
     const { groupTitleForApi, workflowOptions } = useApp();
 
@@ -21,6 +21,7 @@ export const useLeadsTable = (debouncedSearchTerm = "") => {
     const [totalLeads, setTotalLeads] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
     const [perPage, setPerPage] = useState(50);
+    const [searchTerm, setSearchTerm] = useState("");
 
     const hardReqIdRef = useRef(0);
 
@@ -35,7 +36,7 @@ export const useLeadsTable = (debouncedSearchTerm = "") => {
         );
     }, [hardTicketFilters]);
 
-    const fetchHardTickets = useCallback(async (page = 1) => {
+    const fetchHardTickets = useCallback(async (page = 1, searchValue = null) => {
         if (!groupTitleForApi || !workflowOptions.length) return;
 
         const reqId = ++hardReqIdRef.current;
@@ -43,7 +44,9 @@ export const useLeadsTable = (debouncedSearchTerm = "") => {
             setLoading(true);
 
             const excludedWorkflows = ["Realizat cu succes", "Închis și nerealizat"];
-            const isSearchingInList = !!debouncedSearchTerm?.trim();
+            // Используем переданный searchValue или значение из searchTerm
+            const effectiveSearch = searchValue !== null ? searchValue : searchTerm;
+            const isSearchingInList = !!effectiveSearch?.trim();
 
             const effectiveWorkflow =
                 hardTicketFilters.workflow?.length > 0
@@ -64,8 +67,7 @@ export const useLeadsTable = (debouncedSearchTerm = "") => {
                 attributes: {
                     ...restFilters,
                     workflow: effectiveWorkflow,
-                    ...(search?.trim() ? { search: search.trim() } : {}),
-                    ...(debouncedSearchTerm?.trim() ? { search: debouncedSearchTerm.trim() } : {}),
+                    ...(effectiveSearch?.trim() ? { search: effectiveSearch.trim() } : {}),
                 },
             });
 
@@ -82,7 +84,7 @@ export const useLeadsTable = (debouncedSearchTerm = "") => {
                 setLoading(false);
             }
         }
-    }, [enqueueSnackbar, groupTitleForApi, workflowOptions, hardTicketFilters, perPage, debouncedSearchTerm]);
+    }, [enqueueSnackbar, groupTitleForApi, workflowOptions, hardTicketFilters, perPage, searchTerm]);
 
     // useLeadsTable.js
     const handleApplyFiltersHardTicket = useCallback((selectedFilters) => {
@@ -115,6 +117,12 @@ export const useLeadsTable = (debouncedSearchTerm = "") => {
         setPerPage(n);
     }, [perPage]);
 
+    // ручной запуск поиска (вызывается при нажатии на кнопку поиска)
+    const triggerSearch = useCallback(() => {
+        setCurrentPage(1);
+        fetchHardTickets(1, searchTerm);
+    }, [searchTerm, fetchHardTickets]);
+
     return {
         // data
         hardTickets,
@@ -124,6 +132,8 @@ export const useLeadsTable = (debouncedSearchTerm = "") => {
         currentPage,
         perPage,
         hasHardFilters,
+        searchTerm,
+        setSearchTerm,
 
         // actions
         fetchHardTickets,
@@ -131,5 +141,6 @@ export const useLeadsTable = (debouncedSearchTerm = "") => {
         setCurrentPage,
         handleApplyFiltersHardTicket,
         handlePerPageChange,
+        triggerSearch,
     };
 };

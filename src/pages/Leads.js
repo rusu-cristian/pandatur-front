@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, useSearchParams, Link } from "react-router-dom";
 import { useSnackbar } from "notistack";
-import { Divider, Modal, Button, ActionIcon, Input, SegmentedControl, Flex, Select } from "@mantine/core";
+import { Divider, Modal, Button, ActionIcon, Input, SegmentedControl, Flex, Select, Loader } from "@mantine/core";
 import { ChatModal } from "../Components/ChatComponent/ChatModal";
-import { useDOMElementHeight, useApp, useConfirmPopup, useGetTechniciansList, useDebounce } from "@hooks";
+import { useDOMElementHeight, useApp, useConfirmPopup, useGetTechniciansList } from "@hooks";
 import { priorityOptions, groupTitleOptions } from "../FormOptions";
 import { workflowOptions as defaultWorkflowOptions } from "../FormOptions/workflowOptions";
 import { SpinnerRightBottom, AddLeadModal, PageHeader, Spin } from "@components";
@@ -21,6 +21,7 @@ import { FaTrash, FaEdit, FaList } from "react-icons/fa";
 import { IoMdAdd, IoMdClose } from "react-icons/io";
 import { TbLayoutKanbanFilled } from "react-icons/tb";
 import { LuFilter } from "react-icons/lu";
+import { Search as SearchIcon } from "@mui/icons-material";
 import "../css/SnackBarComponent.css";
 import "../Components/LeadsComponent/LeadsHeader/LeadsFilter.css";
 
@@ -73,7 +74,7 @@ export const Leads = () => {
 
     kanbanSearchTerm,
     setKanbanSearchTerm,
-    debouncedSearch,
+    triggerSearch: triggerKanbanSearch,
 
     fetchKanbanTickets,
     currentFetchTickets,
@@ -87,10 +88,6 @@ export const Leads = () => {
     setChoiceWorkflow,
   } = useLeadsKanban();
 
-  // Debounce для поиска в таблице
-  const [searchTerm, setSearchTerm] = useState("");
-  const debouncedSearchTerm = useDebounce(searchTerm, 100);
-
   // --- ТАБЛИЦА (hard) ---
   const {
     hardTickets,
@@ -100,19 +97,15 @@ export const Leads = () => {
     currentPage,
     perPage,
     hasHardFilters,
+    searchTerm,
+    setSearchTerm,
     fetchHardTickets,
     setHardTicketFilters,
     setCurrentPage,
     handleApplyFiltersHardTicket,
     handlePerPageChange,
-  } = useLeadsTable(debouncedSearchTerm);
-
-  // Сброс страницы при изменении поиска
-  useEffect(() => {
-    if (viewMode === VIEW_MODE.LIST) {
-      setCurrentPage(1); // сбрасываем на первую страницу при поиске
-    }
-  }, [debouncedSearchTerm, viewMode, setCurrentPage]);
+    triggerSearch: triggerTableSearch,
+  } = useLeadsTable();
 
   // --- Выделение текущего списка ---
   const {
@@ -275,6 +268,37 @@ export const Leads = () => {
           didLoadGlobalTicketsRef.current = true;
         });
       }
+    }
+  };
+
+  // обработчик поиска (для обоих режимов)
+  const handleSearch = () => {
+    if (viewMode === VIEW_MODE.LIST) {
+      triggerTableSearch();
+    } else {
+      triggerKanbanSearch();
+    }
+  };
+
+  // обработчик сброса поиска (очистка поля и результатов)
+  const handleResetSearch = () => {
+    if (viewMode === VIEW_MODE.LIST) {
+      setSearchTerm("");
+      setCurrentPage(1);
+      // Перезагружаем данные без поиска
+      fetchHardTickets(1, "");
+    } else {
+      // Сбрасываем поиск в канбане
+      setKanbanSearchTerm("");
+      setKanbanFilterActive(false);
+      setKanbanTickets([]);
+    }
+  };
+
+  // обработчик нажатия Enter в поле поиска
+  const handleSearchKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
     }
   };
 
@@ -475,18 +499,49 @@ export const Leads = () => {
                     setSearchTerm(value);
                   }
                 }}
+                onKeyPress={handleSearchKeyPress}
                 placeholder={getLanguageByKey("Cauta dupa Lead, Client sau Tag")}
                 className="min-w-300"
                 rightSectionPointerEvents="all"
                 rightSection={
-                  (viewMode === VIEW_MODE.KANBAN ? kanbanSearchTerm : searchTerm) && (
-                    <IoMdClose
-                      className="pointer"
-                      onClick={() =>
-                        (viewMode === VIEW_MODE.KANBAN ? setKanbanSearchTerm : setSearchTerm)("")
-                      }
-                    />
-                  )
+                  <Flex gap="xs" align="center" mr="20px">
+                    {viewMode === VIEW_MODE.KANBAN ? (
+                      kanbanSpinner ? (
+                        <Loader size="xs" />
+                      ) : (
+                        <ActionIcon
+                          variant="subtle"
+                          onClick={handleSearch}
+                          disabled={!kanbanSearchTerm?.trim()}
+                          size="sm"
+                        >
+                          <SearchIcon fontSize="small" />
+                        </ActionIcon>
+                      )
+                    ) : (
+                      loading ? (
+                        <Loader size="xs" />
+                      ) : (
+                        <ActionIcon
+                          variant="subtle"
+                          onClick={handleSearch}
+                          disabled={!searchTerm?.trim()}
+                          size="sm"
+                        >
+                          <SearchIcon fontSize="small" />
+                        </ActionIcon>
+                      )
+                    )}
+                    {(viewMode === VIEW_MODE.KANBAN ? kanbanSearchTerm : searchTerm) && (
+                      <ActionIcon
+                        variant="subtle"
+                        onClick={handleResetSearch}
+                        size="sm"
+                      >
+                        <IoMdClose size={16} />
+                      </ActionIcon>
+                    )}
+                  </Flex>
                 }
               />
 
@@ -566,7 +621,7 @@ export const Leads = () => {
                             onClick={(e) => e.stopPropagation()}
                             style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
                           >
-                            <TbLayoutKanbanFilled color="var(--crm-ui-kit-palette-text-primary)"/>
+                            <TbLayoutKanbanFilled color="var(--crm-ui-kit-palette-text-primary)" />
                           </Link>
                         )
                       },
@@ -578,7 +633,7 @@ export const Leads = () => {
                             onClick={(e) => e.stopPropagation()}
                             style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
                           >
-                            <FaList color="var(--crm-ui-kit-palette-text-primary)"/>
+                            <FaList color="var(--crm-ui-kit-palette-text-primary)" />
                           </Link>
                         )
                       },
@@ -628,7 +683,7 @@ export const Leads = () => {
             refreshKanbanTickets={refreshKanbanTickets}
             selectedWorkflow={choiceWorkflow}
             tickets={visibleTickets}
-            searchTerm={debouncedSearch}
+            searchTerm={kanbanSearchTerm}
             onEditTicket={(ticket) => {
               setCurrentTicket(ticket);
               setIsModalOpen(true);
