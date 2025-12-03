@@ -32,24 +32,51 @@ export const MessagesProvider = ({ children }) => {
     const isFromCurrentUser = Number(incoming.sender_id) === Number(userId);
     
     // Обработка ошибок для сообщений текущего пользователя
-    if (isFromCurrentUser && incoming.message?.startsWith(ERROR_PREFIX)) {
+    // Проверяем два случая: ошибка в тексте сообщения или ошибка в поле error_message
+    const hasErrorInText = incoming.message?.startsWith(ERROR_PREFIX);
+    const hasErrorInField = (incoming.status === "NOT_SENT" || incoming.message_status === "NOT_SENT") && incoming.error_message;
+    
+    if (isFromCurrentUser && (hasErrorInText || hasErrorInField)) {
       messagesRef.current.setMessages((prev) => {
         const index = prev.findIndex((m) => {
           const isPending = m.messageStatus === "PENDING";
           const sameSender = Number(m.sender_id) === Number(incoming.sender_id);
           const sameTicket = Number(m.ticket_id) === Number(incoming.ticket_id);
-          const originalText = m.message?.trim();
-          const fullText = incoming.message?.trim();
-          const errorIncludesOriginal = fullText.includes(originalText);
-          return isPending && sameSender && sameTicket && errorIncludesOriginal;
+          
+          // Если есть message_id или id - используем их для точного сопоставления
+          if (incoming.message_id) {
+            return (Number(m.message_id) === Number(incoming.message_id) || 
+                    Number(m.id) === Number(incoming.message_id)) && 
+                   sameTicket;
+          }
+          
+          // Иначе ищем по тексту сообщения (старая логика)
+          if (hasErrorInText) {
+            const originalText = m.message?.trim();
+            const fullText = incoming.message?.trim();
+            const errorIncludesOriginal = fullText.includes(originalText);
+            return isPending && sameSender && sameTicket && errorIncludesOriginal;
+          }
+          
+          // Для ошибок с error_message ищем по platform_id (temp_xxx)
+          if (hasErrorInField && incoming.platform_id) {
+            return isPending && sameSender && sameTicket && 
+                   (m.platform_id === incoming.platform_id || 
+                    m.message === incoming.message);
+          }
+          
+          return false;
         });
 
         if (index !== -1) {
           const updated = [...prev];
           updated[index] = {
+            ...prev[index],
             ...incoming,
             messageStatus: "ERROR",
-            id: prev[index].id || Math.random().toString(),
+            message_status: incoming.message_status || incoming.status || "NOT_SENT",
+            error_message: incoming.error_message || updated[index].error_message,
+            id: prev[index].id || incoming.message_id || Math.random().toString(),
           };
           return updated;
         }

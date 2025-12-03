@@ -3,7 +3,7 @@ import { Tooltip, Box as MuiBox } from "@mui/material";
 import { ReportRounded } from "@mui/icons-material";
 import { IoMdCheckmark } from "react-icons/io";
 import { IoCheckmarkDoneSharp } from "react-icons/io5";
-import { IoInformationCircleOutline } from "react-icons/io5";
+import { InfoOutlineRounded } from '@mui/icons-material';
 import { renderContent } from "../../renderContent";
 import { HH_mm, MEDIA_TYPE, DEFAULT_PHOTO } from "../../../../app-constants";
 import { parseServerDate, MESSAGES_STATUS, getFullName, getLanguageByKey } from "../../../utils";
@@ -74,6 +74,19 @@ export const SendedMessage = ({
     // Если есть message_status (сообщения из API) - конвертируем его
     else if (msg.message_status) {
       switch (msg.message_status) {
+        case 'SENT':
+          baseStatus = MESSAGES_STATUS.SUCCESS;
+          break;
+        case 'NOT_SENT':
+          baseStatus = MESSAGES_STATUS.ERROR;
+          break;
+        default:
+          baseStatus = MESSAGES_STATUS.SUCCESS;
+      }
+    }
+    // Если есть status (сообщения из сокета) - конвертируем его
+    else if (msg.status) {
+      switch (msg.status) {
         case 'SENT':
           baseStatus = MESSAGES_STATUS.SUCCESS;
           break;
@@ -203,7 +216,7 @@ export const SendedMessage = ({
                         alignItems: "center",
                       }}
                     >
-                      <IoInformationCircleOutline size={18} style={{ color: "var(--crm-ui-kit-palette-text-secondary-dark)" }} />
+                      <InfoOutlineRounded sx={{ fontSize: 24, color: "var(--crm-ui-kit-palette-text-secondary-dark)" }} />
                     </Box>
                   </MantineTooltip>
                 )}
