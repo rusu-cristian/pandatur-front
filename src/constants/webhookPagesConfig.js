@@ -25,6 +25,24 @@ export const WEBHOOK_PAGES_CONFIG = {
       group_title: ["RO"]
     },
     {
+      page_id: "130361096818926",
+      page_name: "Panda Tour Bucuresti",
+      type: "facebook",
+      group_title: ["RO"]
+    },
+    {
+      page_id: "150705011449556",
+      page_name: "Panda Tour Romania",
+      type: "facebook",
+      group_title: ["RO"]
+    },
+    {
+      page_id: "172917456820528",
+      page_name: "Panda Tour Iasi",
+      type: "facebook",
+      group_title: ["RO"]
+    },
+    {
       page_id: "671031122758947",
       page_name: "Rascani",
       type: "facebook",
@@ -149,24 +167,6 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_name: "Ungheni",
       type: "facebook",
       group_title: ["FILIALE"]
-    },
-    {
-      page_id: "130361096818926",
-      page_name: "Panda Tour Bucuresti",
-      type: "facebook",
-      group_title: ["RO"]
-    },
-    {
-      page_id: "150705011449556",
-      page_name: "Panda Tour Romania",
-      type: "facebook",
-      group_title: ["RO"]
-    },
-    {
-      page_id: "172917456820528",
-      page_name: "Panda Tour Iasi",
-      type: "facebook",
-      group_title: ["RO"]
     },
     {
       page_id: "777266025475762",
