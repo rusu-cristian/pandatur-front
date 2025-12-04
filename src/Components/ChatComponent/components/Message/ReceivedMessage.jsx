@@ -1,4 +1,5 @@
-import { Flex, Text, Image, Box, Tooltip } from "@mantine/core";
+import { Flex, Text, Image, Box } from "@mantine/core";
+import { Tooltip, Typography } from "@mui/material";
 import { DEFAULT_PHOTO, HH_mm, MEDIA_TYPE } from "../../../../app-constants";
 import {
   getFullName,
@@ -8,7 +9,7 @@ import {
 import { renderContent } from "../../renderContent";
 import { Call } from "./Call";
 import { parseCallParticipants } from "../../../utils/callUtils";
-import { IoInformationCircleOutline } from "react-icons/io5";
+import { InfoOutlineRounded } from '@mui/icons-material';
 import { getPageById } from "../../../../constants/webhookPagesConfig";
 
 export const ReceivedMessage = ({ personalInfo, msg, technicians = [] }) => {
@@ -114,26 +115,26 @@ export const ReceivedMessage = ({ personalInfo, msg, technicians = [] }) => {
               </Text>
               {(msg.from_reference || msg.to_reference || msg.seen_by_user_id) && (
                 <Tooltip
-                  label={
+                  title={
                     <Box>
                       {fromPage && (
-                        <Text size="xs">From: {fromPage.page_name} ({fromPage.page_id})</Text>
+                        <Typography fontSize="0.75rem">From: {fromPage.page_name} ({fromPage.page_id})</Typography>
                       )}
                       {!fromPage && msg.from_reference && (
-                        <Text size="xs">From: {msg.from_reference}</Text>
+                        <Typography fontSize="0.75rem">From: {msg.from_reference}</Typography>
                       )}
                       {toPage && (
-                        <Text size="xs">To: {toPage.page_name} ({toPage.page_id})</Text>
+                        <Typography fontSize="0.75rem">To: {toPage.page_name} ({toPage.page_id})</Typography>
                       )}
                       {!toPage && msg.to_reference && (
-                        <Text size="xs">To: {msg.to_reference}</Text>
+                        <Typography fontSize="0.75rem">To: {msg.to_reference}</Typography>
                       )}
                       {msg.seen_by_user_id && (
-                        <Text size="xs">Seen by user ID: {msg.seen_by_user_id}</Text>
+                        <Typography fontSize="0.75rem">Seen by user ID: {msg.seen_by_user_id}</Typography>
                       )}
                     </Box>
                   }
-                  withArrow
+                  arrow
                 >
                   <Box
                     style={{
@@ -142,7 +143,7 @@ export const ReceivedMessage = ({ personalInfo, msg, technicians = [] }) => {
                       alignItems: "center",
                     }}
                   >
-                    <IoInformationCircleOutline size={18} style={{ color: "var(--crm-ui-kit-palette-text-secondary-dark)" }} />
+                    <InfoOutlineRounded sx={{ fontSize: 24, color: "var(--crm-ui-kit-palette-text-secondary-dark)" }} />
                   </Box>
                 </Tooltip>
               )}
