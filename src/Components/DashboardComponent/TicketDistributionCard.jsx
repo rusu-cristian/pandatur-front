@@ -5,10 +5,10 @@ import { getLanguageByKey } from "@utils";
 
 const fmt = (n) => (Number(n) || 0).toLocaleString();
 
-export const TicketDistributionCard = ({ 
-  title, 
-  subtitle, 
-  distributedTickets = 0, 
+export const TicketDistributionCard = ({
+  title,
+  subtitle,
+  distributedTickets = 0,
   bg,
   width,
   height,
@@ -39,7 +39,7 @@ export const TicketDistributionCard = ({
       padding={cardPadding}
       radius="md"
       withBorder
-      style={{ 
+      style={{
         backgroundColor: "var(--crm-ui-kit-palette-background-primary)",
         height: "100%",
         display: "flex",
@@ -49,7 +49,7 @@ export const TicketDistributionCard = ({
     >
       <Stack gap={isVeryCompact ? "md" : "sm"} style={{ flex: 1, height: "100%", minHeight: 0 }}>
         <Group justify="space-between" align="flex-start" style={{ flemdhrink: 0 }}>
-          <Box>
+          <Box className={isVeryCompact ? "crm-scroll compact" : "crm-scroll"}>
             <Text size={titleSize} fw={500} c="dimmed">
               {title}
             </Text>
@@ -68,9 +68,9 @@ export const TicketDistributionCard = ({
 
         {/* Прокручиваемая область с контентом */}
         <Box
-  className={isVeryCompact ? "crm-scroll compact" : "crm-scroll"}
-  style={{ flex: 1, minHeight: 0 }}
->
+          className={isVeryCompact ? "crm-scroll compact" : "crm-scroll"}
+          style={{ flex: 1, minHeight: 0 }}
+        >
           <Stack gap={isVeryCompact ? "md" : "sm"}>
             <Group justify="space-between" align="center">
               <Box>
@@ -81,7 +81,7 @@ export const TicketDistributionCard = ({
                   {getLanguageByKey("Distributed tickets")}
                 </Text>
               </Box>
-              
+
               <Stack gap="md" align="flex-end">
                 <Group gap="md" align="center">
                   {DistributedIconNode}
@@ -102,7 +102,7 @@ export const TicketDistributionCard = ({
                   {getLanguageByKey("Tickets")}
                 </Text>
               </Group>
-              
+
               <Text size={isVeryCompact ? "md" : "sm"} c={colors.distributed}>
                 {getLanguageByKey("system")}
               </Text>
