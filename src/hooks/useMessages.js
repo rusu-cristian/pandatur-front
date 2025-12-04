@@ -180,6 +180,41 @@ export const useMessages = () => {
     );
   }, [userId]);
 
+  // Удаление сообщения по message_id
+  const deleteMessage = useCallback((messageId) => {
+    if (!messageId) return;
+    
+    setMessages((prevMessages) => {
+      // Фильтруем сообщения, исключая удаляемое
+      const filtered = prevMessages.filter((msg) => {
+        // Проверяем по message_id
+        if (msg.message_id) {
+          return Number(msg.message_id) !== Number(messageId);
+        }
+        // Проверяем по id (для сообщений из БД)
+        if (msg.id) {
+          return Number(msg.id) !== Number(messageId);
+        }
+        return true;
+      });
+      
+      return filtered;
+    });
+    
+    // Также удаляем из mediaFiles, если это медиа-сообщение
+    setMediaFiles((prevMedia) => {
+      return prevMedia.filter((msg) => {
+        if (msg.message_id) {
+          return Number(msg.message_id) !== Number(messageId);
+        }
+        if (msg.id) {
+          return Number(msg.id) !== Number(messageId);
+        }
+        return true;
+      });
+    });
+  }, []);
+
   useEffect(() => {
     if (!onEvent || !offEvent) return;
 
@@ -209,10 +244,11 @@ export const useMessages = () => {
       updateMessage,
       markMessageSeen,
       markMessagesAsSeen,
+      deleteMessage,
       setMessages,
       setLogs,
       setNotes,
     }),
-    [messages, logs, notes, lastMessage, mediaFiles, loading, getUserMessages, markMessageRead, updateMessage, markMessageSeen, markMessagesAsSeen]
+    [messages, logs, notes, lastMessage, mediaFiles, loading, getUserMessages, markMessageRead, updateMessage, markMessageSeen, markMessagesAsSeen, deleteMessage]
   );
 };

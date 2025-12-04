@@ -389,7 +389,7 @@ export const AppProvider = ({ children }) => {
       if (!isMatchingGroup) {
         // ВАЖНО: Проверяем, есть ли у пользователя доступ к группе тикета
         const hasAccessToTicketGroup = accessibleGroupTitles.includes(normalizedTicket.group_title);
-        
+
         if (!hasAccessToTicketGroup) {
           // Пользователь НЕ имеет доступа к группе тикета - удаляем его из списков
           const existingTicket = getTicketById(ticketId);
@@ -413,7 +413,7 @@ export const AppProvider = ({ children }) => {
           }
           return;
         }
-        
+
         // Пользователь ИМЕЕТ доступ к группе тикета, но она не совпадает с текущей
         // Не добавляем в списки, но возвращаем тикет (для компонентов, которые открываются напрямую)
         // Отправляем событие для обновления personalInfo
@@ -637,6 +637,22 @@ export const AppProvider = ({ children }) => {
         // Это означает, что клиент прочитал сообщения в этом тикете
         window.dispatchEvent(new CustomEvent('messagesSeenByClient', {
           detail: { ticket_id, client_id }
+        }));
+
+        break;
+      }
+
+      case TYPE_SOCKET_EVENTS.DELETE: {
+        const { message_id } = message.data || {};
+
+        // Проверяем наличие message_id
+        if (!message_id) {
+          break;
+        }
+
+        // Отправляем событие для удаления сообщения в MessagesContext
+        window.dispatchEvent(new CustomEvent('messageDeleted', {
+          detail: { message_id }
         }));
 
         break;

@@ -134,6 +134,22 @@ export const MessagesProvider = ({ children }) => {
     };
   }, []); // Пустой массив зависимостей, так как используем useRef
 
+  // Обрабатываем событие удаления сообщения
+  useEffect(() => {
+    const handleMessageDeleted = (event) => {
+      const { message_id } = event.detail || {};
+      if (message_id && messagesRef.current.deleteMessage) {
+        messagesRef.current.deleteMessage(message_id);
+      }
+    };
+
+    window.addEventListener('messageDeleted', handleMessageDeleted);
+    
+    return () => {
+      window.removeEventListener('messageDeleted', handleMessageDeleted);
+    };
+  }, []); // Пустой массив зависимостей, так как используем useRef
+
   return (
     <MessagesContext.Provider value={messages}>
       {children}

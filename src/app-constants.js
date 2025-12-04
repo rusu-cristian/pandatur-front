@@ -52,6 +52,7 @@ export const TYPE_SOCKET_EVENTS = {
   PING: "ping",
   TICKET_LOGS: "ticket_logs",
   TICKET_NOTE: "ticket_note",
+  DELETE: "delete",
 };
 
 export const TYPE_TICKET = {
