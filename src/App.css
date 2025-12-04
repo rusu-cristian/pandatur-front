@@ -29,6 +29,37 @@ a {
   text-decoration: none;
 }
 
+/* ===== WebKit (Chrome / Safari / Edge) ===== */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+/* Прозрачная дорожка */
+*::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+/* Прозрачный бегунок (полупрозрачный, чтобы быть видимым, но не мешать) */
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.12);
+  /* светлая прозрачность */
+  border-radius: 8px;
+  border: 2px solid transparent;
+  /* убираем рамку, чтобы не увеличивать пятно */
+}
+
+/* Ховер — тоже прозрачный, но чуть заметнее */
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
 /* Leads Page */
 
 .leads-container {
