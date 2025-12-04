@@ -621,6 +621,21 @@ const UserList = ({
       <ThemeProvider theme={darkTheme}>
         <div style={{ height: "calc(120vh)", width: "100%" }}>
           <DataGrid
+            sx={{
+              "& .MuiDataGrid-footerContainer": {
+                display: "flex",
+                justifyContent: "center",
+              },
+              "& .MuiTablePagination-root": {
+                width: "100%",
+              },
+              "& .MuiTablePagination-toolbar": {
+                justifyContent: "center",
+              },
+              "& .MuiTablePagination-spacer": {
+                flex: "0",
+              },
+            }}
             rows={users.map((user, idx) => {
               // После нормализации в Users.js id уже на верхнем уровне
               const safeId = extractId(user) ?? user.id ?? `tmp-${idx}`;
