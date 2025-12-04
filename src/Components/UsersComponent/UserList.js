@@ -658,8 +658,16 @@ const UserList = ({
                 openEditUser(params.row);
               }
             }}
-            hideFooter
             disableCellSelection
+            paginationMode="client"
+            pageSizeOptions={[25, 50, 100]}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 100,
+                },
+              },
+            }}
           />
         </div>
       </ThemeProvider>
