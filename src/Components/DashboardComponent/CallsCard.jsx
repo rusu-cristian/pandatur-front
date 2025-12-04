@@ -115,7 +115,10 @@ export const CallsCard = ({
                 <Divider my={isVeryCompact ? "md" : "md"} />
 
                 {/* Прокручиваемая область с контентом */}
-                <Box style={{ flex: 1, overflowY: "auto", overflowX: "hidden", minHeight: 0 }}>
+                <Box
+                    className={isVeryCompact ? "crm-scroll compact" : "crm-scroll"}
+                    style={{ flex: 1, minHeight: 0 }}
+                >
                     <Stack gap={isVeryCompact ? "md" : "lg"}>
                         {/* Incoming */}
                         <Box>

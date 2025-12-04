@@ -62,7 +62,10 @@ export const TicketCreationCard = ({
         </Group>
 
         {/* Прокручиваемая область с контентом */}
-        <Box style={{ flex: 1, overflowY: "auto", overflowX: "hidden", minHeight: 0 }}>
+        <Box
+  className={isVeryCompact ? "crm-scroll compact" : "crm-scroll"}
+  style={{ flex: 1, minHeight: 0 }}
+>
           <Stack gap={isVeryCompact ? "md" : "sm"}>
             {/* Статистика по созданным тикетам */}
             <Group justify="space-between" align="center" p={isVeryCompact ? "md" : "md"} style={{ backgroundColor: "var(--crm-ui-kit-palette-background-primary-disabled)", borderRadius: "6px" }}>
