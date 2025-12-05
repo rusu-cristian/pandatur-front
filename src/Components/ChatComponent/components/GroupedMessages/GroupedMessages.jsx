@@ -29,7 +29,15 @@ const makeNoteKey = (n) =>
   `${n.ticket_id}|${n.technician_id}|${n.type}|${String(n.value ?? "").trim()}|${n.created_at}`;
 
 
-export const GroupedMessages = ({ personalInfo, ticketId, technicians, apiNotes = [] }) => {
+export const GroupedMessages = ({
+  personalInfo,
+  ticketId,
+  technicians,
+  apiNotes = [],
+  hasMoreMessages = false,
+  onLoadMore = () => { },
+  loadingMore = false
+}) => {
   const { messages: rawMessages = [], logs: rawLogs = [] } = useMessagesContext();
   const { liveLogs = [] } = useLiveTicketLogs(ticketId);
   const { liveNotes = [] } = useLiveTicketNotes(ticketId);
@@ -51,10 +59,10 @@ export const GroupedMessages = ({ personalInfo, ticketId, technicians, apiNotes 
   // ОПТИМИЗАЦИЯ: Подсчет email сообщений и фильтрация
   const { emailMessages, nonEmailMessages, totalEmailCount } = useMemo(() => {
     const ticketMessages = rawMessages.filter((msg) => Number(msg.ticket_id) === Number(ticketId));
-    
+
     const emails = [];
     const nonEmails = [];
-    
+
     ticketMessages.forEach((msg) => {
       const messageType = msg.mtype || msg.media_type || msg.last_message_type;
       if (messageType === MEDIA_TYPE.EMAIL) {
@@ -251,6 +259,21 @@ export const GroupedMessages = ({ personalInfo, ticketId, technicians, apiNotes 
 
   return (
     <Flex direction="column" gap="xl" h="100%">
+      {/* Кнопка загрузки старых сообщений (пагинация) */}
+      {hasMoreMessages && messages.length > 0 && (
+        <Flex justify="center">
+          <Button
+            variant="filled"
+            size="sm"
+            onClick={onLoadMore}
+            loading={loadingMore}
+            disabled={loadingMore}
+          >
+            {getLanguageByKey("Load older messages")}
+          </Button>
+        </Flex>
+      )}
+
       {/* Кнопка загрузить еще email (если есть скрытые) */}
       {hiddenEmailCount > 0 && (
         <Flex justify="center" pt="md">
@@ -349,13 +372,13 @@ export const GroupedMessages = ({ personalInfo, ticketId, technicians, apiNotes 
                               msgClientIds.includes(senderIdStr) || clientIds.includes(senderIdStr);
 
                             const technician = technicianMap.get(Number(msg.sender_id));
-                            
+
                             // Создаем уникальный ключ на основе message_id
                             // Для сообщений без message_id используем id или комбинацию полей
-                            const messageKey = msg.message_id 
-                              ? `msg-${msg.message_id}` 
+                            const messageKey = msg.message_id
+                              ? `msg-${msg.message_id}`
                               : `${msg.id || 'temp'}-${msg.time_sent}`;
-                            
+
                             return isClientMessage ? (
                               <ReceivedMessage
                                 key={messageKey}

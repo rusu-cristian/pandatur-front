@@ -30,12 +30,15 @@ export const useMessages = () => {
   const [loading, setLoading] = useState(false);
   const [lastMessage, setLastMessage] = useState();
   const [mediaFiles, setMediaFiles] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMoreMessages, setHasMoreMessages] = useState(false);
   const { userId } = useUser();
 
-  const getUserMessages = useCallback(async (id) => {
+  // Загрузка первой страницы сообщений (сброс всех данных)
+  const getUserMessages = useCallback(async (id, page = 1, limit = 50) => {
     setLoading(true);
     try {
-      const response = await api.messages.messagesTicketById(id);
+      const response = await api.messages.messagesTicketById(id, page, limit);
       const data = Array.isArray(response?.messages) ? response.messages : [];
       const logsData = Array.isArray(response?.logs) ? response.logs : [];
       const notesData = Array.isArray(response?.notes) ? response.notes : [];
@@ -43,6 +46,10 @@ export const useMessages = () => {
       setMessages(data);
       setLogs(logsData);
       setNotes(notesData);
+      setCurrentPage(page);
+      
+      // Используем информацию о пагинации из API
+      setHasMoreMessages(response?.pagination?.has_more || false);
 
       const sortedMessages = data.filter(
         ({ sender_id }) => sender_id !== 1 && sender_id !== userId
@@ -55,6 +62,34 @@ export const useMessages = () => {
       setLoading(false);
     }
   }, [enqueueSnackbar, userId]);
+
+  // Загрузка дополнительных сообщений (добавление к существующим)
+  const loadMoreMessages = useCallback(async (id, limit = 50) => {
+    setLoading(true);
+    try {
+      const nextPage = currentPage + 1;
+      const response = await api.messages.messagesTicketById(id, nextPage, limit);
+      const newData = Array.isArray(response?.messages) ? response.messages : [];
+      const newLogsData = Array.isArray(response?.logs) ? response.logs : [];
+      const newNotesData = Array.isArray(response?.notes) ? response.notes : [];
+
+      // Добавляем новые сообщения к существующим (вначало списка, так как это старые сообщения)
+      setMessages((prev) => [...newData, ...prev]);
+      setLogs((prev) => [...newLogsData, ...prev]);
+      setNotes((prev) => [...newNotesData, ...prev]);
+      setCurrentPage(nextPage);
+      
+      // Используем информацию о пагинации из API
+      setHasMoreMessages(response?.pagination?.has_more || false);
+
+      // Обновляем mediaFiles
+      setMediaFiles((prev) => [...getMediaFileMessages(newData), ...prev]);
+    } catch (error) {
+      enqueueSnackbar(showServerError(error), { variant: "error" });
+    } finally {
+      setLoading(false);
+    }
+  }, [currentPage, enqueueSnackbar]);
 
   const markMessageRead = useCallback((id) => {
     setMessages((prevMessages) =>
@@ -239,7 +274,10 @@ export const useMessages = () => {
       lastMessage,
       loading,
       mediaFiles,
+      currentPage,
+      hasMoreMessages,
       getUserMessages,
+      loadMoreMessages,
       markMessageRead,
       updateMessage,
       markMessageSeen,
@@ -249,6 +287,6 @@ export const useMessages = () => {
       setLogs,
       setNotes,
     }),
-    [messages, logs, notes, lastMessage, mediaFiles, loading, getUserMessages, markMessageRead, updateMessage, markMessageSeen, markMessagesAsSeen, deleteMessage]
+    [messages, logs, notes, lastMessage, mediaFiles, loading, currentPage, hasMoreMessages, getUserMessages, loadMoreMessages, markMessageRead, updateMessage, markMessageSeen, markMessagesAsSeen, deleteMessage]
   );
 };

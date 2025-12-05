@@ -5833,6 +5833,11 @@ export const translations = {
     RU: "Загрузить еще письма",
     EN: "Load more emails"
   },
+  "Load older messages": {
+    RO: "Încarcă mesaje mai vechi",
+    RU: "Загрузить старые сообщения",
+    EN: "Load older messages"
+  },
   "New!!!": {
     RO: "Nou!!!",
     RU: "Новый!!!",
@@ -5957,5 +5962,10 @@ export const translations = {
     RO: "Caută...",
     RU: "Найти...",
     EN: "Search..."
+  },
+  "Load older messages": {
+    RO: "Încarcă mesajele mai vechi",
+    RU: "Загрузить старые сообщения",
+    EN: "Load older messages"
   }
 };

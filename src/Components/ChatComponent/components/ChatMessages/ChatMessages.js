@@ -47,9 +47,11 @@ export const ChatMessages = ({
   const {
     setMessages,
     getUserMessages,
+    loadMoreMessages,
     loading: messagesLoading,
     messages,
     notes: apiNotesFromCtx = [],
+    hasMoreMessages,
   } = useMessagesContext();
 
   const messageContainerRef = useRef(null);
@@ -178,6 +180,9 @@ export const ChatMessages = ({
             ticketId={ticketId}
             technicians={technicians}
             apiNotes={apiNotesFromCtx}
+            hasMoreMessages={hasMoreMessages}
+            onLoadMore={() => loadMoreMessages(Number(ticketId))}
+            loadingMore={messagesLoading}
           />
         </div>
       );

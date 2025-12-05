@@ -2,8 +2,9 @@ import { baseAxios } from "./baseAxios";
 import Cookies from "js-cookie";
 
 export const messages = {
-  messagesTicketById: async (id) => {
-    const { data } = await baseAxios.get(`/api/messages/ticket/${id}`);
+  // Получение сообщений тикета с поддержкой пагинации
+  messagesTicketById: async (id, page = 1, limit = 50) => {
+    const { data } = await baseAxios.get(`/api/messages/ticket-events/${id}?page=${page}&limit=${limit}`);
     return data;
   },
 
