@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 
 export const messages = {
   // Получение сообщений тикета с поддержкой пагинации
-  messagesTicketById: async (id, page = 1, limit = 50) => {
+  messagesTicketById: async (id, page = 1, limit = 25) => {
     const { data } = await baseAxios.get(`/api/messages/ticket-events/${id}?page=${page}&limit=${limit}`);
     return data;
   },

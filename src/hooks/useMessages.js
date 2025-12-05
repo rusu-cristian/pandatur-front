@@ -35,7 +35,7 @@ export const useMessages = () => {
   const { userId } = useUser();
 
   // Загрузка первой страницы сообщений (сброс всех данных)
-  const getUserMessages = useCallback(async (id, page = 1, limit = 50) => {
+  const getUserMessages = useCallback(async (id, page = 1, limit = 25) => {
     setLoading(true);
     try {
       const response = await api.messages.messagesTicketById(id, page, limit);
@@ -64,7 +64,7 @@ export const useMessages = () => {
   }, [enqueueSnackbar, userId]);
 
   // Загрузка дополнительных сообщений (добавление к существующим)
-  const loadMoreMessages = useCallback(async (id, limit = 50) => {
+  const loadMoreMessages = useCallback(async (id, limit = 25) => {
     setLoading(true);
     try {
       const nextPage = currentPage + 1;
