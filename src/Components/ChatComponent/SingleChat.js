@@ -129,19 +129,20 @@ const SingleChat = ({ technicians, ticketId, onClose, tasks = [] }) => {
       <Flex w="70%">
         <Can permission={{ module: "chat", action: "view" }} context={{ responsibleId }}>
           <ChatMessages
-            selectedClient={selectedClient}
             ticketId={ticketId ? Number(ticketId) : undefined}
             personalInfo={currentTicket}
+            technicians={technicians}
+            unseenCount={unseenCount}
+            // Props из useClientContacts (передаются чтобы избежать повторного вызова хука в ChatInput)
             platformOptions={platformOptions}
             selectedPlatform={selectedPlatform}
             changePlatform={changePlatform}
             contactOptions={contactOptions}
             changeContact={changeContact}
+            selectedClient={selectedClient}
             selectedPageId={selectedPageId}
             changePageId={changePageId}
-            loading={loading || isLoadingTicket}
-            technicians={technicians}
-            unseenCount={unseenCount}
+            clientContactsLoading={loading || isLoadingTicket}
           />
         </Can>
       </Flex>

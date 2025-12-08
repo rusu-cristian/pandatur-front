@@ -52,6 +52,16 @@ export const ChatInput = ({
   unseenCount,
   onToggleNoteComposer,
   personalInfo,
+  // Props из useClientContacts (передаются из Chat.js → ChatMessages)
+  platformOptions: platformOptionsProp,
+  selectedPlatform: selectedPlatformProp,
+  changePlatform: changePlatformProp,
+  contactOptions: contactOptionsProp,
+  changeContact: changeContactProp,
+  selectedClient: selectedClientProp,
+  selectedPageId: selectedPageIdProp,
+  changePageId: changePageIdProp,
+  clientContactsLoading: loadingProp,
 }) => {
   const [opened, handlers] = useDisclosure(false);
   const [message, setMessage] = useState("");
@@ -107,18 +117,25 @@ export const ChatInput = ({
     return sortedMessages[0];
   }, [messages, ticketId]);
 
-  // Получаем данные о контактах напрямую из хука
-  const {
-    platformOptions,
-    selectedPlatform,
-    changePlatform,
-    contactOptions,
-    changeContact,
-    selectedClient: currentClient,
-    selectedPageId,
-    changePageId,
-    loading,
-  } = useClientContacts(ticketId, lastMessage, groupTitle);
+  // Получаем данные о контактах:
+  // - Если переданы через props (из Chat.js) - используем их (хук не будет делать запрос т.к. ticketId = undefined)
+  // - Иначе вызываем хук напрямую (для обратной совместимости со SingleChat.js)
+  const shouldUseProps = !!platformOptionsProp;
+  const hookData = useClientContacts(
+    shouldUseProps ? undefined : ticketId,
+    shouldUseProps ? null : lastMessage,
+    shouldUseProps ? null : groupTitle
+  );
+  
+  const platformOptions = platformOptionsProp ?? hookData.platformOptions;
+  const selectedPlatform = selectedPlatformProp ?? hookData.selectedPlatform;
+  const changePlatform = changePlatformProp ?? hookData.changePlatform;
+  const contactOptions = contactOptionsProp ?? hookData.contactOptions;
+  const changeContact = changeContactProp ?? hookData.changeContact;
+  const currentClient = selectedClientProp ?? hookData.selectedClient;
+  const selectedPageId = selectedPageIdProp ?? hookData.selectedPageId;
+  const changePageId = changePageIdProp ?? hookData.changePageId;
+  const loading = loadingProp ?? hookData.loading;
 
   const isLengthLimited = useMemo(
     () => LIMITED_PLATFORMS.includes((selectedPlatform || "").toLowerCase()),

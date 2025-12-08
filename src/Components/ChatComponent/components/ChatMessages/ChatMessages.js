@@ -41,6 +41,16 @@ export const ChatMessages = ({
   personalInfo,
   technicians,
   unseenCount = 0,
+  // Props из useClientContacts (передаются из Chat.js чтобы избежать повторного вызова хука)
+  platformOptions,
+  selectedPlatform,
+  changePlatform,
+  contactOptions,
+  changeContact,
+  selectedClient,
+  selectedPageId,
+  changePageId,
+  clientContactsLoading,
 }) => {
   const { userId } = useUser();
 
@@ -261,6 +271,16 @@ export const ChatMessages = ({
                   messageStatus: MESSAGES_STATUS.PENDING,
                 });
               }}
+              // Передаем данные из useClientContacts (вызван в Chat.js)
+              platformOptions={platformOptions}
+              selectedPlatform={selectedPlatform}
+              changePlatform={changePlatform}
+              contactOptions={contactOptions}
+              changeContact={changeContact}
+              selectedClient={selectedClient}
+              selectedPageId={selectedPageId}
+              changePageId={changePageId}
+              clientContactsLoading={clientContactsLoading}
             />
           </div>
         </>

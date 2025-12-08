@@ -168,20 +168,21 @@ export const PersonalData4ClientForm = ({ ticketId, responsibleId }) => {
     loadClientsData();
   }, [loadClientsData]);
 
-  // Слушаем событие обновления тикета
-  useEffect(() => {
-    const handleTicketUpdate = (event) => {
-      if (event.detail?.ticketId === ticketId) {
-        loadClientsData();
-      }
-    };
-
-    window.addEventListener('ticketUpdated', handleTicketUpdate);
-
-    return () => {
-      window.removeEventListener('ticketUpdated', handleTicketUpdate);
-    };
-  }, [ticketId, loadClientsData]);
+  // ❌ УДАЛЕНО: Слушатель ticketUpdated вызывал дублирующие запросы
+  // Компонент и так перерендеривается при изменении ticketId через props
+  // useEffect(() => {
+  //   const handleTicketUpdate = (event) => {
+  //     if (event.detail?.ticketId === ticketId) {
+  //       loadClientsData();
+  //     }
+  //   };
+  //
+  //   window.addEventListener('ticketUpdated', handleTicketUpdate);
+  //
+  //   return () => {
+  //     window.removeEventListener('ticketUpdated', handleTicketUpdate);
+  //   };
+  // }, [ticketId, loadClientsData]);
 
   // Обработчик добавления нового клиента
   const handleAddClient = () => {

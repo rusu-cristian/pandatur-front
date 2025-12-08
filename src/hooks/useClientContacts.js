@@ -143,10 +143,15 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
 
   const mountedRef = useRef(true);
   const currentTicketIdRef = useRef(null);
+  const lastFetchedTicketIdRef = useRef(null); // Защита от повторных запросов
   
   useEffect(() => {
     mountedRef.current = true;
-    return () => { mountedRef.current = false; };
+    return () => { 
+      mountedRef.current = false;
+      // Сбрасываем при размонтировании
+      lastFetchedTicketIdRef.current = null;
+    };
   }, []);
 
   /** 1) Единожды нормализуем все платформенные блоки и строим индекс клиентов */
@@ -254,6 +259,9 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
         setSelectedClient({});
         setSelectedPageId(null);
       });
+      
+      // Помечаем что данные для этого ticketId загружены
+      lastFetchedTicketIdRef.current = requestTicketId;
     } catch (error) {
       // Показываем ошибку только если запрос актуален
       if (mountedRef.current && currentTicketIdRef.current === requestTicketId) {
@@ -271,6 +279,13 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
   /** Рефетч по ticketId */
   useEffect(() => {
     if (!ticketId) return;
+    
+    // 🛡️ Защита от повторных запросов для того же ticketId
+    if (lastFetchedTicketIdRef.current === ticketId) {
+      debug("Пропускаем запрос - данные для ticketId", ticketId, "уже загружены");
+      return;
+    }
+    
     debug("ticketId changed → refetch + local reset", ticketId);
 
     // Обновляем ref сразу, чтобы этапы автовыбора не сработали на старых данных
@@ -496,6 +511,12 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
     });
   }, []);
 
+  // Публичная функция для принудительной перезагрузки (игнорирует кэш)
+  const refetch = useCallback(() => {
+    lastFetchedTicketIdRef.current = null; // Сбрасываем кэш
+    return fetchClientContacts();
+  }, [fetchClientContacts]);
+
   return {
     platformOptions,            // memo
     selectedPlatform,
@@ -510,6 +531,6 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
 
     loading,
     updateClientData,
-    refetch: fetchClientContacts,
+    refetch,
   };
 };

@@ -98,8 +98,18 @@ export const Chat = () => {
     return lastMsg;
   }, [messages, ticketId]);
 
+  // Получаем ВСЕ данные из хука, чтобы передать их вниз через props
+  // и избежать повторного вызова хука в дочерних компонентах
   const {
+    platformOptions,
+    selectedPlatform,
+    changePlatform,
+    contactOptions,
+    changeContact,
     selectedClient,
+    selectedPageId,
+    changePageId,
+    loading: clientContactsLoading,
     updateClientData,
   } = useClientContacts(ticketId, lastMessage, currentTicket?.group_title);
 
@@ -129,6 +139,16 @@ export const Chat = () => {
               personalInfo={currentTicket}
               technicians={technicians}
               unseenCount={currentTicket?.unseen_count || 0}
+              // Передаем данные из useClientContacts чтобы избежать повторного вызова хука
+              platformOptions={platformOptions}
+              selectedPlatform={selectedPlatform}
+              changePlatform={changePlatform}
+              contactOptions={contactOptions}
+              changeContact={changeContact}
+              selectedClient={selectedClient}
+              selectedPageId={selectedPageId}
+              changePageId={changePageId}
+              clientContactsLoading={clientContactsLoading}
             />
           </Can>
         </Flex>
