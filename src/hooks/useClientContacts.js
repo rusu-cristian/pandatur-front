@@ -103,15 +103,21 @@ function computePlatformOptionsFromBlocks(platformBlocks) {
   return options;
 }
 
-function selectPageIdByMessage(platform, messagePageId, groupTitle) {
-  if (!platform) return null;
-  const allPages = getPagesByType(platform) || [];
-  const filtered = groupTitle ? allPages.filter((p) => {
+// Универсальная функция фильтрации страниц по group_title (экспортируем для переиспользования)
+export function filterPagesByGroupTitle(pages, groupTitle) {
+  if (!groupTitle) return pages;
+  return pages.filter((p) => {
     if (Array.isArray(p.group_title)) {
       return p.group_title.includes(groupTitle);
     }
     return p.group_title === groupTitle;
-  }) : allPages;
+  });
+}
+
+function selectPageIdByMessage(platform, messagePageId, groupTitle) {
+  if (!platform) return null;
+  const allPages = getPagesByType(platform) || [];
+  const filtered = filterPagesByGroupTitle(allPages, groupTitle);
   if (!filtered.length) return null;
   return filtered.some((p) => p.page_id === messagePageId) ? messagePageId : filtered[0].page_id;
 }
@@ -164,33 +170,42 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
     [platformBlocks]
   );
 
+  // Кэшируем отфильтрованные страницы для текущей платформы и groupTitle
+  const filteredPages = useMemo(() => {
+    if (!selectedPlatform) return [];
+    const allPages = getPagesByType(selectedPlatform) || [];
+    return filterPagesByGroupTitle(allPages, groupTitle);
+  }, [selectedPlatform, groupTitle]);
+
   const contactOptions = useMemo(() => {
     if (!selectedPlatform) return [];
-    const block = platformBlocks[selectedPlatform] || {};
+    
+    const block = platformBlocks[selectedPlatform];
+    if (!block || Object.keys(block).length === 0) return [];
+
+    // Определяем формат label один раз
+    const isMessengerPlatform = ["whatsapp", "viber", "telegram"].includes(selectedPlatform);
+    
     const contacts = Object.entries(block).map(([contactIdRaw, contactData]) => {
       const contactId = Number.parseInt(contactIdRaw, 10);
-      const contactClientId =
-        contactData?.client_id != null ? Number.parseInt(contactData.client_id, 10) : null;
+      const contactClientId = contactData?.client_id != null 
+        ? Number.parseInt(contactData.client_id, 10) 
+        : null;
 
-      const client =
-        clientIndex.get(contactId) ||
+      const client = clientIndex.get(contactId) || 
         (contactClientId != null ? clientIndex.get(contactClientId) : null);
 
-      const client_id =
-        client?.id ??
-        contactClientId ??
+      const client_id = client?.id ?? contactClientId ?? 
         (Number.isNaN(contactId) ? null : contactId);
+      
       const name = contactData?.name || client?.name || "";
       const surname = contactData?.surname || client?.surname || "";
       const contact_value = contactData?.contact_value || "";
 
-      let label;
-      if (["whatsapp", "viber", "telegram"].includes(selectedPlatform)) {
-        const fullName = `${name} ${surname || ""}`.trim();
-        label = `${fullName} - ${contact_value}`;
-      } else {
-        label = `${contactId} - ${name} ${surname || ""}`.trim();
-      }
+      // Оптимизированное формирование label
+      const label = isMessengerPlatform
+        ? `${name} ${surname}`.trim() + (contact_value ? ` - ${contact_value}` : "")
+        : `${contactId} - ${name} ${surname}`.trim();
 
       return {
         label,
@@ -211,8 +226,8 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
       };
     });
 
-    contacts.sort((a, b) => a.label.localeCompare(b.label));
-    return contacts;
+    // Сортировка с кэшированием locale
+    return contacts.sort((a, b) => a.label.localeCompare(b.label));
   }, [platformBlocks, selectedPlatform, clientIndex]);
 
   /** Загрузка ticketData */
@@ -273,108 +288,144 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ticketId]);
 
-  /** Этап 1: Выбор платформы (lastMessage → иначе первая доступная) */
+  /** 
+   * ✨ ОПТИМИЗАЦИЯ: Объединенный автовыбор всех параметров
+   * Вместо 3 отдельных useEffect (3 ререндера), делаем 1 батч-обновление.
+   * Это ускоряет загрузку тикета и улучшает UX.
+   */
   useEffect(() => {
-    if (!ticketData || !platformOptions.length) return;
-    if (selectedPlatform) return;
-    // Защита от срабатывания на старых данных
-    if (currentTicketIdRef.current !== ticketId) return;
-
-    let nextPlatform = null;
-
-    if (lastMessage && lastMessage.ticket_id === ticketId) {
-      const msgPlatform = lastMessage.platform?.toLowerCase();
-      if (msgPlatform && platformOptions.some((p) => p.value === msgPlatform)) {
-        nextPlatform = msgPlatform;
-      }
-    }
-    if (!nextPlatform) nextPlatform = platformOptions[0]?.value || null;
-
-    if (nextPlatform && nextPlatform !== selectedPlatform) {
-      debug("auto select platform:", nextPlatform);
-      setSelectedPlatform(nextPlatform);
-    }
-  }, [ticketData, platformOptions, lastMessage, ticketId, selectedPlatform]);
-
-  /** Этап 2: Выбор page_id (по платформе и groupTitle) */
-  useEffect(() => {
-    if (!selectedPlatform) return;
-    if (selectedPageId) return;
-    // Защита от срабатывания на старых данных
-    if (currentTicketIdRef.current !== ticketId) return;
-
-    let nextPageId = null;
-
-    if (lastMessage && lastMessage.ticket_id === ticketId) {
-      const candidate = selectPageIdByMessage(
-        selectedPlatform,
-        lastMessage.page_id,
-        groupTitle
-      );
-      if (candidate) nextPageId = candidate;
+    // Защита: работаем только с актуальными данными текущего тикета
+    if (!ticketData || !platformOptions.length || currentTicketIdRef.current !== ticketId) {
+      return;
     }
 
-    if (!nextPageId) {
-      const all = getPagesByType(selectedPlatform) || [];
-      const filtered = groupTitle ? all.filter((p) => {
-        if (Array.isArray(p.group_title)) {
-          return p.group_title.includes(groupTitle);
+    // Флаги для отслеживания изменений
+    let needsUpdate = false;
+    let nextPlatform = selectedPlatform;
+    let nextPageId = selectedPageId;
+    let nextClient = selectedClient;
+
+    // ============ ЭТАП 1: Платформа ============
+    if (!nextPlatform) {
+      if (lastMessage?.ticket_id === ticketId) {
+        const msgPlatform = lastMessage.platform?.toLowerCase();
+        if (msgPlatform && platformOptions.some((p) => p.value === msgPlatform)) {
+          nextPlatform = msgPlatform;
         }
-        return p.group_title === groupTitle;
-      }) : all;
-      nextPageId = filtered[0]?.page_id || null;
-    }
-
-    if (nextPageId && nextPageId !== selectedPageId) {
-      debug("auto select page_id:", nextPageId);
-      setSelectedPageId(nextPageId);
-    }
-  }, [selectedPlatform, selectedPageId, lastMessage, ticketId, groupTitle]);
-
-  /** Этап 3: Выбор контакта (когда известны платформа и contactOptions) */
-  useEffect(() => {
-    if (!selectedPlatform || !contactOptions.length) return;
-    if (selectedClient?.value) return;
-    // Защита от срабатывания на старых данных
-    if (currentTicketIdRef.current !== ticketId) return;
-
-    let contactValue = null;
-    let messageClientId = null;
-
-    if (lastMessage && lastMessage.ticket_id === ticketId) {
-      messageClientId = lastMessage.client_id;
-
-      // входящее — from_reference; исходящее — to_reference
-      contactValue =
-        lastMessage.sender_id === lastMessage.client_id
-          ? lastMessage.from_reference
-          : lastMessage.to_reference;
-
-      if (!contactValue && platformBlocks[selectedPlatform]) {
-        const block = platformBlocks[selectedPlatform];
-        const entry = Object.entries(block).find(([cid]) => {
-          const client = clientIndex.get(Number.parseInt(cid, 10));
-          return client?.id === messageClientId;
-        });
-        if (entry) contactValue = entry[1]?.contact_value;
+      }
+      if (!nextPlatform) {
+        nextPlatform = platformOptions[0]?.value || null;
+      }
+      
+      if (nextPlatform) {
+        debug("auto select platform:", nextPlatform);
+        needsUpdate = true;
       }
     }
 
-    const found = matchContact(contactOptions, contactValue, messageClientId);
-    const next = found || contactOptions[0];
+    // ============ ЭТАП 2: Page ID ============
+    if (nextPlatform && !nextPageId) {
+      if (lastMessage?.ticket_id === ticketId) {
+        const candidate = selectPageIdByMessage(nextPlatform, lastMessage.page_id, groupTitle);
+        if (candidate) nextPageId = candidate;
+      }
 
-    if (next && next.value !== selectedClient?.value) {
-      debug("auto select contact:", next.value);
-      setSelectedClient(next);
+      if (!nextPageId) {
+        const allPages = getPagesByType(nextPlatform) || [];
+        const filtered = filterPagesByGroupTitle(allPages, groupTitle);
+        nextPageId = filtered[0]?.page_id || null;
+      }
+
+      if (nextPageId) {
+        debug("auto select page_id:", nextPageId);
+        needsUpdate = true;
+      }
+    }
+
+    // ============ ЭТАП 3: Контакт ============
+    if (nextPlatform && !nextClient?.value) {
+      // Получаем контакты для выбранной платформы
+      const block = platformBlocks[nextPlatform] || {};
+      const hasContacts = Object.keys(block).length > 0;
+
+      if (hasContacts) {
+        let contactValue = null;
+        let messageClientId = null;
+
+        if (lastMessage?.ticket_id === ticketId) {
+          messageClientId = lastMessage.client_id;
+          
+          // входящее — from_reference; исходящее — to_reference
+          contactValue =
+            lastMessage.sender_id === lastMessage.client_id
+              ? lastMessage.from_reference
+              : lastMessage.to_reference;
+
+          // Фоллбэк: поиск по client_id
+          if (!contactValue) {
+            const entry = Object.entries(block).find(([cid]) => {
+              const client = clientIndex.get(Number.parseInt(cid, 10));
+              return client?.id === messageClientId;
+            });
+            if (entry) contactValue = entry[1]?.contact_value;
+          }
+        }
+
+        // Генерируем опции для поиска (как в useMemo contactOptions)
+        const tempContactOptions = Object.entries(block).map(([contactIdRaw, contactData]) => {
+          const contactId = Number.parseInt(contactIdRaw, 10);
+          const contactClientId = contactData?.client_id != null 
+            ? Number.parseInt(contactData.client_id, 10) 
+            : null;
+          
+          const client = clientIndex.get(contactId) || 
+            (contactClientId != null ? clientIndex.get(contactClientId) : null);
+          
+          const client_id = client?.id ?? contactClientId ?? 
+            (Number.isNaN(contactId) ? null : contactId);
+
+          return {
+            value: `${client_id ?? "x"}-${contactId}`,
+            payload: {
+              client_id,
+              contact_id: contactId,
+              contact_value: contactData?.contact_value || "",
+              name: contactData?.name || client?.name || "",
+              surname: contactData?.surname || client?.surname || "",
+              platform: nextPlatform,
+            },
+          };
+        });
+
+        const found = matchContact(tempContactOptions, contactValue, messageClientId);
+        nextClient = found || tempContactOptions[0];
+
+        if (nextClient) {
+          debug("auto select contact:", nextClient.value);
+          needsUpdate = true;
+        }
+      }
+    }
+
+    // Применяем все изменения одним батчем (1 ререндер)
+    if (needsUpdate) {
+      startTransition(() => {
+        if (nextPlatform !== selectedPlatform) setSelectedPlatform(nextPlatform);
+        if (nextPageId !== selectedPageId) setSelectedPageId(nextPageId);
+        if (nextClient?.value !== selectedClient?.value) setSelectedClient(nextClient);
+      });
     }
   }, [
-    selectedPlatform,
-    contactOptions,
-    selectedClient?.value,
-    lastMessage,
-    ticketId,
+    ticketData,
+    platformOptions,
     platformBlocks,
     clientIndex,
+    lastMessage,
+    ticketId,
+    groupTitle,
+    selectedPlatform,
+    selectedPageId,
+    selectedClient?.value,
   ]);
 
   /** Публичные коллбеки (idempotent) */
@@ -404,28 +455,45 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
   const updateClientData = useCallback((clientId, platform, newData) => {
     setTicketData((prev) => {
       if (!prev?.clients) return prev;
-      const next = {
-        ...prev,
-        clients: prev.clients.map((c) =>
-          c.id === clientId
-            ? {
-              ...c,
-              name: newData.name ?? c.name,
-              surname: newData.surname ?? c.surname,
-              phone: newData.phone ?? c.phone,
-              email: newData.email ?? c.email,
-            }
-            : c
-        ),
-      };
-      return next;
+      
+      // Проверяем, есть ли изменения перед копированием
+      let hasChanges = false;
+      const newClients = prev.clients.map((c) => {
+        if (c.id !== clientId) return c;
+        
+        // Обновляем только измененные поля
+        const updated = {
+          ...c,
+          name: newData.name ?? c.name,
+          surname: newData.surname ?? c.surname,
+          phone: newData.phone ?? c.phone,
+          email: newData.email ?? c.email,
+        };
+        
+        // Проверяем, действительно ли что-то изменилось
+        if (updated.name !== c.name || updated.surname !== c.surname || 
+            updated.phone !== c.phone || updated.email !== c.email) {
+          hasChanges = true;
+        }
+        return updated;
+      });
+
+      // Возвращаем старый объект, если изменений нет (оптимизация ререндеров)
+      return hasChanges ? { ...prev, clients: newClients } : prev;
     });
 
-    setSelectedClient((prev) =>
-      prev?.payload?.id === clientId
-        ? { ...prev, payload: { ...prev.payload, ...newData } }
-        : prev
-    );
+    setSelectedClient((prev) => {
+      // Обновляем только если это текущий клиент
+      if (prev?.payload?.id !== clientId) return prev;
+      
+      const newPayload = { ...prev.payload, ...newData };
+      // Проверяем реальные изменения
+      const hasPayloadChanges = Object.keys(newData).some(
+        key => newPayload[key] !== prev.payload[key]
+      );
+      
+      return hasPayloadChanges ? { ...prev, payload: newPayload } : prev;
+    });
   }, []);
 
   return {

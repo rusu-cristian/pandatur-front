@@ -21,7 +21,7 @@ import { useSnackbar } from "notistack";
 import { getLanguageByKey } from "../../../utils";
 import { getEmailsByGroupTitle } from "../../../utils/emailUtils";
 import { templateOptions, templateGroupsByKey, TEMPLATE_GROUP_BY_TITLE } from "../../../../FormOptions";
-import { useUploadMediaFile, useClientContacts, useMessagesContext } from "../../../../hooks";
+import { useUploadMediaFile, useClientContacts, useMessagesContext, filterPagesByGroupTitle } from "../../../../hooks";
 import { getMediaType } from "../../renderContent";
 import { useApp, useSocket, useUser } from "@hooks";
 import Can from "../../../CanComponent/Can";
@@ -172,16 +172,7 @@ export const ChatInput = ({
     if (!selectedPlatform) return [];
 
     const pages = getPagesByType(selectedPlatform);
-
-    // Фильтруем страницы по group_title тикета
-    const filteredPages = groupTitle
-      ? pages.filter(page => {
-        if (Array.isArray(page.group_title)) {
-          return page.group_title.includes(groupTitle);
-        }
-        return page.group_title === groupTitle;
-      })
-      : pages;
+    const filteredPages = filterPagesByGroupTitle(pages, groupTitle);
 
     return filteredPages.map(page => ({
       value: page.page_id,
