@@ -48,7 +48,11 @@ const PLATFORM_ICONS = {
   telegram: FaTelegram,
 };
 
-export const PersonalData4ClientForm = ({ ticketId, responsibleId }) => {
+export const PersonalData4ClientForm = ({ 
+  ticketId, 
+  responsibleId,
+  clientsData, // Данные из useClientContacts (если переданы, не делаем запрос)
+}) => {
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(true);
   const [clients, setClients] = useState([]);
@@ -164,9 +168,18 @@ export const PersonalData4ClientForm = ({ ticketId, responsibleId }) => {
     }
   }, [ticketId, enqueueSnackbar]);
 
+  // Если данные переданы через props (из useClientContacts) - используем их
   useEffect(() => {
+    if (clientsData?.clients) {
+      // Используем данные из props - не делаем запрос
+      setClients(clientsData.clients);
+      setLoading(false);
+      return;
+    }
+    
+    // Иначе загружаем самостоятельно
     loadClientsData();
-  }, [loadClientsData]);
+  }, [loadClientsData, clientsData]);
 
   // ❌ УДАЛЕНО: Слушатель ticketUpdated вызывал дублирующие запросы
   // Компонент и так перерендеривается при изменении ticketId через props

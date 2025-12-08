@@ -33,6 +33,7 @@ const ChatExtraInfo = ({
   ticketId,
   selectedClient,
   onUpdateClientData,
+  clientsData, // Данные клиентов из useClientContacts (чтобы избежать дублирующего запроса)
 }) => {
   const [extraInfo, setExtraInfo] = useState({});
   const [isLoadingExtraInfo, setIsLoadingExtraInfo] = useState(true);
@@ -385,6 +386,7 @@ const ChatExtraInfo = ({
               key={`personal-${ticketId}`}
               ticketId={ticketId}
               responsibleId={responsibleId}
+              clientsData={clientsData} // Передаем данные из useClientContacts
             />
 
             {isAdmin && (

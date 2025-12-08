@@ -73,6 +73,7 @@ const SingleChat = ({ technicians, ticketId, onClose, tasks = [] }) => {
     changePageId,
     loading,
     updateClientData,
+    ticketData, // Сырые данные от API для PersonalData4ClientForm
   } = useClientContacts(Number(ticketId), lastMessage, currentTicket?.group_title);
 
   const responsibleId = currentTicket?.technician_id?.toString() ?? null;
@@ -152,6 +153,7 @@ const SingleChat = ({ technicians, ticketId, onClose, tasks = [] }) => {
         ticketId={ticketId}
         updatedTicket={currentTicket}
         onUpdateClientData={updateClientData}
+        clientsData={ticketData} // Передаем данные из useClientContacts
       />
 
     </div>

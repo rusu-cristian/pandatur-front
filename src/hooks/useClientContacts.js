@@ -532,5 +532,8 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
     loading,
     updateClientData,
     refetch,
+    
+    // Экспортируем сырые данные для PersonalData4ClientForm (чтобы избежать дублирующего запроса)
+    ticketData,
   };
 };
