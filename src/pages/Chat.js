@@ -2,12 +2,13 @@ import React, { useState, useMemo, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { Flex, ActionIcon, Box } from "@mantine/core";
-import { useApp, useClientContacts, useMessagesContext } from "@hooks";
+import { useApp, useMessagesContext } from "@hooks";
 import { useGetTechniciansList } from "../hooks";
 import ChatExtraInfo from "../Components/ChatComponent/ChatExtraInfo";
 import ChatList from "../Components/ChatComponent/ChatList";
 import { ChatMessages } from "../Components/ChatComponent/components/ChatMessages";
 import Can from "@components/CanComponent/Can";
+import { ClientContactsProvider } from "../context/ClientContactsContext";
 
 export const Chat = () => {
   const {
@@ -98,51 +99,46 @@ export const Chat = () => {
     return lastMsg;
   }, [messages, ticketId]);
 
-  const {
-    selectedClient,
-    updateClientData,
-  } = useClientContacts(ticketId, lastMessage, currentTicket?.group_title);
-
   const responsibleId = currentTicket?.technician_id?.toString() ?? null;
 
   return (
-    <Flex h="100%" className="chat-wrapper">
-      <Flex w="100%" h="100%" className="chat-container">
-        {isChatListVisible && <ChatList ticketId={ticketId} />}
+    <ClientContactsProvider ticketId={ticketId} lastMessage={lastMessage} groupTitle={currentTicket?.group_title}>
+      <Flex h="100%" className="chat-wrapper">
+        <Flex w="100%" h="100%" className="chat-container">
+          {isChatListVisible && <ChatList ticketId={ticketId} />}
 
-        <Flex pos="relative" style={{ flex: "1 1 0" }}>
-          <Box pos="absolute" left="10px" top="16px" style={{ zIndex: 1 }}>
-            <ActionIcon
-              variant="default"
-              onClick={() => setIsChatListVisible((prev) => !prev)}
-            >
-              {isChatListVisible ? (
-                <FaArrowLeft size="12" />
-              ) : (
-                <FaArrowRight size="12" />
-              )}
-            </ActionIcon>
-          </Box>
-          <Can permission={{ module: "chat", action: "view" }}>
-            <ChatMessages
+          <Flex pos="relative" style={{ flex: "1 1 0" }}>
+            <Box pos="absolute" left="10px" top="16px" style={{ zIndex: 1 }}>
+              <ActionIcon
+                variant="default"
+                onClick={() => setIsChatListVisible((prev) => !prev)}
+              >
+                {isChatListVisible ? (
+                  <FaArrowLeft size="12" />
+                ) : (
+                  <FaArrowRight size="12" />
+                )}
+              </ActionIcon>
+            </Box>
+            <Can permission={{ module: "chat", action: "view" }}>
+              <ChatMessages
+                ticketId={ticketId}
+                personalInfo={currentTicket}
+                technicians={technicians}
+                unseenCount={currentTicket?.unseen_count || 0}
+              />
+            </Can>
+          </Flex>
+
+          {!isNaN(ticketId) && (
+
+            <ChatExtraInfo
               ticketId={ticketId}
-              personalInfo={currentTicket}
-              technicians={technicians}
-              unseenCount={currentTicket?.unseen_count || 0}
+              updatedTicket={currentTicket}
             />
-          </Can>
+          )}
         </Flex>
-
-        {!isNaN(ticketId) && (
-
-          <ChatExtraInfo
-            selectedClient={selectedClient}
-            ticketId={ticketId}
-            updatedTicket={currentTicket}
-            onUpdateClientData={updateClientData}
-          />
-        )}
       </Flex>
-    </Flex>
+    </ClientContactsProvider>
   );
 };

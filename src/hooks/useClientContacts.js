@@ -443,5 +443,6 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
     loading,
     updateClientData,
     refetch: fetchClientContacts,
+    clients: ticketData?.clients || [],  // Expose raw clients data for PersonalData4ClientForm
   };
 };

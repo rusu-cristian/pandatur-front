@@ -3,8 +3,9 @@ import React, { useEffect, useState } from "react";
 import { Flex, ActionIcon, Box } from "@mantine/core";
 import ChatExtraInfo from "./ChatExtraInfo";
 import { ChatMessages } from "./components";
-import { useApp, useClientContacts, useMessagesContext } from "@hooks";
+import { useApp, useMessagesContext } from "@hooks";
 import Can from "@components/CanComponent/Can";
+import { ClientContactsProvider } from "../../context/ClientContactsContext";
 
 const SingleChat = ({ technicians, ticketId, onClose, tasks = [] }) => {
   const { getTicketById, fetchSingleTicket, tickets } = useApp();
@@ -62,19 +63,6 @@ const SingleChat = ({ technicians, ticketId, onClose, tasks = [] }) => {
     return lastMsg;
   }, [messages, ticketId]);
 
-  const {
-    platformOptions,
-    selectedPlatform,
-    changePlatform,
-    contactOptions,
-    changeContact,
-    selectedClient,
-    selectedPageId,
-    changePageId,
-    loading,
-    updateClientData,
-  } = useClientContacts(Number(ticketId), lastMessage, currentTicket?.group_title);
-
   const responsibleId = currentTicket?.technician_id?.toString() ?? null;
 
   useEffect(() => {
@@ -119,41 +107,32 @@ const SingleChat = ({ technicians, ticketId, onClose, tasks = [] }) => {
   const unseenCount = currentTicket?.unseen_count || 0;
 
   return (
-    <div className="chat-container">
-      <Box pos="absolute" left="10px" top="16px">
-        <ActionIcon onClick={onClose} variant="default">
-          <FaArrowLeft size="12" />
-        </ActionIcon>
-      </Box>
+    <ClientContactsProvider ticketId={Number(ticketId)} lastMessage={lastMessage} groupTitle={currentTicket?.group_title}>
+      <div className="chat-container">
+        <Box pos="absolute" left="10px" top="16px">
+          <ActionIcon onClick={onClose} variant="default">
+            <FaArrowLeft size="12" />
+          </ActionIcon>
+        </Box>
 
-      <Flex w="70%">
-        <Can permission={{ module: "chat", action: "view" }} context={{ responsibleId }}>
-          <ChatMessages
-            selectedClient={selectedClient}
-            ticketId={ticketId ? Number(ticketId) : undefined}
-            personalInfo={currentTicket}
-            platformOptions={platformOptions}
-            selectedPlatform={selectedPlatform}
-            changePlatform={changePlatform}
-            contactOptions={contactOptions}
-            changeContact={changeContact}
-            selectedPageId={selectedPageId}
-            changePageId={changePageId}
-            loading={loading || isLoadingTicket}
-            technicians={technicians}
-            unseenCount={unseenCount}
-          />
-        </Can>
-      </Flex>
+        <Flex w="70%">
+          <Can permission={{ module: "chat", action: "view" }} context={{ responsibleId }}>
+            <ChatMessages
+              ticketId={ticketId ? Number(ticketId) : undefined}
+              personalInfo={currentTicket}
+              technicians={technicians}
+              unseenCount={unseenCount}
+            />
+          </Can>
+        </Flex>
 
-      <ChatExtraInfo
-        selectedClient={selectedClient}
-        ticketId={ticketId}
-        updatedTicket={currentTicket}
-        onUpdateClientData={updateClientData}
-      />
+        <ChatExtraInfo
+          ticketId={ticketId}
+          updatedTicket={currentTicket}
+        />
 
-    </div>
+      </div>
+    </ClientContactsProvider>
   );
 };
 

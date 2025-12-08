@@ -21,7 +21,7 @@ import { useSnackbar } from "notistack";
 import { getLanguageByKey } from "../../../utils";
 import { getEmailsByGroupTitle } from "../../../utils/emailUtils";
 import { templateOptions, templateGroupsByKey, TEMPLATE_GROUP_BY_TITLE } from "../../../../FormOptions";
-import { useUploadMediaFile, useClientContacts, useMessagesContext } from "../../../../hooks";
+import { useUploadMediaFile, useMessagesContext } from "../../../../hooks";
 import { getMediaType } from "../../renderContent";
 import { useApp, useSocket, useUser } from "@hooks";
 import Can from "../../../CanComponent/Can";
@@ -30,6 +30,7 @@ import { api } from "../../../../api";
 import { EmailForm } from "../EmailForm/EmailForm";
 import { getPagesByType } from "../../../../constants/webhookPagesConfig";
 import { socialMediaIcons } from "../../../utils/socialMediaIcons";
+import { useClientContactsContext } from "../../../../context/ClientContactsContext";
 import "./ChatInput.css";
 
 const MESSAGE_LENGTH_LIMIT = 999;
@@ -81,33 +82,7 @@ export const ChatInput = ({
     ? String(personalInfo.technician_id)
     : undefined;
 
-  // Получаем последнее сообщение для автоматического выбора платформы и контакта
-  const lastMessage = useMemo(() => {
-    if (!messages || messages.length === 0 || !ticketId) {
-      return null;
-    }
-
-    // Фильтруем сообщения только для текущего тикета и исключаем sipuni/mail
-    const currentTicketMessages = messages.filter(msg => {
-      const platform = msg.platform?.toLowerCase();
-      return msg.ticket_id === ticketId && platform !== 'sipuni' && platform !== 'mail';
-    });
-
-    if (currentTicketMessages.length === 0) {
-      return null;
-    }
-
-    // Сортируем по времени и берем последнее
-    const sortedMessages = [...currentTicketMessages].sort((a, b) => {
-      const timeA = new Date(a.time_sent || a.created_at || 0);
-      const timeB = new Date(b.time_sent || b.created_at || 0);
-      return timeB - timeA; // От новых к старым
-    });
-
-    return sortedMessages[0];
-  }, [messages, ticketId]);
-
-  // Получаем данные о контактах напрямую из хука
+  // Получаем данные о контактах из контекста
   const {
     platformOptions,
     selectedPlatform,
@@ -118,7 +93,7 @@ export const ChatInput = ({
     selectedPageId,
     changePageId,
     loading,
-  } = useClientContacts(ticketId, lastMessage, groupTitle);
+  } = useClientContactsContext();
 
   const isLengthLimited = useMemo(
     () => LIMITED_PLATFORMS.includes((selectedPlatform || "").toLowerCase()),

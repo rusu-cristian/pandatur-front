@@ -26,14 +26,14 @@ import {
 } from "../TicketForms";
 import { InvoiceTab } from "./components";
 import Can from "@components/CanComponent/Can";
+import { useClientContactsContext } from "../../context/ClientContactsContext";
 
 const ChatExtraInfo = ({
   selectTicketId,
   updatedTicket,
   ticketId,
-  selectedClient,
-  onUpdateClientData,
 }) => {
+  const { selectedClient } = useClientContactsContext();
   const [extraInfo, setExtraInfo] = useState({});
   const [isLoadingExtraInfo, setIsLoadingExtraInfo] = useState(true);
   const [isLoadingGeneral, setIsLoadingGeneral] = useState(false);

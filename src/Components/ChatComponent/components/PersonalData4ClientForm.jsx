@@ -23,6 +23,7 @@ import { FaFacebook, FaInstagram, FaWhatsapp, FaViber, FaTelegram } from "react-
 import { api } from "../../../api";
 import { useSnackbar } from "notistack";
 import { useConfirmPopup } from "../../../hooks/useConfirmPopup";
+import { useClientContactsContext } from "../../../context/ClientContactsContext";
 import "./PersonalData4ClientForm.css";
 import Can from "@components/CanComponent/Can";
 
@@ -50,8 +51,7 @@ const PLATFORM_ICONS = {
 
 export const PersonalData4ClientForm = ({ ticketId, responsibleId }) => {
   const { enqueueSnackbar } = useSnackbar();
-  const [loading, setLoading] = useState(true);
-  const [clients, setClients] = useState([]);
+  const { clients, loading, refetch } = useClientContactsContext();
   const [showAddForm, setShowAddForm] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [expandedClientId, setExpandedClientId] = useState(null);
@@ -142,37 +142,11 @@ export const PersonalData4ClientForm = ({ ticketId, responsibleId }) => {
     },
   });
 
-  // Загрузка данных клиентов
-  const loadClientsData = useCallback(async () => {
-    if (!ticketId) return;
-
-    try {
-      setLoading(true);
-      // Передаем undefined или null для platform, чтобы получить всех клиентов
-      const response = await api.users.getUsersClientContactsByPlatform(ticketId, undefined);
-
-      if (response?.clients) {
-        setClients(response.clients);
-      }
-    } catch (error) {
-      console.error("Ошибка загрузки данных клиентов:", error);
-      enqueueSnackbar(getLanguageByKey("Eroare la încărcarea datelor clienților"), {
-        variant: "error",
-      });
-    } finally {
-      setLoading(false);
-    }
-  }, [ticketId, enqueueSnackbar]);
-
-  useEffect(() => {
-    loadClientsData();
-  }, [loadClientsData]);
-
-  // Слушаем событие обновления тикета
+  // Слушаем событие обновления тикета для рефетча данных
   useEffect(() => {
     const handleTicketUpdate = (event) => {
       if (event.detail?.ticketId === ticketId) {
-        loadClientsData();
+        refetch();
       }
     };
 
@@ -181,7 +155,7 @@ export const PersonalData4ClientForm = ({ ticketId, responsibleId }) => {
     return () => {
       window.removeEventListener('ticketUpdated', handleTicketUpdate);
     };
-  }, [ticketId, loadClientsData]);
+  }, [ticketId, refetch]);
 
   // Обработчик добавления нового клиента
   const handleAddClient = () => {
@@ -215,7 +189,7 @@ export const PersonalData4ClientForm = ({ ticketId, responsibleId }) => {
       form.reset();
 
       // Перезагружаем данные клиентов
-      await loadClientsData();
+      await refetch();
 
       // Диспатчим событие для обновления данных тикета
       window.dispatchEvent(new CustomEvent('ticketUpdated', {
@@ -267,7 +241,7 @@ export const PersonalData4ClientForm = ({ ticketId, responsibleId }) => {
       setExpandedClientId(null);
 
       // Перезагружаем данные клиентов
-      await loadClientsData();
+      await refetch();
 
       // Диспатчим событие для обновления данных тикета
       window.dispatchEvent(new CustomEvent('ticketUpdated', {
@@ -327,7 +301,7 @@ export const PersonalData4ClientForm = ({ ticketId, responsibleId }) => {
       cancelEditContact();
 
       // Перезагружаем данные клиентов
-      await loadClientsData();
+      await refetch();
 
       // Диспатчим событие для обновления данных тикета
       window.dispatchEvent(new CustomEvent('ticketUpdated', {
@@ -362,7 +336,7 @@ export const PersonalData4ClientForm = ({ ticketId, responsibleId }) => {
         });
 
         // Перезагружаем данные клиентов
-        await loadClientsData();
+        await refetch();
 
         // Диспатчим событие для обновления данных тикета
         window.dispatchEvent(new CustomEvent('ticketUpdated', {
@@ -433,7 +407,7 @@ export const PersonalData4ClientForm = ({ ticketId, responsibleId }) => {
       cancelEditClient();
 
       // Перезагружаем данные клиентов
-      await loadClientsData();
+      await refetch();
 
       // Диспатчим событие для обновления данных тикета
       window.dispatchEvent(new CustomEvent('ticketUpdated', {
