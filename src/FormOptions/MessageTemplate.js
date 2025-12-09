@@ -16,38 +16,38 @@ c) număr de telefon
 d) orașul de plecare 
 e) numărul de persoane`,
 
-//     "Salutare RO Prescurtat 1":
-//         `Salutare 😍
-// Mulțumim că ați ales Panda Tur
-// Ma numesc`,
+    //     "Salutare RO Prescurtat 1":
+    //         `Salutare 😍
+    // Mulțumim că ați ales Panda Tur
+    // Ma numesc`,
 
     ////////////////MD
 
-//     "Salutare RU Prescurtat 1":
-//         `Добрый день, 
-// Спасибо за обращение в компанию Panda Tur
-// Mеня зовут`,
+    //     "Salutare RU Prescurtat 1":
+    //         `Добрый день, 
+    // Спасибо за обращение в компанию Panda Tur
+    // Mеня зовут`,
 
     /////////////
 
-//     "Salutare RO 1": `Salutare 😍
- 
-// Mulțumim că ați ales Panda Tur!
- 
-// Sunt __________, managerul companiei, și mă bucur să vă urez bun venit în aventura pe care o pregătim pentru dumneavoastră. 
+    //     "Salutare RO 1": `Salutare 😍
 
-// Suntem aici pentru a ne asigura că fiecare moment al călătoriei este de neuitat.`,
+    // Mulțumim că ați ales Panda Tur!
+
+    // Sunt __________, managerul companiei, și mă bucur să vă urez bun venit în aventura pe care o pregătim pentru dumneavoastră. 
+
+    // Suntem aici pentru a ne asigura că fiecare moment al călătoriei este de neuitat.`,
 
     //////////////////////////////
 
-//     "Salutare RU 1": `Приветствую 😍
+    //     "Salutare RU 1": `Приветствую 😍
 
-// Спасибо, что выбрали Panda Tur!
+    // Спасибо, что выбрали Panda Tur!
 
 
-// Меня зовут _________, менеджер компании, и рад приветствовать  в приключении, которое мы готовим для вас. 
+    // Меня зовут _________, менеджер компании, и рад приветствовать  в приключении, которое мы готовим для вас. 
 
-// Мы здесь, чтобы убедиться, что каждый момент вашего путешествия будет незабываемым.`,
+    // Мы здесь, чтобы убедиться, что каждый момент вашего путешествия будет незабываемым.`,
 
     //////////////////////////////
 
@@ -623,7 +623,7 @@ Cu respect,
 Echipa Resurse Umane
 Panda Tour
 `,
-/////////////////////////////////////////
+    /////////////////////////////////////////
     "HR Offer RU 1": `Здравствуйте,
  
 Спасибо за ваш интерес к возможности работы в компании Panda Tour.
