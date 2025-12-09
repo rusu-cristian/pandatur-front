@@ -618,7 +618,9 @@ export const ChatInput = ({
                   <Button
                     disabled={
                       (!message.trim() && attachments.length === 0) ||
+                      !selectedPlatform ||
                       !currentClient?.payload ||
+                      !selectedPageId ||
                       currentClient.payload.platform === "sipuni" ||
                       (isLengthLimited && message.length > MESSAGE_LENGTH_LIMIT)
                     }
