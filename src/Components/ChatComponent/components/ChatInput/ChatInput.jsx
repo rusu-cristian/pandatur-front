@@ -636,6 +636,7 @@ export const ChatInput = ({
                     disabled={
                       (!message.trim() && attachments.length === 0) ||
                       !currentClient?.payload ||
+                      !selectedPageId ||
                       currentClient.payload.platform === "sipuni" ||
                       (isLengthLimited && message.length > MESSAGE_LENGTH_LIMIT)
                     }
