@@ -426,7 +426,7 @@ export const WEBHOOK_PAGES_CONFIG = {
     },
     {
       page_id: "40720949119",
-      page_name: "Iasi - 40720949119",
+      page_name: "General RO - 40720949119",
       type: "phone",
       group_title: ["RO"]
     },
