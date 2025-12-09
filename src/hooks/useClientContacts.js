@@ -279,54 +279,22 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
     if (nextPlatform) {
       const allPages = getPagesByType(nextPlatform) || [];
       const availablePages = filterPagesByGroupTitle(allPages, groupTitle);
-      
-      // ✅ ИСПРАВЛЕНИЕ: Проверяем не только что page_id валиден,
-      // но и что он соответствует lastMessage.page_id (если есть)
-      const messagePageId = lastMessage?.ticket_id === ticketId ? lastMessage.page_id : null;
-      const shouldMatchMessage = messagePageId && availablePages.some(p => p.page_id === messagePageId);
-      
-      const isPageIdValid = nextPageId && 
-        availablePages.some(p => p.page_id === nextPageId) &&
-        (!shouldMatchMessage || nextPageId === messagePageId); // ← ключевая проверка!
-      
-      debug("🔍 ЭТАП 2: Page ID selection", {
-        nextPlatform,
-        groupTitle,
-        currentPageId: nextPageId,
-        messagePageId,
-        shouldMatchMessage,
-        isPageIdValid,
-        availablePagesCount: availablePages.length,
-        availablePageIds: availablePages.map(p => p.page_id),
-        lastMessage: lastMessage ? {
-          ticket_id: lastMessage.ticket_id,
-          page_id: lastMessage.page_id,
-          page_reference: lastMessage.page_reference,
-          platform: lastMessage.platform,
-        } : null,
-      });
+      const isPageIdValid = nextPageId && availablePages.some(p => p.page_id === nextPageId);
       
       if (!isPageIdValid) {
-        // Приоритет: берем page_id из сообщения
-        if (messagePageId && availablePages.some(p => p.page_id === messagePageId)) {
-          nextPageId = messagePageId;
-          debug("🎯 Selected page_id from message:", nextPageId);
-        } else if (lastMessage?.ticket_id === ticketId) {
+        if (lastMessage?.ticket_id === ticketId) {
           const candidate = selectPageIdByMessage(nextPlatform, lastMessage.page_id, groupTitle);
-          debug("🎯 Candidate from selectPageIdByMessage:", candidate, "| message page_id:", lastMessage.page_id);
           if (candidate && availablePages.some(p => p.page_id === candidate)) {
             nextPageId = candidate;
           }
         }
 
-        // Fallback: первая доступная страница
         if (!nextPageId || !availablePages.some(p => p.page_id === nextPageId)) {
-          debug("⚠️ Fallback to first page:", availablePages[0]?.page_id);
           nextPageId = availablePages[0]?.page_id || null;
         }
 
         if (nextPageId) {
-          debug("✅ Final auto selected page_id:", nextPageId);
+          debug("auto select/fix page_id:", nextPageId);
           needsUpdate = true;
         }
       }
