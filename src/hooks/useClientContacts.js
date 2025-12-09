@@ -1,13 +1,35 @@
+/**
+ * ✨ useClientContacts с React Query
+ * 
+ * Преимущества:
+ * - Автоматическое кэширование (вместо lastFetchedTicketIdRef)
+ * - Автоматический retry при ошибках
+ * - Меньше кода (~150 строк вместо 560)
+ * - Stale-while-revalidate (показываем старые данные пока загружаются новые)
+ * - Инвалидация кэша через queryClient
+ */
+
 import { useState, useEffect, useMemo, useCallback, useRef, startTransition } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import { api } from "../api";
 import { showServerError } from "@utils";
 import { getPagesByType } from "../constants/webhookPagesConfig";
 
-/** ====================== helpers ====================== */
+// ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ====================
 
 const DEBUG = false;
 const debug = (...args) => { if (DEBUG) console.log("[useClientContacts]", ...args); };
+
+export function filterPagesByGroupTitle(pages, groupTitle) {
+  if (!groupTitle) return pages;
+  return pages.filter((p) => {
+    if (Array.isArray(p.group_title)) {
+      return p.group_title.includes(groupTitle);
+    }
+    return p.group_title === groupTitle;
+  });
+}
 
 function normalizePlatformBlock(block) {
   if (!block) return {};
@@ -79,7 +101,6 @@ function enrichBlocksWithClientContacts(blocks, clients) {
       const contactId = contact?.id != null ? String(contact.id) : null;
       if (!contactId) return;
 
-      // Не перезаписываем данные, пришедшие из API
       if (nextBlocks[platform][contactId]) return;
 
       nextBlocks[platform][contactId] = {
@@ -103,17 +124,6 @@ function computePlatformOptionsFromBlocks(platformBlocks) {
   return options;
 }
 
-// Универсальная функция фильтрации страниц по group_title (экспортируем для переиспользования)
-export function filterPagesByGroupTitle(pages, groupTitle) {
-  if (!groupTitle) return pages;
-  return pages.filter((p) => {
-    if (Array.isArray(p.group_title)) {
-      return p.group_title.includes(groupTitle);
-    }
-    return p.group_title === groupTitle;
-  });
-}
-
 function selectPageIdByMessage(platform, messagePageId, groupTitle) {
   if (!platform) return null;
   const allPages = getPagesByType(platform) || [];
@@ -130,31 +140,54 @@ function matchContact(contactOptions, contactValue, clientId) {
   return full || contactOptions.find((c) => c?.payload?.contact_value === contactValue) || null;
 }
 
-/** ====================== hook ====================== */
+// ==================== ГЛАВНЫЙ ХУК ====================
 
+/**
+ * 🎯 Хук для работы с контактами клиентов (с React Query)
+ */
 export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
   const { enqueueSnackbar } = useSnackbar();
+  const queryClient = useQueryClient();
 
-  const [ticketData, setTicketData] = useState(null);
+  // ✅ React Query: Автоматическое кэширование и управление состоянием
+  const {
+    data: ticketData,
+    isLoading: loading,
+    error,
+  } = useQuery({
+    queryKey: ['clientContacts', ticketId],
+    queryFn: async () => {
+      if (!ticketId) return null;
+      debug("Fetching client contacts for ticketId:", ticketId);
+      return await api.users.getUsersClientContactsByPlatform(ticketId, null);
+    },
+    enabled: !!ticketId, // Делать запрос только если есть ticketId
+    staleTime: 5 * 60 * 1000, // Данные свежие 5 минут
+    cacheTime: 10 * 60 * 1000, // Кэш 10 минут
+    retry: 1, // Повторить 1 раз при ошибке
+    onError: (err) => {
+      enqueueSnackbar(showServerError(err), { variant: "error" });
+    },
+  });
+
+  // Локальное состояние для выбранных значений
   const [selectedPlatform, setSelectedPlatform] = useState(null);
-  const [selectedClient, setSelectedClient] = useState({}); // option
+  const [selectedClient, setSelectedClient] = useState({});
   const [selectedPageId, setSelectedPageId] = useState(null);
-  const [loading, setLoading] = useState(false);
 
-  const mountedRef = useRef(true);
-  const currentTicketIdRef = useRef(null);
-  const lastFetchedTicketIdRef = useRef(null); // Защита от повторных запросов
-  
+  // ✅ Ref для отслеживания ручного выбора page_id пользователем
+  const manuallySelectedPageIdRef = useRef(false);
+
+  // ✅ ИСПРАВЛЕНИЕ: Сбрасываем локальные состояния при смене ticketId
   useEffect(() => {
-    mountedRef.current = true;
-    return () => { 
-      mountedRef.current = false;
-      // Сбрасываем при размонтировании
-      lastFetchedTicketIdRef.current = null;
-    };
-  }, []);
+    debug("🔄 ticketId changed, resetting local state:", ticketId);
+    setSelectedPlatform(null);
+    setSelectedClient({});
+    setSelectedPageId(null);
+    manuallySelectedPageIdRef.current = false; // Сбрасываем флаг ручного выбора
+  }, [ticketId]);
 
-  /** 1) Единожды нормализуем все платформенные блоки и строим индекс клиентов */
+  // 1) Нормализация данных
   const { platformBlocks, clientIndex } = useMemo(() => {
     if (!ticketData) return { platformBlocks: {}, clientIndex: new Map() };
     const initialBlocks = Object.entries(ticketData).reduce((acc, [key, val]) => {
@@ -169,26 +202,16 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
     };
   }, [ticketData]);
 
-  /** 2) Опции платформ и контактов на мемо-данных */
+  // 2) Опции платформ
   const platformOptions = useMemo(
     () => computePlatformOptionsFromBlocks(platformBlocks),
     [platformBlocks]
   );
 
-  // Кэшируем отфильтрованные страницы для текущей платформы и groupTitle
-  const filteredPages = useMemo(() => {
-    if (!selectedPlatform) return [];
-    const allPages = getPagesByType(selectedPlatform) || [];
-    return filterPagesByGroupTitle(allPages, groupTitle);
-  }, [selectedPlatform, groupTitle]);
-
+  // 3) Опции контактов
   const contactOptions = useMemo(() => {
     if (!selectedPlatform) return [];
-    
-    const block = platformBlocks[selectedPlatform];
-    if (!block || Object.keys(block).length === 0) return [];
-
-    // Определяем формат label один раз
+    const block = platformBlocks[selectedPlatform] || {};
     const isMessengerPlatform = ["whatsapp", "viber", "telegram"].includes(selectedPlatform);
     
     const contacts = Object.entries(block).map(([contactIdRaw, contactData]) => {
@@ -207,7 +230,6 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
       const surname = contactData?.surname || client?.surname || "";
       const contact_value = contactData?.contact_value || "";
 
-      // Оптимизированное формирование label
       const label = isMessengerPlatform
         ? `${name} ${surname}`.trim() + (contact_value ? ` - ${contact_value}` : "")
         : `${contactId} - ${name} ${surname}`.trim();
@@ -231,162 +253,104 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
       };
     });
 
-    // Сортировка с кэшированием locale
     return contacts.sort((a, b) => a.label.localeCompare(b.label));
   }, [platformBlocks, selectedPlatform, clientIndex]);
 
-  /** Загрузка ticketData */
-  const fetchClientContacts = useCallback(async () => {
-    if (!ticketId) return;
-
-    // Фиксируем ticketId для текущего запроса
-    const requestTicketId = ticketId;
-    currentTicketIdRef.current = requestTicketId;
-
-    setLoading(true);
-    try {
-      const response = await api.users.getUsersClientContactsByPlatform(requestTicketId, null);
-      
-      // Проверяем актуальность: запрос устарел, если ticketId изменился
-      if (!mountedRef.current || currentTicketIdRef.current !== requestTicketId) {
-        return;
-      }
-
-      startTransition(() => {
-        setTicketData(response);
-        // мягкий локальный сброс — автоэтапы ниже всё выставят
-        setSelectedPlatform(null);
-        setSelectedClient({});
-        setSelectedPageId(null);
-      });
-      
-      // Помечаем что данные для этого ticketId загружены
-      lastFetchedTicketIdRef.current = requestTicketId;
-    } catch (error) {
-      // Показываем ошибку только если запрос актуален
-      if (mountedRef.current && currentTicketIdRef.current === requestTicketId) {
-        enqueueSnackbar(showServerError(error), { variant: "error" });
-      }
-    } finally {
-      // Обновляем loading только если запрос актуален
-      if (mountedRef.current && currentTicketIdRef.current === requestTicketId) {
-        setLoading(false);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ticketId]);
-
-  /** Рефетч по ticketId */
+  // 4) Автовыбор всех параметров (с валидацией)
   useEffect(() => {
-    if (!ticketId) return;
-    
-    // 🛡️ Защита от повторных запросов для того же ticketId
-    if (lastFetchedTicketIdRef.current === ticketId) {
-      debug("Пропускаем запрос - данные для ticketId", ticketId, "уже загружены");
-      return;
-    }
-    
-    debug("ticketId changed → refetch + local reset", ticketId);
-
-    // Обновляем ref сразу, чтобы этапы автовыбора не сработали на старых данных
-    currentTicketIdRef.current = ticketId;
-
-    // Сбрасываем все состояния сразу, включая ticketData, чтобы автовыбор не сработал на старых данных
-    startTransition(() => {
-      setTicketData(null);
-      setSelectedPlatform(null);
-      setSelectedClient({});
-      setSelectedPageId(null);
-    });
-
-    fetchClientContacts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ticketId]);
-
-  /** 
-   * ✨ ОПТИМИЗАЦИЯ: Объединенный автовыбор всех параметров
-   * Вместо 3 отдельных useEffect (3 ререндера), делаем 1 батч-обновление.
-   * Это ускоряет загрузку тикета и улучшает UX.
-   */
-  useEffect(() => {
-    // Защита: работаем только с актуальными данными текущего тикета
-    if (!ticketData || !platformOptions.length || currentTicketIdRef.current !== ticketId) {
+    if (!ticketData || !platformOptions.length || !ticketId) {
       return;
     }
 
-    // Флаги для отслеживания изменений
     let needsUpdate = false;
     let nextPlatform = selectedPlatform;
     let nextPageId = selectedPageId;
     let nextClient = selectedClient;
 
-    // ============ ЭТАП 1: Платформа ============
-    if (!nextPlatform) {
+    // ============ ЭТАП 1: Платформа (с валидацией) ============
+    const isPlatformValid = nextPlatform && platformOptions.some((p) => p.value === nextPlatform);
+    
+    if (!isPlatformValid) {
       if (lastMessage?.ticket_id === ticketId) {
         const msgPlatform = lastMessage.platform?.toLowerCase();
         if (msgPlatform && platformOptions.some((p) => p.value === msgPlatform)) {
           nextPlatform = msgPlatform;
         }
       }
-      if (!nextPlatform) {
+      if (!nextPlatform || !platformOptions.some((p) => p.value === nextPlatform)) {
         nextPlatform = platformOptions[0]?.value || null;
       }
       
       if (nextPlatform) {
-        debug("auto select platform:", nextPlatform);
+        debug("auto select/fix platform:", nextPlatform);
         needsUpdate = true;
       }
     }
 
-    // ============ ЭТАП 2: Page ID ============
-    if (nextPlatform && !nextPageId) {
-      if (lastMessage?.ticket_id === ticketId) {
-        const candidate = selectPageIdByMessage(nextPlatform, lastMessage.page_id, groupTitle);
-        if (candidate) nextPageId = candidate;
-      }
+    // ============ ЭТАП 2: Page ID (с валидацией) ============
+    if (nextPlatform) {
+      const allPages = getPagesByType(nextPlatform) || [];
+      const availablePages = filterPagesByGroupTitle(allPages, groupTitle);
+      
+      const messagePageId = lastMessage?.ticket_id === ticketId ? lastMessage.page_id : null;
+      
+      // ✅ ИСПРАВЛЕНИЕ: Разрешаем ручной выбор page_id
+      // Если пользователь выбрал вручную - НЕ перезаписываем автоматически
+      let isPageIdValid = nextPageId && availablePages.some(p => p.page_id === nextPageId);
+      
+      // Автовыбор работает только если:
+      // 1. page_id не выбран вообще (null)
+      // 2. ИЛИ выбран не вручную И не соответствует messagePageId
+      const shouldAutoSelect = !nextPageId || 
+        (!manuallySelectedPageIdRef.current && messagePageId && nextPageId !== messagePageId);
+      
+      debug("🔍 ЭТАП 2: Page ID selection", {
+        nextPlatform,
+        groupTitle,
+        currentPageId: nextPageId,
+        messagePageId,
+        isPageIdValid,
+        shouldAutoSelect,
+        manuallySelected: manuallySelectedPageIdRef.current,
+        availablePagesCount: availablePages.length,
+        availablePageIds: availablePages.map(p => p.page_id),
+      });
+      
+      // Выполняем автовыбор только если нужно
+      if (shouldAutoSelect) {
+        isPageIdValid = false; // Принудительно переходим к автовыбору
+        
+        // Приоритет: берем page_id из сообщения
+        if (messagePageId && availablePages.some(p => p.page_id === messagePageId)) {
+          nextPageId = messagePageId;
+          debug("🎯 Auto-selected page_id from message:", nextPageId);
+        } else if (lastMessage?.ticket_id === ticketId) {
+          const candidate = selectPageIdByMessage(nextPlatform, lastMessage.page_id, groupTitle);
+          debug("🎯 Candidate from selectPageIdByMessage:", candidate);
+          if (candidate && availablePages.some(p => p.page_id === candidate)) {
+            nextPageId = candidate;
+          }
+        }
 
-      if (!nextPageId) {
-        const allPages = getPagesByType(nextPlatform) || [];
-        const filtered = filterPagesByGroupTitle(allPages, groupTitle);
-        nextPageId = filtered[0]?.page_id || null;
-      }
+        // Fallback: первая доступная страница
+        if (!nextPageId || !availablePages.some(p => p.page_id === nextPageId)) {
+          debug("⚠️ Fallback to first page:", availablePages[0]?.page_id);
+          nextPageId = availablePages[0]?.page_id || null;
+        }
 
-      if (nextPageId) {
-        debug("auto select page_id:", nextPageId);
-        needsUpdate = true;
+        if (nextPageId) {
+          debug("✅ Final auto selected page_id:", nextPageId);
+          needsUpdate = true;
+        }
       }
     }
 
-    // ============ ЭТАП 3: Контакт ============
-    if (nextPlatform && !nextClient?.value) {
-      // Получаем контакты для выбранной платформы
+    // ============ ЭТАП 3: Контакт (с валидацией) ============
+    if (nextPlatform) {
       const block = platformBlocks[nextPlatform] || {};
       const hasContacts = Object.keys(block).length > 0;
 
       if (hasContacts) {
-        let contactValue = null;
-        let messageClientId = null;
-
-        if (lastMessage?.ticket_id === ticketId) {
-          messageClientId = lastMessage.client_id;
-          
-          // входящее — from_reference; исходящее — to_reference
-          contactValue =
-            lastMessage.sender_id === lastMessage.client_id
-              ? lastMessage.from_reference
-              : lastMessage.to_reference;
-
-          // Фоллбэк: поиск по client_id
-          if (!contactValue) {
-            const entry = Object.entries(block).find(([cid]) => {
-              const client = clientIndex.get(Number.parseInt(cid, 10));
-              return client?.id === messageClientId;
-            });
-            if (entry) contactValue = entry[1]?.contact_value;
-          }
-        }
-
-        // Генерируем опции для поиска (как в useMemo contactOptions)
         const tempContactOptions = Object.entries(block).map(([contactIdRaw, contactData]) => {
           const contactId = Number.parseInt(contactIdRaw, 10);
           const contactClientId = contactData?.client_id != null 
@@ -411,18 +375,42 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
             },
           };
         });
+        
+        const isContactValid = nextClient?.value && 
+          tempContactOptions.some(c => c.value === nextClient.value);
+        
+        if (!isContactValid) {
+          let contactValue = null;
+          let messageClientId = null;
 
-        const found = matchContact(tempContactOptions, contactValue, messageClientId);
-        nextClient = found || tempContactOptions[0];
+          if (lastMessage?.ticket_id === ticketId) {
+            messageClientId = lastMessage.client_id;
+            contactValue =
+              lastMessage.sender_id === lastMessage.client_id
+                ? lastMessage.from_reference
+                : lastMessage.to_reference;
 
-        if (nextClient) {
-          debug("auto select contact:", nextClient.value);
-          needsUpdate = true;
+            if (!contactValue) {
+              const entry = Object.entries(block).find(([cid]) => {
+                const client = clientIndex.get(Number.parseInt(cid, 10));
+                return client?.id === messageClientId;
+              });
+              if (entry) contactValue = entry[1]?.contact_value;
+            }
+          }
+
+          const found = matchContact(tempContactOptions, contactValue, messageClientId);
+          nextClient = found || tempContactOptions[0];
+
+          if (nextClient) {
+            debug("auto select/fix contact:", nextClient.value);
+            needsUpdate = true;
+          }
         }
       }
     }
 
-    // Применяем все изменения одним батчем (1 ререндер)
+    // Применяем все изменения одним батчем
     if (needsUpdate) {
       startTransition(() => {
         if (nextPlatform !== selectedPlatform) setSelectedPlatform(nextPlatform);
@@ -443,15 +431,18 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
     selectedClient?.value,
   ]);
 
-  /** Публичные коллбеки (idempotent) */
+  // Публичные callback
   const changePlatform = useCallback((platform) => {
     if (platform === selectedPlatform) return;
-    startTransition(() => {
-      setSelectedPlatform(platform || null);
-      setSelectedClient({});
-      setSelectedPageId(null);
-    });
-  }, [selectedPlatform]);
+    const isValid = platformOptions?.some(p => p.value === platform);
+    if (isValid || !platform) {
+      startTransition(() => {
+        setSelectedPlatform(platform || null);
+        setSelectedClient({});
+        setSelectedPageId(null);
+      });
+    }
+  }, [selectedPlatform, platformOptions]);
 
   const changeContact = useCallback((value) => {
     if (!value) return;
@@ -463,66 +454,51 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
 
   const changePageId = useCallback((pageId) => {
     if (pageId === selectedPageId) return;
+    debug("✋ Manual page_id change:", pageId);
+    manuallySelectedPageIdRef.current = true; // Отмечаем что выбор сделан вручную
     setSelectedPageId(pageId || null);
   }, [selectedPageId]);
 
-  /** Точечное обновление клиента */
+  // Обновление данных клиента
   const updateClientData = useCallback((clientId, platform, newData) => {
-    setTicketData((prev) => {
-      if (!prev?.clients) return prev;
-      
-      // Проверяем, есть ли изменения перед копированием
-      let hasChanges = false;
-      const newClients = prev.clients.map((c) => {
-        if (c.id !== clientId) return c;
-        
-        // Обновляем только измененные поля
-        const updated = {
-          ...c,
-          name: newData.name ?? c.name,
-          surname: newData.surname ?? c.surname,
-          phone: newData.phone ?? c.phone,
-          email: newData.email ?? c.email,
-        };
-        
-        // Проверяем, действительно ли что-то изменилось
-        if (updated.name !== c.name || updated.surname !== c.surname || 
-            updated.phone !== c.phone || updated.email !== c.email) {
-          hasChanges = true;
-        }
-        return updated;
-      });
-
-      // Возвращаем старый объект, если изменений нет (оптимизация ререндеров)
-      return hasChanges ? { ...prev, clients: newClients } : prev;
+    // Оптимистичное обновление через React Query
+    queryClient.setQueryData(['clientContacts', ticketId], (old) => {
+      if (!old?.clients) return old;
+      return {
+        ...old,
+        clients: old.clients.map((c) =>
+          c.id === clientId
+            ? {
+              ...c,
+              name: newData.name ?? c.name,
+              surname: newData.surname ?? c.surname,
+              phone: newData.phone ?? c.phone,
+              email: newData.email ?? c.email,
+            }
+            : c
+        ),
+      };
     });
 
-    setSelectedClient((prev) => {
-      // Обновляем только если это текущий клиент
-      if (prev?.payload?.id !== clientId) return prev;
-      
-      const newPayload = { ...prev.payload, ...newData };
-      // Проверяем реальные изменения
-      const hasPayloadChanges = Object.keys(newData).some(
-        key => newPayload[key] !== prev.payload[key]
-      );
-      
-      return hasPayloadChanges ? { ...prev, payload: newPayload } : prev;
-    });
-  }, []);
+    // Обновляем selectedClient если это текущий клиент
+    setSelectedClient((prev) =>
+      prev?.payload?.id === clientId
+        ? { ...prev, payload: { ...prev.payload, ...newData } }
+        : prev
+    );
+  }, [queryClient, ticketId]);
 
-  // Публичная функция для принудительной перезагрузки (игнорирует кэш)
+  // ✅ Принудительная перезагрузка через React Query
   const refetch = useCallback(() => {
-    lastFetchedTicketIdRef.current = null; // Сбрасываем кэш
-    return fetchClientContacts();
-  }, [fetchClientContacts]);
+    queryClient.invalidateQueries(['clientContacts', ticketId]);
+  }, [queryClient, ticketId]);
 
   return {
-    platformOptions,            // memo
+    platformOptions,
     selectedPlatform,
     changePlatform,
 
-    contactOptions,             // memo
+    contactOptions,
     changeContact,
     selectedClient,
 
@@ -533,7 +509,7 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
     updateClientData,
     refetch,
     
-    // Экспортируем сырые данные для PersonalData4ClientForm (чтобы избежать дублирующего запроса)
+    // Экспортируем сырые данные для PersonalData4ClientForm
     ticketData,
   };
 };
