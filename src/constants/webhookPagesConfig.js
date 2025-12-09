@@ -359,6 +359,12 @@ export const WEBHOOK_PAGES_CONFIG = {
       group_title: ["MD", "HR", "MARKETING", "INDIVIDUALGROUPS", "FRANCHISE", "AGENCY"]
     },
     {
+      page_id: "40799533533",
+      page_name: "Timisoara - 40799533533",
+      type: "phone",
+      group_title: ["FRANCHISETIMISOARA"]
+    },
+    {
       page_id: "37369440400",
       page_name: "Chisinau - 37369440400",
       type: "phone",
