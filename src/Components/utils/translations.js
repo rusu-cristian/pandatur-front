@@ -5962,10 +5962,5 @@ export const translations = {
     RO: "Caută...",
     RU: "Найти...",
     EN: "Search..."
-  },
-  "Load older messages": {
-    RO: "Încarcă mesajele mai vechi",
-    RU: "Загрузить старые сообщения",
-    EN: "Load older messages"
   }
 };

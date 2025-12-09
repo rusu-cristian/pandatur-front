@@ -9,6 +9,7 @@ const sourceOfLeadOptionKeys = [
   "Certificat cadou",
   "Cold call",
   "Site",
+  "Comentariu"
 ];
 
 export const sourceOfLeadOptions = sourceOfLeadOptionKeys.map((key) => ({
