@@ -21,7 +21,7 @@ import { useSnackbar } from "notistack";
 import { getLanguageByKey } from "../../../utils";
 import { getEmailsByGroupTitle } from "../../../utils/emailUtils";
 import { templateOptions, templateGroupsByKey, TEMPLATE_GROUP_BY_TITLE } from "../../../../FormOptions";
-import { useUploadMediaFile, filterPagesByGroupTitle } from "../../../../hooks";
+import { useUploadMediaFile, useClientContacts, useMessagesContext, filterPagesByGroupTitle } from "../../../../hooks";
 import { getMediaType } from "../../renderContent";
 import { useApp, useSocket, useUser } from "@hooks";
 import Can from "../../../CanComponent/Can";
@@ -80,6 +80,7 @@ export const ChatInput = ({
   const { socketRef } = useSocket();
   const { markMessagesAsRead, getTicketById } = useApp();
   const { enqueueSnackbar } = useSnackbar();
+  const { messages } = useMessagesContext();
 
   // Получаем данные о воронке и email адресах
   const groupTitle = personalInfo?.group_title || "";
@@ -90,35 +91,51 @@ export const ChatInput = ({
     ? String(personalInfo.technician_id)
     : undefined;
 
-  // ✅ УПРОЩЕНИЕ: Все данные приходят только через props
-  // Никакой условной логики - компонент просто отображает данные
-  const platformOptions = platformOptionsProp || [];
-  const selectedPlatform = selectedPlatformProp;
-  const changePlatform = changePlatformProp || (() => {});
-  const contactOptions = contactOptionsProp || [];
-  const changeContact = changeContactProp || (() => {});
-  const currentClient = selectedClientProp;
-  const selectedPageId = selectedPageIdProp;
-  const changePageId = changePageIdProp || (() => {});
-  const loading = loadingProp || false;
-
-  // Валидация props в dev режиме
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      if (!platformOptionsProp) {
-        console.warn('[ChatInput] platformOptions not provided via props');
-      }
-      if (!changePlatformProp) {
-        console.warn('[ChatInput] changePlatform not provided via props');
-      }
-      if (!changeContactProp) {
-        console.warn('[ChatInput] changeContact not provided via props');
-      }
-      if (!changePageIdProp) {
-        console.warn('[ChatInput] changePageId not provided via props');
-      }
+  // Получаем последнее сообщение для автоматического выбора платформы и контакта
+  const lastMessage = useMemo(() => {
+    if (!messages || messages.length === 0 || !ticketId) {
+      return null;
     }
-  }, [platformOptionsProp, changePlatformProp, changeContactProp, changePageIdProp]);
+
+    // Фильтруем сообщения только для текущего тикета и исключаем sipuni/mail
+    const currentTicketMessages = messages.filter(msg => {
+      const platform = msg.platform?.toLowerCase();
+      return msg.ticket_id === ticketId && platform !== 'sipuni' && platform !== 'mail';
+    });
+
+    if (currentTicketMessages.length === 0) {
+      return null;
+    }
+
+    // Сортируем по времени и берем последнее
+    const sortedMessages = [...currentTicketMessages].sort((a, b) => {
+      const timeA = new Date(a.time_sent || a.created_at || 0);
+      const timeB = new Date(b.time_sent || b.created_at || 0);
+      return timeB - timeA; // От новых к старым
+    });
+
+    return sortedMessages[0];
+  }, [messages, ticketId]);
+
+  // Получаем данные о контактах:
+  // - Если переданы через props (из Chat.js) - используем их (хук не будет делать запрос т.к. ticketId = undefined)
+  // - Иначе вызываем хук напрямую (для обратной совместимости со SingleChat.js)
+  const shouldUseProps = !!platformOptionsProp;
+  const hookData = useClientContacts(
+    shouldUseProps ? undefined : ticketId,
+    shouldUseProps ? null : lastMessage,
+    shouldUseProps ? null : groupTitle
+  );
+  
+  const platformOptions = platformOptionsProp ?? hookData.platformOptions;
+  const selectedPlatform = selectedPlatformProp ?? hookData.selectedPlatform;
+  const changePlatform = changePlatformProp ?? hookData.changePlatform;
+  const contactOptions = contactOptionsProp ?? hookData.contactOptions;
+  const changeContact = changeContactProp ?? hookData.changeContact;
+  const currentClient = selectedClientProp ?? hookData.selectedClient;
+  const selectedPageId = selectedPageIdProp ?? hookData.selectedPageId;
+  const changePageId = changePageIdProp ?? hookData.changePageId;
+  const loading = loadingProp ?? hookData.loading;
 
   const isLengthLimited = useMemo(
     () => LIMITED_PLATFORMS.includes((selectedPlatform || "").toLowerCase()),
@@ -618,9 +635,7 @@ export const ChatInput = ({
                   <Button
                     disabled={
                       (!message.trim() && attachments.length === 0) ||
-                      !selectedPlatform ||
                       !currentClient?.payload ||
-                      !selectedPageId ||
                       currentClient.payload.platform === "sipuni" ||
                       (isLengthLimited && message.length > MESSAGE_LENGTH_LIMIT)
                     }
