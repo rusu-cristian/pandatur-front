@@ -9,7 +9,7 @@
  * - Инвалидация кэша через queryClient
  */
 
-import { useState, useEffect, useMemo, useCallback, startTransition } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef, startTransition } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import { api } from "../api";
@@ -175,12 +175,16 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
   const [selectedClient, setSelectedClient] = useState({});
   const [selectedPageId, setSelectedPageId] = useState(null);
 
+  // ✅ Ref для отслеживания ручного выбора page_id пользователем
+  const manuallySelectedPageIdRef = useRef(false);
+
   // ✅ ИСПРАВЛЕНИЕ: Сбрасываем локальные состояния при смене ticketId
   useEffect(() => {
     debug("🔄 ticketId changed, resetting local state:", ticketId);
     setSelectedPlatform(null);
     setSelectedClient({});
     setSelectedPageId(null);
+    manuallySelectedPageIdRef.current = false; // Сбрасываем флаг ручного выбора
   }, [ticketId]);
 
   // 1) Нормализация данных
@@ -288,40 +292,41 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
       const allPages = getPagesByType(nextPlatform) || [];
       const availablePages = filterPagesByGroupTitle(allPages, groupTitle);
       
-      // ✅ ИСПРАВЛЕНИЕ: Проверяем не только что page_id валиден,
-      // но и что он соответствует lastMessage.page_id (если есть)
       const messagePageId = lastMessage?.ticket_id === ticketId ? lastMessage.page_id : null;
-      const shouldMatchMessage = messagePageId && availablePages.some(p => p.page_id === messagePageId);
       
-      const isPageIdValid = nextPageId && 
-        availablePages.some(p => p.page_id === nextPageId) &&
-        (!shouldMatchMessage || nextPageId === messagePageId); // ← ключевая проверка!
+      // ✅ ИСПРАВЛЕНИЕ: Разрешаем ручной выбор page_id
+      // Если пользователь выбрал вручную - НЕ перезаписываем автоматически
+      let isPageIdValid = nextPageId && availablePages.some(p => p.page_id === nextPageId);
+      
+      // Автовыбор работает только если:
+      // 1. page_id не выбран вообще (null)
+      // 2. ИЛИ выбран не вручную И не соответствует messagePageId
+      const shouldAutoSelect = !nextPageId || 
+        (!manuallySelectedPageIdRef.current && messagePageId && nextPageId !== messagePageId);
       
       debug("🔍 ЭТАП 2: Page ID selection", {
         nextPlatform,
         groupTitle,
         currentPageId: nextPageId,
         messagePageId,
-        shouldMatchMessage,
         isPageIdValid,
+        shouldAutoSelect,
+        manuallySelected: manuallySelectedPageIdRef.current,
         availablePagesCount: availablePages.length,
         availablePageIds: availablePages.map(p => p.page_id),
-        lastMessage: lastMessage ? {
-          ticket_id: lastMessage.ticket_id,
-          page_id: lastMessage.page_id,
-          page_reference: lastMessage.page_reference,
-          platform: lastMessage.platform,
-        } : null,
       });
       
-      if (!isPageIdValid) {
+      // Выполняем автовыбор только если нужно
+      if (shouldAutoSelect) {
+        isPageIdValid = false; // Принудительно переходим к автовыбору
+        
         // Приоритет: берем page_id из сообщения
         if (messagePageId && availablePages.some(p => p.page_id === messagePageId)) {
           nextPageId = messagePageId;
-          debug("🎯 Selected page_id from message:", nextPageId);
+          debug("🎯 Auto-selected page_id from message:", nextPageId);
         } else if (lastMessage?.ticket_id === ticketId) {
           const candidate = selectPageIdByMessage(nextPlatform, lastMessage.page_id, groupTitle);
-          debug("🎯 Candidate from selectPageIdByMessage:", candidate, "| message page_id:", lastMessage.page_id);
+          debug("🎯 Candidate from selectPageIdByMessage:", candidate);
           if (candidate && availablePages.some(p => p.page_id === candidate)) {
             nextPageId = candidate;
           }
@@ -449,6 +454,8 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
 
   const changePageId = useCallback((pageId) => {
     if (pageId === selectedPageId) return;
+    debug("✋ Manual page_id change:", pageId);
+    manuallySelectedPageIdRef.current = true; // Отмечаем что выбор сделан вручную
     setSelectedPageId(pageId || null);
   }, [selectedPageId]);
 
