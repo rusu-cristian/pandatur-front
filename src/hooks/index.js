@@ -10,7 +10,6 @@ export * from "./useLanguageToggle";
 export * from "./useLocalStorage";
 export * from "./useMessages";
 export * from "./useClientContacts";
-export * from "./useClientMutations";
 export * from "./useUploadMediaFile";
 export * from "./useSocket";
 export * from "./useMessagesContext";
