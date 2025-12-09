@@ -175,6 +175,14 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
   const [selectedClient, setSelectedClient] = useState({});
   const [selectedPageId, setSelectedPageId] = useState(null);
 
+  // ✅ ИСПРАВЛЕНИЕ: Сбрасываем локальные состояния при смене ticketId
+  useEffect(() => {
+    debug("🔄 ticketId changed, resetting local state:", ticketId);
+    setSelectedPlatform(null);
+    setSelectedClient({});
+    setSelectedPageId(null);
+  }, [ticketId]);
+
   // 1) Нормализация данных
   const { platformBlocks, clientIndex } = useMemo(() => {
     if (!ticketData) return { platformBlocks: {}, clientIndex: new Map() };
