@@ -61,7 +61,11 @@ export const useLeadsUrlSync = ({
         const type = searchParams.get("type");
         // group_title не считается фильтром, это параметр контекста
         const { group_title, ...actualFilters } = parsed;
-        const hasUrlFilters = Object.keys(actualFilters).length > 0;
+        // Проверяем только поля с реальными значениями (не undefined/null/пустые)
+        const hasUrlFilters = Object.values(actualFilters).some(
+            (v) => v !== undefined && v !== null && v !== "" && 
+                   !(Array.isArray(v) && v.length === 0)
+        );
 
         // 1) сначала пробуем синхронизировать group_title из URL
         if (
@@ -78,14 +82,25 @@ export const useLeadsUrlSync = ({
         // 2) после синка group_title применяем фильтры из URL
         if (isGroupTitleSyncedRef.current && urlGroupTitle && customGroupTitle === urlGroupTitle) {
             if (type === "light" && viewMode === VIEW_MODE.KANBAN) {
-                setKanbanFilters(parsed);
-                setKanbanFilterActive(true);
-                fetchKanbanTickets(parsed);
-                setChoiceWorkflow(parsed.workflow || []);
+                // Активируем фильтр только если есть реальные параметры фильтрации
+                if (hasUrlFilters) {
+                    setKanbanFilters(parsed);
+                    setKanbanFilterActive(true);
+                    fetchKanbanTickets(parsed);
+                    setChoiceWorkflow(parsed.workflow || []);
+                } else {
+                    setKanbanFilterActive(false);
+                    setKanbanFilters({});
+                }
             } else if (type === "hard" && viewMode === VIEW_MODE.LIST) {
-                if (!areEqual(lastHardAppliedRef.current, parsed)) {
-                    lastHardAppliedRef.current = parsed;
-                    hardApplyRef.current(parsed);
+                // Применяем фильтры только если есть реальные параметры фильтрации
+                if (hasUrlFilters) {
+                    if (!areEqual(lastHardAppliedRef.current, parsed)) {
+                        lastHardAppliedRef.current = parsed;
+                        hardApplyRef.current(parsed);
+                    }
+                } else {
+                    lastHardAppliedRef.current = null;
                 }
             }
             isGroupTitleSyncedRef.current = false;

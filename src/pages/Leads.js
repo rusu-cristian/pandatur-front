@@ -269,11 +269,14 @@ export const Leads = () => {
     if (upperMode === VIEW_MODE.LIST) {
       setCurrentPage(1);
       setSearchTerm("");
-      // НЕ сбрасываем hardTicketFilters - они будут применены из URL через useLeadsUrlSync
+      // Сбрасываем hardTicketFilters — если есть фильтры в URL, useLeadsUrlSync их применит
+      setHardTicketFilters({});
     } else {
-      // kanban - сбрасываем локальный поиск, но фильтры остаются в URL
+      // kanban - сбрасываем локальный поиск и фильтры
       setKanbanSearchTerm("");
-      // НЕ сбрасываем kanbanFilters - они будут применены из URL через useLeadsUrlSync
+      // Сбрасываем kanbanFilters — если есть фильтры в URL, useLeadsUrlSync их применит
+      setKanbanFilters({});
+      setKanbanFilterActive(false);
 
       if (!didLoadGlobalTicketsRef.current && !searchParams.get("workflow")) {
         // Загружаем глобальные тикеты только если нет фильтров в URL
