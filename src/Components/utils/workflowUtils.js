@@ -386,7 +386,7 @@ export const workflowOptionsByGroupTitle = {
     SOLDANESTI: workflowOptionsFranchisePandaTur,
     REZINA: workflowOptionsFranchisePandaTur,
     RASCANI: workflowOptionsFranchiseRascani,
-    FRANCHISETIMISOARA: workflowOptionsFranchisePandaTur,
+    TIMISOARA: workflowOptionsFranchisePandaTur,
     NISPORENI: workflowOptionsFranchisePandaTur,
     FRANCHISECLUJ: workflowOptionsFranchisePandaTur,
     STAUCENI: workflowOptionsFranchisePandaTur,
@@ -419,7 +419,7 @@ export const workflowOptionsLimitedByGroupTitle = {
     SOLDANESTI: workflowOptionsLimitedFiliale,
     REZINA: workflowOptionsLimitedFiliale,
     RASCANI: workflowOptionsLimitedFranchiseRascani,
-    FRANCHISETIMISOARA: workflowOptionsLimitedFiliale,
+    TIMISOARA: workflowOptionsLimitedFiliale,
     NISPORENI: workflowOptionsLimitedFiliale,
     FRANCHISECLUJ: workflowOptionsLimitedFiliale,
     STAUCENI: workflowOptionsLimitedFiliale,
@@ -452,7 +452,7 @@ export const TikTokworkflowOptionsByGroupTitle = {
     SOLDANESTI: TikTokworkflowOptionsFranchisePandaTur,
     REZINA: TikTokworkflowOptionsFranchisePandaTur,
     RASCANI: TikTokworkflowOptionsFranchiseRascani,
-    FRANCHISETIMISOARA: TikTokworkflowOptionsFranchisePandaTur,
+    TIMISOARA: TikTokworkflowOptionsFranchisePandaTur,
     NISPORENI: TikTokworkflowOptionsFranchisePandaTur,
     FRANCHISECLUJ: TikTokworkflowOptionsFranchisePandaTur,
     STAUCENI: TikTokworkflowOptionsFranchisePandaTur,
@@ -470,28 +470,28 @@ export const userGroupsToGroupTitle = {
     "Admin": [
         "MD", "RO", "FILIALE", "MARKETING", "INDIVIDUALGROUPS", "AGENCY", "GREENCARD", "CATALAN",
         "ORHEI", "CANTEMIR", "EDINET", "DROCHIA", "IALOVENI", "BUIUCANI", "CAUSENI", "SOLDANESTI",
-        "REZINA", "RASCANI", "FRANCHISETIMISOARA", "NISPORENI", "FRANCHISECLUJ", "STAUCENI",
+        "REZINA", "RASCANI", "TIMISOARA", "NISPORENI", "FRANCHISECLUJ", "STAUCENI",
         "HANCESTI", "CIMISLIA", "HR", "FRANCHISEPANDATUR", "GLODENI", "QUALITYDEPARTMENT"
     ],
 
     "IT dep.": [
         "MD", "RO", "FILIALE", "MARKETING", "INDIVIDUALGROUPS", "AGENCY", "GREENCARD", "CATALAN",
         "ORHEI", "CANTEMIR", "EDINET", "DROCHIA", "IALOVENI", "BUIUCANI", "CAUSENI", "SOLDANESTI",
-        "REZINA", "RASCANI", "FRANCHISETIMISOARA", "NISPORENI", "FRANCHISECLUJ", "STAUCENI",
+        "REZINA", "RASCANI", "TIMISOARA", "NISPORENI", "FRANCHISECLUJ", "STAUCENI",
         "HANCESTI", "CIMISLIA", "HR", "FRANCHISEPANDATUR", "GLODENI", "QUALITYDEPARTMENT"
     ],
 
     "Quality Department": [
         "MD", "RO", "FILIALE", "MARKETING", "INDIVIDUALGROUPS", "AGENCY", "GREENCARD", "CATALAN",
         "ORHEI", "CANTEMIR", "EDINET", "DROCHIA", "IALOVENI", "BUIUCANI", "CAUSENI", "SOLDANESTI",
-        "REZINA", "RASCANI", "FRANCHISETIMISOARA", "NISPORENI", "FRANCHISECLUJ", "STAUCENI",
+        "REZINA", "RASCANI", "TIMISOARA", "NISPORENI", "FRANCHISECLUJ", "STAUCENI",
         "HANCESTI", "CIMISLIA", "HR", "FRANCHISEPANDATUR", "GLODENI", "QUALITYDEPARTMENT"
     ],
 
     "Marketing": [
         "MD", "RO", "FILIALE", "MARKETING", "INDIVIDUALGROUPS", "AGENCY", "GREENCARD", "CATALAN",
         "ORHEI", "CANTEMIR", "EDINET", "DROCHIA", "IALOVENI", "BUIUCANI", "CAUSENI", "SOLDANESTI",
-        "REZINA", "RASCANI", "FRANCHISETIMISOARA", "NISPORENI", "FRANCHISECLUJ", "STAUCENI",
+        "REZINA", "RASCANI", "TIMISOARA", "NISPORENI", "FRANCHISECLUJ", "STAUCENI",
         "HANCESTI", "CIMISLIA", "HR", "FRANCHISEPANDATUR", "GLODENI", "QUALITYDEPARTMENT"
     ],
 
@@ -505,14 +505,14 @@ export const userGroupsToGroupTitle = {
     "Franchises Curator": [
         "MD", "HR", "ORHEI", "CANTEMIR", "EDINET", "DROCHIA",
         "IALOVENI", "BUIUCANI", "CAUSENI", "SOLDANESTI",
-        "REZINA", "RASCANI", "FRANCHISETIMISOARA", "NISPORENI", "FRANCHISECLUJ", "STAUCENI",
+        "REZINA", "RASCANI", "TIMISOARA", "NISPORENI", "FRANCHISECLUJ", "STAUCENI",
         "HANCESTI", "CIMISLIA", "GLODENI", "MARKETING",
         "FRANCHISEPANDATUR", "QUALITYDEPARTMENT"
     ],
 
     "Back Flagman": [
         "MD", "RO", "HR", "CATALAN", "INDIVIDUALGROUPS", "MARKETING", "FILIALE", "GREENCARD",
-        "FRANCHISETIMISOARA", "FRANCHISEPANDATUR", "QUALITYDEPARTMENT"
+        "TIMISOARA", "FRANCHISEPANDATUR", "QUALITYDEPARTMENT"
     ],
 
     "Back Minions": [
@@ -550,14 +550,14 @@ export const userGroupsToGroupTitle = {
     "TikTok Manager": [
         "MD", "RO", "FILIALE", "MARKETING", "INDIVIDUALGROUPS", "AGENCY", "GREENCARD", "CATALAN",
         "ORHEI", "CANTEMIR", "EDINET", "DROCHIA", "IALOVENI", "BUIUCANI", "CAUSENI", "SOLDANESTI",
-        "REZINA", "RASCANI", "FRANCHISETIMISOARA", "NISPORENI", "FRANCHISECLUJ", "STAUCENI",
+        "REZINA", "RASCANI", "TIMISOARA", "NISPORENI", "FRANCHISECLUJ", "STAUCENI",
         "HANCESTI", "CIMISLIA", "HR", "FRANCHISEPANDATUR", "GLODENI", "QUALITYDEPARTMENT"
     ],
 
     //franchize 17
     "Franchise PandaTur": [
         "ORHEI", "CANTEMIR", "EDINET", "DROCHIA", "IALOVENI", "BUIUCANI", "CAUSENI", "SOLDANESTI",
-        "REZINA", "RASCANI", "FRANCHISETIMISOARA", "NISPORENI", "FRANCHISECLUJ", "STAUCENI",
+        "REZINA", "RASCANI", "TIMISOARA", "NISPORENI", "FRANCHISECLUJ", "STAUCENI",
         "HANCESTI", "CIMISLIA", "GLODENI"
     ],
 
@@ -571,7 +571,7 @@ export const userGroupsToGroupTitle = {
     "Orhei Franchise": ["ORHEI"],
     "Cantemir Franchise": ["CANTEMIR"],
     "Chisinau, Riscani Franchise": ["RASCANI"],
-    "Timisoara Franchise": ["FRANCHISETIMISOARA"],
+    "Timisoara Franchise": ["TIMISOARA"],
     "Nisporeni Franchise": ["NISPORENI"],
     "Cluj Franchise": ["FRANCHISECLUJ"],
     "Stauceni Franchise": ["STAUCENI"],
