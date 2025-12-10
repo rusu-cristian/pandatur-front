@@ -10,7 +10,8 @@ import {
   FaCalendar,
   FaHistory,
   FaChartPie,
-  FaSync
+  FaSync,
+  FaDollarSign
 } from "react-icons/fa";
 import { FaUsers, FaBars } from "react-icons/fa6";
 import { MdLightMode, MdDarkMode } from "react-icons/md";
@@ -76,7 +77,8 @@ export const SideBar = () => {
 
   const isActive = (page) => {
     if (page === "chat") return location.pathname.startsWith("/chat");
-    if (page === "analytics") return location.pathname.startsWith("/analytics");
+    if (page === "analytics") return location.pathname.startsWith("/analytics") && !location.pathname.includes("/sales-monitor");
+    if (page === "sales-monitor") return location.pathname.includes("/sales-monitor");
     return location.pathname === `/${page}`;
   };
 
@@ -304,6 +306,16 @@ export const SideBar = () => {
               component={<Link to="/analytics" onClick={handleMenuClick} />}
             >
               {getLanguageByKey("Analytics")}
+            </MenuItem>
+          )}
+
+          {hasStrictPermission(userRoles, "ANALYTICS", "VIEW") && (
+            <MenuItem
+              active={isActive("sales-monitor")}
+              icon={<FaDollarSign size={24} />}
+              component={<Link to="/analytics/sales-monitor" onClick={handleMenuClick} />}
+            >
+              {getLanguageByKey("Sales Monitor") || "Sales Monitor"}
             </MenuItem>
           )}
 

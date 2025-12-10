@@ -14,5 +14,10 @@ export const activity = {
   filterLogs: async (body) => {
     const { data } = await baseAxios.post("/api/activity/filter", body)
     return data
+  },
+
+  salesMonitor: async (body) => {
+    const { data } = await baseAxios.post("/api/stats/sales", body)
+    return data
   }
 }
