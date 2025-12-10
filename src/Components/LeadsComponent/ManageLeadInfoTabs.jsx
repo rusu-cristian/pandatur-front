@@ -32,7 +32,21 @@ export const ManageLeadInfoTabs = ({
   });
 
   const handleSubmit = async () => {
-    if (form.validate().hasErrors) {
+    const validationResult = form.validate();
+    if (validationResult.hasErrors) {
+      // Выводим в консоль список полей с ошибками
+      const fieldsWithErrors = Object.entries(validationResult.errors)
+        .filter(([_, error]) => error)
+        .map(([fieldName, error]) => ({ field: fieldName, error }));
+      
+      console.group("❌ Ошибки валидации при обновлении тикета");
+      console.log("Поля, которые нужно заполнить:");
+      fieldsWithErrors.forEach(({ field, error }) => {
+        console.log(`  • ${field}: ${error}`);
+      });
+      console.log("Всего полей с ошибками:", fieldsWithErrors.length);
+      console.groupEnd();
+
       enqueueSnackbar(
         getLanguageByKey("please_complete_required_fields_for_workflow_change"),
         { variant: "error" }
