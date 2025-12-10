@@ -12,6 +12,7 @@ import { activity } from "./activity";
 import { groupSchedules } from "./groupSchedules";
 import { permissions } from "./permissions";
 import { documents } from "./documents";
+import { sales } from "./sales";
 export * from "./baseAxios";
 
 export const api = {
@@ -29,4 +30,5 @@ export const api = {
   groupSchedules,
   permissions,
   documents,
+  sales,
 };

@@ -8,6 +8,7 @@ import {
   Chat,
   Dashboard,
   TermsAndConditions,
+  Sales,
 } from "@pages";
 import { hasStrictPermission, hasRouteAccess } from "./Components/utils/permissions";
 import { convertRolesToMatrix, safeParseJson } from "./Components/UsersComponent/rolesUtils";
@@ -23,6 +24,7 @@ export const privatePaths = [
   "logs",
   "terms-and-conditions",
   "analytics",
+  "sales",
 ];
 
 export const publicRoutes = [
@@ -74,6 +76,10 @@ export const privateRoutes = (userRoles) => {
     routes.push({ path: "/analytics/calls/:ticketId?", component: Analytics });
     routes.push({path: "/analytics/events", component: Analytics});
     routes.push({path: "/analytics/events/:ticketId?", component: Analytics});
+  }
+
+  if (hasStrictPermission(userRoles, "ANALYTICS", "VIEW")) {
+    routes.push({ path: "/sales", component: Sales });
   }
 
   routes.push({ path: "/terms-and-conditions", component: TermsAndConditions });
