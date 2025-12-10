@@ -490,7 +490,7 @@ export const AppProvider = ({ children }) => {
         detail: { ticketId }
       }));
     } catch (error) {
-      enqueueSnackbar(showServerError(error), { variant: "error" });
+      enqueueSnackbar(showServerError(error), { variant: "warning" });
     }
   }, [groupTitleForApi, accessibleGroupTitles, enqueueSnackbar, isChatFiltered, currentChatFilters, doesTicketMatchFilters]);
 

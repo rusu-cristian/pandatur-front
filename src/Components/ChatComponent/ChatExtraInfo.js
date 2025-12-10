@@ -70,12 +70,18 @@ const ChatExtraInfo = ({
     quality: extraInfo
   }), [updatedTicket, extraInfo]);
 
+  // Вычисляем responsibleId с учетом текущего значения формы
+  // Это нужно, чтобы кнопка обновления не исчезала при изменении ответственного в форме
   const responsibleId = useMemo(() => {
-    const technicianId = updatedTicket?.technician_id ?? extraInfo?.technician_id;
+    // Приоритет: значение из формы > updatedTicket > extraInfo
+    const technicianId = form.values.technician_id 
+      ?? updatedTicket?.technician_id 
+      ?? extraInfo?.technician_id;
+    
     return technicianId !== null && technicianId !== undefined
       ? String(technicianId)
       : null;
-  }, [updatedTicket?.technician_id, extraInfo?.technician_id]);
+  }, [form.values.technician_id, updatedTicket?.technician_id, extraInfo?.technician_id]);
 
   /**
    *
