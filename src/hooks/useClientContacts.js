@@ -294,15 +294,13 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
       
       const messagePageId = lastMessage?.ticket_id === ticketId ? lastMessage.page_id : null;
       
-      // ✅ ИСПРАВЛЕНИЕ: Разрешаем ручной выбор page_id
-      // Если пользователь выбрал вручную - НЕ перезаписываем автоматически
-      let isPageIdValid = nextPageId && availablePages.some(p => p.page_id === nextPageId);
+      // ✅ Проверяем валидность текущего pageId для текущей воронки
+      const isPageIdValid = nextPageId && availablePages.some(p => p.page_id === nextPageId);
       
-      // Автовыбор работает только если:
-      // 1. page_id не выбран вообще (null)
-      // 2. ИЛИ выбран не вручную И не соответствует messagePageId
-      const shouldAutoSelect = !nextPageId || 
-        (!manuallySelectedPageIdRef.current && messagePageId && nextPageId !== messagePageId);
+      // ✅ ИСПРАВЛЕНИЕ: Автовыбор срабатывает если:
+      // 1. pageId пустой ИЛИ невалидный для текущей воронки
+      // 2. И НЕ был выбран вручную пользователем
+      const shouldAutoSelect = (!nextPageId || !isPageIdValid) && !manuallySelectedPageIdRef.current;
       
       debug("🔍 ЭТАП 2: Page ID selection", {
         nextPlatform,
@@ -318,29 +316,22 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
       
       // Выполняем автовыбор только если нужно
       if (shouldAutoSelect) {
-        isPageIdValid = false; // Принудительно переходим к автовыбору
-        
-        // Приоритет: берем page_id из сообщения
+        // Приоритет 1: берем page_id из сообщения (если он валиден для воронки)
         if (messagePageId && availablePages.some(p => p.page_id === messagePageId)) {
           nextPageId = messagePageId;
           debug("🎯 Auto-selected page_id from message:", nextPageId);
-        } else if (lastMessage?.ticket_id === ticketId) {
-          const candidate = selectPageIdByMessage(nextPlatform, lastMessage.page_id, groupTitle);
-          debug("🎯 Candidate from selectPageIdByMessage:", candidate);
-          if (candidate && availablePages.some(p => p.page_id === candidate)) {
-            nextPageId = candidate;
-          }
-        }
-
-        // Fallback: первая доступная страница
-        if (!nextPageId || !availablePages.some(p => p.page_id === nextPageId)) {
-          debug("⚠️ Fallback to first page:", availablePages[0]?.page_id);
-          nextPageId = availablePages[0]?.page_id || null;
-        }
-
-        if (nextPageId) {
-          debug("✅ Final auto selected page_id:", nextPageId);
           needsUpdate = true;
+        } else {
+          // Приоритет 2: Fallback на первую доступную страницу воронки
+          const fallbackPageId = availablePages[0]?.page_id || null;
+          if (fallbackPageId) {
+            nextPageId = fallbackPageId;
+            debug("🎯 Fallback to first available page:", nextPageId);
+            needsUpdate = true;
+          } else {
+            debug("⚠️ No available pages for this platform and group");
+            nextPageId = null;
+          }
         }
       }
     }
