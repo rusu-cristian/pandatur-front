@@ -53,6 +53,8 @@ export const Leads = () => {
   const { technicians } = useGetTechniciansList();
   const [searchParams, setSearchParams] = useSearchParams();
   const didLoadGlobalTicketsRef = useRef(false);
+  // Ref для предотвращения лишних hard запросов при смене view
+  const isViewChangingRef = useRef(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentTicket, setCurrentTicket] = useState(null);
@@ -196,6 +198,11 @@ export const Leads = () => {
 
   // загрузка таблицы (hard) при готовности фильтров/смене зависимостей
   useEffect(() => {
+    // Пропускаем запрос если в процессе смены view (защита от race condition)
+    if (isViewChangingRef.current) {
+      return;
+    }
+    
     if (viewMode === VIEW_MODE.LIST && filtersReady) {
       fetchHardTickets(currentPage);
     }
@@ -203,6 +210,8 @@ export const Leads = () => {
 
   // ПАРАЛЛЕЛЬНО: ids-only запрос под те же фильтры (без пагинации)
   useEffect(() => {
+    // Пропускаем запрос если в процессе смены view
+    if (isViewChangingRef.current) return;
     if (!(viewMode === VIEW_MODE.LIST && filtersReady)) return;
     if (!groupTitleForApi || !workflowOptions.length) return;
 
@@ -236,6 +245,10 @@ export const Leads = () => {
   // смена режима (kanban/list)
   const handleChangeViewMode = (mode) => {
     const upperMode = mode.toUpperCase();
+    
+    // Устанавливаем флаг смены view для предотвращения лишних запросов
+    isViewChangingRef.current = true;
+    
     setViewMode(upperMode);
 
     // Сохраняем фильтры из URL и только меняем view и type
@@ -269,6 +282,11 @@ export const Leads = () => {
         });
       }
     }
+    
+    // Сбрасываем флаг в следующем тике (после обновления state)
+    setTimeout(() => {
+      isViewChangingRef.current = false;
+    }, 0);
   };
 
   // обработчик поиска (для обоих режимов)

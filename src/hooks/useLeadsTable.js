@@ -87,28 +87,31 @@ export const useLeadsTable = () => {
     }, [enqueueSnackbar, groupTitleForApi, workflowOptions, hardTicketFilters, perPage, searchTerm]);
 
     // useLeadsTable.js
+    // Применяем фильтры из модалки/URL
+    // НЕ подставляем все workflow автоматически — пусть fetchHardTickets решает,
+    // какие workflow использовать (аналогично логике в Kanban)
     const handleApplyFiltersHardTicket = useCallback((selectedFilters) => {
         setHardTicketFilters((prev) => {
-            const hasWorkflow =
-                selectedFilters.workflow && selectedFilters.workflow.length > 0;
-
             const nextWorkflow =
                 typeof selectedFilters.workflow === "string"
                     ? [selectedFilters.workflow]
                     : selectedFilters.workflow;
 
-            // собираем next из prev, но НЕ кладём prev в зависимости коллбека
+            const hasWorkflow = nextWorkflow && nextWorkflow.length > 0;
+
             const next = {
                 ...prev,
                 ...selectedFilters,
-                workflow: hasWorkflow ? nextWorkflow : workflowOptions,
+                // Если workflow не выбран — не подставляем все, оставляем undefined
+                // fetchHardTickets сам применит исключение закрытых статусов
+                workflow: hasWorkflow ? nextWorkflow : undefined,
             };
 
             return next;
         });
 
         setCurrentPage(1);
-    }, [workflowOptions]); // <— только workflowOptions, без hardTicketFilters
+    }, []);
 
     const handlePerPageChange = useCallback((next) => {
         const n = Number(next);

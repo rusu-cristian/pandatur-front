@@ -4,6 +4,7 @@ import { TicketFormTabs } from "../TicketFormTabs";
 import { MessageFilterForm } from "./MessageFilterForm";
 import { useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { prepareFiltersForUrl } from "../utils/parseFiltersFromUrl";
 
 export const LeadsKanbanFilter = ({
   onClose,
@@ -61,55 +62,40 @@ export const LeadsKanbanFilter = ({
   };
 
   const handleSubmit = () => {
-  const ticketValues = ticketFormRef.current?.getValues?.() || {};
-  const messageValues = messageFormRef.current?.getValues?.() || {};
+    const ticketValues = ticketFormRef.current?.getValues?.() || {};
+    const messageValues = messageFormRef.current?.getValues?.() || {};
 
-  const combinedFilters = mergeFilters(
-    ticketValues,
-    messageValues,
-    groupTitleForApi ? { group_title: groupTitleForApi } : {},
-    kanbanSearchTerm?.trim() ? { search: kanbanSearchTerm.trim() } : {}
-  );
+    const combinedFilters = mergeFilters(
+      ticketValues,
+      messageValues,
+      groupTitleForApi ? { group_title: groupTitleForApi } : {},
+      kanbanSearchTerm?.trim() ? { search: kanbanSearchTerm.trim() } : {}
+    );
 
-  if (Object.keys(combinedFilters).length === 0) {
-    handleReset();
-    return;
-  }
-
-  const newParams = new URLSearchParams();
-  Object.entries(combinedFilters).forEach(([key, value]) => {
-    if (
-      value &&
-      typeof value === "object" &&
-      !Array.isArray(value) &&
-      ("from" in value || "to" in value)
-    ) {
-      if (value.from) newParams.set(`${key}_from`, value.from);
-      if (value.to) newParams.set(`${key}_to`, value.to);
+    // Если фильтры пустые — сбрасываем
+    if (Object.keys(combinedFilters).length === 0) {
+      handleReset();
       return;
     }
 
-    if (Array.isArray(value)) {
-      value.forEach((v) => newParams.append(key, v));
-      return;
-    }
+    // Используем общую утилиту для сериализации фильтров в URL
+    const urlParams = prepareFiltersForUrl({
+      ...combinedFilters,
+      view: "kanban",
+      type: "light",
+    });
 
-    newParams.set(key, value);
-  });
-  newParams.set("view", "kanban");
-  newParams.set("type", "light");
+    setKanbanFilterActive(true);
+    setKanbanFilters(combinedFilters);
+    onWorkflowSelected?.(ticketValues.workflow || []);
 
-  setKanbanFilterActive(true);
-  setKanbanFilters(combinedFilters);
-  onWorkflowSelected?.(ticketValues.workflow || []);
+    setSearchParams(urlParams, { replace: true });
 
-  setSearchParams(newParams, { replace: true });
-  
-  // Напрямую вызываем fetchKanbanTickets с актуальными фильтрами
-  fetchKanbanTickets(combinedFilters);
-  
-  onClose?.();
-};
+    // Напрямую вызываем fetchKanbanTickets с актуальными фильтрами
+    fetchKanbanTickets(combinedFilters);
+
+    onClose?.();
+  };
 
 
   return (

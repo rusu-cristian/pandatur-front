@@ -7,12 +7,16 @@ import { showServerError, getLanguageByKey } from "@utils";
 /**
  * Отвечает за канбан: загрузка light, локальные фильтры, поиск, спиннеры, видимые тикеты.
  */
+// Закрытые статусы, которые исключаются по умолчанию
+const EXCLUDED_WORKFLOWS = ["Realizat cu succes", "Închis și nerealizat"];
+
 export const useLeadsKanban = () => {
     const { enqueueSnackbar } = useSnackbar();
     const {
         tickets: globalTickets,
         fetchTickets: fetchGlobalLight,
         groupTitleForApi,
+        workflowOptions,
         setLightTicketFilters,
     } = useApp();
 
@@ -43,7 +47,15 @@ export const useLeadsKanban = () => {
         let totalPages = 1;
 
         try {
-            const { group_title, search, ...attributes } = filters;
+            const { group_title, search, workflow, ...restAttributes } = filters;
+
+            // Определяем workflow для запроса:
+            // - Если явно указан в фильтрах — используем его
+            // - Иначе — используем все workflow БЕЗ закрытых (дефолтное поведение)
+            const effectiveWorkflow =
+                Array.isArray(workflow) && workflow.length > 0
+                    ? workflow
+                    : workflowOptions.filter((w) => !EXCLUDED_WORKFLOWS.includes(w));
 
             while (page <= totalPages) {
                 // Проверяем перед каждым запросом: актуален ли еще этот запрос?
@@ -56,7 +68,8 @@ export const useLeadsKanban = () => {
                     type: "light",
                     group_title: group_title || groupTitleForApi,
                     attributes: {
-                        ...attributes,
+                        ...restAttributes,
+                        workflow: effectiveWorkflow,
                         ...(search?.trim() ? { search: search.trim() } : {}),
                     },
                 });
@@ -89,7 +102,7 @@ export const useLeadsKanban = () => {
                 setKanbanSpinner(false);
             }
         }
-    }, [enqueueSnackbar, groupTitleForApi]);
+    }, [enqueueSnackbar, groupTitleForApi, workflowOptions]);
 
     // ручной запуск поиска (вызывается при нажатии на кнопку поиска)
     const triggerSearch = useCallback(() => {
