@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { format, subMonths } from "date-fns";
+import { format } from "date-fns";
 import { useSnackbar } from "notistack";
 import {
   Box,
@@ -360,16 +360,9 @@ export const Sales = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [salesData, setSalesData] = useState(null);
 
-  // Default date range: last month
-  const defaultDateRange = useMemo(() => {
-    const now = new Date();
-    const monthAgo = subMonths(now, 1);
-    return [monthAgo, now];
-  }, []);
-
   // Filter states
   const [selectedGroupTitles, setSelectedGroupTitles] = useState(["MD"]);
-  const [dateRange, setDateRange] = useState(defaultDateRange);
+  const [dateRange, setDateRange] = useState([]);
   const [selectedTypes, setSelectedTypes] = useState(["0", "1"]);
 
   const fetchSalesData = useCallback(async () => {
@@ -380,24 +373,22 @@ export const Sales = () => {
       return;
     }
 
-    const [startDate, endDate] = dateRange || [];
-    if (!startDate || !endDate) {
-      enqueueSnackbar(getLanguageByKey("Please select a date range") || "Please select a date range", {
-        variant: "warning",
-      });
-      return;
-    }
-
     setIsLoading(true);
     try {
+      const [startDate, endDate] = dateRange || [];
+      
       const payload = {
         group_titles: selectedGroupTitles,
-        attributes: {
-          timestamp_after: format(startDate, "yyyy-MM-dd"),
-          timestamp_before: format(endDate, "yyyy-MM-dd"),
-        },
         types: selectedTypes.map((t) => parseInt(t, 10)),
       };
+
+      // Only add date attributes if both dates are set
+      if (startDate && endDate) {
+        payload.attributes = {
+          timestamp_after: format(startDate, "yyyy-MM-dd"),
+          timestamp_before: format(endDate, "yyyy-MM-dd"),
+        };
+      }
 
       const data = await api.sales.getSalesStats(payload);
       setSalesData(data);
