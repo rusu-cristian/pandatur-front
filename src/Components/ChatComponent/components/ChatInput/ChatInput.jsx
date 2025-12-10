@@ -180,6 +180,12 @@ export const ChatInput = ({
     }));
   }, [selectedPlatform, groupTitle]);
 
+  // ✅ Проверяем что selectedPageId существует в списке доступных опций
+  // Это защита от случая когда pageId из lastMessage не соответствует текущей воронке
+  const isPageIdValid = useMemo(() => {
+    return selectedPageId && pageIdOptions.some(opt => opt.value === selectedPageId);
+  }, [selectedPageId, pageIdOptions]);
+
   // Получаем actionNeeded всегда из тикета из AppContext
   // НЕ используем локальное состояние - всегда берем актуальное значение из AppContext
   // Тикет обновляется автоматически через TICKET_UPDATE от сервера
@@ -354,6 +360,15 @@ export const ChatInput = ({
       enqueueSnackbar(getLanguageByKey("Invalid ticket or platform") || "Invalid ticket or platform", {
         variant: "error",
       });
+      return;
+    }
+
+    // ✅ Проверка что pageId валиден для текущей воронки
+    if (!isPageIdValid) {
+      enqueueSnackbar(
+        getLanguageByKey("Selectează pagina") || "Please select a valid page",
+        { variant: "error" }
+      );
       return;
     }
 
@@ -620,7 +635,7 @@ export const ChatInput = ({
                       (!message.trim() && attachments.length === 0) ||
                       !selectedPlatform ||
                       !currentClient?.payload ||
-                      !selectedPageId ||
+                      !isPageIdValid || // ✅ Проверяем что pageId валиден для текущей воронки
                       currentClient.payload.platform === "sipuni" ||
                       (isLengthLimited && message.length > MESSAGE_LENGTH_LIMIT)
                     }
