@@ -289,8 +289,8 @@ function selectBestPlatform(platformOptions, lastMessage, ticketId) {
 }
 
 /**
- * Определяет pageId из lastMessage.
- * Нет lastMessage → null (ждём или пользователь выбирает сам)
+ * Определяет pageId из lastMessage или первую доступную страницу.
+ * Fallback нужен — без pageId нельзя отправить сообщение.
  */
 function selectBestPageId(platform, groupTitle, lastMessage, ticketId) {
   if (!platform) return null;
@@ -300,26 +300,28 @@ function selectBestPageId(platform, groupTitle, lastMessage, ticketId) {
 
   if (!availablePages.length) return null;
 
-  // PageId из последнего сообщения (если валиден для воронки)
-  if (lastMessage?.ticket_id === ticketId && lastMessage.page_id) {
+  // Приоритет 1: pageId из последнего сообщения (если валиден для воронки И платформа совпадает)
+  if (lastMessage?.ticket_id === ticketId && 
+      lastMessage.page_id && 
+      lastMessage.platform?.toLowerCase() === platform) {
     if (availablePages.some(p => p.page_id === lastMessage.page_id)) {
       return lastMessage.page_id;
     }
   }
 
-  // Нет lastMessage → null (без fallback!)
-  return null;
+  // Приоритет 2: первая доступная страница для выбранной платформы
+  return availablePages[0]?.page_id || null;
 }
 
 /**
- * Определяет контакт из lastMessage.
- * Нет lastMessage → null (ждём или пользователь выбирает сам)
+ * Определяет контакт из lastMessage или первый доступный.
+ * Fallback нужен — без контакта нельзя отправить сообщение.
  */
 function selectBestContact(contactOptions, platformBlocks, platform, clientIndex, lastMessage, ticketId) {
   if (!contactOptions.length) return null;
 
-  // Контакт из последнего сообщения
-  if (lastMessage?.ticket_id === ticketId) {
+  // Приоритет 1: контакт из последнего сообщения (если платформа совпадает)
+  if (lastMessage?.ticket_id === ticketId && lastMessage.platform?.toLowerCase() === platform) {
     const contactValue = lastMessage.sender_id === lastMessage.client_id
       ? lastMessage.from_reference
       : lastMessage.to_reference;
@@ -342,8 +344,8 @@ function selectBestContact(contactOptions, platformBlocks, platform, clientIndex
     }
   }
 
-  // Нет lastMessage → null (без fallback!)
-  return null;
+  // Приоритет 2: первый контакт для выбранной платформы
+  return contactOptions[0] || null;
 }
 
 // ==================== ГЛАВНЫЙ ХУК ====================
