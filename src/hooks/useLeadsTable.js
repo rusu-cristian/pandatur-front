@@ -1,149 +1,123 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useSnackbar } from "notistack";
 import { useApp } from "./useApp";
 import { api } from "../api";
 import { showServerError } from "../Components/utils";
+import { getEffectiveWorkflow, DEFAULT_PER_PAGE, DEFAULT_PAGE } from "../Components/LeadsComponent/constants";
 
 /**
- * Таблица (hard): фильтры, пагинация, загрузка, perPage, спиннер.
- * Сохраняет текущее поведение:
- * - если есть явные workflow в фильтрах -> используем их
- * - иначе, если поиск включён -> используем полный workflowOptions
- * - иначе -> workflowOptions без [Realizat..., Închis...]
+ * Хук для работы с таблицей Leads (hard тикеты)
+ * 
+ * РЕФАКТОРИНГ:
+ * - Убраны локальные hardTicketFilters — фильтры приходят из URL через useLeadsFilters
+ * - Упрощена логика — хук только загружает данные и управляет пагинацией
  */
 export const useLeadsTable = () => {
-    const { enqueueSnackbar } = useSnackbar();
-    const { groupTitleForApi, workflowOptions } = useApp();
+  const { enqueueSnackbar } = useSnackbar();
+  const { groupTitleForApi, workflowOptions } = useApp();
 
-    const [hardTickets, setHardTickets] = useState([]);
-    const [hardTicketFilters, setHardTicketFilters] = useState({});
-    const [loading, setLoading] = useState(false);
-    const [totalLeads, setTotalLeads] = useState(0);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [perPage, setPerPage] = useState(50);
-    const [searchTerm, setSearchTerm] = useState("");
+  // Данные
+  const [hardTickets, setHardTickets] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [totalLeads, setTotalLeads] = useState(0);
+  
+  // Пагинация
+  const [currentPage, setCurrentPage] = useState(DEFAULT_PAGE);
+  const [perPage, setPerPage] = useState(DEFAULT_PER_PAGE);
 
-    const hardReqIdRef = useRef(0);
+  // Защита от race condition
+  const hardReqIdRef = useRef(0);
 
-    const hasHardFilters = useMemo(() => {
-        return Object.values(hardTicketFilters).some(
-            (v) =>
-                v !== undefined &&
-                v !== null &&
-                v !== "" &&
-                (!Array.isArray(v) || v.length > 0) &&
-                (typeof v !== "object" || Object.keys(v).length > 0)
-        );
-    }, [hardTicketFilters]);
+  /**
+   * Загрузка hard тикетов с фильтрами
+   * @param {Object} options - опции запроса
+   * @param {number} options.page - номер страницы
+   * @param {Object} options.filters - фильтры из URL (через useLeadsFilters)
+   * @param {string} options.searchTerm - поисковый запрос
+   */
+  const fetchHardTickets = useCallback(async ({ 
+    page = currentPage, 
+    filters = {}, 
+    searchTerm = "" 
+  } = {}) => {
+    if (!groupTitleForApi || !workflowOptions.length) return;
 
-    const fetchHardTickets = useCallback(async (page = 1, searchValue = null) => {
-        if (!groupTitleForApi || !workflowOptions.length) return;
+    const reqId = ++hardReqIdRef.current;
 
-        const reqId = ++hardReqIdRef.current;
-        try {
-            setLoading(true);
+    try {
+      setLoading(true);
 
-            const excludedWorkflows = ["Realizat cu succes", "Închis și nerealizat"];
-            // Используем переданный searchValue или значение из searchTerm
-            const effectiveSearch = searchValue !== null ? searchValue : searchTerm;
-            const isSearchingInList = !!effectiveSearch?.trim();
+      const { search, group_title, workflow, ...restFilters } = filters;
+      const effectiveSearch = searchTerm || search;
+      const isSearching = !!effectiveSearch?.trim();
 
-            const effectiveWorkflow =
-                hardTicketFilters.workflow?.length > 0
-                    ? hardTicketFilters.workflow
-                    : isSearchingInList
-                        ? workflowOptions
-                        : workflowOptions.filter((w) => !excludedWorkflows.includes(w));
+      // Эффективный workflow: если не указан — без закрытых (или все при поиске)
+      const effectiveWorkflow = getEffectiveWorkflow(
+        workflow,
+        workflowOptions,
+        isSearching
+      );
 
-            const { search, group_title, workflow, type, view, ...restFilters } = hardTicketFilters;
+      const response = await api.tickets.filters({
+        page,
+        type: "hard",
+        group_title: groupTitleForApi,
+        sort_by: "creation_date",
+        order: "DESC",
+        limit: perPage,
+        attributes: {
+          ...restFilters,
+          workflow: effectiveWorkflow,
+          ...(effectiveSearch?.trim() ? { search: effectiveSearch.trim() } : {}),
+        },
+      });
 
-            const response = await api.tickets.filters({
-                page,
-                type: "hard",
-                group_title: groupTitleForApi,
-                sort_by: "creation_date",
-                order: "DESC",
-                limit: perPage,
-                attributes: {
-                    ...restFilters,
-                    workflow: effectiveWorkflow,
-                    ...(effectiveSearch?.trim() ? { search: effectiveSearch.trim() } : {}),
-                },
-            });
+      if (reqId !== hardReqIdRef.current) return;
 
-            if (reqId !== hardReqIdRef.current) return;
+      setHardTickets(response.data);
+      setTotalLeads(response.pagination?.total || 0);
+    } catch (error) {
+      if (reqId === hardReqIdRef.current) {
+        enqueueSnackbar(showServerError(error), { variant: "error" });
+      }
+    } finally {
+      if (reqId === hardReqIdRef.current) {
+        setLoading(false);
+      }
+    }
+  }, [enqueueSnackbar, groupTitleForApi, workflowOptions, perPage, currentPage]);
 
-            setHardTickets(response.data);
-            setTotalLeads(response.pagination?.total || 0);
-        } catch (error) {
-            if (reqId === hardReqIdRef.current) {
-                enqueueSnackbar(showServerError(error), { variant: "error" });
-            }
-        } finally {
-            if (reqId === hardReqIdRef.current) {
-                setLoading(false);
-            }
-        }
-    }, [enqueueSnackbar, groupTitleForApi, workflowOptions, hardTicketFilters, perPage, searchTerm]);
+  /**
+   * Изменение количества элементов на странице
+   */
+  const handlePerPageChange = useCallback((next) => {
+    const n = Number(next);
+    if (!n || n === perPage) return;
+    setCurrentPage(DEFAULT_PAGE);
+    setPerPage(n);
+  }, [perPage]);
 
-    // useLeadsTable.js
-    // Применяем фильтры из модалки/URL
-    // НЕ подставляем все workflow автоматически — пусть fetchHardTickets решает,
-    // какие workflow использовать (аналогично логике в Kanban)
-    const handleApplyFiltersHardTicket = useCallback((selectedFilters) => {
-        setHardTicketFilters((prev) => {
-            const nextWorkflow =
-                typeof selectedFilters.workflow === "string"
-                    ? [selectedFilters.workflow]
-                    : selectedFilters.workflow;
+  /**
+   * Сброс к начальному состоянию
+   */
+  const resetTable = useCallback(() => {
+    setHardTickets([]);
+    setCurrentPage(DEFAULT_PAGE);
+    setTotalLeads(0);
+  }, []);
 
-            const hasWorkflow = nextWorkflow && nextWorkflow.length > 0;
+  return {
+    // Данные
+    hardTickets,
+    loading,
+    totalLeads,
+    currentPage,
+    perPage,
 
-            const next = {
-                ...prev,
-                ...selectedFilters,
-                // Если workflow не выбран — не подставляем все, оставляем undefined
-                // fetchHardTickets сам применит исключение закрытых статусов
-                workflow: hasWorkflow ? nextWorkflow : undefined,
-            };
-
-            return next;
-        });
-
-        setCurrentPage(1);
-    }, []);
-
-    const handlePerPageChange = useCallback((next) => {
-        const n = Number(next);
-        if (!n || n === perPage) return;
-        setCurrentPage(1);
-        setPerPage(n);
-    }, [perPage]);
-
-    // ручной запуск поиска (вызывается при нажатии на кнопку поиска)
-    const triggerSearch = useCallback(() => {
-        setCurrentPage(1);
-        fetchHardTickets(1, searchTerm);
-    }, [searchTerm, fetchHardTickets]);
-
-    return {
-        // data
-        hardTickets,
-        hardTicketFilters,
-        loading,
-        totalLeads,
-        currentPage,
-        perPage,
-        hasHardFilters,
-        searchTerm,
-        setSearchTerm,
-
-        // actions
-        fetchHardTickets,
-        setHardTicketFilters,
-        setCurrentPage,
-        handleApplyFiltersHardTicket,
-        handlePerPageChange,
-        triggerSearch,
-    };
+    // Действия
+    fetchHardTickets,
+    setCurrentPage,
+    handlePerPageChange,
+    resetTable,
+  };
 };

@@ -1,22 +1,31 @@
-import { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate, useSearchParams, Link } from "react-router-dom";
+/**
+ * Leads Page — Рефакторенная версия
+ * 
+ * Архитектура:
+ * - useLeadsFilters — единый источник правды для фильтров (URL)
+ * - useLeadsKanban — загрузка light тикетов для Kanban
+ * - useLeadsTable — загрузка hard тикетов для List
+ * - LeadsFilter — единый компонент фильтра
+ */
+
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { Divider, Modal, Button, ActionIcon, Input, SegmentedControl, Flex, Select, Loader } from "@mantine/core";
 import { ChatModal } from "../Components/ChatComponent/ChatModal";
-import { useDOMElementHeight, useApp, useConfirmPopup, useGetTechniciansList } from "@hooks";
+import { useDOMElementHeight, useApp, useConfirmPopup, useGetTechniciansList, useLeadsFilters } from "@hooks";
 import { priorityOptions, groupTitleOptions } from "../FormOptions";
 import { workflowOptions as defaultWorkflowOptions } from "../FormOptions/workflowOptions";
 import { SpinnerRightBottom, AddLeadModal, PageHeader, Spin } from "@components";
 import { WorkflowColumns } from "../Components/Workflow/WorkflowColumns";
 import { ManageLeadInfoTabs } from "../Components/LeadsComponent/ManageLeadInfoTabs";
-import { LeadsTableFilter } from "../Components/LeadsComponent/LeadsTableFilter";
-import { LeadsKanbanFilter } from "../Components/LeadsComponent/LeadsKanbanFilter";
+import { LeadsFilter } from "../Components/LeadsComponent/LeadsFilter";
 import SingleChat from "@components/ChatComponent/SingleChat";
 import { LeadTable } from "../Components/LeadsComponent/LeadTable/LeadTable";
 import Can from "../Components/CanComponent/Can";
 import { getTotalPages, getLanguageByKey, showServerError } from "../Components/utils";
 import { api } from "../api";
-import { VIEW_MODE } from "@components/LeadsComponent/utils";
+import { VIEW_MODE, VIEW_MODE_URL, getEffectiveWorkflow } from "../Components/LeadsComponent/constants";
 import { FaTrash, FaEdit, FaList } from "react-icons/fa";
 import { IoMdAdd, IoMdClose } from "react-icons/io";
 import { TbLayoutKanbanFilled } from "react-icons/tb";
@@ -25,10 +34,8 @@ import { Search as SearchIcon } from "@mui/icons-material";
 import "../css/SnackBarComponent.css";
 import "../Components/LeadsComponent/LeadsHeader/LeadsFilter.css";
 
-// новые хуки
 import { useLeadsKanban } from "../hooks/useLeadsKanban";
 import { useLeadsTable } from "../hooks/useLeadsTable";
-import { useLeadsUrlSync } from "../hooks/useLeadsUrlSync";
 import { useLeadsSelection } from "../hooks/useLeadsSelection";
 
 export const Leads = () => {
@@ -37,6 +44,7 @@ export const Leads = () => {
   const navigate = useNavigate();
   const leadsFilterHeight = useDOMElementHeight(refLeadsHeader);
 
+  // === КОНТЕКСТ ПРИЛОЖЕНИЯ ===
   const {
     tickets,
     spinnerTickets,
@@ -49,139 +57,183 @@ export const Leads = () => {
     setCustomGroupTitle,
   } = useApp();
 
+  // === ЕДИНЫЙ ХУК ДЛЯ ФИЛЬТРОВ (URL как источник правды) ===
+  const {
+    viewMode,
+    filters,
+    hasFilters,
+    apiAttributes,
+    setViewMode,
+    resetFilters,
+    updateFilters,
+    syncGroupTitleFromUrl,
+    updateGroupTitle,
+  } = useLeadsFilters();
+
+  // === ПАРАМЕТРЫ URL ===
   const { ticketId } = useParams();
   const { technicians } = useGetTechniciansList();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const didLoadGlobalTicketsRef = useRef(false);
-  // Ref для предотвращения лишних hard запросов при смене view
-  const isViewChangingRef = useRef(false);
 
+  // === ЛОКАЛЬНОЕ СОСТОЯНИЕ ===
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentTicket, setCurrentTicket] = useState(null);
   const [isOpenAddLeadModal, setIsOpenAddLeadModal] = useState(false);
-  const [isOpenKanbanFilterModal, setIsOpenKanbanFilterModal] = useState(false);
-  const [isOpenListFilterModal, setIsOpenListFilterModal] = useState(false);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(!!ticketId);
+  const [localSearchTerm, setLocalSearchTerm] = useState("");
 
-  const [viewMode, setViewMode] = useState(VIEW_MODE.KANBAN);
+  // Ref для предотвращения повторной загрузки глобальных тикетов
+  const didLoadGlobalTicketsRef = useRef(false);
+  const prevFiltersRef = useRef(null);
 
-  // --- КАНБАН (light) ---
+  // === КАНБАН (light) ===
   const {
     visibleTickets,
-    kanbanFilters,
     kanbanSpinner,
     kanbanFilterActive,
-    selectedWorkflow,
     choiceWorkflow,
-
-    kanbanSearchTerm,
-    setKanbanSearchTerm,
-    triggerSearch: triggerKanbanSearch,
-
     fetchKanbanTickets,
     currentFetchTickets,
-    applyKanbanFilters,
     refreshKanbanTickets,
     resetKanban,
-    setKanbanFilters,
-    setKanbanTickets,
     setKanbanFilterActive,
-    setSelectedWorkflow,
     setChoiceWorkflow,
   } = useLeadsKanban();
 
-  // --- ТАБЛИЦА (hard) ---
+  // === ТАБЛИЦА (hard) ===
   const {
     hardTickets,
-    hardTicketFilters,
     loading,
     totalLeads,
     currentPage,
     perPage,
-    hasHardFilters,
-    searchTerm,
-    setSearchTerm,
     fetchHardTickets,
-    setHardTicketFilters,
     setCurrentPage,
-    handleApplyFiltersHardTicket,
     handlePerPageChange,
-    triggerSearch: triggerTableSearch,
+    resetTable,
   } = useLeadsTable();
 
-  // --- Выделение текущего списка ---
+  // === ВЫДЕЛЕНИЕ ===
   const {
     selectedTickets,
     setSelectedTickets,
     toggleSelectTicket,
     toggleSelectAll,
     responsibleId,
-    selectedTicket,
   } = useLeadsSelection({
     listForSelection: viewMode === VIEW_MODE.LIST ? hardTickets : visibleTickets,
   });
 
-  // --- Хранение ВСЕХ id результатов hard-поиска ---
+  // === IDs ДЛЯ "ВЫБРАТЬ ВСЕ" ===
   const [allHardIds, setAllHardIds] = useState([]);
   const allIdsReqIdRef = useRef(0);
-  const isAllResultsSelected =
-    allHardIds.length > 0 && selectedTickets.length === allHardIds.length;
+  const isAllResultsSelected = allHardIds.length > 0 && selectedTickets.length === allHardIds.length;
 
-  // --- URL-синк ---
-  const { filtersReady } = useLeadsUrlSync({
+  // === ЭФФЕКТЫ ===
+
+  // Синхронизация group_title из URL при первой загрузке
+  useEffect(() => {
+    syncGroupTitleFromUrl();
+  }, [syncGroupTitleFromUrl]);
+
+  // Синхронизация локального поиска с URL
+  useEffect(() => {
+    setLocalSearchTerm(filters.search || "");
+  }, [filters.search]);
+
+  // Главный эффект: загрузка данных при изменении фильтров или режима
+  useEffect(() => {
+    if (!groupTitleForApi || !workflowOptions.length) return;
+
+    // Проверяем изменились ли фильтры
+    const filtersKey = JSON.stringify({ viewMode, filters, groupTitleForApi });
+    if (prevFiltersRef.current === filtersKey) return;
+    prevFiltersRef.current = filtersKey;
+
+    if (viewMode === VIEW_MODE.KANBAN) {
+      if (hasFilters) {
+        // Есть фильтры — загружаем отфильтрованные
+        setKanbanFilterActive(true);
+        setChoiceWorkflow(filters.workflow || []);
+        fetchKanbanTickets(filters);
+      } else {
+        // Нет фильтров — используем глобальные тикеты
+        resetKanban();
+        if (!didLoadGlobalTicketsRef.current) {
+          fetchTickets().then(() => {
+            didLoadGlobalTicketsRef.current = true;
+          });
+        }
+      }
+    } else {
+      // LIST режим — всегда загружаем hard тикеты
+      fetchHardTickets({ page: 1, filters });
+    }
+  }, [
     viewMode,
-    setViewMode,
-
-    // kanban
-    setKanbanFilters,
-    setKanbanFilterActive,
+    hasFilters,
+    filters,
+    groupTitleForApi,
+    workflowOptions,
     fetchKanbanTickets,
+    fetchHardTickets,
+    fetchTickets,
+    resetKanban,
+    setKanbanFilterActive,
     setChoiceWorkflow,
+  ]);
 
-    // table
-    handleApplyFiltersHardTicket,
+  // Загрузка при изменении страницы (для LIST)
+  useEffect(() => {
+    if (viewMode === VIEW_MODE.LIST && groupTitleForApi && workflowOptions.length) {
+      fetchHardTickets({ page: currentPage, filters });
+    }
+  }, [currentPage, perPage]);
 
-    // groupTitle sync
-    accessibleGroupTitles,
-    customGroupTitle,
-    setCustomGroupTitle,
-  });
+  // IDs запрос для "выбрать все" в LIST
+  useEffect(() => {
+    if (viewMode !== VIEW_MODE.LIST || !groupTitleForApi || !workflowOptions.length) return;
 
-  // helper: построить атрибуты для hard/id запросов (как в hard-странице)
-  const buildHardAttributes = (filters) => {
-    const { search, group_title, workflow, type, view, ...restFilters } = filters || {};
-    const excludedWorkflows = ["Realizat cu succes", "Închis și nerealizat"];
-    const isSearchingInList = !!(search && search.trim());
+    const reqId = ++allIdsReqIdRef.current;
+    const effectiveWorkflow = getEffectiveWorkflow(
+      filters.workflow,
+      workflowOptions,
+      !!filters.search?.trim()
+    );
 
-    const effectiveWorkflow =
-      Array.isArray(workflow) && workflow.length > 0
-        ? workflow
-        : isSearchingInList
-          ? workflowOptions
-          : workflowOptions.filter((w) => !excludedWorkflows.includes(w));
+    (async () => {
+      try {
+        const res = await api.tickets.filters({
+          type: "id",
+          group_title: groupTitleForApi,
+          attributes: { ...apiAttributes, workflow: effectiveWorkflow },
+        });
+        if (reqId !== allIdsReqIdRef.current) return;
+        setAllHardIds(Array.isArray(res?.data) ? res.data : []);
+      } catch (err) {
+        if (reqId === allIdsReqIdRef.current) {
+          enqueueSnackbar(showServerError(err), { variant: "error" });
+        }
+      }
+    })();
+  }, [viewMode, groupTitleForApi, workflowOptions, apiAttributes, filters, enqueueSnackbar]);
 
-    return {
-      attributes: {
-        ...restFilters,
-        workflow: effectiveWorkflow,
-        ...(search && search.trim() ? { search: search.trim() } : {}),
-      },
-    };
-  };
+  // Сброс выделения при изменении фильтров/группы
+  useEffect(() => {
+    setSelectedTickets([]);
+    setAllHardIds([]);
+  }, [groupTitleForApi, JSON.stringify(filters), setSelectedTickets]);
 
-
-  // открытие чата при переходе на /leads/:ticketId
-  // и автоматическое переключение воронки на группу тикета
+  // Открытие чата при переходе на /leads/:ticketId
   useEffect(() => {
     if (ticketId) {
       setIsChatOpen(true);
-
-      // Загружаем тикет, чтобы узнать его группу
+      
+      // Загружаем информацию о тикете для автопереключения группы
       const loadTicketGroup = async () => {
         try {
           const ticketData = await api.tickets.ticket.getLightById(Number(ticketId));
           if (ticketData?.group_title && accessibleGroupTitles.includes(ticketData.group_title)) {
-            // Если группа тикета отличается от текущей, переключаем воронку
             if (ticketData.group_title !== groupTitleForApi && ticketData.group_title !== customGroupTitle) {
               setCustomGroupTitle(ticketData.group_title);
               localStorage.setItem("leads_last_group_title", ticketData.group_title);
@@ -191,201 +243,61 @@ export const Leads = () => {
           console.error("Failed to load ticket group:", error);
         }
       };
-
       loadTicketGroup();
     }
   }, [ticketId, accessibleGroupTitles, groupTitleForApi, customGroupTitle, setCustomGroupTitle]);
 
-  // загрузка таблицы (hard) при готовности фильтров/смене зависимостей
-  useEffect(() => {
-    // Пропускаем запрос если в процессе смены view (защита от race condition)
-    if (isViewChangingRef.current) {
-      return;
-    }
-    
-    if (viewMode === VIEW_MODE.LIST && filtersReady) {
-      fetchHardTickets(currentPage);
-    }
-  }, [hardTicketFilters, groupTitleForApi, workflowOptions, currentPage, viewMode, filtersReady, perPage, fetchHardTickets]);
+  // === ОБРАБОТЧИКИ ===
 
-  // ПАРАЛЛЕЛЬНО: ids-only запрос под те же фильтры (без пагинации)
-  useEffect(() => {
-    // Пропускаем запрос если в процессе смены view
-    if (isViewChangingRef.current) return;
-    if (!(viewMode === VIEW_MODE.LIST && filtersReady)) return;
-    if (!groupTitleForApi || !workflowOptions.length) return;
-
-    const reqId = ++allIdsReqIdRef.current;
-    const { attributes } = buildHardAttributes(hardTicketFilters);
-
-    (async () => {
-      try {
-        const res = await api.tickets.filters({
-          type: "id",                  // сервер вернёт только ID
-          group_title: groupTitleForApi,
-          attributes,
-        });
-        if (reqId !== allIdsReqIdRef.current) return; // гонкозащита
-        const ids = Array.isArray(res?.data) ? res.data : [];
-        setAllHardIds(ids);
-      } catch (err) {
-        if (reqId === allIdsReqIdRef.current) {
-          enqueueSnackbar(showServerError(err), { variant: "error" });
-        }
-      }
-    })();
-  }, [viewMode, filtersReady, groupTitleForApi, workflowOptions, hardTicketFilters]); // страница/лимит не влияют на ids
-
-  // при смене фильтров/группы — сбрасываем выделение и кеш ID всех результатов
-  useEffect(() => {
-    setSelectedTickets([]);
-    setAllHardIds([]);
-  }, [groupTitleForApi, JSON.stringify(hardTicketFilters)]);
-
-  // смена режима (kanban/list)
-  const handleChangeViewMode = (mode) => {
-    const upperMode = mode.toUpperCase();
-    
-    // Устанавливаем флаг смены view для предотвращения лишних запросов
-    isViewChangingRef.current = true;
-    
+  // Смена режима просмотра
+  const handleChangeViewMode = useCallback((mode) => {
+    const upperMode = mode.toUpperCase?.() || mode;
     setViewMode(upperMode);
+    didLoadGlobalTicketsRef.current = false;
+    setCurrentPage(1);
+  }, [setViewMode, setCurrentPage]);
 
-    // Сохраняем фильтры из URL и только меняем view и type
-    setSearchParams((prev) => {
-      const newParams = new URLSearchParams(prev);
-      newParams.set("view", upperMode.toLowerCase());
-
-      // Меняем тип в зависимости от режима
-      if (upperMode === VIEW_MODE.LIST) {
-        newParams.set("type", "hard");
-      } else {
-        newParams.set("type", "light");
-      }
-
-      return newParams;
-    }, { replace: true });
-
-    if (upperMode === VIEW_MODE.LIST) {
-      setCurrentPage(1);
-      setSearchTerm("");
-      // Сбрасываем hardTicketFilters — если есть фильтры в URL, useLeadsUrlSync их применит
-      setHardTicketFilters({});
-    } else {
-      // kanban - сбрасываем локальный поиск и фильтры
-      setKanbanSearchTerm("");
-      // Сбрасываем kanbanFilters — если есть фильтры в URL, useLeadsUrlSync их применит
-      setKanbanFilters({});
-      setKanbanFilterActive(false);
-
-      if (!didLoadGlobalTicketsRef.current && !searchParams.get("workflow")) {
-        // Загружаем глобальные тикеты только если нет фильтров в URL
-        fetchTickets().then(() => {
-          didLoadGlobalTicketsRef.current = true;
-        });
-      }
+  // Поиск
+  const handleSearch = useCallback(() => {
+    if (localSearchTerm?.trim()) {
+      updateFilters({ search: localSearchTerm.trim() });
     }
-    
-    // Сбрасываем флаг в следующем тике (после обновления state)
-    setTimeout(() => {
-      isViewChangingRef.current = false;
-    }, 0);
-  };
+  }, [localSearchTerm, updateFilters]);
 
-  // обработчик поиска (для обоих режимов)
-  const handleSearch = () => {
-    if (viewMode === VIEW_MODE.LIST) {
-      triggerTableSearch();
-    } else {
-      triggerKanbanSearch();
-    }
-  };
+  // Сброс поиска
+  const handleResetSearch = useCallback(() => {
+    setLocalSearchTerm("");
+    const { search, ...rest } = filters;
+    updateFilters(rest);
+  }, [filters, updateFilters]);
 
-  // обработчик сброса поиска (очистка поля и результатов)
-  const handleResetSearch = () => {
-    if (viewMode === VIEW_MODE.LIST) {
-      setSearchTerm("");
-      setCurrentPage(1);
-      // Перезагружаем данные без поиска
-      fetchHardTickets(1, "");
-    } else {
-      // Сбрасываем поиск в канбане
-      setKanbanSearchTerm("");
-      setKanbanFilterActive(false);
-      setKanbanTickets([]);
-    }
-  };
-
-  // обработчик нажатия Enter в поле поиска
-  const handleSearchKeyPress = (e) => {
+  // Enter в поле поиска
+  const handleSearchKeyPress = useCallback((e) => {
     if (e.key === "Enter") {
       handleSearch();
     }
-  };
+  }, [handleSearch]);
 
-  // при смене groupTitle — сбрасываем локальные списки (как раньше)
-  useEffect(() => {
-    didLoadGlobalTicketsRef.current = false;
-  }, [groupTitleForApi]);
-
-  // держим view из URL (на случай внешней навигации)
-  useEffect(() => {
-    const urlView = searchParams.get("view");
-    const urlViewUpper = urlView ? urlView.toUpperCase() : undefined;
-    if (urlViewUpper && urlViewUpper !== viewMode) {
-      setViewMode(urlViewUpper);
-    }
-  }, [searchParams, viewMode]);
-
-  // применить фильтры для light (канбан) + обновить URL
-  const handleApplyFilterLightTicket = (selectedFilters) => {
-    applyKanbanFilters(selectedFilters);
-    setIsOpenKanbanFilterModal(false);
-    didLoadGlobalTicketsRef.current = false;
-
-    setSearchParams((prev) => {
-      const newParams = new URLSearchParams(prev);
-
-      for (const key of Array.from(newParams.keys())) {
-        if (key !== "view") newParams.delete(key);
-      }
-
-      Object.entries(selectedFilters).forEach(([key, value]) => {
-        if (
-          value !== undefined &&
-          value !== null &&
-          value !== "" &&
-          (!Array.isArray(value) || value.length > 0)
-        ) {
-          newParams.set(key, JSON.stringify(value));
-        }
-      });
-
-      newParams.set("type", "light");
-      return newParams;
-    });
-  };
-
-  // массовое удаление (table)
+  // Массовое удаление
   const deleteBulkLeads = useConfirmPopup({
     subTitle: getLanguageByKey("Sigur doriți să ștergeți aceste leaduri"),
   });
 
-  const deleteTicket = async () => {
+  const deleteTicket = useCallback(async () => {
     deleteBulkLeads(async () => {
       try {
         await api.tickets.deleteById(selectedTickets);
         setSelectedTickets([]);
         enqueueSnackbar(getLanguageByKey("Leadurile au fost șterse cu succes"), { variant: "success" });
-        fetchHardTickets(currentPage);
+        fetchHardTickets({ page: currentPage, filters });
       } catch (error) {
         enqueueSnackbar(getLanguageByKey("A aparut o eroare la ștergere"), { variant: "error" });
       }
     });
-  };
+  }, [deleteBulkLeads, selectedTickets, setSelectedTickets, enqueueSnackbar, fetchHardTickets, currentPage, filters]);
 
-  // открыть создание
-  const openCreateTicketModal = () => {
+  // Создание тикета
+  const openCreateTicketModal = useCallback(() => {
     setCurrentTicket({
       contact: "",
       transport: "",
@@ -396,72 +308,54 @@ export const Leads = () => {
       technician_id: 0,
     });
     setIsOpenAddLeadModal(true);
-  };
+  }, []);
 
-  // пагинация таблицы
-  const handlePaginationWorkflow = (page) => setCurrentPage(page);
+  // Пагинация
+  const handlePaginationWorkflow = useCallback((page) => {
+    setCurrentPage(page);
+  }, [setCurrentPage]);
 
-  // доступные groupTitle в Select
-  const groupTitleSelectData = groupTitleOptions.filter((o) => accessibleGroupTitles.includes(o.value));
-
-  // Загрузка сохраненного значения groupTitle из localStorage при инициализации
-  // ВАЖНО: всегда проверяем значение из localStorage против списка доступных прав
-  // Если недоступно - сохраняем первое доступное значение
-  useEffect(() => {
-    if (accessibleGroupTitles.length > 0 && !customGroupTitle) {
-      const savedGroupTitle = localStorage.getItem("leads_last_group_title");
-      // Безопасность: проверяем, что сохраненное значение доступно по правам
-      if (savedGroupTitle && accessibleGroupTitles.includes(savedGroupTitle)) {
-        setCustomGroupTitle(savedGroupTitle);
-      } else {
-        // Если сохраненное значение недоступно - устанавливаем и сохраняем первое доступное
-        const firstAccessible = accessibleGroupTitles[0];
-        if (firstAccessible) {
-          setCustomGroupTitle(firstAccessible);
-          localStorage.setItem("leads_last_group_title", firstAccessible);
-        }
-      }
+  // Изменение группы
+  const handleGroupTitleChange = useCallback((val) => {
+    if (val && accessibleGroupTitles.includes(val)) {
+      setCustomGroupTitle(val);
+      localStorage.setItem("leads_last_group_title", val);
+      // Обновляем URL с новым group_title напрямую (не через state)
+      updateGroupTitle(val);
+    } else {
+      setCustomGroupTitle(null);
+      localStorage.removeItem("leads_last_group_title");
+      updateGroupTitle(null);
     }
-  }, [accessibleGroupTitles, customGroupTitle, setCustomGroupTitle]);
+    didLoadGlobalTicketsRef.current = false;
+  }, [accessibleGroupTitles, setCustomGroupTitle, updateGroupTitle]);
 
-  // Дополнительная проверка: если текущий customGroupTitle стал недоступен по правам
-  // Устанавливаем и сохраняем первое доступное значение
-  useEffect(() => {
-    if (customGroupTitle && accessibleGroupTitles.length > 0) {
-      // Безопасность: проверяем, что текущее значение все еще доступно по правам
-      if (!accessibleGroupTitles.includes(customGroupTitle)) {
-        // Если права изменились и текущее значение больше не доступно - устанавливаем первое доступное
-        const firstAccessible = accessibleGroupTitles[0];
-        if (firstAccessible) {
-          setCustomGroupTitle(firstAccessible);
-          localStorage.setItem("leads_last_group_title", firstAccessible);
-        } else {
-          setCustomGroupTitle(null);
-          localStorage.removeItem("leads_last_group_title");
-        }
-      }
-    }
-  }, [accessibleGroupTitles, customGroupTitle, setCustomGroupTitle]);
-
-  // закрытие чата
-  const closeChatModal = () => {
+  // Закрытие чата
+  const closeChatModal = useCallback(() => {
     setIsChatOpen(false);
     navigate("/leads");
-  };
+  }, [navigate]);
 
-  // обработчики «выбрать все результаты» / «снять выбор»
-  const handleSelectAllResults = () => {
+  // Выбор всех результатов
+  const handleSelectAllResults = useCallback(() => {
     if (allHardIds.length > 0) {
       setSelectedTickets(allHardIds);
     }
-  };
+  }, [allHardIds, setSelectedTickets]);
 
-  const handleClearAllResults = () => {
+  const handleClearAllResults = useCallback(() => {
     setSelectedTickets([]);
-  };
+  }, [setSelectedTickets]);
 
+  // === ВЫЧИСЛЯЕМЫЕ ЗНАЧЕНИЯ ===
+  const groupTitleSelectData = groupTitleOptions.filter((o) => accessibleGroupTitles.includes(o.value));
+  const isLoading = loading || kanbanSpinner;
+  const ticketCount = viewMode === VIEW_MODE.LIST ? totalLeads : visibleTickets.length;
+
+  // === РЕНДЕР ===
   return (
     <>
+      {/* HEADER */}
       <Flex
         ref={refLeadsHeader}
         style={{ "--side-bar-width": isCollapsed ? "79px" : "249px" }}
@@ -469,96 +363,59 @@ export const Leads = () => {
         bg="var(--crm-ui-kit-palette-background-primary)"
       >
         <PageHeader
-          count={viewMode === VIEW_MODE.LIST ? totalLeads : visibleTickets.length}
+          count={ticketCount}
           title={getLanguageByKey("Leads")}
           extraInfo={
             <>
+              {/* Кнопки массовых действий */}
               {selectedTickets.length > 0 && (
-                <Can permission={{ module: "leads", action: "delete" }} context={{ responsibleId }}>
-                  <Button variant="danger" leftSection={<FaTrash size={16} />} onClick={deleteTicket}>
-                    {getLanguageByKey("Ștergere")} ({selectedTickets.length})
-                  </Button>
-                </Can>
-              )}
-              {selectedTickets.length > 0 && (
-                <Can permission={{ module: "leads", action: "edit" }} context={{ responsibleId }}>
-                  <Button variant="warning" leftSection={<FaEdit size={16} />} onClick={() => setIsModalOpen(true)}>
-                    {getLanguageByKey("Editare")} ({selectedTickets.length})
-                  </Button>
-                </Can>
+                <>
+                  <Can permission={{ module: "leads", action: "delete" }} context={{ responsibleId }}>
+                    <Button variant="danger" leftSection={<FaTrash size={16} />} onClick={deleteTicket}>
+                      {getLanguageByKey("Ștergere")} ({selectedTickets.length})
+                    </Button>
+                  </Can>
+                  <Can permission={{ module: "leads", action: "edit" }} context={{ responsibleId }}>
+                    <Button variant="warning" leftSection={<FaEdit size={16} />} onClick={() => setIsModalOpen(true)}>
+                      {getLanguageByKey("Editare")} ({selectedTickets.length})
+                    </Button>
+                  </Can>
+                </>
               )}
 
+              {/* Кнопка фильтра */}
               <ActionIcon
-                variant={
-                  viewMode === VIEW_MODE.KANBAN
-                    ? kanbanFilterActive
-                      ? "filled"
-                      : "default"
-                    : hasHardFilters
-                      ? "filled"
-                      : "default"
-                }
+                variant={hasFilters ? "filled" : "default"}
                 size="36"
-                onClick={() => {
-                  if (viewMode === VIEW_MODE.KANBAN) {
-                    setIsOpenKanbanFilterModal(true);
-                  } else {
-                    setIsOpenListFilterModal(true);
-                  }
-                }}
+                onClick={() => setIsFilterModalOpen(true)}
               >
                 <LuFilter size={16} />
               </ActionIcon>
 
+              {/* Поиск */}
               <Input
-                value={viewMode === VIEW_MODE.KANBAN ? kanbanSearchTerm : searchTerm}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (viewMode === VIEW_MODE.KANBAN) {
-                    setKanbanSearchTerm(value);
-                  } else {
-                    setSearchTerm(value);
-                  }
-                }}
+                value={localSearchTerm}
+                onChange={(e) => setLocalSearchTerm(e.target.value)}
                 onKeyPress={handleSearchKeyPress}
                 placeholder={getLanguageByKey("Cauta dupa Lead, Client sau Tag")}
                 className="min-w-300"
                 rightSectionPointerEvents="all"
                 rightSection={
                   <Flex gap="xs" align="center" mr="20px">
-                    {viewMode === VIEW_MODE.KANBAN ? (
-                      kanbanSpinner ? (
-                        <Loader size="xs" />
-                      ) : (
-                        <ActionIcon
-                          variant="subtle"
-                          onClick={handleSearch}
-                          disabled={!kanbanSearchTerm?.trim()}
-                          size="sm"
-                        >
-                          <SearchIcon fontSize="small" />
-                        </ActionIcon>
-                      )
+                    {isLoading ? (
+                      <Loader size="xs" />
                     ) : (
-                      loading ? (
-                        <Loader size="xs" />
-                      ) : (
-                        <ActionIcon
-                          variant="subtle"
-                          onClick={handleSearch}
-                          disabled={!searchTerm?.trim()}
-                          size="sm"
-                        >
-                          <SearchIcon fontSize="small" />
-                        </ActionIcon>
-                      )
-                    )}
-                    {(viewMode === VIEW_MODE.KANBAN ? kanbanSearchTerm : searchTerm) && (
                       <ActionIcon
                         variant="subtle"
-                        onClick={handleResetSearch}
+                        onClick={handleSearch}
+                        disabled={!localSearchTerm?.trim()}
                         size="sm"
                       >
+                        <SearchIcon fontSize="small" />
+                      </ActionIcon>
+                    )}
+                    {localSearchTerm && (
+                      <ActionIcon variant="subtle" onClick={handleResetSearch} size="sm">
                         <IoMdClose size={16} />
                       </ActionIcon>
                     )}
@@ -566,103 +423,48 @@ export const Leads = () => {
                 }
               />
 
+              {/* Селектор группы */}
               <Select
                 placeholder={getLanguageByKey("filter_by_group")}
                 value={customGroupTitle ?? groupTitleForApi}
                 data={groupTitleSelectData}
                 className="min-w-300"
-                onChange={(val) => {
-                  // Безопасность: всегда проверяем значение против списка доступных прав
-                  let valueToSet = null;
-
-                  if (val) {
-                    // Если значение указано - проверяем доступность по правам
-                    if (accessibleGroupTitles.includes(val)) {
-                      // Если доступно - используем его
-                      valueToSet = val;
-                    } else {
-                      // Если значение не доступно по правам - используем первое доступное
-                      valueToSet = accessibleGroupTitles[0] || null;
-                    }
-                  } else {
-                    // Если val === null, сбрасываем
-                    valueToSet = null;
-                  }
-
-                  // Устанавливаем и сохраняем значение (только если есть доступ)
-                  if (valueToSet && accessibleGroupTitles.includes(valueToSet)) {
-                    setCustomGroupTitle(valueToSet);
-                    localStorage.setItem("leads_last_group_title", valueToSet);
-                  } else {
-                    setCustomGroupTitle(null);
-                    localStorage.removeItem("leads_last_group_title");
-                  }
-
-                  // Сбрасываем query-параметры фильтров, чтобы не перетирали выбор группы
-                  setSearchParams(() => {
-                    const params = new URLSearchParams();
-                    params.set("view", viewMode);
-                    return params;
-                  });
-
-                  // Сброс фильтров и состояния при изменении
-                  if (viewMode === VIEW_MODE.LIST) {
-                    setCurrentPage(1);
-                    setHardTicketFilters({});
-                  } else {
-                    // сброс канбана
-                    setKanbanFilters({});
-                    setKanbanSearchTerm("");
-                    setKanbanFilterActive(false);
-                    setKanbanTickets([]);
-                    didLoadGlobalTicketsRef.current = false;
-                  }
-                }}
+                onChange={handleGroupTitleChange}
               />
 
-              {(() => {
-                const basePath = `/leads${ticketId ? `/${ticketId}` : ''}`;
-                const kanbanParams = new URLSearchParams(searchParams);
-                kanbanParams.set("view", "kanban");
-                kanbanParams.set("type", "light");
-                const listParams = new URLSearchParams(searchParams);
-                listParams.set("view", "list");
-                listParams.set("type", "hard");
+              {/* Переключатель Kanban/List */}
+              <SegmentedControl
+                onChange={handleChangeViewMode}
+                value={viewMode}
+                data={[
+                  {
+                    value: VIEW_MODE.KANBAN,
+                    label: (
+                      <Link
+                        to={`/leads?view=${VIEW_MODE_URL.KANBAN}&type=light`}
+                        onClick={(e) => e.stopPropagation()}
+                        style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+                      >
+                        <TbLayoutKanbanFilled color="var(--crm-ui-kit-palette-text-primary)" />
+                      </Link>
+                    )
+                  },
+                  {
+                    value: VIEW_MODE.LIST,
+                    label: (
+                      <Link
+                        to={`/leads?view=${VIEW_MODE_URL.LIST}&type=hard`}
+                        onClick={(e) => e.stopPropagation()}
+                        style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+                      >
+                        <FaList color="var(--crm-ui-kit-palette-text-primary)" />
+                      </Link>
+                    )
+                  },
+                ]}
+              />
 
-                return (
-                  <SegmentedControl
-                    onChange={handleChangeViewMode}
-                    value={viewMode}
-                    data={[
-                      {
-                        value: VIEW_MODE.KANBAN,
-                        label: (
-                          <Link
-                            to={`${basePath}?${kanbanParams.toString()}`}
-                            onClick={(e) => e.stopPropagation()}
-                            style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
-                          >
-                            <TbLayoutKanbanFilled color="var(--crm-ui-kit-palette-text-primary)" />
-                          </Link>
-                        )
-                      },
-                      {
-                        value: VIEW_MODE.LIST,
-                        label: (
-                          <Link
-                            to={`${basePath}?${listParams.toString()}`}
-                            onClick={(e) => e.stopPropagation()}
-                            style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
-                          >
-                            <FaList color="var(--crm-ui-kit-palette-text-primary)" />
-                          </Link>
-                        )
-                      },
-                    ]}
-                  />
-                );
-              })()}
-
+              {/* Кнопка создания */}
               <Can permission={{ module: "leads", action: "create" }}>
                 <Button onClick={openCreateTicketModal} leftSection={<IoMdAdd size={16} />}>
                   {getLanguageByKey("Adaugă lead")}
@@ -673,9 +475,11 @@ export const Leads = () => {
         />
       </Flex>
 
+      {/* КОНТЕНТ */}
       <div style={{ "--leads-filter-height": `${leadsFilterHeight}px` }} className="leads-container">
         <Divider style={{ borderColor: 'var(--crm-ui-kit-palette-border-primary)' }} />
-        {loading ? (
+        
+        {loading && viewMode === VIEW_MODE.LIST ? (
           <div className="d-flex align-items-center justify-content-center h-full">
             <Spin />
           </div>
@@ -690,8 +494,6 @@ export const Leads = () => {
             onChangePagination={handlePaginationWorkflow}
             perPage={perPage}
             setPerPage={handlePerPageChange}
-
-            // НОВОЕ: поддержка выбора всех результатов
             allResultIds={allHardIds}
             isAllResultsSelected={isAllResultsSelected}
             onSelectAllResults={handleSelectAllResults}
@@ -701,10 +503,10 @@ export const Leads = () => {
           <WorkflowColumns
             kanbanFilterActive={kanbanFilterActive}
             fetchTickets={currentFetchTickets}
-            refreshKanbanTickets={refreshKanbanTickets}
+            refreshKanbanTickets={() => refreshKanbanTickets(filters)}
             selectedWorkflow={choiceWorkflow}
             tickets={visibleTickets}
-            searchTerm={kanbanSearchTerm}
+            searchTerm={filters.search || ""}
             onEditTicket={(ticket) => {
               setCurrentTicket(ticket);
               setIsModalOpen(true);
@@ -713,13 +515,16 @@ export const Leads = () => {
         )}
       </div>
 
+      {/* СПИННЕРЫ */}
       {spinnerTickets && <SpinnerRightBottom />}
       {kanbanSpinner && viewMode === VIEW_MODE.KANBAN && <SpinnerRightBottom />}
 
+      {/* ЧАТ */}
       <ChatModal opened={isChatOpen && !!ticketId} onClose={closeChatModal}>
         <SingleChat ticketId={ticketId} onClose={closeChatModal} technicians={technicians} />
       </ChatModal>
 
+      {/* МОДАЛ СОЗДАНИЯ */}
       <Modal
         opened={isOpenAddLeadModal}
         onClose={() => setIsOpenAddLeadModal(false)}
@@ -732,87 +537,32 @@ export const Leads = () => {
           open
           onClose={() => setIsOpenAddLeadModal(false)}
           selectedGroupTitle={groupTitleForApi}
-          fetchTickets={() => fetchHardTickets(currentPage)}
+          fetchTickets={() => fetchHardTickets({ page: currentPage, filters })}
         />
       </Modal>
 
+      {/* ЕДИНЫЙ МОДАЛ ФИЛЬТРА */}
       <Modal
-        opened={isOpenKanbanFilterModal}
-        onClose={() => setIsOpenKanbanFilterModal(false)}
+        opened={isFilterModalOpen}
+        onClose={() => setIsFilterModalOpen(false)}
         title={getLanguageByKey("Filtrează tichete")}
         withCloseButton
         centered
         size="lg"
         styles={{
-          content: {
-            height: "700px",
-            display: "flex",
-            flexDirection: "column",
-          },
-          body: {
-            flex: 1,
-            overflowY: "auto",
-            padding: "1rem"
-          },
-          title: {
-            color: "var(--crm-ui-kit-palette-text-primary)"
-          }
+          content: { height: "700px", display: "flex", flexDirection: "column" },
+          body: { flex: 1, overflowY: "auto", padding: "1rem" },
+          title: { color: "var(--crm-ui-kit-palette-text-primary)" }
         }}
       >
-        <LeadsKanbanFilter
-          fetchTickets={fetchTickets}
-          initialData={kanbanFilters}
-          systemWorkflow={kanbanFilterActive ? selectedWorkflow : []}
-          loading={loading}
-          onClose={() => setIsOpenKanbanFilterModal(false)}
-          onApplyWorkflowFilters={setSelectedWorkflow}
-          onSubmitTicket={handleApplyFilterLightTicket}
-          fetchKanbanTickets={fetchKanbanTickets}
-          setKanbanFilterActive={setKanbanFilterActive}
-          setKanbanFilters={setKanbanFilters}
-          setKanbanTickets={setKanbanTickets}
-          onWorkflowSelected={(workflow) => setChoiceWorkflow(workflow)}
-          groupTitleForApi={groupTitleForApi}
-          kanbanSearchTerm={kanbanSearchTerm}
+        <LeadsFilter
+          initialData={filters}
+          loading={isLoading}
+          onClose={() => setIsFilterModalOpen(false)}
         />
       </Modal>
 
-      <Modal
-        opened={isOpenListFilterModal}
-        onClose={() => setIsOpenListFilterModal(false)}
-        title={getLanguageByKey("Filtrează tichete")}
-        withCloseButton
-        centered
-        size="lg"
-        styles={{
-          content: {
-            height: "700px",
-            display: "flex",
-            flexDirection: "column",
-          },
-          body: {
-            flex: 1,
-            overflowY: "auto",
-            padding: "1rem"
-          },
-          title: {
-            color: "var(--crm-ui-kit-palette-text-primary)"
-          }
-        }}
-      >
-        <LeadsTableFilter
-          initialData={hardTicketFilters}
-          loading={loading}
-          onClose={() => setIsOpenListFilterModal(false)}
-          onSubmitTicket={handleApplyFiltersHardTicket}
-          onResetFilters={() => {
-            setHardTicketFilters({});
-            setCurrentPage(1);
-          }}
-          groupTitleForApi={groupTitleForApi}
-        />
-      </Modal>
-
+      {/* МОДАЛ РЕДАКТИРОВАНИЯ */}
       <Modal
         opened={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -821,30 +571,18 @@ export const Leads = () => {
         centered
         size="lg"
         styles={{
-          content: {
-            height: "700px",
-            display: "flex",
-            flexDirection: "column",
-          },
-          body: {
-            flex: 1,
-            overflowY: "auto",
-            padding: "1rem"
-          },
-          title: {
-            color: "var(--crm-ui-kit-palette-text-primary)"
-          }
+          content: { height: "700px", display: "flex", flexDirection: "column" },
+          body: { flex: 1, overflowY: "auto", padding: "1rem" },
+          title: { color: "var(--crm-ui-kit-palette-text-primary)" }
         }}
       >
         <ManageLeadInfoTabs
           onClose={() => setIsModalOpen(false)}
           selectedTickets={selectedTickets}
           fetchLeads={async () => {
-            // Обновляем таблицу
-            await fetchHardTickets(currentPage);
-            // Обновляем канбан, если активен фильтр
+            await fetchHardTickets({ page: currentPage, filters });
             if (kanbanFilterActive) {
-              refreshKanbanTickets();
+              refreshKanbanTickets(filters);
             }
           }}
           id={selectedTickets.length === 1 ? selectedTickets[0] : currentTicket?.id}

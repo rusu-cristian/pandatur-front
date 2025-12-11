@@ -2,11 +2,10 @@ import { workflowOptionsSalesMD } from "../../Components/utils/workflowUtils";
 import dayjs from "dayjs";
 import { YYYY_MM_DD_HH_mm_ss, YYYY_MM_DD } from "../../app-constants";
 import { YYYY_MM_DD_DASH } from "../../app-constants";
+import { VIEW_MODE, EXCLUDED_WORKFLOWS } from "./constants";
 
-export const VIEW_MODE = {
-  KANBAN: "KANBAN",
-  LIST: "LIST",
-};
+// Реэкспорт VIEW_MODE для обратной совместимости
+export { VIEW_MODE };
 
 export const platformOptions = [
   "telegram",
@@ -17,8 +16,9 @@ export const platformOptions = [
   "sipuni",
 ];
 
+// Используем константы из constants.js
 export const filteredWorkflows = workflowOptionsSalesMD.filter(
-  (wf) => wf !== "Realizat cu succes" && wf !== "Închis și nerealizat",
+  (wf) => !EXCLUDED_WORKFLOWS.includes(wf)
 );
 
 export const filterDefaults = {

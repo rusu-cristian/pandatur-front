@@ -19,3 +19,4 @@ export * from "./useMobile";
 export * from "./useZoomScale";
 export * from "./useTheme";
 export * from "./useChatUrlSync";
+export * from "./useLeadsFilters";
