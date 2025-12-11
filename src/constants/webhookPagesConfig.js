@@ -145,6 +145,12 @@ export const WEBHOOK_PAGES_CONFIG = {
       group_title: ["GLODENI"]
     },
     {
+      page_id: "975030792362986",
+      page_name: "Briceni",
+      type: "facebook",
+      group_title: ["BRICENI"]
+    },
+    {
       page_id: "187817508490443",
       page_name: "Cahul",
       type: "facebook",
@@ -217,6 +223,12 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_name: "Glodeni",
       type: "instagram",
       group_title: ["GLODENI"]
+    },
+    {
+      page_id: "17841478256617021",
+      page_name: "Briceni",
+      type: "instagram",
+      group_title: ["BRICENI"]
     },
     {
       page_id: "17841473664962072",
@@ -453,6 +465,12 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_name: "Orhei - 37362161919",
       type: "phone",
       group_title: ["ORHEI"]
+    },
+    {
+      page_id: "37360362200",
+      page_name: "Briceni - 37360362200",
+      type: "phone",
+      group_title: ["BRICENI"]
     }
   ],
   vibers: [

@@ -396,6 +396,7 @@ export const workflowOptionsByGroupTitle = {
     HR: workflowOptionsHR,
     FRANCHISEPANDATUR: workflowOptionsFranchisePandaTur,
     GLODENI: workflowOptionsFranchisePandaTur,
+    BRICENI: workflowOptionsFranchisePandaTur,
     QUALITYDEPARTMENT: workflowOptionsQualityDepartment,
 };
 
@@ -429,6 +430,7 @@ export const workflowOptionsLimitedByGroupTitle = {
     HR: workflowOptionsLimitedHR,
     FRANCHISEPANDATUR: workflowOptionsLimitedFranchisePandaTur,
     GLODENI: workflowOptionsLimitedFiliale,
+    BRICENI: workflowOptionsLimitedFiliale,
     QUALITYDEPARTMENT: workflowOptionsLimitedQualityDepartment,
 };
 
@@ -462,6 +464,7 @@ export const TikTokworkflowOptionsByGroupTitle = {
     HR: TikTokworkflowOptionsHR,
     FRANCHISEPANDATUR: TikTokworkflowOptionsFranchisePandaTur,
     GLODENI: TikTokworkflowOptionsFranchisePandaTur,
+    BRICENI: TikTokworkflowOptionsFranchisePandaTur,
     QUALITYDEPARTMENT: TikTokworkflowOptionsQualityDepartment,
 };
 
@@ -471,28 +474,28 @@ export const userGroupsToGroupTitle = {
         "MD", "RO", "FILIALE", "MARKETING", "INDIVIDUALGROUPS", "AGENCY", "GREENCARD", "CATALAN",
         "ORHEI", "CANTEMIR", "EDINET", "DROCHIA", "IALOVENI", "BUIUCANI", "CAUSENI", "SOLDANESTI",
         "REZINA", "RASCANI", "TIMISOARA", "NISPORENI", "FRANCHISECLUJ", "STAUCENI",
-        "HANCESTI", "CIMISLIA", "HR", "FRANCHISEPANDATUR", "GLODENI", "QUALITYDEPARTMENT"
+        "HANCESTI", "CIMISLIA", "HR", "FRANCHISEPANDATUR", "GLODENI", "BRICENI", "QUALITYDEPARTMENT"
     ],
 
     "IT dep.": [
         "MD", "RO", "FILIALE", "MARKETING", "INDIVIDUALGROUPS", "AGENCY", "GREENCARD", "CATALAN",
         "ORHEI", "CANTEMIR", "EDINET", "DROCHIA", "IALOVENI", "BUIUCANI", "CAUSENI", "SOLDANESTI",
         "REZINA", "RASCANI", "TIMISOARA", "NISPORENI", "FRANCHISECLUJ", "STAUCENI",
-        "HANCESTI", "CIMISLIA", "HR", "FRANCHISEPANDATUR", "GLODENI", "QUALITYDEPARTMENT"
+        "HANCESTI", "CIMISLIA", "HR", "FRANCHISEPANDATUR", "GLODENI", "BRICENI", "QUALITYDEPARTMENT"
     ],
 
     "Quality Department": [
         "MD", "RO", "FILIALE", "MARKETING", "INDIVIDUALGROUPS", "AGENCY", "GREENCARD", "CATALAN",
         "ORHEI", "CANTEMIR", "EDINET", "DROCHIA", "IALOVENI", "BUIUCANI", "CAUSENI", "SOLDANESTI",
         "REZINA", "RASCANI", "TIMISOARA", "NISPORENI", "FRANCHISECLUJ", "STAUCENI",
-        "HANCESTI", "CIMISLIA", "HR", "FRANCHISEPANDATUR", "GLODENI", "QUALITYDEPARTMENT"
+        "HANCESTI", "CIMISLIA", "HR", "FRANCHISEPANDATUR", "GLODENI", "BRICENI", "QUALITYDEPARTMENT"
     ],
 
     "Marketing": [
         "MD", "RO", "FILIALE", "MARKETING", "INDIVIDUALGROUPS", "AGENCY", "GREENCARD", "CATALAN",
         "ORHEI", "CANTEMIR", "EDINET", "DROCHIA", "IALOVENI", "BUIUCANI", "CAUSENI", "SOLDANESTI",
         "REZINA", "RASCANI", "TIMISOARA", "NISPORENI", "FRANCHISECLUJ", "STAUCENI",
-        "HANCESTI", "CIMISLIA", "HR", "FRANCHISEPANDATUR", "GLODENI", "QUALITYDEPARTMENT"
+        "HANCESTI", "CIMISLIA", "HR", "FRANCHISEPANDATUR", "GLODENI", "BRICENI", "QUALITYDEPARTMENT"
     ],
 
     "Distribution": [""],
@@ -506,7 +509,7 @@ export const userGroupsToGroupTitle = {
         "MD", "HR", "ORHEI", "CANTEMIR", "EDINET", "DROCHIA",
         "IALOVENI", "BUIUCANI", "CAUSENI", "SOLDANESTI",
         "REZINA", "RASCANI", "TIMISOARA", "NISPORENI", "FRANCHISECLUJ", "STAUCENI",
-        "HANCESTI", "CIMISLIA", "GLODENI", "MARKETING",
+        "HANCESTI", "CIMISLIA", "GLODENI", "BRICENI", "MARKETING",
         "FRANCHISEPANDATUR", "QUALITYDEPARTMENT"
     ],
 
@@ -551,14 +554,14 @@ export const userGroupsToGroupTitle = {
         "MD", "RO", "FILIALE", "MARKETING", "INDIVIDUALGROUPS", "AGENCY", "GREENCARD", "CATALAN",
         "ORHEI", "CANTEMIR", "EDINET", "DROCHIA", "IALOVENI", "BUIUCANI", "CAUSENI", "SOLDANESTI",
         "REZINA", "RASCANI", "TIMISOARA", "NISPORENI", "FRANCHISECLUJ", "STAUCENI",
-        "HANCESTI", "CIMISLIA", "HR", "FRANCHISEPANDATUR", "GLODENI", "QUALITYDEPARTMENT"
+        "HANCESTI", "CIMISLIA", "HR", "FRANCHISEPANDATUR", "GLODENI", "BRICENI", "QUALITYDEPARTMENT"
     ],
 
-    //franchize 17
+    //franchize 18
     "Franchise PandaTur": [
         "ORHEI", "CANTEMIR", "EDINET", "DROCHIA", "IALOVENI", "BUIUCANI", "CAUSENI", "SOLDANESTI",
         "REZINA", "RASCANI", "TIMISOARA", "NISPORENI", "FRANCHISECLUJ", "STAUCENI",
-        "HANCESTI", "CIMISLIA", "GLODENI"
+        "HANCESTI", "CIMISLIA", "GLODENI", "BRICENI"
     ],
 
     "Edinet Franchise": ["EDINET"],
@@ -578,4 +581,5 @@ export const userGroupsToGroupTitle = {
     "Hincesti Franchise": ["HANCESTI"],
     "Cimislia Franchise": ["CIMISLIA"],
     "Glodeni Franchise": ["GLODENI"],
+    "Briceni Franchise": ["BRICENI"],
 };
