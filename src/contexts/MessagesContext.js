@@ -43,26 +43,37 @@ export const MessagesProvider = ({ children }) => {
           const sameSender = Number(m.sender_id) === Number(incoming.sender_id);
           const sameTicket = Number(m.ticket_id) === Number(incoming.ticket_id);
           
-          // Если есть message_id или id - используем их для точного сопоставления
-          if (incoming.message_id) {
-            return (Number(m.message_id) === Number(incoming.message_id) || 
-                    Number(m.id) === Number(incoming.message_id)) && 
-                   sameTicket;
+          // Сначала пробуем найти по platform_id (temp_xxx) - это самый надежный способ
+          // так как pending сообщение создается с platform_id до получения message_id от сервера
+          if (incoming.platform_id && m.platform_id === incoming.platform_id && sameTicket) {
+            return true;
           }
           
-          // Иначе ищем по тексту сообщения (старая логика)
-          if (hasErrorInText) {
+          // Затем пробуем найти по message_id если оба имеют его
+          if (incoming.message_id && m.message_id && 
+              Number(m.message_id) === Number(incoming.message_id) && sameTicket) {
+            return true;
+          }
+          
+          // Пробуем найти по id === message_id
+          if (incoming.message_id && m.id && 
+              Number(m.id) === Number(incoming.message_id) && sameTicket) {
+            return true;
+          }
+          
+          // Ищем по тексту сообщения (для ошибок в тексте)
+          if (hasErrorInText && isPending && sameSender && sameTicket) {
             const originalText = m.message?.trim();
             const fullText = incoming.message?.trim();
-            const errorIncludesOriginal = fullText.includes(originalText);
-            return isPending && sameSender && sameTicket && errorIncludesOriginal;
+            if (fullText && originalText && fullText.includes(originalText)) {
+              return true;
+            }
           }
           
-          // Для ошибок с error_message ищем по platform_id (temp_xxx)
-          if (hasErrorInField && incoming.platform_id) {
-            return isPending && sameSender && sameTicket && 
-                   (m.platform_id === incoming.platform_id || 
-                    m.message === incoming.message);
+          // Последняя попытка - по тексту сообщения для pending сообщений
+          if (hasErrorInField && isPending && sameSender && sameTicket && 
+              m.message === incoming.message) {
+            return true;
           }
           
           return false;
@@ -81,6 +92,26 @@ export const MessagesProvider = ({ children }) => {
           return updated;
         }
 
+        // Если pending сообщение не найдено, но есть message_id - попробуем обновить по ID
+        if (incoming.message_id) {
+          const idIndex = prev.findIndex((m) => 
+            Number(m.message_id) === Number(incoming.message_id) || 
+            Number(m.id) === Number(incoming.message_id)
+          );
+          
+          if (idIndex !== -1) {
+            const updated = [...prev];
+            updated[idIndex] = {
+              ...prev[idIndex],
+              ...incoming,
+              messageStatus: "ERROR",
+              message_status: incoming.message_status || incoming.status || "NOT_SENT",
+              error_message: incoming.error_message || updated[idIndex].error_message,
+            };
+            return updated;
+          }
+        }
+
         return prev;
       });
       return;
@@ -88,7 +119,14 @@ export const MessagesProvider = ({ children }) => {
     
     // Для всех остальных сообщений (от других пользователей, системы, звонков)
     if (isCall || isFromAnotherUser || isFromSystem) {
-      messagesRef.current.updateMessage(incoming);
+      // Проверяем, есть ли ошибка в сообщении, и устанавливаем статус
+      const hasError = (incoming.status === "NOT_SENT" || incoming.message_status === "NOT_SENT");
+      const messageWithStatus = hasError ? {
+        ...incoming,
+        messageStatus: "ERROR",
+      } : incoming;
+      
+      messagesRef.current.updateMessage(messageWithStatus);
       return;
     }
     

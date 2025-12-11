@@ -144,6 +144,8 @@ export const useMessages = () => {
           ...message,
           // Убеждаемся, что call_metadata всегда актуальный
           call_metadata: message.call_metadata || existingMsg.call_metadata,
+          // Сохраняем error_message если он пришел
+          error_message: message.error_message || existingMsg.error_message,
         };
         
         return updated;
