@@ -1,24 +1,24 @@
 import { getLanguageByKey } from "../Components/utils/getLanguageByKey";
 
 const serviceTypeOptionKeys = [
-  "Sejur la Mare",
-  "Excursii",
-  "Pelerinaj",
-  "Munte",
-  "Croaziera",
-  "Tratament",
-  "CityBreak",
+  "Altele",
   "Angajare",
   "Bilete de avion",
-  "Doar transport",
-  "Green Card",
-  "Viza",
   "Bilet de fotbal",
-  "Tabara la munte cu Panda tur si Iuliana Beregoi",
-  "Festival",
-  "Recenzie",
+  "CityBreak",
   "Contact specialist",
-  "Altele"
+  "Croaziera",
+  "Doar transport",
+  "Excursii",
+  "Festival",
+  "Green Card",
+  "Munte",
+  "Pelerinaj",
+  "Recenzie",
+  "Sejur la Mare",
+  "Tabara la munte cu Panda tur si Iuliana Beregoi",
+  "Tratament",
+  "Viza",
 ];
 
 export const serviceTypeOptions = serviceTypeOptionKeys.map((key) => ({
