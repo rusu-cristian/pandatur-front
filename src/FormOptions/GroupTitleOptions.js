@@ -27,5 +27,5 @@ export const groupTitleOptions = [
     { value: "GLODENI", label: "Glodeni Franchise MD" },
     { value: "FRANCHISECLUJ", label: "Cluj Franchise RO" },
     { value: "TIMISOARA", label: "Timisoara Franchise RO" },
-    { value: "Briceni", label: "Briceni Franchise MD" },
+    { value: "BRICENI", label: "Briceni Franchise MD" },
 ];
