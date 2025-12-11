@@ -79,7 +79,7 @@ export const ContractForm = ({
 
       <DatePickerInput
         minDate={setMinDate}
-        valueFormat={YYYY_MM_DD}
+        valueFormat="DD.MM.YYYY"
         clearable
         mt="md"
         label={getLanguageByKey("Data contractului")}
@@ -91,7 +91,7 @@ export const ContractForm = ({
 
       <DatePickerInput
         minDate={setMinDate}
-        valueFormat={YYYY_MM_DD}
+        valueFormat="DD.MM.YYYY"
         clearable
         mt="md"
         label={getLanguageByKey("Data avansului")}
@@ -103,7 +103,7 @@ export const ContractForm = ({
 
       <DatePickerInput
         minDate={setMinDate}
-        valueFormat={YYYY_MM_DD}
+        valueFormat="DD.MM.YYYY"
         clearable
         mt="md"
         label={getLanguageByKey("Data de plată integrală")}

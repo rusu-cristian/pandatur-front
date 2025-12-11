@@ -77,7 +77,7 @@ export const TicketInfoForm = ({
         label={getLanguageByKey("Data venit in oficiu")}
         placeholder={getLanguageByKey("Selectează data venirii în oficiu")}
         clearable
-        valueFormat={YYYY_MM_DD}
+        valueFormat="DD.MM.YYYY"
         minDate={setMinDate}
         {...formInstance.getInputProps("data_venit_in_oficiu")}
         getDayProps={getDayPropsWithHighlight}
@@ -89,7 +89,7 @@ export const TicketInfoForm = ({
         label={getLanguageByKey("Data și ora plecării")}
         placeholder={getLanguageByKey("Data și ora plecării")}
         clearable
-        valueFormat={YYYY_MM_DD}
+        valueFormat="DD.MM.YYYY"
         minDate={setMinDate}
         {...formInstance.getInputProps("data_plecarii")}
         getDayProps={getDayPropsWithHighlight}
@@ -101,7 +101,7 @@ export const TicketInfoForm = ({
         label={getLanguageByKey("Data și ora întoarcerii")}
         placeholder={getLanguageByKey("Data și ora întoarcerii")}
         clearable
-        valueFormat={YYYY_MM_DD}
+        valueFormat="DD.MM.YYYY"
         minDate={setMinDate}
         {...formInstance.getInputProps("data_intoarcerii")}
         getDayProps={getDayPropsWithHighlight}
@@ -113,7 +113,7 @@ export const TicketInfoForm = ({
         label={getLanguageByKey("Data cererii de retur")}
         placeholder={getLanguageByKey("Data cererii de retur")}
         clearable
-        valueFormat={YYYY_MM_DD}
+        valueFormat="DD.MM.YYYY"
         minDate={setMinDate}
         {...formInstance.getInputProps("data_cererii_de_retur")}
         getDayProps={getDayPropsWithHighlight}

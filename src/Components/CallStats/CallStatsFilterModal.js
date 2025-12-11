@@ -126,14 +126,14 @@ export const CallStatsFilterModal = ({
                                 label={getLanguageByKey("DateFrom")}
                                 value={dateFrom}
                                 onChange={setDateFrom}
-                                placeholder="dd.mm.yyyy"
+                                placeholder="DD.MM.YYYY"
                                 style={{ flex: 1 }}
                             />
                             <DatePickerInput
                                 label={getLanguageByKey("DateTo")}
                                 value={dateTo}
                                 onChange={setDateTo}
-                                placeholder="dd.mm.yyyy"
+                                placeholder="DD.MM.YYYY"
                                 style={{ flex: 1 }}
                             />
                         </Flex>
