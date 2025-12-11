@@ -267,9 +267,8 @@ export const Leads = () => {
   // Сброс поиска
   const handleResetSearch = useCallback(() => {
     setLocalSearchTerm("");
-    const { search, ...rest } = filters;
-    updateFilters(rest);
-  }, [filters, updateFilters]);
+    updateFilters({ search: undefined });
+  }, [updateFilters]);
 
   // Enter в поле поиска
   const handleSearchKeyPress = useCallback((e) => {

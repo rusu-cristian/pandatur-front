@@ -74,8 +74,34 @@ export const useLeadsFilters = () => {
 
   // === ЗАПИСЫВАЕМ В URL ===
 
-  // Установить фильтры (полная замена)
-  const setFilters = useCallback((newFilters) => {
+  /**
+   * Универсальная функция обновления фильтров
+   * 
+   * - Если значение есть — добавляет/обновляет фильтр
+   * - Если значение undefined/null/""/[] — удаляет фильтр
+   * 
+   * @example
+   * updateFilters({ search: "test" })        // Добавить search
+   * updateFilters({ search: undefined })     // Удалить search
+   * updateFilters({ tags: [], workflow: [] }) // Удалить оба
+   */
+  const updateFilters = useCallback((partialFilters) => {
+    const newFilters = { ...filters };
+
+    Object.entries(partialFilters).forEach(([key, value]) => {
+      const isEmpty =
+        value === undefined ||
+        value === null ||
+        value === "" ||
+        (Array.isArray(value) && value.length === 0);
+
+      if (isEmpty) {
+        delete newFilters[key];
+      } else {
+        newFilters[key] = value;
+      }
+    });
+
     const urlParams = prepareFiltersForUrl({
       ...newFilters,
       view: viewMode === VIEW_MODE.LIST ? VIEW_MODE_URL.LIST : VIEW_MODE_URL.KANBAN,
@@ -83,12 +109,7 @@ export const useLeadsFilters = () => {
       ...(groupTitleForApi ? { group_title: groupTitleForApi } : {}),
     });
     setSearchParams(urlParams, { replace: true });
-  }, [setSearchParams, viewMode, requestType, groupTitleForApi]);
-
-  // Обновить фильтры (merge с текущими)
-  const updateFilters = useCallback((partialFilters) => {
-    setFilters({ ...filters, ...partialFilters });
-  }, [filters, setFilters]);
+  }, [filters, setSearchParams, viewMode, requestType, groupTitleForApi]);
 
   // Сбросить все фильтры
   const resetFilters = useCallback(() => {
@@ -122,14 +143,9 @@ export const useLeadsFilters = () => {
 
   // Установить поисковый запрос
   const setSearchTerm = useCallback((term) => {
-    if (term?.trim()) {
-      updateFilters({ search: term.trim() });
-    } else {
-      // Удаляем search из фильтров
-      const { search, ...rest } = filters;
-      setFilters(rest);
-    }
-  }, [filters, updateFilters, setFilters]);
+    // updateFilters сам разберётся: если пусто — удалит, если есть значение — добавит
+    updateFilters({ search: term?.trim() || undefined });
+  }, [updateFilters]);
 
   // Синхронизация group_title из URL с контекстом
   // Вызывается при первой загрузке страницы с URL содержащим group_title
@@ -169,7 +185,6 @@ export const useLeadsFilters = () => {
     urlGroupTitle,
     
     // Действия (записываем в URL)
-    setFilters,
     updateFilters,
     resetFilters,
     setViewMode,
