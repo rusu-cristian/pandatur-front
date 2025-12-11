@@ -6,6 +6,7 @@ export const motivulRefuzuluiOptions = [
   "Informații de referință",
   "Ne-a luat prea mult timp să răspundem la apeluri/mesaje",
   "Nevoia a dispărut",
+  "Spam",
   "I-a ales pe alții",
   "Nu sunt mulțumiți de condiții",
   "Clientul nu răspunde (după 3 încercări de a suna)",

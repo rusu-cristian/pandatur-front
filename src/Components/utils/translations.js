@@ -5962,5 +5962,10 @@ export const translations = {
     RO: "Caută...",
     RU: "Найти...",
     EN: "Search..."
+  },
+  Spam: {
+    RO: "Spam",
+    RU: "Спам",
+    EN: "Spam"
   }
 };
