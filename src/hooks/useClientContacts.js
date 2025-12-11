@@ -270,12 +270,13 @@ function computePageIdOptions(platform, groupTitle) {
 // ==================== ЛОГИКА АВТОВЫБОРА ====================
 
 /**
- * Определяет лучшую платформу для автовыбора
+ * Определяет платформу из lastMessage.
+ * Нет lastMessage → null (ждём или пользователь выбирает сам)
  */
 function selectBestPlatform(platformOptions, lastMessage, ticketId) {
   if (!platformOptions.length) return null;
 
-  // Приоритет 1: платформа из последнего сообщения
+  // Платформа из последнего сообщения
   if (lastMessage?.ticket_id === ticketId) {
     const msgPlatform = lastMessage.platform?.toLowerCase();
     if (msgPlatform && platformOptions.some(p => p.value === msgPlatform)) {
@@ -283,12 +284,13 @@ function selectBestPlatform(platformOptions, lastMessage, ticketId) {
     }
   }
 
-  // Приоритет 2: первая доступная платформа
-  return platformOptions[0]?.value || null;
+  // Нет lastMessage → null (без fallback!)
+  return null;
 }
 
 /**
- * Определяет лучший pageId для автовыбора
+ * Определяет pageId из lastMessage.
+ * Нет lastMessage → null (ждём или пользователь выбирает сам)
  */
 function selectBestPageId(platform, groupTitle, lastMessage, ticketId) {
   if (!platform) return null;
@@ -298,24 +300,25 @@ function selectBestPageId(platform, groupTitle, lastMessage, ticketId) {
 
   if (!availablePages.length) return null;
 
-  // Приоритет 1: pageId из последнего сообщения (если валиден для воронки)
+  // PageId из последнего сообщения (если валиден для воронки)
   if (lastMessage?.ticket_id === ticketId && lastMessage.page_id) {
     if (availablePages.some(p => p.page_id === lastMessage.page_id)) {
       return lastMessage.page_id;
     }
   }
 
-  // Приоритет 2: первая доступная страница
-  return availablePages[0]?.page_id || null;
+  // Нет lastMessage → null (без fallback!)
+  return null;
 }
 
 /**
- * Определяет лучший контакт для автовыбора
+ * Определяет контакт из lastMessage.
+ * Нет lastMessage → null (ждём или пользователь выбирает сам)
  */
 function selectBestContact(contactOptions, platformBlocks, platform, clientIndex, lastMessage, ticketId) {
   if (!contactOptions.length) return null;
 
-  // Приоритет 1: контакт из последнего сообщения
+  // Контакт из последнего сообщения
   if (lastMessage?.ticket_id === ticketId) {
     const contactValue = lastMessage.sender_id === lastMessage.client_id
       ? lastMessage.from_reference
@@ -339,8 +342,8 @@ function selectBestContact(contactOptions, platformBlocks, platform, clientIndex
     }
   }
 
-  // Приоритет 2: первый контакт
-  return contactOptions[0] || null;
+  // Нет lastMessage → null (без fallback!)
+  return null;
 }
 
 // ==================== ГЛАВНЫЙ ХУК ====================
