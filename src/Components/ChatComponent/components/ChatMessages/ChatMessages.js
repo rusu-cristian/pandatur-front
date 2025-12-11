@@ -13,7 +13,7 @@ import { InlineNoteComposer } from "../../../InlineNoteComposer";
 import { TicketParticipants } from "../../../TicketParticipants";
 import "./ChatMessages.css";
 
-const getSendedMessage = (msj, currentMsj, statusMessage) => {
+const getSendedMessage = (msj, currentMsj, statusMessage, errorMessage = null) => {
   // Проверяем точное совпадение по ключевым полям
   const isExactMatch = msj.sender_id === currentMsj.sender_id &&
     msj.message === currentMsj.message &&
@@ -21,7 +21,12 @@ const getSendedMessage = (msj, currentMsj, statusMessage) => {
     msj.ticket_id === currentMsj.ticket_id;
 
   if (isExactMatch) {
-    return { ...msj, messageStatus: statusMessage };
+    return { 
+      ...msj, 
+      messageStatus: statusMessage,
+      // Добавляем error_message только если есть ошибка
+      ...(errorMessage && { error_message: errorMessage })
+    };
   }
 
   // Fallback: ищем PENDING сообщение от того же пользователя в том же тикете
@@ -30,7 +35,11 @@ const getSendedMessage = (msj, currentMsj, statusMessage) => {
     msj.messageStatus === MESSAGES_STATUS.PENDING;
 
   if (isPendingMatch) {
-    return { ...msj, messageStatus: statusMessage };
+    return { 
+      ...msj, 
+      messageStatus: statusMessage,
+      ...(errorMessage && { error_message: errorMessage })
+    };
   }
 
   return msj;
@@ -106,16 +115,17 @@ export const ChatMessages = ({
             prev.map((msj) => getSendedMessage(msj, normalizedMessage, MESSAGES_STATUS.SUCCESS))
           );
         } else {
-          // Если статус не success, оставляем PENDING или ставим ERROR
+          // Если статус не success - извлекаем сообщение об ошибке из ответа сервера
+          const errorMessage = response?.message || response?.error || getLanguageByKey("message_send_failed");
           setMessages((prev) =>
-            prev.map((msj) => getSendedMessage(msj, normalizedMessage, MESSAGES_STATUS.ERROR))
+            prev.map((msj) => getSendedMessage(msj, normalizedMessage, MESSAGES_STATUS.ERROR, errorMessage))
           );
         }
       } catch (error) {
-        // Error sending message
-        // При ошибке API обновляем статус на ERROR
+        // При ошибке API - извлекаем сообщение из объекта ошибки
+        const errorMessage = error?.response?.data?.message || error?.message || getLanguageByKey("message_send_failed");
         setMessages((prev) =>
-          prev.map((msj) => getSendedMessage(msj, normalizedMessage, MESSAGES_STATUS.ERROR))
+          prev.map((msj) => getSendedMessage(msj, normalizedMessage, MESSAGES_STATUS.ERROR, errorMessage))
         );
       }
     },
