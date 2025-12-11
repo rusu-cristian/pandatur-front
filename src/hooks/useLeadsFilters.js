@@ -123,23 +123,20 @@ export const useLeadsFilters = () => {
   }, [setSearchParams, viewMode, requestType, groupTitleForApi]);
 
   // Переключить режим просмотра (kanban/list)
+  // Фильтры СОХРАНЯЮТСЯ при переключении
   const setViewMode = useCallback((newMode) => {
     const upperMode = newMode.toUpperCase();
-    const newParams = new URLSearchParams();
     
-    // Устанавливаем view и type
-    newParams.set("view", upperMode === VIEW_MODE.LIST ? VIEW_MODE_URL.LIST : VIEW_MODE_URL.KANBAN);
-    newParams.set("type", upperMode === VIEW_MODE.LIST ? REQUEST_TYPE.HARD : REQUEST_TYPE.LIGHT);
+    // Берём текущие фильтры и обновляем view/type
+    const urlParams = prepareFiltersForUrl({
+      ...filters,
+      view: upperMode === VIEW_MODE.LIST ? VIEW_MODE_URL.LIST : VIEW_MODE_URL.KANBAN,
+      type: upperMode === VIEW_MODE.LIST ? REQUEST_TYPE.HARD : REQUEST_TYPE.LIGHT,
+      ...(groupTitleForApi ? { group_title: groupTitleForApi } : {}),
+    });
     
-    // Сохраняем group_title
-    if (groupTitleForApi) {
-      newParams.set("group_title", groupTitleForApi);
-    }
-    
-    // При переключении режима сбрасываем фильтры
-    // (если нужно сохранять — можно изменить логику)
-    setSearchParams(newParams, { replace: true });
-  }, [setSearchParams, groupTitleForApi]);
+    setSearchParams(urlParams, { replace: true });
+  }, [setSearchParams, groupTitleForApi, filters]);
 
   // Установить поисковый запрос
   const setSearchTerm = useCallback((term) => {

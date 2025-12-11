@@ -24,7 +24,7 @@ export const LeadsFilter = ({
   const ticketFormRef = useRef();
   const messageFormRef = useRef();
 
-  const { setFilters, resetFilters, groupTitleForApi } = useLeadsFilters();
+  const { updateFilters, resetFilters, groupTitleForApi } = useLeadsFilters();
 
   // Собираем значения из форм и убираем пустые
   const collectFormValues = () => {
@@ -59,7 +59,7 @@ export const LeadsFilter = ({
     }
 
     // Устанавливаем фильтры через URL
-    setFilters(formValues);
+    updateFilters(formValues);
     onClose?.();
   };
 
