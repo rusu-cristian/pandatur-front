@@ -6,6 +6,7 @@ export const categories = [
     "TASK",
     "SCHEDULES",
     "ANALYTICS",
+    "SALES",
     "LOGS"
 ];
 

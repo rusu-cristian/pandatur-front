@@ -308,7 +308,7 @@ export const SideBar = () => {
             </MenuItem>
           )}
 
-          {hasStrictPermission(userRoles, "ANALYTICS", "VIEW") && (
+          {hasStrictPermission(userRoles, "SALES", "VIEW") && (
             <MenuItem
               active={isActive("sales")}
               icon={<FaMoneyBillWave size={24} />}

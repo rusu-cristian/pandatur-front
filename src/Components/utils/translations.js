@@ -5967,5 +5967,10 @@ export const translations = {
     RO: "Spam",
     RU: "Спам",
     EN: "Spam"
+  },
+  "Sales": {
+    RO: "Vânzări",
+    RU: "Продажи",
+    EN: "Sales"
   }
 };
