@@ -69,15 +69,15 @@ export const LeadsFilter = ({
   };
 
   return (
-    <Flex direction="column" h="100%">
+    <Flex direction="column" h="100%" style={{ overflow: "hidden" }}>
       <Tabs
-        style={{ flex: 1, display: "flex", flexDirection: "column" }}
+        style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}
         className="leads-modal-filter-tabs"
         defaultValue="filter_ticket"
         value={activeTab}
         onChange={setActiveTab}
       >
-        <Tabs.List>
+        <Tabs.List style={{ flexShrink: 0 }}>
           <Tabs.Tab value="filter_ticket">
             {getLanguageByKey("Filtru pentru Lead")}
           </Tabs.Tab>
@@ -86,7 +86,7 @@ export const LeadsFilter = ({
           </Tabs.Tab>
         </Tabs.List>
 
-        <Tabs.Panel value="filter_ticket" pt="xs" style={{ flex: 1, overflowY: "auto" }}>
+        <Tabs.Panel value="filter_ticket" pt="xs" style={{ flex: 1, overflowY: "auto", minHeight: 0 }}>
           <TicketFormTabs
             ref={ticketFormRef}
             initialData={initialData}
@@ -94,7 +94,7 @@ export const LeadsFilter = ({
           />
         </Tabs.Panel>
 
-        <Tabs.Panel value="filter_message" pt="xs" style={{ flex: 1, overflowY: "auto" }}>
+        <Tabs.Panel value="filter_message" pt="xs" style={{ flex: 1, overflowY: "auto", minHeight: 0 }}>
           <MessageFilterForm
             ref={messageFormRef}
             initialData={initialData}
@@ -103,13 +103,17 @@ export const LeadsFilter = ({
         </Tabs.Panel>
       </Tabs>
 
+      {/* Футер закреплён внизу */}
       <Flex 
         justify="end" 
         gap="md" 
         pt={16} 
         pb={8} 
         pr="md" 
-        style={{ borderTop: "1px solid var(--mantine-color-gray-3)" }}
+        style={{ 
+          borderTop: "1px solid var(--mantine-color-gray-3)",
+          flexShrink: 0 
+        }}
       >
         <Button variant="outline" onClick={handleReset}>
           {getLanguageByKey("Reset filter")}
