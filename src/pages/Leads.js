@@ -56,6 +56,8 @@ export const Leads = () => {
     updateFilters,
     syncGroupTitleFromUrl,
     updateGroupTitle,
+    kanbanUrl,
+    listUrl,
   } = useLeadsFilters();
 
   // === URL ПАРАМЕТРЫ ===
@@ -302,6 +304,8 @@ export const Leads = () => {
         responsibleId={responsibleId}
         groupTitleValue={customGroupTitle ?? groupTitleForApi}
         groupTitleSelectData={groupTitleSelectData}
+        kanbanUrl={kanbanUrl}
+        listUrl={listUrl}
         searchInputValue={searchInputValue}
         hasSearchValue={hasSearchValue}
         onSearchInputChange={handleSearchInputChange}

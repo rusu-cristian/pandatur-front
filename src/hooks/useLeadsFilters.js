@@ -171,6 +171,27 @@ export const useLeadsFilters = () => {
     setSearchParams(newParams, { replace: true });
   }, [setSearchParams, viewMode, requestType]);
 
+  // URL для переключения режимов (с сохранёнными фильтрами)
+  const kanbanUrl = useMemo(() => {
+    const params = prepareFiltersForUrl({
+      ...filters,
+      view: VIEW_MODE_URL.KANBAN,
+      type: REQUEST_TYPE.LIGHT,
+      ...(groupTitleForApi ? { group_title: groupTitleForApi } : {}),
+    });
+    return `/leads?${params.toString()}`;
+  }, [filters, groupTitleForApi]);
+
+  const listUrl = useMemo(() => {
+    const params = prepareFiltersForUrl({
+      ...filters,
+      view: VIEW_MODE_URL.LIST,
+      type: REQUEST_TYPE.HARD,
+      ...(groupTitleForApi ? { group_title: groupTitleForApi } : {}),
+    });
+    return `/leads?${params.toString()}`;
+  }, [filters, groupTitleForApi]);
+
   return {
     // Состояние (читаем из URL)
     viewMode,
@@ -180,6 +201,10 @@ export const useLeadsFilters = () => {
     effectiveWorkflow,
     apiAttributes,
     urlGroupTitle,
+    
+    // URL для режимов (progressive enhancement)
+    kanbanUrl,
+    listUrl,
     
     // Действия (записываем в URL)
     updateFilters,

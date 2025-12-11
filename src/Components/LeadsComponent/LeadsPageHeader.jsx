@@ -1,4 +1,4 @@
-import { memo, forwardRef } from "react";
+import { memo, forwardRef, useCallback } from "react";
 import { Button, ActionIcon, Input, SegmentedControl, Flex, Select, Loader } from "@mantine/core";
 import { PageHeader } from "@components";
 import Can from "../CanComponent/Can";
@@ -9,6 +9,41 @@ import { IoMdAdd, IoMdClose } from "react-icons/io";
 import { TbLayoutKanbanFilled } from "react-icons/tb";
 import { LuFilter } from "react-icons/lu";
 import { Search as SearchIcon } from "@mui/icons-material";
+
+/**
+ * ViewModeLink — ссылка для переключения режима
+ * 
+ * Progressive Enhancement:
+ * - Обычный клик → preventDefault + JS обработчик (фильтры сохраняются)
+ * - Cmd/Ctrl+Click или правый клик → открывает URL в новой вкладке
+ */
+const ViewModeLink = ({ href, onClick, children, isActive }) => {
+  const handleClick = useCallback((e) => {
+    // Если Cmd/Ctrl/Shift — пусть браузер откроет в новой вкладке
+    if (e.metaKey || e.ctrlKey || e.shiftKey) {
+      return;
+    }
+    // Иначе — предотвращаем переход и используем JS
+    e.preventDefault();
+    onClick?.();
+  }, [onClick]);
+
+  return (
+    <a
+      href={href}
+      onClick={handleClick}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        textDecoration: "none",
+        color: "inherit",
+      }}
+    >
+      {children}
+    </a>
+  );
+};
 
 /**
  * Header страницы Leads
@@ -33,6 +68,10 @@ export const LeadsPageHeader = memo(forwardRef(({
   responsibleId,
   groupTitleValue,
   groupTitleSelectData,
+  
+  // URL для режимов (с сохранёнными фильтрами)
+  kanbanUrl,
+  listUrl,
   
   // Поиск
   searchInputValue,
@@ -135,17 +174,25 @@ export const LeadsPageHeader = memo(forwardRef(({
                 {
                   value: VIEW_MODE.KANBAN,
                   label: (
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <ViewModeLink
+                      href={kanbanUrl}
+                      onClick={() => onViewModeChange(VIEW_MODE.KANBAN)}
+                      isActive={viewMode === VIEW_MODE.KANBAN}
+                    >
                       <TbLayoutKanbanFilled color="var(--crm-ui-kit-palette-text-primary)" />
-                    </div>
+                    </ViewModeLink>
                   )
                 },
                 {
                   value: VIEW_MODE.LIST,
                   label: (
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <ViewModeLink
+                      href={listUrl}
+                      onClick={() => onViewModeChange(VIEW_MODE.LIST)}
+                      isActive={viewMode === VIEW_MODE.LIST}
+                    >
                       <FaList color="var(--crm-ui-kit-palette-text-primary)" />
-                    </div>
+                    </ViewModeLink>
                   )
                 },
               ]}
