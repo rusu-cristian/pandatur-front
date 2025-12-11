@@ -549,9 +549,9 @@ export const translations = {
     EN: "No transport"
   },
   Excursie: {
-    RO: "Excursie",
-    RU: "Экскурсия",
-    EN: "Trip"
+    RO: "Denumirea turului",
+    RU: "Название тура",
+    EN: "Trip name"
   },
   "Sejur la Mare": {
     RO: "Sejur la Mare",
