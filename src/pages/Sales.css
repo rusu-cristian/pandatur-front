@@ -1,0 +1,179 @@
+.sales-container {
+  height: 100%;
+  overflow: auto;
+}
+
+.sales-filters {
+  background-color: var(--crm-ui-kit-palette-background-primary);
+}
+
+.sales-tables {
+  padding-bottom: 100px;
+}
+
+/* Table container styling */
+.sales-table-container {
+  background-color: var(--crm-ui-kit-palette-background-primary) !important;
+  color: var(--crm-ui-kit-palette-text-primary);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.sales-table-container .MuiTableCell-root {
+  color: var(--crm-ui-kit-palette-text-primary);
+  border-color: var(--crm-ui-kit-palette-border-default);
+  padding: 10px 16px;
+  font-size: 13px;
+}
+
+/* Header row */
+.sales-header-row {
+  background-color: var(--crm-ui-kit-palette-background-secondary);
+}
+
+.sales-header-row .MuiTableCell-root {
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  color: var(--crm-ui-kit-palette-text-secondary-light);
+}
+
+/* Total row - most prominent */
+.sales-row.total-row {
+  background-color: #1a1a2e;
+}
+
+.sales-row.total-row .MuiTableCell-root {
+  color: #fff;
+  font-size: 14px;
+  padding: 14px 16px;
+}
+
+/* Group Title Row (Level 0) - Primary color, prominent */
+.sales-row.depth-0.group-title-row {
+  background-color: var(--crm-ui-kit-palette-link-primary);
+}
+
+.sales-row.depth-0.group-title-row .MuiTableCell-root {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 16px;
+}
+
+.sales-row.depth-0.group-title-row .MuiIconButton-root {
+  color: #fff;
+}
+
+/* Level 1 rows - User Groups / Destinations - Secondary highlight */
+.sales-row.depth-1:not(.detail-row) {
+  background-color: rgba(99, 102, 241, 0.15);
+  border-left: 4px solid var(--crm-ui-kit-palette-link-primary);
+}
+
+.sales-row.depth-1:not(.detail-row) .MuiTableCell-root {
+  font-weight: 500;
+  font-size: 13px;
+}
+
+/* Level 2 rows - Users / Service Types - Lighter background */
+.sales-row.depth-2:not(.detail-row) {
+  background-color: var(--crm-ui-kit-palette-background-primary);
+  border-left: 4px solid rgba(99, 102, 241, 0.3);
+}
+
+.sales-row.depth-2:not(.detail-row) .MuiTableCell-root {
+  font-size: 13px;
+}
+
+/* Level 3+ rows */
+.sales-row.depth-3:not(.detail-row),
+.sales-row.depth-4:not(.detail-row) {
+  background-color: var(--crm-ui-kit-palette-background-primary);
+  border-left: 4px solid rgba(99, 102, 241, 0.15);
+}
+
+.sales-row.depth-3 .MuiTableCell-root,
+.sales-row.depth-4 .MuiTableCell-root {
+  color: var(--crm-ui-kit-palette-text-primary);
+}
+
+/* Detail rows (excursii/tururi breakdown, service types) */
+.sales-row.detail-row {
+  background-color: rgba(255, 255, 255, 0.03);
+  border-left: 4px solid rgba(99, 102, 241, 0.2);
+}
+
+.sales-row.detail-row .MuiTableCell-root {
+  color: var(--crm-ui-kit-palette-text-primary);
+  font-size: 12px;
+  padding: 8px 16px;
+  opacity: 0.85;
+}
+
+/* Alternating row colors for better readability within same depth */
+.sales-row.depth-2:nth-of-type(even):not(.detail-row) {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.sales-row.depth-3:nth-of-type(even):not(.detail-row),
+.sales-row.detail-row:nth-of-type(even) {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Icon buttons */
+.sales-table-container .MuiIconButton-root {
+  color: var(--crm-ui-kit-palette-text-primary);
+  padding: 4px;
+  margin-right: 4px;
+}
+
+.sales-table-container .MuiIconButton-root:disabled {
+  color: var(--crm-ui-kit-palette-text-secondary-light);
+  opacity: 0.3;
+}
+
+/* Hover effects */
+.sales-row:hover:not(.total-row):not(.group-title-row):not(.sales-header-row) {
+  background-color: rgba(99, 102, 241, 0.08) !important;
+}
+
+.sales-row.depth-1:hover:not(.detail-row) {
+  background-color: rgba(99, 102, 241, 0.22) !important;
+}
+
+/* Better visual separation between sections */
+.sales-row.depth-0.group-title-row + .sales-row {
+  border-top: none;
+}
+
+/* Ensure text doesn't wrap in numeric columns */
+.sales-table-container .MuiTableCell-root[align="right"] {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* First column (Name) styling */
+.sales-table-container .MuiTableCell-root:first-child {
+  min-width: 200px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .sales-table-container .MuiTableCell-root {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+  
+  .sales-header-row .MuiTableCell-root {
+    font-size: 11px;
+  }
+  
+  .sales-row.total-row .MuiTableCell-root,
+  .sales-row.depth-0.group-title-row .MuiTableCell-root {
+    font-size: 12px;
+    padding: 10px;
+  }
+}

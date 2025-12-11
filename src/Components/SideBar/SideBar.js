@@ -10,7 +10,8 @@ import {
   FaCalendar,
   FaHistory,
   FaChartPie,
-  FaSync
+  FaSync,
+  FaMoneyBillWave
 } from "react-icons/fa";
 import { FaUsers, FaBars } from "react-icons/fa6";
 import { MdLightMode, MdDarkMode } from "react-icons/md";
@@ -304,6 +305,16 @@ export const SideBar = () => {
               component={<Link to="/analytics" onClick={handleMenuClick} />}
             >
               {getLanguageByKey("Analytics")}
+            </MenuItem>
+          )}
+
+          {hasStrictPermission(userRoles, "ANALYTICS", "VIEW") && (
+            <MenuItem
+              active={isActive("sales")}
+              icon={<FaMoneyBillWave size={24} />}
+              component={<Link to="/sales" onClick={handleMenuClick} />}
+            >
+              {getLanguageByKey("Sales")}
             </MenuItem>
           )}
 
