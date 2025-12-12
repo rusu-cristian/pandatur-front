@@ -1,5 +1,4 @@
-import { useState, useRef, useMemo, useCallback, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useState, useRef, useMemo, useCallback } from "react";
 import { FixedSizeList } from "react-window";
 import { LuFilter } from "react-icons/lu";
 import {
@@ -10,23 +9,17 @@ import {
   Divider,
   ActionIcon,
   Badge,
-  Tabs,
   Modal,
   Text,
-  Button,
   Loader
 } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { getLanguageByKey } from "../utils";
-import { useUser, useApp, useDOMElementHeight, useChatUrlSync } from "../../hooks";
+import { useApp, useDOMElementHeight, useChatFilters } from "../../hooks";
 import { ChatListItem } from "./components";
-import { TicketFormTabs } from "../TicketFormTabs";
-import { MessageFilterForm } from "../LeadsComponent/MessageFilterForm";
+import { ChatFilter } from "./ChatFilter";
 
 const CHAT_ITEM_HEIGHT = 94;
-
-// Финальные статусы, которые исключаем из показа в чате
-const EXCLUDED_WORKFLOWS = ["Realizat cu succes", "Închis și nerealizat", "Interesat"];
 
 // Hash map для быстрого поиска тикетов по различным критериям
 const createSearchIndex = (tickets) => {
@@ -122,144 +115,25 @@ const ChatList = ({ ticketId }) => {
   const { 
     tickets, 
     chatFilteredTickets, 
-    fetchChatFilteredTickets, 
     chatSpinner, 
     isChatFiltered, 
-    setIsChatFiltered, 
-    workflowOptions, 
-    currentChatFilters,
-    accessibleGroupTitles,
-    customGroupTitle,
-    setCustomGroupTitle,
   } = useApp();
-  const { userId } = useUser();
-  const [searchParams] = useSearchParams();
+  
+  // Единый хук для фильтров (URL как источник правды)
+  const { filters, hasFilters } = useChatFilters();
 
-  const [openFilter, setOpenFilter] = useState(false);
+  // Локальный поиск (с debounce)
   const [rawSearchQuery, setRawSearchQuery] = useState("");
   const [searchQuery] = useDebouncedValue(rawSearchQuery, 300);
-  const [chatFilters, setChatFilters] = useState({ action_needed: true });
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  
+  // Модал фильтра
+  const [openFilter, setOpenFilter] = useState(false);
 
+  // Refs для высоты списка
   const wrapperChatItemRef = useRef(null);
   const wrapperChatHeight = useDOMElementHeight(wrapperChatItemRef);
-  const [activeTab, setActiveTab] = useState("filter_ticket");
-  const ticketFormRef = useRef();
-  const messageFormRef = useRef();
 
-  // Функция для создания дефолтных фильтров
-  const getDefaultFilters = useCallback(() => {
-    const filteredWorkflow = workflowOptions.filter((w) => !EXCLUDED_WORKFLOWS.includes(w));
-    return {
-      action_needed: true,
-      workflow: filteredWorkflow,
-      technician_id: [String(userId)],
-      unseen: "true",
-      last_message_author: [0]
-    };
-  }, [workflowOptions, userId]);
-
-  // Функция для применения фильтров
-  const applyFilters = useCallback((filters) => {
-    setChatFilters(filters);
-    fetchChatFilteredTickets(filters);
-    setIsChatFiltered(true);
-  }, [fetchChatFilteredTickets, setIsChatFiltered]);
-
-  // Функция для сброса фильтров
-  const resetFilters = useCallback(() => {
-    const defaultFilters = getDefaultFilters();
-    applyFilters(defaultFilters);
-  }, [getDefaultFilters, applyFilters]);
-
-  // Вспомогательные функции для работы с фильтрами
-  const isEmpty = useCallback((v) =>
-    v === undefined ||
-    v === null ||
-    v === "" ||
-    (Array.isArray(v) && v.length === 0) ||
-    (typeof v === "object" && Object.keys(v).length === 0)
-  , []);
-
-  const mergeFilters = useCallback((...filters) =>
-    Object.fromEntries(
-      Object.entries(Object.assign({}, ...filters)).filter(
-        ([_, v]) => !isEmpty(v)
-      )
-    )
-  , [isEmpty]);
-
-  // URL синхронизация - работает автоматически, не нарушая существующую логику
-  useChatUrlSync({
-    chatFilters,
-    isFiltered: isChatFiltered,
-    rawSearchQuery,
-    showMyTickets: false,
-  });
-
-  // Синхронизация group_title из URL в контекст (как в useLeadsUrlSync)
-  useEffect(() => {
-    const urlGroupTitle = searchParams.get("group_title");
-    
-    // Если в URL есть group_title и он доступен по правам, синхронизируем его
-    if (
-      urlGroupTitle &&
-      Array.isArray(accessibleGroupTitles) &&
-      accessibleGroupTitles.includes(urlGroupTitle) &&
-      customGroupTitle !== urlGroupTitle
-    ) {
-      setCustomGroupTitle(urlGroupTitle);
-    }
-  }, [searchParams, accessibleGroupTitles, customGroupTitle, setCustomGroupTitle]);
-
-  // Восстановление состояния из URL при первой загрузке (только серверные фильтры)
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const urlIsFiltered = urlParams.get("is_filtered") === "true";
-
-    // Восстанавливаем только серверные фильтры (НЕ локальные: search, show_my_tickets)
-    // group_title управляется отдельно через эффект выше
-    if (urlIsFiltered && !isChatFiltered && isInitialLoad) {
-      const urlFilters = {};
-      for (const [key, value] of urlParams.entries()) {
-        if (key === "search" || key === "show_my_tickets" || key === "is_filtered" || key === "group_title") continue;
-
-        if (key.endsWith("_from") || key.endsWith("_to")) {
-          const baseKey = key.replace(/_from$|_to$/, "");
-          if (!urlFilters[baseKey]) urlFilters[baseKey] = {};
-          if (key.endsWith("_from")) urlFilters[baseKey].from = value;
-          if (key.endsWith("_to")) urlFilters[baseKey].to = value;
-        } else {
-          const values = urlParams.getAll(key);
-          urlFilters[key] = values.length > 1 ? values : values[0];
-        }
-      }
-
-      if (Object.keys(urlFilters).length > 0) {
-        setChatFilters(urlFilters);
-        setIsChatFiltered(true);
-        fetchChatFilteredTickets(urlFilters);
-        setIsInitialLoad(false); // Отмечаем, что загрузка завершена
-      }
-    }
-  }, [fetchChatFilteredTickets, isChatFiltered, setIsChatFiltered, isInitialLoad]); // Зависимости для восстановления состояния из URL
-
-  // Синхронизируем локальные фильтры с глобальными
-  useEffect(() => {
-    if (isChatFiltered && Object.keys(currentChatFilters).length > 0) {
-      setChatFilters(currentChatFilters);
-    }
-  }, [currentChatFilters, isChatFiltered]);
-
-  // Загружаем тикеты с фильтрами по умолчанию при первой загрузке
-  useEffect(() => {
-    if (isInitialLoad && workflowOptions.length > 0 && !isChatFiltered && userId) {
-      const defaultFilters = getDefaultFilters();
-      applyFilters(defaultFilters);
-      setIsInitialLoad(false);
-    }
-  }, [isInitialLoad, workflowOptions, isChatFiltered, userId, getDefaultFilters, applyFilters]);
-
+  // Базовые тикеты (отфильтрованные или все)
   const baseTickets = useMemo(() => {
     return isChatFiltered ? chatFilteredTickets : tickets;
   }, [isChatFiltered, chatFilteredTickets, tickets]);
@@ -269,13 +143,11 @@ const ChatList = ({ ticketId }) => {
     return createSearchIndex(baseTickets);
   }, [baseTickets]);
 
+  // Финальный список тикетов (с локальным поиском)
   const filteredTickets = useMemo(() => {
     let result = [...baseTickets];
 
-    // Основная фильтрация делается на сервере через fetchChatFilteredTickets
-    // Здесь применяем только локальный поиск по отфильтрованным тикетам
-
-    // Поиск по запросу - ищем в тикетах, которые пришли с сервера
+    // Локальный поиск по отфильтрованным тикетам
     if (searchQuery) {
       const searchResults = searchTickets(searchIndex, searchQuery);
       result = result.filter(ticket => searchResults.includes(ticket));
@@ -284,9 +156,7 @@ const ChatList = ({ ticketId }) => {
     return result;
   }, [baseTickets, searchQuery, searchIndex]);
 
-  // ВАЖНО: Сортировка происходит на бэкенде, поэтому используем filteredTickets напрямую
-  // Бэкенд возвращает тикеты уже отсортированными по last_interaction_date или другому полю
-
+  // Рендер элемента списка
   const ChatItem = useCallback(
     ({ index, style }) => (
       <ChatListItem
@@ -313,7 +183,7 @@ const ChatList = ({ ticketId }) => {
               </Badge>
             </Flex>
             <ActionIcon
-              variant={isChatFiltered ? "filled" : "default"}
+              variant={hasFilters ? "filled" : "default"}
               size="36"
               onClick={() => setOpenFilter(true)}
             >
@@ -354,6 +224,7 @@ const ChatList = ({ ticketId }) => {
         </Box>
       </Box>
 
+      {/* Модал фильтра */}
       <Modal
         opened={openFilter}
         onClose={() => setOpenFilter(false)}
@@ -377,71 +248,11 @@ const ChatList = ({ ticketId }) => {
           }
         }}
       >
-        <Tabs
-          h="100%"
-          className="leads-modal-filter-tabs"
-          defaultValue="filter_ticket"
-          value={activeTab}
-          onChange={setActiveTab}
-          pb="48"
-        >
-          <Tabs.List>
-            <Tabs.Tab value="filter_ticket">{getLanguageByKey("Filtru pentru Lead")}</Tabs.Tab>
-            <Tabs.Tab value="filter_message">{getLanguageByKey("Filtru dupǎ mesaje")}</Tabs.Tab>
-          </Tabs.List>
-
-          <Tabs.Panel value="filter_ticket" pt="xs">
-            <TicketFormTabs
-              ref={ticketFormRef}
-              initialData={chatFilters}
-              loading={chatSpinner}
-            />
-          </Tabs.Panel>
-
-          <Tabs.Panel value="filter_message" pt="xs">
-            <MessageFilterForm
-              ref={messageFormRef}
-              initialData={chatFilters}
-              loading={chatSpinner}
-            />
-          </Tabs.Panel>
-
-          <Flex justify="end" gap="md" mt="md" pr="md">
-            <Button
-              variant="outline"
-              onClick={() => {
-                resetFilters();
-                setOpenFilter(false);
-              }}
-            >
-              {getLanguageByKey("Reset filter")}
-            </Button>
-            <Button variant="outline" onClick={() => setOpenFilter(false)}>
-              {getLanguageByKey("Închide")}
-            </Button>
-            <Button
-              variant="filled"
-              loading={chatSpinner}
-              onClick={() => {
-                const ticketValues = ticketFormRef.current?.getValues?.() || {};
-                const messageValues = messageFormRef.current?.getValues?.() || {};
-
-                const combined = mergeFilters(ticketValues, messageValues);
-
-                // Если фильтры пустые, применяем дефолтные
-                if (Object.keys(combined).length === 0) {
-                  resetFilters();
-                } else {
-                  applyFilters(combined);
-                }
-
-                setOpenFilter(false);
-              }}
-            >
-              {getLanguageByKey("Aplică")}
-            </Button>
-          </Flex>
-        </Tabs>
+        <ChatFilter
+          initialData={filters}
+          loading={chatSpinner}
+          onClose={() => setOpenFilter(false)}
+        />
       </Modal>
     </>
   );

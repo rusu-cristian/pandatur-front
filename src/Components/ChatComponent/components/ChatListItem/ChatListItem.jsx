@@ -1,6 +1,6 @@
 import { Box, Flex, Image, Text, Badge, Menu, ActionIcon, Divider } from "@mantine/core";
-import { useMemo } from "react";
-import { Link } from "react-router-dom";
+import { useMemo, useCallback } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { HiSpeakerWave } from "react-icons/hi2";
 import { FaFingerprint } from "react-icons/fa6";
 import { IoIosVideocam } from "react-icons/io";
@@ -17,6 +17,31 @@ import { parseServerDate, getLanguageByKey } from "@utils";
 import { useSocket, useApp, useUser } from "@hooks";
 import { api } from "../../../../api";
 import "./ChatListItem.css";
+
+/**
+ * Компонент ссылки с Progressive Enhancement
+ * - Обычный клик → SPA навигация с сохранением query params
+ * - Cmd/Ctrl+Click → открывает в новой вкладке с полным URL
+ */
+const ChatLink = ({ to, children, className, style }) => {
+  const navigate = useNavigate();
+  
+  const handleClick = useCallback((e) => {
+    // Разрешаем открытие в новой вкладке (Cmd/Ctrl + Click)
+    if (e.metaKey || e.ctrlKey || e.shiftKey) {
+      return; // Браузер откроет ссылку в новой вкладке
+    }
+    
+    e.preventDefault();
+    navigate(to);
+  }, [navigate, to]);
+
+  return (
+    <a href={to} onClick={handleClick} className={className} style={style}>
+      {children}
+    </a>
+  );
+};
 
 const MESSAGE_INDICATOR = {
   [MEDIA_TYPE.IMAGE]: (
@@ -79,11 +104,17 @@ const MESSAGE_INDICATOR = {
 
 export const ChatListItem = ({ chat, style, selectTicketId }) => {
   const formatDate = parseServerDate(chat.time_sent);
-  // Убираем локальное состояние - всегда смотрим на тикет
-
+  const [searchParams] = useSearchParams();
+  
   const { userId } = useUser();
   const { socketRef } = useSocket();
   const { markMessagesAsRead, getTicketById } = useApp();
+  
+  // Строим URL с сохранением query params (фильтров)
+  const chatUrl = useMemo(() => {
+    const queryString = searchParams.toString();
+    return queryString ? `/chat/${chat.id}?${queryString}` : `/chat/${chat.id}`;
+  }, [chat.id, searchParams]);
 
   // Получаем actionNeeded всегда из AppContext
   const currentTicket = getTicketById(chat.id);
@@ -216,7 +247,7 @@ export const ChatListItem = ({ chat, style, selectTicketId }) => {
         ...style,
       }}
     >
-      <Link to={`/chat/${chat.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+      <ChatLink to={chatUrl} style={{ textDecoration: 'none', color: 'inherit' }}>
         <Box
           py="9px"
           pr="10px"
@@ -325,7 +356,7 @@ export const ChatListItem = ({ chat, style, selectTicketId }) => {
             </Text>
           </Flex>
         </Box>
-      </Link>
+      </ChatLink>
     </div>
   );
 };

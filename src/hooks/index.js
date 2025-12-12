@@ -18,6 +18,6 @@ export * from "./useUserPermissions";
 export * from "./useMobile";
 export * from "./useZoomScale";
 export * from "./useTheme";
-export * from "./useChatUrlSync";
 export * from "./useLeadsFilters";
 export * from "./useSearchInput";
+export * from "./useChatFilters";
