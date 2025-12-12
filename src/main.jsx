@@ -12,7 +12,7 @@ const queryClient = new QueryClient({
       refetchOnWindowFocus: false, // Не перезагружать при возврате на вкладку (можно включить)
       retry: 1, // Повторить запрос 1 раз при ошибке
       staleTime: 5 * 60 * 1000, // Данные считаются свежими 5 минут
-      cacheTime: 10 * 60 * 1000, // Кэш хранится 10 минут
+      gcTime: 10 * 60 * 1000, // Кэш хранится 10 минут (в React Query v5 переименовано из cacheTime)
     },
     mutations: {
       retry: 0, // Не повторять mutations при ошибке
@@ -27,7 +27,7 @@ root.render(
       <App />
     </BrowserRouter>
     {/* DevTools только в dev режиме */}
-    {process.env.NODE_ENV === "development" && (
+    {import.meta.env.DEV && (
       <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
     )}
   </QueryClientProvider>

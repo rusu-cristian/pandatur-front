@@ -8,7 +8,7 @@ export const safeParseJson = (str) => {
         }
         return result;
     } catch (err) {
-        if (process.env.NODE_ENV === "development") {
+        if (import.meta.env.DEV) {
             console.warn("error safeParseJson:", err, str);
         }
         return [];

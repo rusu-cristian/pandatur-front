@@ -104,7 +104,7 @@ export const ChatInput = ({
 
   // Валидация props в dev режиме
   useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.DEV) {
       if (!platformOptionsProp) {
         console.warn('[ChatInput] platformOptions not provided via props');
       }

@@ -156,7 +156,7 @@ export const SocketProvider = ({ children }) => {
       }
 
       try {
-        socket = new WebSocket(process.env.REACT_APP_WS_URL);
+        socket = new WebSocket(import.meta.env.VITE_WS_URL);
       } catch {
         reconnectAttempts.current += 1;
         reconnectTimer = setTimeout(connect, reconnectDelay);
