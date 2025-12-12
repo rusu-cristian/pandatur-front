@@ -451,15 +451,6 @@ export const AppProvider = ({ children }) => {
       setChatFilteredTickets((prev) => {
         const exists = getChatFilteredTicketById(ticketId);
 
-        // ВАЖНО: Проверяем group_title — не добавляем тикеты из других воронок
-        if (normalizedTicket.group_title !== groupTitleForApi) {
-          if (exists) {
-            chatFilteredTicketsMap.current.delete(ticketId);
-            return prev.filter(t => t.id !== ticketId);
-          }
-          return prev;
-        }
-
         // Проверяем, соответствует ли тикет текущим фильтрам
         if (isChatFiltered && Object.keys(currentChatFilters).length > 0) {
           if (!doesTicketMatchFilters(normalizedTicket, currentChatFilters)) {
