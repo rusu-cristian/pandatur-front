@@ -61,6 +61,20 @@ const getFieldLabel = (subject) => {
         data_contractului: getLanguageByKey("Data contractului"),
         data_avansului: getLanguageByKey("Data avansului"),
         data_de_plata_integrala: getLanguageByKey("Data de plată integrală"),
+
+        // Client fields
+        name: getLanguageByKey("Nume") || "Name",
+        surname: getLanguageByKey("Prenume") || "Surname",
+        email: getLanguageByKey("Email") || "Email",
+        phone: getLanguageByKey("Telefon") || "Phone",
+        created_at: getLanguageByKey("Data creării") || "Created at",
+        updated_at: getLanguageByKey("Data actualizării") || "Updated at",
+        import_success: getLanguageByKey("Import reușit") || "Import success",
+        imported: getLanguageByKey("Importat") || "Imported",
+
+        // Client contact fields
+        contact_type: getLanguageByKey("Tip contact") || "Contact type",
+        contact_value: getLanguageByKey("Valoare contact") || "Contact value",
     };
 
     return fieldLabels[subject] || subject;
@@ -128,8 +142,37 @@ export const MessagesLogItem = ({ log, technicians }) => {
 
     // Определяем что изменилось
     let changed = "";
+    // Добавляем префикс для client и client_contact логов
+    const logTypePrefix = log.type === "client" 
+        ? `[${getLanguageByKey("Client") || "Client"}] ` 
+        : log.type === "client_contact" 
+            ? `[${getLanguageByKey("Contact") || "Contact"}] ` 
+            : "";
+    
     if (log.action === "created" && log.subject === "ticket") {
         changed = getLanguageByKey("Ticket creat");
+    } else if (log.action === "created" && log.type === "client") {
+        // Специальная обработка для создания клиента
+        const fieldLabel = getFieldLabel(log.subject);
+        const toValue = formatValue(log.to, log.subject);
+        changed = `${logTypePrefix}${fieldLabel}: ${toValue}`;
+    } else if (log.action === "created" && log.type === "client_contact") {
+        // Специальная обработка для создания контакта клиента
+        const fieldLabel = getFieldLabel(log.subject);
+        const toValue = formatValue(log.to, log.subject);
+        changed = `${logTypePrefix}${fieldLabel}: ${toValue}`;
+    } else if (log.action === "updated" && log.type === "client") {
+        // Специальная обработка для обновления клиента
+        const fieldLabel = getFieldLabel(log.subject);
+        const fromValue = formatValue(log.from, log.subject);
+        const toValue = formatValue(log.to, log.subject);
+        changed = `${logTypePrefix}${fieldLabel}: ${fromValue} → ${toValue}`;
+    } else if (log.action === "updated" && log.type === "client_contact") {
+        // Специальная обработка для обновления контакта клиента
+        const fieldLabel = getFieldLabel(log.subject);
+        const fromValue = formatValue(log.from, log.subject);
+        const toValue = formatValue(log.to, log.subject);
+        changed = `${logTypePrefix}${fieldLabel}: ${fromValue} → ${toValue}`;
     } else if (log.action === "created" && log.type === "task") {
         // Специальная обработка для создания задачи
         const forTech = technicians?.find((t) => String(t.value) === String(log.for)) || {};
