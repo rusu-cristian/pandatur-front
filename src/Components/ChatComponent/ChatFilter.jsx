@@ -34,7 +34,12 @@ export const ChatFilter = ({
   const ticketFormRef = useRef();
   const messageFormRef = useRef();
 
-  const { setFilters, resetFilters } = useChatFilters();
+  const { setFilters, resetFilters, updateGroupTitle } = useChatFilters();
+  
+  // При смене группы в форме — сбрасываем фильтры (как в LeadsFilter — модал НЕ закрываем)
+  const handleGroupTitleChange = (newGroupTitle) => {
+    updateGroupTitle(newGroupTitle);
+  };
 
   // Собираем значения из форм и убираем пустые
   const collectFormValues = () => {
@@ -97,6 +102,7 @@ export const ChatFilter = ({
             ref={ticketFormRef}
             initialData={initialData}
             loading={loading}
+            onGroupTitleChange={handleGroupTitleChange}
           />
         </Tabs.Panel>
 

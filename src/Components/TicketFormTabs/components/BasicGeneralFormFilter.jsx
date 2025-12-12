@@ -36,7 +36,7 @@ import { WorkflowMultiSelect } from "../../Workflow/components/WorkflowMultiSele
 const GENERAL_FORM_FILTER_ID = "GENERAL_FORM_FILTER_ID";
 
 export const BasicGeneralFormFilter = forwardRef(
-  ({ loading, data, formId }, ref) => {
+  ({ loading, data, formId, onGroupTitleChange: externalOnGroupTitleChange }, ref) => {
     const idForm = formId || GENERAL_FORM_FILTER_ID;
     const { technicians } = useGetTechniciansList();
     const {
@@ -136,6 +136,15 @@ export const BasicGeneralFormFilter = forwardRef(
           : accessibleGroupTitles[0] || null;
       }
 
+      // Если передан внешний callback (для Chat) — используем его
+      // Он должен полностью обработать смену группы и сбросить фильтры
+      if (externalOnGroupTitleChange) {
+        form.setFieldValue("workflow", []);
+        externalOnGroupTitleChange(valueToSet);
+        return;
+      }
+
+      // Стандартная логика для Leads
       setSearchParams(
         (prev) => {
           const newParams = new URLSearchParams(prev);

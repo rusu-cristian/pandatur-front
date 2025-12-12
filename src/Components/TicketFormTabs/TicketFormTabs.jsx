@@ -20,6 +20,7 @@ export const TicketFormTabs = forwardRef(
       loading,
       initialData,
       orientation = "vertical",
+      onGroupTitleChange, // Callback при смене группы (для Chat)
     },
     ref
   ) => {
@@ -66,6 +67,7 @@ export const TicketFormTabs = forwardRef(
               data={initialData}
               loading={loading}
               onClose={onClose}
+              onGroupTitleChange={onGroupTitleChange}
             />
           </Flex>
         </Tabs.Panel>

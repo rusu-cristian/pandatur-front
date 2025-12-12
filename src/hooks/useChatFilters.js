@@ -168,15 +168,31 @@ export const useChatFilters = () => {
     return false;
   }, [urlGroupTitle, accessibleGroupTitles, customGroupTitle, setCustomGroupTitle]);
 
-  // Обновить group_title в URL
+  // Обновить group_title — обновляет контекст и сбрасывает URL к дефолтным фильтрам
   const updateGroupTitle = useCallback((newGroupTitle) => {
+    // 1. Обновляем контекст
+    if (newGroupTitle && accessibleGroupTitles.includes(newGroupTitle)) {
+      setCustomGroupTitle(newGroupTitle);
+      localStorage.setItem("leads_last_group_title", newGroupTitle);
+    } else {
+      setCustomGroupTitle(null);
+      localStorage.removeItem("leads_last_group_title");
+    }
+    
+    // 2. Сбрасываем URL — убираем все фильтры, оставляем только group_title
+    // Это приведёт к применению дефолтных фильтров через useEffect
     const newParams = new URLSearchParams();
     if (newGroupTitle) {
       newParams.set("group_title", newGroupTitle);
     }
+    
+    // Сбрасываем флаг инициализации чтобы применились дефолтные фильтры
+    isInitializedRef.current = false;
+    lastFiltersRef.current = null;
+    
     // При смене группы сбрасываем фильтры и ticketId
     navigate(`/chat?${newParams.toString()}`, { replace: true });
-  }, [navigate]);
+  }, [navigate, accessibleGroupTitles, setCustomGroupTitle]);
 
   // === ЭФФЕКТЫ ===
 
