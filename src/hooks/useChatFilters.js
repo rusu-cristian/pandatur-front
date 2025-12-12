@@ -85,8 +85,8 @@ export const useChatFilters = () => {
   // === ЗАПИСЫВАЕМ В URL ===
 
   /**
-   * Универсальная функция обновления фильтров
-   * ВАЖНО: При изменении фильтров сбрасываем ticketId (переходим на /chat)
+   * Частичное обновление фильтров (merge с существующими)
+   * Используй для изменения одного-двух параметров
    */
   const updateFilters = useCallback((partialFilters) => {
     const newFilters = { ...filters };
@@ -114,6 +114,20 @@ export const useChatFilters = () => {
     // Переходим на /chat без ticketId, но с новыми фильтрами
     navigate(`/chat?${urlParams.toString()}`, { replace: true });
   }, [filters, navigate, groupTitleForApi]);
+
+  /**
+   * Полная замена фильтров (для формы фильтра)
+   * Используй когда нужно установить ВСЕ фильтры из формы
+   */
+  const setFilters = useCallback((newFilters) => {
+    const urlParams = prepareFiltersForUrl({
+      ...newFilters,
+      is_filtered: "true",
+      ...(groupTitleForApi ? { group_title: groupTitleForApi } : {}),
+    });
+    
+    navigate(`/chat?${urlParams.toString()}`, { replace: true });
+  }, [navigate, groupTitleForApi]);
 
   /**
    * Сбросить к дефолтным фильтрам
@@ -219,7 +233,8 @@ export const useChatFilters = () => {
     ticketId, // ticketId из URL path
     
     // Действия
-    updateFilters,
+    setFilters,      // Полная замена (для формы)
+    updateFilters,   // Частичное обновление (для отдельных полей)
     resetFilters,
     clearFilters,
     syncGroupTitleFromUrl,

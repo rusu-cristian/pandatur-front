@@ -34,7 +34,7 @@ export const ChatFilter = ({
   const ticketFormRef = useRef();
   const messageFormRef = useRef();
 
-  const { updateFilters, resetFilters, groupTitleForApi } = useChatFilters();
+  const { setFilters, resetFilters } = useChatFilters();
 
   // Собираем значения из форм и убираем пустые
   const collectFormValues = () => {
@@ -57,19 +57,15 @@ export const ChatFilter = ({
   const handleSubmit = () => {
     const formValues = collectFormValues();
 
-    // Добавляем group_title если есть
-    if (groupTitleForApi) {
-      formValues.group_title = groupTitleForApi;
-    }
-
     // Если фильтры пустые — сбрасываем к дефолтным
     if (!hasRealFilters(formValues)) {
       handleReset();
       return;
     }
 
-    // Устанавливаем фильтры через URL
-    updateFilters(formValues);
+    // Полная замена фильтров (не merge!)
+    // Это важно: если убрали technician_id из формы, он исчезнет из URL
+    setFilters(formValues);
     onClose?.();
   };
 
