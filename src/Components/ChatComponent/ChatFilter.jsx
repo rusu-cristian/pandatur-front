@@ -11,9 +11,9 @@ import { useChatFilters } from "@hooks";
 const hasRealFilters = (filters) => {
   const { group_title, is_filtered, ...realFilters } = filters;
   return Object.values(realFilters).some(
-    (v) => v !== undefined && v !== null && v !== "" && 
-           !(Array.isArray(v) && v.length === 0) &&
-           !(typeof v === "object" && !Array.isArray(v) && Object.keys(v).length === 0)
+    (v) => v !== undefined && v !== null && v !== "" &&
+      !(Array.isArray(v) && v.length === 0) &&
+      !(typeof v === "object" && !Array.isArray(v) && Object.keys(v).length === 0)
   );
 };
 
@@ -35,7 +35,7 @@ export const ChatFilter = ({
   const messageFormRef = useRef();
 
   const { setFilters, resetFilters, updateGroupTitle } = useChatFilters();
-  
+
   // При смене группы в форме — сбрасываем фильтры (как в LeadsFilter — модал НЕ закрываем)
   const handleGroupTitleChange = (newGroupTitle) => {
     updateGroupTitle(newGroupTitle);
@@ -48,7 +48,7 @@ export const ChatFilter = ({
 
     // Объединяем и фильтруем пустые значения
     const combined = { ...ticketValues, ...messageValues };
-    
+
     return Object.fromEntries(
       Object.entries(combined).filter(([_, value]) => {
         if (value === undefined || value === null || value === "") return false;
@@ -116,15 +116,15 @@ export const ChatFilter = ({
       </Tabs>
 
       {/* Футер закреплён внизу */}
-      <Flex 
-        justify="end" 
-        gap="md" 
-        pt={16} 
-        pb={8} 
-        pr="md" 
-        style={{ 
+      <Flex
+        justify="end"
+        gap="md"
+        pt={16}
+        pb={8}
+        pr="md"
+        style={{
           borderTop: "1px solid var(--mantine-color-gray-3)",
-          flexShrink: 0 
+          flexShrink: 0
         }}
       >
         <Button variant="outline" onClick={handleReset}>

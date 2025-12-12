@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useEffect, useRef } from "react";
+import { useCallback, useMemo } from "react";
 import { useSearchParams, useNavigate, useParams } from "react-router-dom";
 import { useApp, useUser } from "@hooks";
 import { parseFiltersFromUrl, prepareFiltersForUrl } from "../Components/utils/parseFiltersFromUrl";
@@ -22,6 +22,9 @@ const hasRealFilters = (filters) => {
  * Принцип: URL — единственный источник правды
  * - Все фильтры читаются из URL
  * - Все изменения фильтров записываются в URL
+ * 
+ * ВАЖНО: Этот хук НЕ содержит эффектов загрузки данных!
+ * Загрузка происходит в ChatList.jsx (как в useLeadsFilters + Leads.jsx)
  */
 export const useChatFilters = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -34,13 +37,8 @@ export const useChatFilters = () => {
     accessibleGroupTitles, 
     customGroupTitle, 
     setCustomGroupTitle,
-    fetchChatFilteredTickets,
-    setIsChatFiltered,
   } = useApp();
   const { userId } = useUser();
-  
-  const isInitializedRef = useRef(false);
-  const lastFiltersRef = useRef(null);
 
   // === ДЕФОЛТНЫЕ ФИЛЬТРЫ ДЛЯ ЧАТА ===
   const defaultFilters = useMemo(() => {
@@ -168,7 +166,7 @@ export const useChatFilters = () => {
     return false;
   }, [urlGroupTitle, accessibleGroupTitles, customGroupTitle, setCustomGroupTitle]);
 
-  // Обновить group_title — обновляет контекст и сбрасывает URL к дефолтным фильтрам
+  // Обновить group_title — обновляет контекст и сбрасывает URL
   const updateGroupTitle = useCallback((newGroupTitle) => {
     // 1. Обновляем контекст
     if (newGroupTitle && accessibleGroupTitles.includes(newGroupTitle)) {
@@ -180,64 +178,20 @@ export const useChatFilters = () => {
     }
     
     // 2. Сбрасываем URL — убираем все фильтры, оставляем только group_title
-    // Это приведёт к применению дефолтных фильтров через useEffect
+    // ChatList подхватит изменение и применит дефолтные фильтры
     const newParams = new URLSearchParams();
     if (newGroupTitle) {
       newParams.set("group_title", newGroupTitle);
     }
-    
-    // Сбрасываем флаг инициализации чтобы применились дефолтные фильтры
-    isInitializedRef.current = false;
-    lastFiltersRef.current = null;
     
     // При смене группы сбрасываем фильтры и ticketId
     navigate(`/chat?${newParams.toString()}`, { replace: true });
   }, [navigate, accessibleGroupTitles, setCustomGroupTitle]);
 
   // === ЭФФЕКТЫ ===
-
-  // Синхронизация group_title при загрузке
-  useEffect(() => {
-    syncGroupTitleFromUrl();
-  }, [syncGroupTitleFromUrl]);
-
-  // Загрузка тикетов при изменении фильтров
-  useEffect(() => {
-    if (!groupTitleForApi || !workflowOptions.length || !userId) return;
-
-    const filtersKey = JSON.stringify({ filters, groupTitleForApi, isFiltered });
-    if (lastFiltersRef.current === filtersKey) return;
-    lastFiltersRef.current = filtersKey;
-
-    if (isFiltered && hasFilters) {
-      // Есть фильтры — загружаем отфильтрованные тикеты
-      fetchChatFilteredTickets(filters);
-      setIsChatFiltered(true);
-    } else if (!isInitializedRef.current) {
-      // Первая загрузка без фильтров в URL — применяем дефолтные
-      // ВАЖНО: сохраняем ticketId если он есть в URL
-      isInitializedRef.current = true;
-      const urlParams = prepareFiltersForUrl({
-        ...defaultFilters,
-        is_filtered: "true",
-        ...(groupTitleForApi ? { group_title: groupTitleForApi } : {}),
-      });
-      const basePath = ticketId ? `/chat/${ticketId}` : "/chat";
-      navigate(`${basePath}?${urlParams.toString()}`, { replace: true });
-    }
-  }, [
-    filters,
-    hasFilters,
-    isFiltered,
-    groupTitleForApi,
-    workflowOptions,
-    userId,
-    fetchChatFilteredTickets,
-    setIsChatFiltered,
-    defaultFilters,
-    navigate,
-    ticketId,
-  ]);
+  // ВАЖНО: Эффект загрузки тикетов УБРАН из хука!
+  // Загрузка происходит в ChatList.jsx (как в Leads — useLeadsFilters тоже без загрузки)
+  // Это предотвращает повторную загрузку при открытии ChatFilter
 
   return {
     // Состояние

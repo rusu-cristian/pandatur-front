@@ -1,4 +1,5 @@
-import { useState, useRef, useMemo, useCallback } from "react";
+import { useState, useRef, useMemo, useCallback, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { FixedSizeList } from "react-window";
 import { LuFilter } from "react-icons/lu";
 import {
@@ -15,9 +16,10 @@ import {
 } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { getLanguageByKey } from "../utils";
-import { useApp, useDOMElementHeight, useChatFilters } from "../../hooks";
+import { useApp, useDOMElementHeight, useChatFilters, useUser } from "../../hooks";
 import { ChatListItem } from "./components";
 import { ChatFilter } from "./ChatFilter";
+import { prepareFiltersForUrl } from "../utils/parseFiltersFromUrl";
 
 const CHAT_ITEM_HEIGHT = 94;
 
@@ -112,15 +114,66 @@ const searchTickets = (index, query) => {
 };
 
 const ChatList = ({ ticketId }) => {
+  const navigate = useNavigate();
+  const { ticketId: ticketIdFromUrl } = useParams();
+  
   const { 
     tickets, 
     chatFilteredTickets, 
     chatSpinner, 
-    isChatFiltered, 
+    isChatFiltered,
+    fetchChatFilteredTickets,
+    setIsChatFiltered,
+    groupTitleForApi,
+    workflowOptions,
   } = useApp();
   
+  const { userId } = useUser();
+  
   // Единый хук для фильтров (URL как источник правды)
-  const { filters, hasFilters } = useChatFilters();
+  const { filters, hasFilters, isFiltered, defaultFilters } = useChatFilters();
+  
+  // Ref для отслеживания загрузки (предотвращает дублирование)
+  const lastFiltersRef = useRef(null);
+  const isInitializedRef = useRef(false);
+  
+  // === ЭФФЕКТ ЗАГРУЗКИ ТИКЕТОВ ===
+  // (перенесён из useChatFilters, чтобы не срабатывал при открытии ChatFilter)
+  useEffect(() => {
+    if (!groupTitleForApi || !workflowOptions.length || !userId) return;
+
+    const filtersKey = JSON.stringify({ filters, groupTitleForApi, isFiltered });
+    if (lastFiltersRef.current === filtersKey) return;
+    lastFiltersRef.current = filtersKey;
+
+    if (isFiltered && hasFilters) {
+      // Есть фильтры — загружаем отфильтрованные тикеты
+      fetchChatFilteredTickets(filters);
+      setIsChatFiltered(true);
+    } else if (!isInitializedRef.current) {
+      // Первая загрузка без фильтров в URL — применяем дефолтные
+      isInitializedRef.current = true;
+      const urlParams = prepareFiltersForUrl({
+        ...defaultFilters,
+        is_filtered: "true",
+        ...(groupTitleForApi ? { group_title: groupTitleForApi } : {}),
+      });
+      const basePath = ticketIdFromUrl ? `/chat/${ticketIdFromUrl}` : "/chat";
+      navigate(`${basePath}?${urlParams.toString()}`, { replace: true });
+    }
+  }, [
+    filters,
+    hasFilters,
+    isFiltered,
+    groupTitleForApi,
+    workflowOptions,
+    userId,
+    fetchChatFilteredTickets,
+    setIsChatFiltered,
+    defaultFilters,
+    navigate,
+    ticketIdFromUrl,
+  ]);
 
   // Локальный поиск (с debounce)
   const [rawSearchQuery, setRawSearchQuery] = useState("");
