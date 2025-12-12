@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { BsThreeDots } from "react-icons/bs";
 import { FaHeadphones } from "react-icons/fa6";
 import {
@@ -21,7 +21,7 @@ import { parseTags } from "../../../stringUtils";
 import { Tag } from "../../Tag";
 import Can from "../../CanComponent/Can";
 import { useUser } from "../../../hooks";
-import { useMemo, memo } from "react";
+import { useMemo, memo, useCallback } from "react";
 
 const MAX_TAGS_COUNT = 2;
 
@@ -46,8 +46,25 @@ export const TicketCard = memo(({
   technician,
 }) => {
   const { user } = useUser();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const responsibleId = String(ticket.technician_id || "");
   const isMyTicket = user?.id && String(user.id) === responsibleId;
+
+  // URL с сохранением фильтров
+  const ticketUrl = useMemo(() => {
+    const queryString = searchParams.toString();
+    return queryString ? `/leads/${ticket.id}?${queryString}` : `/leads/${ticket.id}`;
+  }, [ticket.id, searchParams]);
+
+  // Progressive Enhancement: обычный клик = SPA, Cmd+Click = новая вкладка
+  const handleCardClick = useCallback((e) => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey) {
+      return; // Браузер откроет в новой вкладке
+    }
+    e.preventDefault();
+    navigate(ticketUrl);
+  }, [navigate, ticketUrl]);
 
   // Мемоизируем URL фото, чтобы предотвратить перезагрузку изображения
   const clientPhoto = ticket?.clients?.[0]?.photo;
@@ -128,7 +145,7 @@ export const TicketCard = memo(({
   }, [ticket.clients, ticket.last_message, ticket.last_message_sender_id, user?.id]);
 
   return (
-    <Link to={`/leads/${ticket.id}`}>
+    <a href={ticketUrl} onClick={handleCardClick} style={{ textDecoration: 'none' }}>
       <Card
         withBorder
         radius="md"
@@ -402,6 +419,6 @@ export const TicketCard = memo(({
           </Flex>
         </Box>
       </Card>
-    </Link>
+    </a>
   );
 });

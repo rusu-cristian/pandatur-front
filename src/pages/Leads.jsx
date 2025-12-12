@@ -354,7 +354,11 @@ export const Leads = () => {
         isChatOpen={isChatOpen}
         ticketId={ticketId}
         technicians={technicians}
-        onChatClose={() => { setIsChatOpen(false); navigate("/leads"); }}
+        onChatClose={() => { 
+          setIsChatOpen(false); 
+          // Сохраняем текущие фильтры при закрытии чата
+          navigate(`/leads${window.location.search}`); 
+        }}
         isAddModalOpen={isOpenAddLeadModal}
         groupTitleForApi={groupTitleForApi}
         onAddModalClose={() => setIsOpenAddLeadModal(false)}

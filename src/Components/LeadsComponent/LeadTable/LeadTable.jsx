@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import {
   Flex,
   Paper,
@@ -11,7 +11,7 @@ import {
   Pagination,
 } from "@mantine/core";
 import { FaFingerprint } from "react-icons/fa6";
-import { Link } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { MdDelete, MdEdit } from "react-icons/md";
 import {
@@ -62,6 +62,24 @@ export const LeadTable = ({
   const [id, setId] = useState();
   const { user } = useUser();
   const { technicians } = useGetTechniciansList();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  // Строим URL с сохранением текущих фильтров
+  const getTicketUrl = useCallback((ticketId) => {
+    const queryString = searchParams.toString();
+    return queryString ? `/leads/${ticketId}?${queryString}` : `/leads/${ticketId}`;
+  }, [searchParams]);
+
+  // Обработчик клика с Progressive Enhancement
+  const handleTicketClick = useCallback((e, ticketId) => {
+    // Разрешаем открытие в новой вкладке (Cmd/Ctrl + Click)
+    if (e.metaKey || e.ctrlKey || e.shiftKey) {
+      return;
+    }
+    e.preventDefault();
+    navigate(getTicketUrl(ticketId));
+  }, [navigate, getTicketUrl]);
 
   const technicianMap = useMemo(() => {
     if (!technicians || technicians.length === 0) return new Map();
@@ -136,13 +154,17 @@ export const LeadTable = ({
       align: "center",
       dataIndex: "id",
       width: 100,
-      render: (id) => (
-        <Link to={`/leads/${id}`} className="row-id">
+      render: (ticketId) => (
+        <a 
+          href={getTicketUrl(ticketId)} 
+          onClick={(e) => handleTicketClick(e, ticketId)}
+          className="row-id"
+        >
           <Flex align="center" gap="8">
             <FaFingerprint />
-            {id}
+            {ticketId}
           </Flex>
-        </Link>
+        </a>
       ),
     },
     {
