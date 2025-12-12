@@ -106,18 +106,34 @@ export const GroupedMessages = ({
   }, [emailMessages, nonEmailMessages]);
 
   // логи (мердж статики и live)
+  // Включаем логи по ticket_id, а также client и client_contact логи по client_id
   const mergedLogs = useMemo(() => {
     const map = new Map();
 
     rawLogs
-      .filter((l) => Number(l.ticket_id) === Number(ticketId))
+      .filter((l) => {
+        // Логи тикета
+        if (Number(l.ticket_id) === Number(ticketId)) return true;
+        // Логи клиента и контактов клиента (client и client_contact типы)
+        if ((l.type === "client" || l.type === "client_contact") && l.client_id) {
+          return clientIds.includes(String(l.client_id));
+        }
+        return false;
+      })
       .forEach((l) => {
         const key = l.id ?? `${l.timestamp}-${l.subject}`;
         map.set(key, { ...l, __live: false });
       });
 
     (liveLogs || []).forEach((l) => {
-      if (Number(l.ticket_id) !== Number(ticketId)) return;
+      // Логи тикета
+      const isTicketLog = Number(l.ticket_id) === Number(ticketId);
+      // Логи клиента и контактов клиента
+      const isClientLog = (l.type === "client" || l.type === "client_contact") && 
+                          l.client_id && clientIds.includes(String(l.client_id));
+      
+      if (!isTicketLog && !isClientLog) return;
+      
       const key = l.id ?? `${l.timestamp}-${l.subject}`;
       map.set(key, { ...l, __live: true });
     });
@@ -133,7 +149,7 @@ export const GroupedMessages = ({
         isLive: !!log.__live,
       };
     });
-  }, [rawLogs, liveLogs, ticketId]);
+  }, [rawLogs, liveLogs, ticketId, clientIds]);
 
   // заметки (мердж статики и live)
   const mergedNotes = useMemo(() => {
