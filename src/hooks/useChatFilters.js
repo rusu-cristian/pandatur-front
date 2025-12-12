@@ -185,6 +185,55 @@ export const useChatFilters = () => {
     syncGroupTitleFromUrl();
   }, [syncGroupTitleFromUrl]);
 
+  // Отслеживаем предыдущий groupTitleForApi для определения смены воронки
+  const prevGroupTitleRef = useRef(groupTitleForApi);
+  const isUpdatingGroupRef = useRef(false);
+
+  // При смене воронки — обновляем URL и сбрасываем фильтры
+  useEffect(() => {
+    if (!groupTitleForApi || !workflowOptions.length) return;
+    
+    // Защита от повторных вызовов
+    if (isUpdatingGroupRef.current) return;
+    
+    // Если группа изменилась — обновляем URL с новой группой
+    if (prevGroupTitleRef.current && prevGroupTitleRef.current !== groupTitleForApi) {
+      isUpdatingGroupRef.current = true;
+      
+      // Сбрасываем флаги инициализации
+      isInitializedRef.current = false;
+      lastFiltersRef.current = null;
+      
+      // Строим дефолтные фильтры для новой воронки
+      const EXCLUDED = ["Realizat cu succes", "Închis și nerealizat", "Interesat"];
+      const newWorkflows = workflowOptions.filter((w) => !EXCLUDED.includes(w));
+      
+      const newDefaultFilters = {
+        action_needed: true,
+        workflow: newWorkflows,
+        technician_id: userId ? [String(userId)] : [],
+        unseen: "true",
+        last_message_author: [0],
+      };
+      
+      // Обновляем URL с новой группой и дефолтными фильтрами
+      const urlParams = prepareFiltersForUrl({
+        ...newDefaultFilters,
+        is_filtered: "true",
+        group_title: groupTitleForApi,
+      });
+      const basePath = ticketId ? `/chat/${ticketId}` : "/chat";
+      navigate(`${basePath}?${urlParams.toString()}`, { replace: true });
+      
+      // Сбрасываем флаг после navigate
+      setTimeout(() => {
+        isUpdatingGroupRef.current = false;
+      }, 100);
+    }
+    
+    prevGroupTitleRef.current = groupTitleForApi;
+  }, [groupTitleForApi, workflowOptions, navigate, ticketId, userId]);
+
   // Загрузка тикетов при изменении фильтров
   useEffect(() => {
     if (!groupTitleForApi || !workflowOptions.length || !userId) return;
