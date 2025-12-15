@@ -58,23 +58,8 @@ export const ReceivedMessage = ({ personalInfo, msg, technicians = [] }) => {
     senderTechnician?.label ||
     `#${msg.sender_id}`;
 
-  // Получаем фото клиента - сначала из клиента, потом из тикета
-  const getClientPhoto = () => {
-    // Если есть фото у клиента
-    if (senderClient?.photo && senderClient.photo.trim() !== "") {
-      return senderClient.photo;
-    }
-    
-    // Если есть фото в тикете
-    if (personalInfo?.photo_url && personalInfo.photo_url.trim() !== "") {
-      return personalInfo.photo_url;
-    }
-    
-    // Возвращаем null для использования fallback
-    return null;
-  };
-
-  const clientPhoto = getClientPhoto();
+  // Фото берётся напрямую из тикета
+  const clientPhoto = personalInfo?.photo_url || null;
 
   // Получаем информацию о страницах для tooltip
   const fromPage = msg.from_reference ? getPageById(msg.from_reference) : null;
