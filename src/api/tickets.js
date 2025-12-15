@@ -40,16 +40,6 @@ export const tickets = {
     return data;
   },
 
-  getLightList: async (params) => {
-    const url = queryString.stringifyUrl({
-      url: "/api/light/tickets",
-      query: params,
-    });
-    const { data } = await baseAxios.get(url);
-
-    return data;
-  },
-
   getHardList: async (params) => {
     const url = queryString.stringifyUrl({
       url: "/api/hard/tickets",

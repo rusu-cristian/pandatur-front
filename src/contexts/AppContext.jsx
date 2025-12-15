@@ -699,9 +699,15 @@ export const AppProvider = ({ children }) => {
         // Если пришел массив tickets с объектами
         if (Array.isArray(ticketsList) && ticketsList.length > 0) {
           ticketsList.forEach((ticketData) => {
-            const { id, technician_id, workflow } = ticketData;
+            const { id, technician_id, workflow, group_title } = ticketData;
 
             if (!id) return;
+
+            // Проверяем, совпадает ли group_title тикета с текущей активной группой
+            const isMatchingGroup = group_title === groupTitleForApi;
+
+            // Если группа не совпадает - не делаем запрос
+            if (!isMatchingGroup) return;
 
             // Проверяем, совпадает ли technician_id с текущим userId (для не-админов)
             const isResponsible = String(technician_id) === String(userId);
