@@ -14,7 +14,6 @@ import {
   Text,
   Loader
 } from "@mantine/core";
-import { useDebouncedValue } from "@mantine/hooks";
 import { getLanguageByKey } from "../utils";
 import { useApp, useDOMElementHeight, useChatFilters, useUser } from "../../hooks";
 import { ChatListItem } from "./components";
@@ -22,96 +21,6 @@ import { ChatFilter } from "./ChatFilter";
 import { prepareFiltersForUrl } from "../utils/parseFiltersFromUrl";
 
 const CHAT_ITEM_HEIGHT = 94;
-
-// Hash map для быстрого поиска тикетов по различным критериям
-const createSearchIndex = (tickets) => {
-  const index = {
-    byId: new Map(),
-    byClientName: new Map(),
-    byClientPhone: new Map(),
-    byTicketId: new Map()
-  };
-
-  tickets.forEach(ticket => {
-    // Индекс по ID тикета
-    index.byId.set(ticket.id, ticket);
-    index.byTicketId.set(ticket.id.toString(), ticket);
-
-    // Индексы по клиентам
-    if (ticket.clients) {
-      ticket.clients.forEach(client => {
-        // По имени
-        if (client.name) {
-          const nameKey = client.name.toLowerCase();
-          if (!index.byClientName.has(nameKey)) {
-            index.byClientName.set(nameKey, []);
-          }
-          index.byClientName.get(nameKey).push(ticket);
-        }
-
-        // По фамилии
-        if (client.surname) {
-          const surnameKey = client.surname.toLowerCase();
-          if (!index.byClientName.has(surnameKey)) {
-            index.byClientName.set(surnameKey, []);
-          }
-          index.byClientName.get(surnameKey).push(ticket);
-        }
-
-        // По телефонам
-        if (client.phones) {
-          client.phones.forEach(phone => {
-            if (phone) {
-              const phoneKey = phone.toString().toLowerCase();
-              if (!index.byClientPhone.has(phoneKey)) {
-                index.byClientPhone.set(phoneKey, []);
-              }
-              index.byClientPhone.get(phoneKey).push(ticket);
-            }
-          });
-        }
-      });
-    }
-  });
-
-  return index;
-};
-
-// Быстрый поиск с использованием hash map
-const searchTickets = (index, query) => {
-  if (!query) return [];
-
-  const searchTerm = query.toLowerCase();
-  const foundTickets = new Set();
-
-  // Поиск по ID тикета
-  if (index.byTicketId.has(searchTerm)) {
-    foundTickets.add(index.byTicketId.get(searchTerm));
-  }
-
-  // Поиск по частичному совпадению ID
-  for (const [ticketId, ticket] of index.byTicketId) {
-    if (ticketId.includes(searchTerm)) {
-      foundTickets.add(ticket);
-    }
-  }
-
-  // Поиск по имени клиента
-  for (const [name, tickets] of index.byClientName) {
-    if (name.includes(searchTerm)) {
-      tickets.forEach(ticket => foundTickets.add(ticket));
-    }
-  }
-
-  // Поиск по телефону
-  for (const [phone, tickets] of index.byClientPhone) {
-    if (phone.includes(searchTerm)) {
-      tickets.forEach(ticket => foundTickets.add(ticket));
-    }
-  }
-
-  return Array.from(foundTickets);
-};
 
 const ChatList = ({ ticketId }) => {
   const navigate = useNavigate();
@@ -175,9 +84,8 @@ const ChatList = ({ ticketId }) => {
     ticketIdFromUrl,
   ]);
 
-  // Локальный поиск (с debounce)
-  const [rawSearchQuery, setRawSearchQuery] = useState("");
-  const [searchQuery] = useDebouncedValue(rawSearchQuery, 300);
+  // Локальный поиск (заглушка — логика будет добавлена позже)
+  const [searchQuery, setSearchQuery] = useState("");
   
   // Модал фильтра
   const [openFilter, setOpenFilter] = useState(false);
@@ -186,39 +94,21 @@ const ChatList = ({ ticketId }) => {
   const wrapperChatItemRef = useRef(null);
   const wrapperChatHeight = useDOMElementHeight(wrapperChatItemRef);
 
-  // Базовые тикеты (отфильтрованные или все)
-  const baseTickets = useMemo(() => {
+  // Список тикетов для отображения
+  const displayedTickets = useMemo(() => {
     return isChatFiltered ? chatFilteredTickets : tickets;
   }, [isChatFiltered, chatFilteredTickets, tickets]);
-
-  // Создаем индекс для быстрого поиска
-  const searchIndex = useMemo(() => {
-    return createSearchIndex(baseTickets);
-  }, [baseTickets]);
-
-  // Финальный список тикетов (с локальным поиском)
-  const filteredTickets = useMemo(() => {
-    let result = [...baseTickets];
-
-    // Локальный поиск по отфильтрованным тикетам
-    if (searchQuery) {
-      const searchResults = searchTickets(searchIndex, searchQuery);
-      result = result.filter(ticket => searchResults.includes(ticket));
-    }
-
-    return result;
-  }, [baseTickets, searchQuery, searchIndex]);
 
   // Рендер элемента списка
   const ChatItem = useCallback(
     ({ index, style }) => (
       <ChatListItem
-        chat={filteredTickets[index]}
+        chat={displayedTickets[index]}
         style={style}
         selectTicketId={ticketId}
       />
     ),
-    [filteredTickets, ticketId]
+    [displayedTickets, ticketId]
   );
 
   return (
@@ -232,7 +122,7 @@ const ChatList = ({ ticketId }) => {
                 variant="filled"
                 style={{ backgroundColor: "var(--crm-ui-kit-palette-link-primary)" }}
               >
-                {filteredTickets.length}
+                {displayedTickets.length}
               </Badge>
             </Flex>
             <ActionIcon
@@ -246,22 +136,22 @@ const ChatList = ({ ticketId }) => {
 
           <TextInput
             placeholder={getLanguageByKey("Cauta dupa ID, Nume client, Telefon sau Email")}
-            value={rawSearchQuery}
-            onChange={(e) => setRawSearchQuery(e.target.value)}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
         </Flex>
 
         <Divider color="var(--crm-ui-kit-palette-border-default)" />
 
         <Box style={{ height: "calc(100% - 110px)", position: "relative" }} ref={wrapperChatItemRef}>
-          {filteredTickets.length === 0 ? (
+          {displayedTickets.length === 0 ? (
             <Flex h="100%" align="center" justify="center" px="md">
               <Text c="dimmed">{getLanguageByKey("Nici un lead")}</Text>
             </Flex>
           ) : (
             <FixedSizeList
               height={wrapperChatHeight}
-              itemCount={filteredTickets.length}
+              itemCount={displayedTickets.length}
               itemSize={CHAT_ITEM_HEIGHT}
               width="100%"
             >
