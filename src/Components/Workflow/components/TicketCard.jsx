@@ -66,11 +66,10 @@ export const TicketCard = memo(({
     navigate(ticketUrl);
   }, [navigate, ticketUrl]);
 
-  // Мемоизируем URL фото, чтобы предотвратить перезагрузку изображения
-  const clientPhoto = ticket?.clients?.[0]?.photo;
+  // Фото берётся напрямую из тикета
   const photoUrl = useMemo(() => {
-    return clientPhoto || ticket?.photo_url || DEFAULT_PHOTO;
-  }, [clientPhoto, ticket?.photo_url]);
+    return ticket?.photo_url || DEFAULT_PHOTO;
+  }, [ticket?.photo_url]);
 
   // Мемоизируем превью последнего сообщения
   const lastMessagePreview = useMemo(() => {
@@ -120,29 +119,21 @@ export const TicketCard = memo(({
 
   const clientLabel = getLanguageByKey("Client") || "Client";
 
+  // Определяем, является ли последнее сообщение от клиента
+  // Сравниваем last_message_sender_id с last_message_client_id
   const isClientLastMessage = useMemo(() => {
     if (!ticket.last_message) return false;
 
     const senderId = ticket.last_message_sender_id;
-    if (senderId === undefined || senderId === null) {
+    const clientId = ticket.last_message_client_id;
+
+    // Если sender_id совпадает с client_id — сообщение от клиента
+    if (senderId && clientId && Number(senderId) === Number(clientId)) {
       return true;
-    }
-
-    const senderIdNumber = Number(senderId);
-    if (!Number.isFinite(senderIdNumber) || senderIdNumber === 1) {
-      return false;
-    }
-
-    if (ticket.clients?.some((client) => Number(client?.id) === senderIdNumber)) {
-      return true;
-    }
-
-    if (user?.id && Number(user.id) === senderIdNumber) {
-      return false;
     }
 
     return false;
-  }, [ticket.clients, ticket.last_message, ticket.last_message_sender_id, user?.id]);
+  }, [ticket.last_message, ticket.last_message_sender_id, ticket.last_message_client_id]);
 
   return (
     <a href={ticketUrl} onClick={handleCardClick} style={{ textDecoration: 'none' }}>
@@ -293,18 +284,6 @@ export const TicketCard = memo(({
               >
                 {parseServerDate(ticket.creation_date)?.format(YYYY_MM_DD)}
               </Text>
-
-              {/* Номер телефона клиента */}
-              {ticket?.clients?.[0]?.phone && (
-                <Text
-                  size="xs"
-                  c="var(--crm-ui-kit-palette-text-primary)"
-                  style={{ fontSize: '14px', marginTop: '2px' }}
-                  fw="bold"
-                >
-                  {ticket.clients[0].phone}
-                </Text>
-              )}
             </Box>
           </Flex>
 

@@ -122,52 +122,24 @@ export const ChatListItem = ({ chat, style, selectTicketId }) => {
 
   // actionNeeded всегда берется из AppContext через getTicketById
 
-  // Получаем фото пользователя - сначала из тикета, потом из клиентов
-  const getUserPhoto = () => {
-    // Если есть фото в тикете
-    if (chat.photo_url && chat.photo_url.trim() !== "") {
-      return chat.photo_url;
-    }
+  // Фото берётся напрямую из тикета
+  const userPhoto = chat?.photo_url || null;
 
-    // Если есть клиенты с фото
-    if (chat.clients && chat.clients.length > 0) {
-      const clientWithPhoto = chat.clients.find(client => client.photo && client.photo.trim() !== "");
-      if (clientWithPhoto) {
-        return clientWithPhoto.photo;
-      }
-    }
-
-    // Возвращаем null для использования fallback
-    return null;
-  };
-
-  const userPhoto = getUserPhoto();
-
+  // Определяем, является ли последнее сообщение от клиента
+  // Сравниваем last_message_sender_id с last_message_client_id
   const isClientLastMessage = useMemo(() => {
-    if (!chat.last_message) {
-      return false;
-    }
+    if (!chat.last_message) return false;
 
     const senderId = chat.last_message_sender_id;
-    if (senderId === undefined || senderId === null) {
+    const clientId = chat.last_message_client_id;
+
+    // Если sender_id совпадает с client_id — сообщение от клиента
+    if (senderId && clientId && Number(senderId) === Number(clientId)) {
       return true;
-    }
-
-    const senderIdNumber = Number(senderId);
-    if (!Number.isFinite(senderIdNumber) || senderIdNumber === 1) {
-      return false;
-    }
-
-    if (chat.clients?.some((client) => Number(client?.id) === senderIdNumber)) {
-      return true;
-    }
-
-    if (userId && Number(userId) === senderIdNumber) {
-      return false;
     }
 
     return false;
-  }, [chat.clients, chat.last_message, chat.last_message_sender_id, userId]);
+  }, [chat.last_message, chat.last_message_sender_id, chat.last_message_client_id]);
 
   const lastMessageAuthorClass = isClientLastMessage ? "client-message" : "manager-message";
 
