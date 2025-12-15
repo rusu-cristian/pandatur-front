@@ -27,7 +27,7 @@ export const ChatModal = ({ opened, onClose, children }) => {
         position: "fixed",
         left: `${sidebarWidth}px`,
         width: `calc(133.33vw - ${sidebarWidth}px)`,
-        height: "133vh",
+        height: "134vh",
         top: 0,
         backgroundColor: "var(--crm-ui-kit-palette-background-primary)",
         zIndex: 100,
