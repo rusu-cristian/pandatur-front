@@ -35,10 +35,6 @@ const ChatList = ({ ticketId }) => {
     setIsChatFiltered,
     groupTitleForApi,
     workflowOptions,
-    doesTicketMatchFilters,
-    upsertChatFilteredTicket,
-    removeChatFilteredTicket,
-    getChatFilteredTicketById,
   } = useApp();
   
   const { userId } = useUser();
@@ -86,56 +82,6 @@ const ChatList = ({ ticketId }) => {
     defaultFilters,
     navigate,
     ticketIdFromUrl,
-  ]);
-
-  // === ОБРАБОТКА ТИКЕТОВ ИЗ WEBSOCKET ===
-  // Слушаем событие chatTicketReceived и проверяем фильтры из URL (актуальный источник правды)
-  useEffect(() => {
-    const handleChatTicketReceived = (event) => {
-      const { ticket } = event.detail;
-      if (!ticket?.id) return;
-
-      // Если фильтры не активны — не добавляем в chatFilteredTickets
-      // (тикеты берутся из основного списка tickets)
-      if (!isFiltered || !hasFilters) {
-        return;
-      }
-
-      // Проверяем group_title
-      if (ticket.group_title !== groupTitleForApi) {
-        return;
-      }
-
-      // Проверяем, существует ли тикет уже в списке
-      const existingTicket = getChatFilteredTicketById(ticket.id);
-
-      // Проверяем соответствие тикета АКТУАЛЬНЫМ фильтрам из URL
-      const matchesFilters = doesTicketMatchFilters(ticket, filters);
-
-      if (matchesFilters) {
-        // Тикет подходит под фильтры — добавляем или обновляем
-        upsertChatFilteredTicket(ticket);
-      } else if (existingTicket) {
-        // Тикет больше не подходит — удаляем из списка
-        removeChatFilteredTicket(ticket.id);
-      }
-      // Если тикет не подходит и его нет в списке — ничего не делаем
-    };
-
-    window.addEventListener('chatTicketReceived', handleChatTicketReceived);
-
-    return () => {
-      window.removeEventListener('chatTicketReceived', handleChatTicketReceived);
-    };
-  }, [
-    isFiltered,
-    hasFilters,
-    filters,
-    groupTitleForApi,
-    doesTicketMatchFilters,
-    upsertChatFilteredTicket,
-    removeChatFilteredTicket,
-    getChatFilteredTicketById,
   ]);
 
   // Локальный поиск (заглушка — логика будет добавлена позже)
