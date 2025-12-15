@@ -33,6 +33,23 @@ const getLeadsUrlViewMode = () => {
 };
 
 export const AppProvider = ({ children }) => {
+
+
+  // Добавь в начало компонента AppContextProvider
+useEffect(() => {
+  const memoryCheck = setInterval(() => {
+    if (performance.memory) {
+      console.log('Memory:', {
+        used: Math.round(performance.memory.usedJSHeapSize / 1024 / 1024) + ' MB',
+        total: Math.round(performance.memory.totalJSHeapSize / 1024 / 1024) + ' MB',
+      });
+    }
+  }, 1000); // каждые 5 секунд
+
+  return () => clearInterval(memoryCheck);
+}, []);
+
+
   const { sendedValue } = useSocket();
   const { enqueueSnackbar } = useSnackbar();
   const { storage, changeLocalStorage } = useLocalStorage(SIDEBAR_COLLAPSE, "false");

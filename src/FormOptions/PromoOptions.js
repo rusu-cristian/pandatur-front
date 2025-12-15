@@ -3,6 +3,7 @@ import { getLanguageByKey } from "../Components/utils/getLanguageByKey";
 const promoOptionKeys = [
   "Black Fryday",
   "Black and White Friday",
+  "Port Mall",
   "Flash Sale",
   "Turist recomandat",
   "White Friday",

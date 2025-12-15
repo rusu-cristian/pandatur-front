@@ -5972,5 +5972,10 @@ export const translations = {
     RO: "Vânzări",
     RU: "Продажи",
     EN: "Sales"
+  },
+  "Port Mall": {
+    RO: "Port Mall",
+    RU: "Порт Mall",
+    EN: "Port Mall"
   }
 };
