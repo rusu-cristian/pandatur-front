@@ -33,6 +33,7 @@ import "./Sales.css";
 const TYPE_OPTIONS = [
   { value: "0", label: getLanguageByKey("By Users") || "By Users" },
   { value: "1", label: getLanguageByKey("By Destinations") || "By Destinations" },
+  { value: "2", label: getLanguageByKey("By Users (Alt)") || "By Users (Alt)" },
 ];
 
 const formatNumber = (num) => {
@@ -48,64 +49,43 @@ const formatInteger = (num) => {
   return Number(num).toLocaleString("en-US");
 };
 
-// Expandable Row Component for Users Table (handles all 3 levels + detail rows)
+// User Row Component (final leaf level) - shows user data with separate excursii/tururi columns
 const UserRow = ({ userId, userData, depth }) => {
-  const [open, setOpen] = useState(false);
   const paddingLeft = 16 + depth * 24;
 
   return (
-    <>
-      {/* User summary row */}
-      <TableRow className={`sales-row depth-${depth}`}>
-        <TableCell sx={{ paddingLeft: `${paddingLeft}px` }}>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <IconButton size="small" onClick={() => setOpen(!open)}>
-              {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-            </IconButton>
-            <span>{userId}</span>
-          </Box>
-        </TableCell>
-        <TableCell align="right">{formatInteger(userData?.total?.count)}</TableCell>
-        <TableCell align="right">{formatNumber(userData?.total?.commission)}</TableCell>
-        <TableCell align="right">{formatNumber(userData?.total?.avgCommission)}</TableCell>
-        <TableCell align="right">{formatNumber(userData?.total?.pretNetto)}</TableCell>
-        <TableCell align="right">{formatNumber(userData?.total?.sumaContract)}</TableCell>
-        <TableCell align="right">{formatNumber(userData?.conversionRateTotal)}%</TableCell>
-        <TableCell align="right">{formatNumber(userData?.conversionRateContract)}%</TableCell>
-      </TableRow>
-
-      {/* Excursii detail row */}
-      <TableRow className={`sales-row depth-${depth + 1} detail-row`} sx={{ display: open ? "table-row" : "none" }}>
-        <TableCell sx={{ paddingLeft: `${paddingLeft + 48}px` }}>
-          {getLanguageByKey("Excursions") || "Excursions"}
-        </TableCell>
-        <TableCell align="right">{formatInteger(userData?.excursii?.count)}</TableCell>
-        <TableCell align="right">{formatNumber(userData?.excursii?.commission)}</TableCell>
-        <TableCell align="right">{formatNumber(userData?.excursii?.avgCommission)}</TableCell>
-        <TableCell align="right">{formatNumber(userData?.excursii?.pretNetto)}</TableCell>
-        <TableCell align="right">{formatNumber(userData?.excursii?.sumaContract)}</TableCell>
-        <TableCell align="right">{formatNumber(userData?.excursii?.weight)}%</TableCell>
-        <TableCell align="right">-</TableCell>
-      </TableRow>
-
-      {/* Tururi detail row */}
-      <TableRow className={`sales-row depth-${depth + 1} detail-row`} sx={{ display: open ? "table-row" : "none" }}>
-        <TableCell sx={{ paddingLeft: `${paddingLeft + 48}px` }}>
-          {getLanguageByKey("Tours") || "Tours"}
-        </TableCell>
-        <TableCell align="right">{formatInteger(userData?.tururi?.count)}</TableCell>
-        <TableCell align="right">{formatNumber(userData?.tururi?.commission)}</TableCell>
-        <TableCell align="right">{formatNumber(userData?.tururi?.avgCommission)}</TableCell>
-        <TableCell align="right">{formatNumber(userData?.tururi?.pretNetto)}</TableCell>
-        <TableCell align="right">{formatNumber(userData?.tururi?.sumaContract)}</TableCell>
-        <TableCell align="right">{formatNumber(userData?.tururi?.weight)}%</TableCell>
-        <TableCell align="right">-</TableCell>
-      </TableRow>
-    </>
+    <TableRow className={`sales-row depth-${depth} user-row`}>
+      <TableCell className="col-name" sx={{ paddingLeft: `${paddingLeft}px` }}>
+        <span>{userId}</span>
+      </TableCell>
+      {/* Excursii columns */}
+      <TableCell align="right" className="col-excursii col-border">{formatInteger(userData?.excursii?.count)}</TableCell>
+      <TableCell align="right" className="col-excursii">{formatNumber(userData?.excursii?.commission)}</TableCell>
+      <TableCell align="right" className="col-excursii">{formatNumber(userData?.excursii?.pretNetto)}</TableCell>
+      <TableCell align="right" className="col-excursii">{formatNumber(userData?.excursii?.sumaContract)}</TableCell>
+      <TableCell align="right" className="col-excursii">{formatNumber(userData?.excursii?.weight)}%</TableCell>
+      {/* Tururi columns */}
+      <TableCell align="right" className="col-tururi col-border">{formatInteger(userData?.tururi?.count)}</TableCell>
+      <TableCell align="right" className="col-tururi">{formatNumber(userData?.tururi?.commission)}</TableCell>
+      <TableCell align="right" className="col-tururi">{formatNumber(userData?.tururi?.pretNetto)}</TableCell>
+      <TableCell align="right" className="col-tururi">{formatNumber(userData?.tururi?.sumaContract)}</TableCell>
+      <TableCell align="right" className="col-tururi">{formatNumber(userData?.tururi?.weight)}%</TableCell>
+      {/* Total columns */}
+      <TableCell align="right" className="col-total col-border">{formatInteger(userData?.total?.count)}</TableCell>
+      <TableCell align="right" className="col-total">{formatNumber(userData?.total?.commission)}</TableCell>
+      <TableCell align="right" className="col-total">{formatNumber(userData?.total?.pretNetto)}</TableCell>
+      <TableCell align="right" className="col-total">{formatNumber(userData?.total?.sumaContract)}</TableCell>
+      {/* Leads columns */}
+      <TableCell align="right" className="col-leads col-border">{formatInteger(userData?.fromDePrelucratCount)}</TableCell>
+      <TableCell align="right" className="col-leads">{formatInteger(userData?.toContractIncheiatCount)}</TableCell>
+      {/* Conversion rates */}
+      <TableCell align="right" className="col-conversion col-border">{formatNumber(userData?.conversionRateTotal)}%</TableCell>
+      <TableCell align="right" className="col-conversion">{formatNumber(userData?.conversionRateContract)}%</TableCell>
+    </TableRow>
   );
 };
 
-// User Group Row Component (middle level)
+// User Group Row Component (middle level - e.g., "Back Flagman")
 const UserGroupRow = ({ groupName, groupData, depth }) => {
   const [open, setOpen] = useState(false);
   const users = groupData?.data || {};
@@ -115,22 +95,38 @@ const UserGroupRow = ({ groupName, groupData, depth }) => {
 
   return (
     <>
-      <TableRow className={`sales-row depth-${depth}`}>
-        <TableCell sx={{ paddingLeft: `${paddingLeft}px` }}>
+      <TableRow className={`sales-row depth-${depth} group-row`}>
+        <TableCell className="col-name" sx={{ paddingLeft: `${paddingLeft}px` }}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <IconButton size="small" onClick={() => setOpen(!open)} disabled={!hasUsers}>
               {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
             </IconButton>
-            <strong>{groupName}</strong>
+            <span className="group-name">{groupName}</span>
           </Box>
         </TableCell>
-        <TableCell align="right">{formatInteger(totals?.total?.count)}</TableCell>
-        <TableCell align="right">{formatNumber(totals?.total?.commission)}</TableCell>
-        <TableCell align="right">{formatNumber(totals?.total?.avgCommission)}</TableCell>
-        <TableCell align="right">{formatNumber(totals?.total?.pretNetto)}</TableCell>
-        <TableCell align="right">{formatNumber(totals?.total?.sumaContract)}</TableCell>
-        <TableCell align="right">{formatNumber(totals?.conversionRateTotal)}%</TableCell>
-        <TableCell align="right">{formatNumber(totals?.conversionRateContract)}%</TableCell>
+        {/* Excursii columns */}
+        <TableCell align="right" className="col-excursii col-border">{formatInteger(totals?.excursii?.count)}</TableCell>
+        <TableCell align="right" className="col-excursii">{formatNumber(totals?.excursii?.commission)}</TableCell>
+        <TableCell align="right" className="col-excursii">{formatNumber(totals?.excursii?.pretNetto)}</TableCell>
+        <TableCell align="right" className="col-excursii">{formatNumber(totals?.excursii?.sumaContract)}</TableCell>
+        <TableCell align="right" className="col-excursii">{formatNumber(totals?.excursii?.weight)}%</TableCell>
+        {/* Tururi columns */}
+        <TableCell align="right" className="col-tururi col-border">{formatInteger(totals?.tururi?.count)}</TableCell>
+        <TableCell align="right" className="col-tururi">{formatNumber(totals?.tururi?.commission)}</TableCell>
+        <TableCell align="right" className="col-tururi">{formatNumber(totals?.tururi?.pretNetto)}</TableCell>
+        <TableCell align="right" className="col-tururi">{formatNumber(totals?.tururi?.sumaContract)}</TableCell>
+        <TableCell align="right" className="col-tururi">{formatNumber(totals?.tururi?.weight)}%</TableCell>
+        {/* Total columns */}
+        <TableCell align="right" className="col-total col-border">{formatInteger(totals?.total?.count)}</TableCell>
+        <TableCell align="right" className="col-total">{formatNumber(totals?.total?.commission)}</TableCell>
+        <TableCell align="right" className="col-total">{formatNumber(totals?.total?.pretNetto)}</TableCell>
+        <TableCell align="right" className="col-total">{formatNumber(totals?.total?.sumaContract)}</TableCell>
+        {/* Leads columns */}
+        <TableCell align="right" className="col-leads col-border">{formatInteger(totals?.fromDePrelucratCount)}</TableCell>
+        <TableCell align="right" className="col-leads">{formatInteger(totals?.toContractIncheiatCount)}</TableCell>
+        {/* Conversion rates */}
+        <TableCell align="right" className="col-conversion col-border">{formatNumber(totals?.conversionRateTotal)}%</TableCell>
+        <TableCell align="right" className="col-conversion">{formatNumber(totals?.conversionRateContract)}%</TableCell>
       </TableRow>
 
       {open &&
@@ -141,7 +137,7 @@ const UserGroupRow = ({ groupName, groupData, depth }) => {
   );
 };
 
-// Group Title Row Component (top level)
+// Group Title Row Component (top level - e.g., "MD")
 const GroupTitleRow = ({ titleName, titleData, depth }) => {
   const [open, setOpen] = useState(false);
   const userGroups = titleData?.data || {};
@@ -152,7 +148,7 @@ const GroupTitleRow = ({ titleName, titleData, depth }) => {
   return (
     <>
       <TableRow className={`sales-row depth-${depth} group-title-row`}>
-        <TableCell sx={{ paddingLeft: `${paddingLeft}px` }}>
+        <TableCell className="col-name" sx={{ paddingLeft: `${paddingLeft}px` }}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <IconButton
               size="small"
@@ -162,16 +158,32 @@ const GroupTitleRow = ({ titleName, titleData, depth }) => {
             >
               {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
             </IconButton>
-            <strong>{titleName}</strong>
+            <span className="title-name">{titleName}</span>
           </Box>
         </TableCell>
-        <TableCell align="right">{formatInteger(totals?.total?.count)}</TableCell>
-        <TableCell align="right">{formatNumber(totals?.total?.commission)}</TableCell>
-        <TableCell align="right">{formatNumber(totals?.total?.avgCommission)}</TableCell>
-        <TableCell align="right">{formatNumber(totals?.total?.pretNetto)}</TableCell>
-        <TableCell align="right">{formatNumber(totals?.total?.sumaContract)}</TableCell>
-        <TableCell align="right">{formatNumber(totals?.conversionRateTotal)}%</TableCell>
-        <TableCell align="right">{formatNumber(totals?.conversionRateContract)}%</TableCell>
+        {/* Excursii columns */}
+        <TableCell align="right" className="col-excursii col-border">{formatInteger(totals?.excursii?.count)}</TableCell>
+        <TableCell align="right" className="col-excursii">{formatNumber(totals?.excursii?.commission)}</TableCell>
+        <TableCell align="right" className="col-excursii">{formatNumber(totals?.excursii?.pretNetto)}</TableCell>
+        <TableCell align="right" className="col-excursii">{formatNumber(totals?.excursii?.sumaContract)}</TableCell>
+        <TableCell align="right" className="col-excursii">{formatNumber(totals?.excursii?.weight)}%</TableCell>
+        {/* Tururi columns */}
+        <TableCell align="right" className="col-tururi col-border">{formatInteger(totals?.tururi?.count)}</TableCell>
+        <TableCell align="right" className="col-tururi">{formatNumber(totals?.tururi?.commission)}</TableCell>
+        <TableCell align="right" className="col-tururi">{formatNumber(totals?.tururi?.pretNetto)}</TableCell>
+        <TableCell align="right" className="col-tururi">{formatNumber(totals?.tururi?.sumaContract)}</TableCell>
+        <TableCell align="right" className="col-tururi">{formatNumber(totals?.tururi?.weight)}%</TableCell>
+        {/* Total columns */}
+        <TableCell align="right" className="col-total col-border">{formatInteger(totals?.total?.count)}</TableCell>
+        <TableCell align="right" className="col-total">{formatNumber(totals?.total?.commission)}</TableCell>
+        <TableCell align="right" className="col-total">{formatNumber(totals?.total?.pretNetto)}</TableCell>
+        <TableCell align="right" className="col-total">{formatNumber(totals?.total?.sumaContract)}</TableCell>
+        {/* Leads columns */}
+        <TableCell align="right" className="col-leads col-border">{formatInteger(totals?.fromDePrelucratCount)}</TableCell>
+        <TableCell align="right" className="col-leads">{formatInteger(totals?.toContractIncheiatCount)}</TableCell>
+        {/* Conversion rates */}
+        <TableCell align="right" className="col-conversion col-border">{formatNumber(totals?.conversionRateTotal)}%</TableCell>
+        <TableCell align="right" className="col-conversion">{formatNumber(totals?.conversionRateContract)}%</TableCell>
       </TableRow>
 
       {open &&
@@ -182,18 +194,26 @@ const GroupTitleRow = ({ titleName, titleData, depth }) => {
   );
 };
 
-// Service Type Row (deepest level for Type 1)
+// Service Type Row (deepest level for Type 1) - final leaf showing service type details
 const ServiceTypeRow = ({ typeName, typeData, depth }) => {
   const paddingLeft = 16 + depth * 24;
 
   return (
-    <TableRow className={`sales-row depth-${depth} detail-row`}>
-      <TableCell sx={{ paddingLeft: `${paddingLeft}px` }}>{typeName}</TableCell>
-      <TableCell align="right">{formatInteger(typeData?.count)}</TableCell>
-      <TableCell align="right">{formatNumber(typeData?.commission)}</TableCell>
-      <TableCell align="right">{formatNumber(typeData?.avgCommission)}</TableCell>
-      <TableCell align="right">{formatNumber(typeData?.pretNetto)}</TableCell>
-      <TableCell align="right">{formatNumber(typeData?.sumaContract)}</TableCell>
+    <TableRow className={`sales-row depth-${depth} user-row`}>
+      <TableCell className="col-name" sx={{ paddingLeft: `${paddingLeft}px` }}>
+        <span>{typeName}</span>
+      </TableCell>
+      <TableCell align="right" className="col-dest col-border">{formatInteger(typeData?.count)}</TableCell>
+      <TableCell align="right" className="col-dest">{formatNumber(typeData?.commission)}</TableCell>
+      <TableCell align="right" className="col-dest">{formatNumber(typeData?.avgCommission)}</TableCell>
+      <TableCell align="right" className="col-dest">{formatNumber(typeData?.pretNetto)}</TableCell>
+      <TableCell align="right" className="col-dest">{formatNumber(typeData?.sumaContract)}</TableCell>
+      {/* Leads columns */}
+      <TableCell align="right" className="col-leads col-border">{formatInteger(typeData?.fromDePrelucratCount)}</TableCell>
+      <TableCell align="right" className="col-leads">{formatInteger(typeData?.toContractIncheiatCount)}</TableCell>
+      {/* Conversion columns */}
+      <TableCell align="right" className="col-conversion col-border">{formatNumber(typeData?.conversionRateTotal)}%</TableCell>
+      <TableCell align="right" className="col-conversion">{formatNumber(typeData?.conversionRateContract)}%</TableCell>
     </TableRow>
   );
 };
@@ -208,20 +228,26 @@ const DestinationRow = ({ destinationName, destinationData, depth }) => {
 
   return (
     <>
-      <TableRow className={`sales-row depth-${depth}`}>
-        <TableCell sx={{ paddingLeft: `${paddingLeft}px` }}>
+      <TableRow className={`sales-row depth-${depth} group-row`}>
+        <TableCell className="col-name" sx={{ paddingLeft: `${paddingLeft}px` }}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <IconButton size="small" onClick={() => setOpen(!open)} disabled={!hasTypes}>
               {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
             </IconButton>
-            <strong>{destinationName}</strong>
+            <span className="group-name">{destinationName}</span>
           </Box>
         </TableCell>
-        <TableCell align="right">{formatInteger(totals?.count)}</TableCell>
-        <TableCell align="right">{formatNumber(totals?.commission)}</TableCell>
-        <TableCell align="right">{formatNumber(totals?.avgCommission)}</TableCell>
-        <TableCell align="right">{formatNumber(totals?.pretNetto)}</TableCell>
-        <TableCell align="right">{formatNumber(totals?.sumaContract)}</TableCell>
+        <TableCell align="right" className="col-dest col-border">{formatInteger(totals?.count)}</TableCell>
+        <TableCell align="right" className="col-dest">{formatNumber(totals?.commission)}</TableCell>
+        <TableCell align="right" className="col-dest">{formatNumber(totals?.avgCommission)}</TableCell>
+        <TableCell align="right" className="col-dest">{formatNumber(totals?.pretNetto)}</TableCell>
+        <TableCell align="right" className="col-dest">{formatNumber(totals?.sumaContract)}</TableCell>
+        {/* Leads columns */}
+        <TableCell align="right" className="col-leads col-border">{formatInteger(totals?.fromDePrelucratCount)}</TableCell>
+        <TableCell align="right" className="col-leads">{formatInteger(totals?.toContractIncheiatCount)}</TableCell>
+        {/* Conversion columns */}
+        <TableCell align="right" className="col-conversion col-border">{formatNumber(totals?.conversionRateTotal)}%</TableCell>
+        <TableCell align="right" className="col-conversion">{formatNumber(totals?.conversionRateContract)}%</TableCell>
       </TableRow>
 
       {open &&
@@ -243,7 +269,7 @@ const DestinationGroupTitleRow = ({ titleName, titleData, depth }) => {
   return (
     <>
       <TableRow className={`sales-row depth-${depth} group-title-row`}>
-        <TableCell sx={{ paddingLeft: `${paddingLeft}px` }}>
+        <TableCell className="col-name" sx={{ paddingLeft: `${paddingLeft}px` }}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <IconButton
               size="small"
@@ -253,14 +279,20 @@ const DestinationGroupTitleRow = ({ titleName, titleData, depth }) => {
             >
               {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
             </IconButton>
-            <strong>{titleName}</strong>
+            <span className="title-name">{titleName}</span>
           </Box>
         </TableCell>
-        <TableCell align="right">{formatInteger(totals?.count)}</TableCell>
-        <TableCell align="right">{formatNumber(totals?.commission)}</TableCell>
-        <TableCell align="right">{formatNumber(totals?.avgCommission)}</TableCell>
-        <TableCell align="right">{formatNumber(totals?.pretNetto)}</TableCell>
-        <TableCell align="right">{formatNumber(totals?.sumaContract)}</TableCell>
+        <TableCell align="right" className="col-dest col-border">{formatInteger(totals?.count)}</TableCell>
+        <TableCell align="right" className="col-dest">{formatNumber(totals?.commission)}</TableCell>
+        <TableCell align="right" className="col-dest">{formatNumber(totals?.avgCommission)}</TableCell>
+        <TableCell align="right" className="col-dest">{formatNumber(totals?.pretNetto)}</TableCell>
+        <TableCell align="right" className="col-dest">{formatNumber(totals?.sumaContract)}</TableCell>
+        {/* Leads columns */}
+        <TableCell align="right" className="col-leads col-border">{formatInteger(totals?.fromDePrelucratCount)}</TableCell>
+        <TableCell align="right" className="col-leads">{formatInteger(totals?.toContractIncheiatCount)}</TableCell>
+        {/* Conversion columns */}
+        <TableCell align="right" className="col-conversion col-border">{formatNumber(totals?.conversionRateTotal)}%</TableCell>
+        <TableCell align="right" className="col-conversion">{formatNumber(totals?.conversionRateContract)}%</TableCell>
       </TableRow>
 
       {open &&
@@ -271,39 +303,89 @@ const DestinationGroupTitleRow = ({ titleName, titleData, depth }) => {
   );
 };
 
-// Main Table for Type 0 (By Users)
+// Main Table for Type 0 (By Users) - with separate excursii/tururi columns
 const UsersTable = ({ data }) => {
   const groupTitles = data?.data || {};
   const totals = data?.totals || {};
 
   return (
     <TableContainer component={Paper} className="sales-table-container">
-      <Table size="small">
+      <Table size="small" className="sales-users-table">
         <TableHead>
+          {/* Header group row */}
+          <TableRow className="sales-header-group-row">
+            <TableCell rowSpan={2} className="col-name header-name">{getLanguageByKey("Name") || "Name"}</TableCell>
+            <TableCell colSpan={5} align="center" className="header-excursii">
+              {getLanguageByKey("Excursions") || "Excursions"}
+            </TableCell>
+            <TableCell colSpan={5} align="center" className="header-tururi">
+              {getLanguageByKey("Tours") || "Tours"}
+            </TableCell>
+            <TableCell colSpan={4} align="center" className="header-total">
+              {getLanguageByKey("Total") || "Total"}
+            </TableCell>
+            <TableCell colSpan={2} align="center" className="header-leads">
+              {getLanguageByKey("Leads") || "Leads"}
+            </TableCell>
+            <TableCell colSpan={2} align="center" className="header-conversion">
+              {getLanguageByKey("Conversion") || "Conversion"}
+            </TableCell>
+          </TableRow>
           <TableRow className="sales-header-row">
-            <TableCell>{getLanguageByKey("Name") || "Name"}</TableCell>
-            <TableCell align="right">{getLanguageByKey("Count") || "Count"}</TableCell>
-            <TableCell align="right">{getLanguageByKey("Commission") || "Commission"}</TableCell>
-            <TableCell align="right">{getLanguageByKey("Avg Commission") || "Avg Commission"}</TableCell>
-            <TableCell align="right">{getLanguageByKey("Net Price") || "Net Price"}</TableCell>
-            <TableCell align="right">{getLanguageByKey("Contract Sum") || "Contract Sum"}</TableCell>
-            <TableCell align="right">{getLanguageByKey("Conv. Total") || "Conv. Total"}</TableCell>
-            <TableCell align="right">{getLanguageByKey("Conv. Contract") || "Conv. Contract"}</TableCell>
+            {/* Excursii sub-headers */}
+            <TableCell align="right" className="col-excursii col-border">{getLanguageByKey("Cnt") || "Cnt"}</TableCell>
+            <TableCell align="right" className="col-excursii">{getLanguageByKey("Comm") || "Comm"}</TableCell>
+            <TableCell align="right" className="col-excursii">{getLanguageByKey("Net") || "Net"}</TableCell>
+            <TableCell align="right" className="col-excursii">{getLanguageByKey("Contract") || "Contract"}</TableCell>
+            <TableCell align="right" className="col-excursii">{getLanguageByKey("Weight") || "Wt%"}</TableCell>
+            {/* Tururi sub-headers */}
+            <TableCell align="right" className="col-tururi col-border">{getLanguageByKey("Cnt") || "Cnt"}</TableCell>
+            <TableCell align="right" className="col-tururi">{getLanguageByKey("Comm") || "Comm"}</TableCell>
+            <TableCell align="right" className="col-tururi">{getLanguageByKey("Net") || "Net"}</TableCell>
+            <TableCell align="right" className="col-tururi">{getLanguageByKey("Contract") || "Contract"}</TableCell>
+            <TableCell align="right" className="col-tururi">{getLanguageByKey("Weight") || "Wt%"}</TableCell>
+            {/* Total sub-headers */}
+            <TableCell align="right" className="col-total col-border">{getLanguageByKey("Cnt") || "Cnt"}</TableCell>
+            <TableCell align="right" className="col-total">{getLanguageByKey("Comm") || "Comm"}</TableCell>
+            <TableCell align="right" className="col-total">{getLanguageByKey("Net") || "Net"}</TableCell>
+            <TableCell align="right" className="col-total">{getLanguageByKey("Contract") || "Contract"}</TableCell>
+            {/* Leads sub-headers */}
+            <TableCell align="right" className="col-leads col-border">{getLanguageByKey("De Prelucrat") || "De Prelucrat"}</TableCell>
+            <TableCell align="right" className="col-leads">{getLanguageByKey("Încheiat") || "Încheiat"}</TableCell>
+            {/* Conversion sub-headers */}
+            <TableCell align="right" className="col-conversion col-border">{getLanguageByKey("Total") || "Total"}</TableCell>
+            <TableCell align="right" className="col-conversion">{getLanguageByKey("Contract") || "Contr"}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {/* Totals Row */}
           <TableRow className="sales-row total-row">
-            <TableCell>
+            <TableCell className="col-name">
               <strong>{getLanguageByKey("TOTAL") || "TOTAL"}</strong>
             </TableCell>
-            <TableCell align="right"><strong>{formatInteger(totals?.total?.count)}</strong></TableCell>
-            <TableCell align="right"><strong>{formatNumber(totals?.total?.commission)}</strong></TableCell>
-            <TableCell align="right"><strong>{formatNumber(totals?.total?.avgCommission)}</strong></TableCell>
-            <TableCell align="right"><strong>{formatNumber(totals?.total?.pretNetto)}</strong></TableCell>
-            <TableCell align="right"><strong>{formatNumber(totals?.total?.sumaContract)}</strong></TableCell>
-            <TableCell align="right"><strong>{formatNumber(totals?.conversionRateTotal)}%</strong></TableCell>
-            <TableCell align="right"><strong>{formatNumber(totals?.conversionRateContract)}%</strong></TableCell>
+            {/* Excursii totals */}
+            <TableCell align="right" className="col-excursii col-border"><strong>{formatInteger(totals?.excursii?.count)}</strong></TableCell>
+            <TableCell align="right" className="col-excursii"><strong>{formatNumber(totals?.excursii?.commission)}</strong></TableCell>
+            <TableCell align="right" className="col-excursii"><strong>{formatNumber(totals?.excursii?.pretNetto)}</strong></TableCell>
+            <TableCell align="right" className="col-excursii"><strong>{formatNumber(totals?.excursii?.sumaContract)}</strong></TableCell>
+            <TableCell align="right" className="col-excursii"><strong>{formatNumber(totals?.excursii?.weight)}%</strong></TableCell>
+            {/* Tururi totals */}
+            <TableCell align="right" className="col-tururi col-border"><strong>{formatInteger(totals?.tururi?.count)}</strong></TableCell>
+            <TableCell align="right" className="col-tururi"><strong>{formatNumber(totals?.tururi?.commission)}</strong></TableCell>
+            <TableCell align="right" className="col-tururi"><strong>{formatNumber(totals?.tururi?.pretNetto)}</strong></TableCell>
+            <TableCell align="right" className="col-tururi"><strong>{formatNumber(totals?.tururi?.sumaContract)}</strong></TableCell>
+            <TableCell align="right" className="col-tururi"><strong>{formatNumber(totals?.tururi?.weight)}%</strong></TableCell>
+            {/* Total totals */}
+            <TableCell align="right" className="col-total col-border"><strong>{formatInteger(totals?.total?.count)}</strong></TableCell>
+            <TableCell align="right" className="col-total"><strong>{formatNumber(totals?.total?.commission)}</strong></TableCell>
+            <TableCell align="right" className="col-total"><strong>{formatNumber(totals?.total?.pretNetto)}</strong></TableCell>
+            <TableCell align="right" className="col-total"><strong>{formatNumber(totals?.total?.sumaContract)}</strong></TableCell>
+            {/* Leads totals */}
+            <TableCell align="right" className="col-leads col-border"><strong>{formatInteger(totals?.fromDePrelucratCount)}</strong></TableCell>
+            <TableCell align="right" className="col-leads"><strong>{formatInteger(totals?.toContractIncheiatCount)}</strong></TableCell>
+            {/* Conversion totals */}
+            <TableCell align="right" className="col-conversion col-border"><strong>{formatNumber(totals?.conversionRateTotal)}%</strong></TableCell>
+            <TableCell align="right" className="col-conversion"><strong>{formatNumber(totals?.conversionRateContract)}%</strong></TableCell>
           </TableRow>
 
           {Object.entries(groupTitles).map(([titleName, titleData]) => (
@@ -322,28 +404,52 @@ const DestinationsTable = ({ data }) => {
 
   return (
     <TableContainer component={Paper} className="sales-table-container">
-      <Table size="small">
+      <Table size="small" className="sales-dest-table">
         <TableHead>
+          {/* Header group row */}
+          <TableRow className="sales-header-group-row">
+            <TableCell rowSpan={2} className="col-name header-name">{getLanguageByKey("Name") || "Name"}</TableCell>
+            <TableCell colSpan={5} align="center" className="header-dest">
+              {getLanguageByKey("Sales Data") || "Sales Data"}
+            </TableCell>
+            <TableCell colSpan={2} align="center" className="header-leads">
+              {getLanguageByKey("Leads") || "Leads"}
+            </TableCell>
+            <TableCell colSpan={2} align="center" className="header-conversion">
+              {getLanguageByKey("Conversion") || "Conversion"}
+            </TableCell>
+          </TableRow>
           <TableRow className="sales-header-row">
-            <TableCell>{getLanguageByKey("Name") || "Name"}</TableCell>
-            <TableCell align="right">{getLanguageByKey("Count") || "Count"}</TableCell>
-            <TableCell align="right">{getLanguageByKey("Commission") || "Commission"}</TableCell>
-            <TableCell align="right">{getLanguageByKey("Avg Commission") || "Avg Commission"}</TableCell>
-            <TableCell align="right">{getLanguageByKey("Net Price") || "Net Price"}</TableCell>
-            <TableCell align="right">{getLanguageByKey("Contract Sum") || "Contract Sum"}</TableCell>
+            <TableCell align="right" className="col-dest col-border">{getLanguageByKey("Count") || "Count"}</TableCell>
+            <TableCell align="right" className="col-dest">{getLanguageByKey("Comm") || "Commission"}</TableCell>
+            <TableCell align="right" className="col-dest">{getLanguageByKey("Avg") || "Avg Comm"}</TableCell>
+            <TableCell align="right" className="col-dest">{getLanguageByKey("Net") || "Net Price"}</TableCell>
+            <TableCell align="right" className="col-dest">{getLanguageByKey("Contract") || "Contract"}</TableCell>
+            {/* Leads sub-headers */}
+            <TableCell align="right" className="col-leads col-border">{getLanguageByKey("De Prelucrat") || "De Prelucrat"}</TableCell>
+            <TableCell align="right" className="col-leads">{getLanguageByKey("Încheiat") || "Încheiat"}</TableCell>
+            {/* Conversion sub-headers */}
+            <TableCell align="right" className="col-conversion col-border">{getLanguageByKey("Total") || "Total"}</TableCell>
+            <TableCell align="right" className="col-conversion">{getLanguageByKey("Contract") || "Contr"}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {/* Totals Row */}
           <TableRow className="sales-row total-row">
-            <TableCell>
+            <TableCell className="col-name">
               <strong>{getLanguageByKey("TOTAL") || "TOTAL"}</strong>
             </TableCell>
-            <TableCell align="right"><strong>{formatInteger(totals?.count)}</strong></TableCell>
-            <TableCell align="right"><strong>{formatNumber(totals?.commission)}</strong></TableCell>
-            <TableCell align="right"><strong>{formatNumber(totals?.avgCommission)}</strong></TableCell>
-            <TableCell align="right"><strong>{formatNumber(totals?.pretNetto)}</strong></TableCell>
-            <TableCell align="right"><strong>{formatNumber(totals?.sumaContract)}</strong></TableCell>
+            <TableCell align="right" className="col-dest col-border"><strong>{formatInteger(totals?.count)}</strong></TableCell>
+            <TableCell align="right" className="col-dest"><strong>{formatNumber(totals?.commission)}</strong></TableCell>
+            <TableCell align="right" className="col-dest"><strong>{formatNumber(totals?.avgCommission)}</strong></TableCell>
+            <TableCell align="right" className="col-dest"><strong>{formatNumber(totals?.pretNetto)}</strong></TableCell>
+            <TableCell align="right" className="col-dest"><strong>{formatNumber(totals?.sumaContract)}</strong></TableCell>
+            {/* Leads totals */}
+            <TableCell align="right" className="col-leads col-border"><strong>{formatInteger(totals?.fromDePrelucratCount)}</strong></TableCell>
+            <TableCell align="right" className="col-leads"><strong>{formatInteger(totals?.toContractIncheiatCount)}</strong></TableCell>
+            {/* Conversion totals */}
+            <TableCell align="right" className="col-conversion col-border"><strong>{formatNumber(totals?.conversionRateTotal)}%</strong></TableCell>
+            <TableCell align="right" className="col-conversion"><strong>{formatNumber(totals?.conversionRateContract)}%</strong></TableCell>
           </TableRow>
 
           {Object.entries(groupTitles).map(([titleName, titleData]) => (
@@ -363,7 +469,7 @@ export const Sales = () => {
   // Filter states
   const [selectedGroupTitles, setSelectedGroupTitles] = useState(["MD"]);
   const [dateRange, setDateRange] = useState([]);
-  const [selectedTypes, setSelectedTypes] = useState(["0", "1"]);
+  const [selectedTypes, setSelectedTypes] = useState(["0", "1", "2"]);
 
   const fetchSalesData = useCallback(async () => {
     if (selectedGroupTitles.length === 0) {
@@ -377,9 +483,12 @@ export const Sales = () => {
     try {
       const [startDate, endDate] = dateRange || [];
       
+      // Sort types to ensure consistent order with response parsing
+      const sortedTypes = selectedTypes.map((t) => parseInt(t, 10)).sort((a, b) => a - b);
+      
       const payload = {
         group_titles: selectedGroupTitles,
-        types: selectedTypes.map((t) => parseInt(t, 10)),
+        types: sortedTypes,
       };
 
       // Only add date attributes if both dates are set
@@ -405,50 +514,35 @@ export const Sales = () => {
     fetchSalesData();
   }, [fetchSalesData]);
 
-  // Parsed data for each type
-  // Type 0 (Users): leaf level has excursii/tururi/total objects
-  // Type 1 (Destinations): leaf level has direct count/commission values
-  const usersData = useMemo(() => {
-    if (!salesData || !Array.isArray(salesData)) return null;
-    return salesData.find((item) => {
-      if (!item?.data) return false;
-      // Check if leaf level has 'excursii' property (Type 0 structure)
-      const groupTitles = Object.values(item.data);
-      for (const groupTitle of groupTitles) {
-        const userGroups = Object.values(groupTitle?.data || {});
-        for (const userGroup of userGroups) {
-          const users = Object.values(userGroup?.data || {});
-          for (const user of users) {
-            if (user?.excursii !== undefined) return true;
-          }
-        }
-      }
-      return false;
-    });
-  }, [salesData]);
+  // Data is returned as an array based on requested types
+  // We need to map the response array to the correct type based on what was requested
+  const { usersData, destinationsData, usersAltData } = useMemo(() => {
+    if (!salesData || !Array.isArray(salesData)) {
+      return { usersData: null, destinationsData: null, usersAltData: null };
+    }
 
-  const destinationsData = useMemo(() => {
-    if (!salesData || !Array.isArray(salesData)) return null;
-    return salesData.find((item) => {
-      if (!item?.data) return false;
-      // Check if leaf level has direct 'count' property without 'excursii' (Type 1 structure)
-      const groupTitles = Object.values(item.data);
-      for (const groupTitle of groupTitles) {
-        const destinations = Object.values(groupTitle?.data || {});
-        for (const destination of destinations) {
-          const serviceTypes = Object.values(destination?.data || {});
-          for (const serviceType of serviceTypes) {
-            // Type 1 has direct count, not excursii
-            if (serviceType?.count !== undefined && serviceType?.excursii === undefined) return true;
-          }
-        }
-      }
-      return false;
+    // The API returns data in the order of requested types
+    const requestedTypes = selectedTypes.map((t) => parseInt(t, 10)).sort((a, b) => a - b);
+    
+    let usersData = null;
+    let destinationsData = null;
+    let usersAltData = null;
+
+    requestedTypes.forEach((type, index) => {
+      const data = salesData[index];
+      if (!data) return;
+      
+      if (type === 0) usersData = data;
+      else if (type === 1) destinationsData = data;
+      else if (type === 2) usersAltData = data;
     });
-  }, [salesData]);
+
+    return { usersData, destinationsData, usersAltData };
+  }, [salesData, selectedTypes]);
 
   const showUsersTable = selectedTypes.includes("0") && usersData;
   const showDestinationsTable = selectedTypes.includes("1") && destinationsData;
+  const showUsersAltTable = selectedTypes.includes("2") && usersAltData;
 
   return (
     <Stack gap={12} p="12" className="sales-container">
@@ -534,7 +628,16 @@ export const Sales = () => {
             </Box>
           )}
 
-          {!showUsersTable && !showDestinationsTable && (
+          {showUsersAltTable && (
+            <Box>
+              <Text size="lg" fw={600} mb="md">
+                {getLanguageByKey("Sales by Users (Alt)") || "Sales by Users (Alt)"}
+              </Text>
+              <UsersTable data={usersAltData} />
+            </Box>
+          )}
+
+          {!showUsersTable && !showDestinationsTable && !showUsersAltTable && (
             <Flex align="center" justify="center" style={{ minHeight: 200 }}>
               <Text c="dimmed">{getLanguageByKey("No data available") || "No data available"}</Text>
             </Flex>

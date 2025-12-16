@@ -16,137 +16,398 @@
   background-color: var(--crm-ui-kit-palette-background-primary) !important;
   color: var(--crm-ui-kit-palette-text-primary);
   border-radius: 8px;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+.sales-users-table {
+  min-width: 1800px;
+}
+
+.sales-dest-table {
+  min-width: 1100px;
 }
 
 .sales-table-container .MuiTableCell-root {
   color: var(--crm-ui-kit-palette-text-primary);
-  border-color: var(--crm-ui-kit-palette-border-default);
-  padding: 10px 16px;
+  border-color: rgba(255, 255, 255, 0.06);
+  padding: 10px 14px;
   font-size: 13px;
+  line-height: 1.4;
 }
 
-/* Header row */
+/* ===== HEADER STYLES ===== */
+
+/* Header group row (Excursions, Tours, Total, Conversion) */
+.sales-header-group-row {
+  background-color: #1e2433;
+}
+
+.sales-header-group-row .MuiTableCell-root {
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+  padding: 12px 14px;
+  border-bottom: none;
+}
+
+.sales-header-group-row .header-name {
+  background-color: #1e2433;
+  color: rgba(255, 255, 255, 0.7);
+  vertical-align: middle;
+}
+
+.sales-header-group-row .header-excursii {
+  background-color: rgba(59, 130, 246, 0.25);
+  color: #93c5fd;
+  border-left: 2px solid rgba(59, 130, 246, 0.5);
+}
+
+.sales-header-group-row .header-tururi {
+  background-color: rgba(251, 146, 60, 0.2);
+  color: #fed7aa;
+  border-left: 2px solid rgba(251, 146, 60, 0.5);
+}
+
+.sales-header-group-row .header-total {
+  background-color: rgba(34, 197, 94, 0.2);
+  color: #86efac;
+  border-left: 2px solid rgba(34, 197, 94, 0.5);
+}
+
+.sales-header-group-row .header-conversion {
+  background-color: rgba(168, 85, 247, 0.2);
+  color: #d8b4fe;
+  border-left: 2px solid rgba(168, 85, 247, 0.5);
+}
+
+.sales-header-group-row .header-leads {
+  background-color: rgba(236, 72, 153, 0.2);
+  color: #f9a8d4;
+  border-left: 2px solid rgba(236, 72, 153, 0.5);
+}
+
+.sales-header-group-row .header-dest {
+  background-color: rgba(14, 165, 233, 0.2);
+  color: #7dd3fc;
+  border-left: 2px solid rgba(14, 165, 233, 0.5);
+}
+
+/* Sub-header row */
 .sales-header-row {
-  background-color: var(--crm-ui-kit-palette-background-secondary);
+  background-color: #252d3d;
 }
 
 .sales-header-row .MuiTableCell-root {
-  font-weight: 700;
-  font-size: 12px;
+  font-weight: 600;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   white-space: nowrap;
-  color: var(--crm-ui-kit-palette-text-secondary-light);
+  color: rgba(255, 255, 255, 0.5);
+  padding: 8px 14px;
 }
+
+/* ===== COLUMN GROUP COLORS ===== */
+
+/* Excursii columns - subtle blue tint */
+.col-excursii {
+  background-color: rgba(59, 130, 246, 0.04);
+}
+
+.sales-header-row .col-excursii {
+  background-color: rgba(59, 130, 246, 0.12);
+  color: rgba(147, 197, 253, 0.8);
+}
+
+/* Tururi columns - subtle orange tint */
+.col-tururi {
+  background-color: rgba(251, 146, 60, 0.04);
+}
+
+.sales-header-row .col-tururi {
+  background-color: rgba(251, 146, 60, 0.1);
+  color: rgba(254, 215, 170, 0.8);
+}
+
+/* Total columns - subtle green tint */
+.col-total {
+  background-color: rgba(34, 197, 94, 0.04);
+}
+
+.sales-header-row .col-total {
+  background-color: rgba(34, 197, 94, 0.1);
+  color: rgba(134, 239, 172, 0.8);
+}
+
+/* Conversion columns - subtle purple tint */
+.col-conversion {
+  background-color: rgba(168, 85, 247, 0.04);
+}
+
+.sales-header-row .col-conversion {
+  background-color: rgba(168, 85, 247, 0.1);
+  color: rgba(216, 180, 254, 0.8);
+}
+
+/* Leads columns - subtle pink tint */
+.col-leads {
+  background-color: rgba(236, 72, 153, 0.04);
+}
+
+.sales-header-row .col-leads {
+  background-color: rgba(236, 72, 153, 0.1);
+  color: rgba(249, 168, 212, 0.8);
+}
+
+/* Destinations columns - subtle sky blue tint */
+.col-dest {
+  background-color: rgba(14, 165, 233, 0.04);
+}
+
+.sales-header-row .col-dest {
+  background-color: rgba(14, 165, 233, 0.1);
+  color: rgba(125, 211, 252, 0.8);
+}
+
+/* Column borders for group separation */
+.col-border {
+  border-left: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.sales-header-row .col-excursii.col-border {
+  border-left: 2px solid rgba(59, 130, 246, 0.4) !important;
+}
+
+.sales-header-row .col-tururi.col-border {
+  border-left: 2px solid rgba(251, 146, 60, 0.4) !important;
+}
+
+.sales-header-row .col-total.col-border {
+  border-left: 2px solid rgba(34, 197, 94, 0.4) !important;
+}
+
+.sales-header-row .col-conversion.col-border {
+  border-left: 2px solid rgba(168, 85, 247, 0.4) !important;
+}
+
+.sales-header-row .col-leads.col-border {
+  border-left: 2px solid rgba(236, 72, 153, 0.4) !important;
+}
+
+.sales-header-row .col-dest.col-border {
+  border-left: 2px solid rgba(14, 165, 233, 0.4) !important;
+}
+
+/* Name column - uniform width across all tables */
+.col-name {
+  background-color: transparent !important;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  width: 220px;
+  min-width: 220px;
+  max-width: 220px;
+}
+
+/* ===== DATA ROW STYLES ===== */
 
 /* Total row - most prominent */
 .sales-row.total-row {
-  background-color: #1a1a2e;
+  background-color: #1a1f2e;
 }
 
 .sales-row.total-row .MuiTableCell-root {
   color: #fff;
-  font-size: 14px;
-  padding: 14px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 14px;
+  border-bottom: 2px solid rgba(99, 102, 241, 0.3);
 }
 
-/* Group Title Row (Level 0) - Primary color, prominent */
+.sales-row.total-row .col-name {
+  background-color: #1a1f2e !important;
+}
+
+.sales-row.total-row .col-excursii {
+  background-color: rgba(59, 130, 246, 0.08);
+}
+
+.sales-row.total-row .col-tururi {
+  background-color: rgba(251, 146, 60, 0.06);
+}
+
+.sales-row.total-row .col-total {
+  background-color: rgba(34, 197, 94, 0.06);
+}
+
+.sales-row.total-row .col-conversion {
+  background-color: rgba(168, 85, 247, 0.06);
+}
+
+.sales-row.total-row .col-leads {
+  background-color: rgba(236, 72, 153, 0.06);
+}
+
+.sales-row.total-row .col-dest {
+  background-color: rgba(14, 165, 233, 0.08);
+}
+
+/* Group Title Row (Level 0) - e.g., "MD" */
 .sales-row.depth-0.group-title-row {
-  background-color: var(--crm-ui-kit-palette-link-primary);
+  background-color: #2a3548;
 }
 
 .sales-row.depth-0.group-title-row .MuiTableCell-root {
   color: #fff;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  padding: 12px 16px;
+  padding: 12px 14px;
+}
+
+.sales-row.depth-0.group-title-row .col-name {
+  background-color: #2a3548 !important;
+}
+
+.sales-row.depth-0.group-title-row .title-name {
+  color: #fff;
+  font-weight: 600;
 }
 
 .sales-row.depth-0.group-title-row .MuiIconButton-root {
   color: #fff;
 }
 
-/* Level 1 rows - User Groups / Destinations - Secondary highlight */
-.sales-row.depth-1:not(.detail-row) {
-  background-color: rgba(99, 102, 241, 0.15);
-  border-left: 4px solid var(--crm-ui-kit-palette-link-primary);
+.sales-row.depth-0.group-title-row .col-excursii {
+  background-color: rgba(59, 130, 246, 0.1);
 }
 
-.sales-row.depth-1:not(.detail-row) .MuiTableCell-root {
+.sales-row.depth-0.group-title-row .col-tururi {
+  background-color: rgba(251, 146, 60, 0.08);
+}
+
+.sales-row.depth-0.group-title-row .col-total {
+  background-color: rgba(34, 197, 94, 0.08);
+}
+
+.sales-row.depth-0.group-title-row .col-conversion {
+  background-color: rgba(168, 85, 247, 0.08);
+}
+
+.sales-row.depth-0.group-title-row .col-leads {
+  background-color: rgba(236, 72, 153, 0.08);
+}
+
+.sales-row.depth-0.group-title-row .col-dest {
+  background-color: rgba(14, 165, 233, 0.1);
+}
+
+/* Group Row (Level 1) - e.g., "Back Flagman" */
+.sales-row.group-row {
+  background-color: #232b3a;
+}
+
+.sales-row.group-row .MuiTableCell-root {
   font-weight: 500;
   font-size: 13px;
+  padding: 11px 14px;
 }
 
-/* Level 2 rows - Users / Service Types - Lighter background */
-.sales-row.depth-2:not(.detail-row) {
-  background-color: var(--crm-ui-kit-palette-background-primary);
-  border-left: 4px solid rgba(99, 102, 241, 0.3);
+.sales-row.group-row .col-name {
+  background-color: #232b3a !important;
 }
 
-.sales-row.depth-2:not(.detail-row) .MuiTableCell-root {
-  font-size: 13px;
+.sales-row.group-row .group-name {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
 }
 
-/* Level 3+ rows */
-.sales-row.depth-3:not(.detail-row),
-.sales-row.depth-4:not(.detail-row) {
-  background-color: var(--crm-ui-kit-palette-background-primary);
-  border-left: 4px solid rgba(99, 102, 241, 0.15);
+.sales-row.group-row .col-excursii {
+  background-color: rgba(59, 130, 246, 0.06);
 }
 
-.sales-row.depth-3 .MuiTableCell-root,
-.sales-row.depth-4 .MuiTableCell-root {
-  color: var(--crm-ui-kit-palette-text-primary);
+.sales-row.group-row .col-tururi {
+  background-color: rgba(251, 146, 60, 0.05);
 }
 
-/* Detail rows (excursii/tururi breakdown, service types) */
-.sales-row.detail-row {
-  background-color: rgba(255, 255, 255, 0.03);
-  border-left: 4px solid rgba(99, 102, 241, 0.2);
+.sales-row.group-row .col-total {
+  background-color: rgba(34, 197, 94, 0.05);
 }
 
-.sales-row.detail-row .MuiTableCell-root {
-  color: var(--crm-ui-kit-palette-text-primary);
+.sales-row.group-row .col-conversion {
+  background-color: rgba(168, 85, 247, 0.05);
+}
+
+.sales-row.group-row .col-leads {
+  background-color: rgba(236, 72, 153, 0.05);
+}
+
+.sales-row.group-row .col-dest {
+  background-color: rgba(14, 165, 233, 0.06);
+}
+
+/* User Row (Level 2) - individual users */
+.sales-row.user-row {
+  background-color: #1c2333;
+}
+
+.sales-row.user-row .MuiTableCell-root {
   font-size: 12px;
-  padding: 8px 16px;
-  opacity: 0.85;
+  padding: 9px 14px;
+  color: rgba(255, 255, 255, 0.75);
 }
 
-/* Alternating row colors for better readability within same depth */
-.sales-row.depth-2:nth-of-type(even):not(.detail-row) {
-  background-color: rgba(255, 255, 255, 0.02);
+.sales-row.user-row .col-name {
+  background-color: #1c2333 !important;
+  color: rgba(255, 255, 255, 0.85);
 }
 
-.sales-row.depth-3:nth-of-type(even):not(.detail-row),
-.sales-row.detail-row:nth-of-type(even) {
-  background-color: rgba(255, 255, 255, 0.05);
+/* Alternating user rows for readability */
+.sales-row.user-row:nth-of-type(even) {
+  background-color: #1a2030;
 }
+
+.sales-row.user-row:nth-of-type(even) .col-name {
+  background-color: #1a2030 !important;
+}
+
+/* ===== HOVER EFFECTS ===== */
+
+.sales-row:hover:not(.total-row):not(.sales-header-row):not(.sales-header-group-row) {
+  background-color: rgba(99, 102, 241, 0.12) !important;
+}
+
+.sales-row:hover:not(.total-row):not(.sales-header-row):not(.sales-header-group-row) .col-name {
+  background-color: rgba(99, 102, 241, 0.12) !important;
+}
+
+.sales-row.group-row:hover {
+  background-color: rgba(99, 102, 241, 0.15) !important;
+}
+
+.sales-row.group-row:hover .col-name {
+  background-color: rgba(99, 102, 241, 0.15) !important;
+}
+
+/* ===== OTHER STYLES ===== */
 
 /* Icon buttons */
 .sales-table-container .MuiIconButton-root {
-  color: var(--crm-ui-kit-palette-text-primary);
+  color: rgba(255, 255, 255, 0.6);
   padding: 4px;
-  margin-right: 4px;
+  margin-right: 6px;
+}
+
+.sales-table-container .MuiIconButton-root:hover {
+  color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .sales-table-container .MuiIconButton-root:disabled {
-  color: var(--crm-ui-kit-palette-text-secondary-light);
-  opacity: 0.3;
-}
-
-/* Hover effects */
-.sales-row:hover:not(.total-row):not(.group-title-row):not(.sales-header-row) {
-  background-color: rgba(99, 102, 241, 0.08) !important;
-}
-
-.sales-row.depth-1:hover:not(.detail-row) {
-  background-color: rgba(99, 102, 241, 0.22) !important;
-}
-
-/* Better visual separation between sections */
-.sales-row.depth-0.group-title-row + .sales-row {
-  border-top: none;
+  color: rgba(255, 255, 255, 0.2);
+  opacity: 0.5;
 }
 
 /* Ensure text doesn't wrap in numeric columns */
@@ -155,25 +416,72 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* First column (Name) styling */
-.sales-table-container .MuiTableCell-root:first-child {
-  min-width: 200px;
+/* Sticky header for scrollable table */
+.sales-table-container .MuiTableHead-root {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+}
+
+/* First column (Name) styling - already defined in .col-name above */
+
+/* Detail rows (for destinations table) */
+.sales-row.detail-row {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.sales-row.detail-row .MuiTableCell-root {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  padding: 8px 14px;
+}
+
+/* Level-based indentation styles for destinations table */
+.sales-row.depth-1:not(.group-row):not(.user-row) {
+  background-color: rgba(99, 102, 241, 0.08);
+}
+
+.sales-row.depth-1:not(.group-row):not(.user-row) .MuiTableCell-root {
+  font-weight: 500;
+}
+
+.sales-row.depth-2:not(.group-row):not(.user-row) {
+  background-color: var(--crm-ui-kit-palette-background-primary);
 }
 
 /* Responsive adjustments */
-@media (max-width: 1200px) {
+@media (max-width: 1400px) {
   .sales-table-container .MuiTableCell-root {
     padding: 8px 10px;
-    font-size: 12px;
-  }
-  
-  .sales-header-row .MuiTableCell-root {
     font-size: 11px;
   }
   
-  .sales-row.total-row .MuiTableCell-root,
-  .sales-row.depth-0.group-title-row .MuiTableCell-root {
-    font-size: 12px;
+  .sales-header-row .MuiTableCell-root {
+    font-size: 9px;
+    padding: 6px 10px;
+  }
+  
+  .sales-header-group-row .MuiTableCell-root {
+    font-size: 10px;
     padding: 10px;
+  }
+  
+  .sales-row.total-row .MuiTableCell-root {
+    font-size: 12px;
+    padding: 12px 10px;
+  }
+
+  .sales-users-table {
+    min-width: 1600px;
+  }
+
+  .sales-dest-table {
+    min-width: 950px;
+  }
+
+  .col-name {
+    width: 180px;
+    min-width: 180px;
+    max-width: 180px;
   }
 }
