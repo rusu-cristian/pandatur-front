@@ -2391,7 +2391,8 @@ export const translations = {
     RO: "Tipul serviciului",
     RU: "Тип услуги",
     EN: "Service type"
-  }, "Selectează toate": {
+  },
+  "Selectează toate": {
     RO: "Selectează toate",
     RU: "Выбрать все",
     EN: "Select all"
