@@ -94,9 +94,16 @@ const ChatList = ({ ticketId }) => {
   const wrapperChatItemRef = useRef(null);
   const wrapperChatHeight = useDOMElementHeight(wrapperChatItemRef);
 
-  // Список тикетов для отображения
+  // Список тикетов для отображения (сортировка по last_interaction_date)
   const displayedTickets = useMemo(() => {
-    return isChatFiltered ? chatFilteredTickets : tickets;
+    const ticketsList = isChatFiltered ? chatFilteredTickets : tickets;
+    
+    // Сортируем по last_interaction_date (от новых к старым)
+    return [...ticketsList].sort((a, b) => {
+      const dateA = a.last_interaction_date ? new Date(a.last_interaction_date).getTime() : 0;
+      const dateB = b.last_interaction_date ? new Date(b.last_interaction_date).getTime() : 0;
+      return dateB - dateA; // DESC порядок (новые сверху)
+    });
   }, [isChatFiltered, chatFilteredTickets, tickets]);
 
   // Рендер элемента списка

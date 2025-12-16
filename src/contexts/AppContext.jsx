@@ -189,6 +189,8 @@ useEffect(() => {
         page,
         type: "light",
         group_title: groupTitleForApi,
+        sort_by: "last_interaction_date",
+        order: "DESC",
         attributes: {
           ...lightTicketFilters,
           workflow: filteredWorkflow,
