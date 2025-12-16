@@ -61,6 +61,10 @@ const getFieldLabel = (subject) => {
         data_contractului: getLanguageByKey("Data contractului"),
         data_avansului: getLanguageByKey("Data avansului"),
         data_de_plata_integrala: getLanguageByKey("Data de plată integrală"),
+
+        // Client contact fields
+        contact_value: getLanguageByKey("Contact value") || "Valoare contact",
+        contact_type: getLanguageByKey("Contact type") || "Tip contact",
     };
 
     return fieldLabels[subject] || subject;
@@ -111,8 +115,8 @@ const formatValue = (value, subject) => {
     return value;
 };
 
-export const MessagesLogItem = ({ log, technicians }) => {
-    const date = parseServerDate(log.timestamp).format("DD.MM.YYYY HH:mm");
+export const MessagesLogItem = ({ log, technicians, isLive = false }) => {
+    const date = parseServerDate(log.timestamp)?.format("DD.MM.YYYY HH:mm") || log.timestamp;
 
     const tech = technicians?.find((t) => String(t.value) === String(log.by)) || {};
 
@@ -194,6 +198,18 @@ export const MessagesLogItem = ({ log, technicians }) => {
         const fromValue = formatValue(log.from, log.subject);
         const toValue = formatValue(log.to, log.subject);
         changed = `${fieldLabel}: ${fromValue} → ${toValue}`;
+    } else if (log.type === "client_contact") {
+        // Обработка логов изменения контактов клиента
+        const fieldLabel = getFieldLabel(log.subject);
+        if (log.action === "created") {
+            changed = `${fieldLabel}: ${getLanguageByKey("Added") || "Добавлено"} "${log.to}"`;
+        } else if (log.action === "deleted") {
+            changed = `${fieldLabel}: ${getLanguageByKey("Deleted") || "Удалено"} "${log.from}"`;
+        } else if (log.action === "updated") {
+            changed = `${fieldLabel}: ${log.from} → ${log.to}`;
+        } else {
+            changed = `${fieldLabel}: ${log.action}`;
+        }
     } else if (log.subject && log.from && log.to) {
         // Fallback for any other updates - use helpers if available
         const fieldLabel = getFieldLabel(log.subject);
@@ -217,10 +233,9 @@ export const MessagesLogItem = ({ log, technicians }) => {
             }}
         >
             <Flex
-                align="center"
+                align="flex-start"
                 gap="md"
                 wrap="nowrap"
-                // p="xs" 
                 style={{
                     backgroundColor: "transparent",
                     borderRadius: "8px"
@@ -251,8 +266,8 @@ export const MessagesLogItem = ({ log, technicians }) => {
                 </Text>
 
                 {/* Что сделал */}
-                <Box style={{ flex: 1, minWidth: "200px", overflow: "hidden" }}>
-                    <Text size="sm" fw={500} c="dark" style={{ lineHeight: 1.3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                <Box style={{ flex: 1, minWidth: "200px" }}>
+                    <Text size="sm" fw={500} c="dark" style={{ lineHeight: 1.4, wordBreak: "break-word" }}>
                         {changed} {" "} {log.task_id && `Task #${log.task_id}`}
                     </Text>
                 </Box>

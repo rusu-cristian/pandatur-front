@@ -20,7 +20,19 @@ const toDate = (val) => {
     const d = new Date(val);
     return isNaN(d.getTime()) ? null : d;
   }
-  const s = String(val).trim().replace(" ", "T").replace(/Z$/, "");
+
+  let s = String(val).trim();
+
+  // Проверяем формат DD-MM-YYYY HH:mm:ss (приходит из WebSocket)
+  const ddMmMatch = s.match(/^(\d{2})-(\d{2})-(\d{4})[ T](.+)$/);
+  if (ddMmMatch) {
+    const [, dd, MM, yyyy, time] = ddMmMatch;
+    s = `${yyyy}-${MM}-${dd}T${time}`;
+  } else {
+    // Стандартный формат YYYY-MM-DD HH:mm:ss
+    s = s.replace(" ", "T").replace(/Z$/, "");
+  }
+
   const d = new Date(s);
   return isNaN(d.getTime()) ? null : d;
 };
