@@ -78,7 +78,7 @@ export const privateRoutes = (userRoles) => {
     routes.push({path: "/analytics/events/:ticketId?", component: Analytics});
   }
 
-  if (hasStrictPermission(userRoles, "ANALYTICS", "VIEW")) {
+  if (hasStrictPermission(userRoles, "SALES", "VIEW")) {
     routes.push({ path: "/sales", component: Sales });
   }
 
