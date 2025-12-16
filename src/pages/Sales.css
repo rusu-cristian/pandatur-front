@@ -16,8 +16,8 @@
   background-color: var(--crm-ui-kit-palette-background-primary) !important;
   color: var(--crm-ui-kit-palette-text-primary);
   border-radius: 8px;
-  overflow-x: auto;
-  overflow-y: visible;
+  overflow: auto;
+  max-height: 70vh;
 }
 
 .sales-users-table {
@@ -32,7 +32,7 @@
   color: var(--crm-ui-kit-palette-text-primary);
   border-color: rgba(255, 255, 255, 0.06);
   padding: 10px 14px;
-  font-size: 13px;
+  font-size: 16px;
   line-height: 1.4;
 }
 
@@ -45,7 +45,7 @@
 
 .sales-header-group-row .MuiTableCell-root {
   font-weight: 600;
-  font-size: 11px;
+  font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.8px;
   white-space: nowrap;
@@ -57,6 +57,9 @@
   background-color: #1e2433;
   color: rgba(255, 255, 255, 0.7);
   vertical-align: middle;
+  position: sticky;
+  left: 0;
+  z-index: 4;
 }
 
 .sales-header-group-row .header-excursii {
@@ -81,12 +84,14 @@
   background-color: rgba(168, 85, 247, 0.2);
   color: #d8b4fe;
   border-left: 2px solid rgba(168, 85, 247, 0.5);
+  white-space: nowrap;
 }
 
 .sales-header-group-row .header-leads {
   background-color: rgba(236, 72, 153, 0.2);
   color: #f9a8d4;
   border-left: 2px solid rgba(236, 72, 153, 0.5);
+  white-space: nowrap;
 }
 
 .sales-header-group-row .header-dest {
@@ -102,7 +107,7 @@
 
 .sales-header-row .MuiTableCell-root {
   font-weight: 600;
-  font-size: 10px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   white-space: nowrap;
@@ -145,6 +150,7 @@
 /* Conversion columns - subtle purple tint */
 .col-conversion {
   background-color: rgba(168, 85, 247, 0.04);
+  white-space: nowrap;
 }
 
 .sales-header-row .col-conversion {
@@ -155,6 +161,7 @@
 /* Leads columns - subtle pink tint */
 .col-leads {
   background-color: rgba(236, 72, 153, 0.04);
+  white-space: nowrap;
 }
 
 .sales-header-row .col-leads {
@@ -206,10 +213,18 @@
   background-color: transparent !important;
   position: sticky;
   left: 0;
-  z-index: 1;
+  z-index: 2;
   width: 220px;
   min-width: 220px;
   max-width: 220px;
+}
+
+/* Ensure header name cells have higher z-index for proper stacking */
+.sales-header-row .col-name {
+  background-color: #252d3d;
+  position: sticky;
+  left: 0;
+  z-index: 4;
 }
 
 /* ===== DATA ROW STYLES ===== */
@@ -221,7 +236,7 @@
 
 .sales-row.total-row .MuiTableCell-root {
   color: #fff;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   padding: 14px;
   border-bottom: 2px solid rgba(99, 102, 241, 0.3);
@@ -262,7 +277,7 @@
 
 .sales-row.depth-0.group-title-row .MuiTableCell-root {
   color: #fff;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   padding: 12px 14px;
 }
@@ -311,7 +326,7 @@
 
 .sales-row.group-row .MuiTableCell-root {
   font-weight: 500;
-  font-size: 13px;
+  font-size: 16px;
   padding: 11px 14px;
 }
 
@@ -354,7 +369,7 @@
 }
 
 .sales-row.user-row .MuiTableCell-root {
-  font-size: 12px;
+  font-size: 14px;
   padding: 9px 14px;
   color: rgba(255, 255, 255, 0.75);
 }
@@ -432,7 +447,7 @@
 
 .sales-row.detail-row .MuiTableCell-root {
   color: rgba(255, 255, 255, 0.7);
-  font-size: 12px;
+  font-size: 14px;
   padding: 8px 14px;
 }
 
@@ -453,21 +468,21 @@
 @media (max-width: 1400px) {
   .sales-table-container .MuiTableCell-root {
     padding: 8px 10px;
-    font-size: 11px;
+    font-size: 13px;
   }
   
   .sales-header-row .MuiTableCell-root {
-    font-size: 9px;
+    font-size: 11px;
     padding: 6px 10px;
   }
   
   .sales-header-group-row .MuiTableCell-root {
-    font-size: 10px;
+    font-size: 12px;
     padding: 10px;
   }
   
   .sales-row.total-row .MuiTableCell-root {
-    font-size: 12px;
+    font-size: 14px;
     padding: 12px 10px;
   }
 
