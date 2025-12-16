@@ -5337,9 +5337,9 @@ export const translations = {
     EN: "Countries"
   },
   "Ticket State": {
-    RU: "Состояние тикетов",
-    RO: "Starea tichetelor",
-    EN: "Ticket State"
+    RU: "Новые лиды",
+    RO: "Leaduri noi",
+    EN: "New leads"
   },
   "Total tickets for the period": {
     RU: "Всего тикетов за период",
@@ -5387,9 +5387,9 @@ export const translations = {
     EN: "Total calls"
   },
   "Tickets Into Work": {
-    RU: "Тикеты в работу",
-    RO: "Tichete în lucru",
-    EN: "Tickets Into Work"
+    RU: "Обработанные лиды",
+    RO: "Leaduri prelucrate",
+    EN: "Processed leads"
   },
   "Tickets taken into work": {
     RU: "Тикеты взятые в работу",
@@ -5442,9 +5442,9 @@ export const translations = {
     EN: "min"
   },
   "Ticket Distribution": {
-    RU: "Распределение тикетов",
-    RO: "Distribuția tichetelor",
-    EN: "Ticket Distribution"
+    RU: "Распределение лидов",
+    RO: "Distribuția leadurilor",
+    EN: "Lead Distribution"
   },
   "Distributed tickets": {
     RU: "Распределенные тикеты",
@@ -5462,14 +5462,14 @@ export const translations = {
     EN: "system"
   },
   "Closed Tickets Count": {
-    RU: "Количество закрытых тикетов",
-    RO: "Numărul de tichete închise",
-    EN: "Closed Tickets Count"
+    RU: "Количество закрытых лидов",
+    RO: "Numărul de leaduri închise",
+    EN: "Closed Leads Count"
   },
   "Total closed tickets": {
-    RU: "Всего закрытых тикетов",
-    RO: "Total tichete închise",
-    EN: "Total closed tickets"
+    RU: "Всего закрытых лидов",
+    RO: "Total leaduri închise",
+    EN: "Total closed leads"
   },
   "Older than 11 days": {
     RU: "Старше 11 дней",
@@ -5482,9 +5482,9 @@ export const translations = {
     EN: "Newer than 11 days"
   },
   "Tickets By Depart Count": {
-    RU: "Тикеты по дате отъезда",
-    RO: "Tichete după data plecării",
-    EN: "Tickets By Depart Count"
+    RU: "Лиды в ожидании отъезда",
+    RO: "Leaduri in asteptarea plecarii",
+    EN: "Leads by departure count"
   },
   "Less than 14 days": {
     RU: "Менее 14 дней",
@@ -5502,9 +5502,9 @@ export const translations = {
     EN: "More than 30 days"
   },
   "Ticket Lifetime Stats": {
-    RU: "Статистика времени обработки тикетов",
-    RO: "Statistici timp procesare tichete",
-    EN: "Ticket Lifetime Stats"
+    RU: "Статистика времени жизни лидов",
+    RO: "Durata de viață a leadurilor",
+    EN: "Lead Lifetime Stats"
   },
   "Total processing time": {
     RU: "Общее время обработки",
@@ -5552,9 +5552,9 @@ export const translations = {
     EN: "Total time (minutes)"
   },
   "Ticket Rate": {
-    RU: "Коэффициент обработки тикетов",
-    RO: "Rata de procesare tichete",
-    EN: "Ticket Rate"
+    RU: "Качество лидов",
+    RO: "Calitatea leadurilor",
+    EN: "Lead Rate"
   },
   "Worked on tickets": {
     RU: "Обработано тикетов",
@@ -5620,9 +5620,9 @@ export const translations = {
   },
   // Workflow Change To Widget
   "Workflow Change To": {
-    RU: "Изменения в рабочий процесс",
-    RO: "Modificări în flux de lucru",
-    EN: "Workflow Change To"
+    RU: "Заключенные контракты",
+    RO: "Contracte încheiate",
+    EN: "Completed contracts"
   },
   "completed contracts": {
     RU: "завершенных договоров",
@@ -5636,9 +5636,9 @@ export const translations = {
   },
   // Ticket Creation Widget
   "Ticket Creation": {
-    RU: "Создание тикетов",
-    RO: "Crearea tichetelor",
-    EN: "Ticket Creation"
+    RU: "Создание лидов",
+    RO: "Leaduri create manual/sistem",
+    EN: "Lead Creation"
   },
   "tickets created": {
     RU: "созданных тикетов",
@@ -5671,11 +5671,10 @@ export const translations = {
     RO: "Total tranziții workflow",
     EN: "Total workflow transitions"
   },
-  // Workflow Duration Widget
   "Workflow Duration": {
-    RU: "Длительность рабочего процесса",
-    RO: "Durata workflow",
-    EN: "Workflow Duration"
+    RU: "Длительность обработки лидов",
+    RO: "Durata procesare leaduri",
+    EN: "Lead processing duration"
   },
   "Processing time": {
     RU: "Время обработки",
@@ -5687,11 +5686,10 @@ export const translations = {
     RO: "în starea de procesare",
     EN: "in processing state"
   },
-  // Ticket Destination Widget
   "Ticket Destination": {
-    RU: "Назначение тикетов",
-    RO: "Destinația tichetelor",
-    EN: "Ticket Destination"
+    RU: "Назначение: страна",
+    RO: "Destinație: țară",
+    EN: "Lead destination: country"
   },
   "Ticket Source Stats": {
     RU: "Статистика источников лидов",
@@ -5909,19 +5907,19 @@ export const translations = {
     EN: "Widget type"
   },
   "Statistica Marketing": {
-    RO: "Statistica Marketing",
-    RU: "Статистика Marketing",
-    EN: "Marketing statistics"
+    RU: "Маркетинг: статистика",
+    RO: "Marketing: Marketing",
+    EN: "Marketing: Marketing"
   },
   "Sursă Lead": {
-    RO: "Sursă Lead",
-    RU: "Источник Lead",
-    EN: "Lead source"
+    RO: "Marketing: sursă lead",
+    RU: "Маркетинг: источник лида",
+    EN: "Marketing: lead source"
   },
   "Platformă lead": {
-    RO: "Platformă lead",
-    RU: "Источник платформы",
-    EN: "Platform lead source"
+    RO: "Marketing: platformă lead",
+    RU: "Маркетинг: источник платформы",
+    EN: "Marketing: platform lead source"
   },
   new_year_instambul: {
     RO: "Anul nou Instambul",
