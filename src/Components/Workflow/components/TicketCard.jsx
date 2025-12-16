@@ -284,6 +284,31 @@ export const TicketCard = memo(({
               >
                 {parseServerDate(ticket.creation_date)?.format(YYYY_MM_DD)}
               </Text>
+
+              {/* Информация о контракте */}
+              {(ticket.contract_date || ticket.contract_number) && (
+                <Flex align="center" gap="8" style={{ marginTop: '4px' }}>
+                  {ticket.contract_number && (
+                    <Text
+                      size="xs"
+                      c="var(--crm-ui-kit-palette-text-primary)"
+                      fw={500}
+                      style={{ fontSize: '12px' }}
+                    >
+                      {getLanguageByKey("Contract") || "Contract"}: {ticket.contract_number}
+                    </Text>
+                  )}
+                  {ticket.contract_date && (
+                    <Text
+                      size="xs"
+                      c="var(--crm-ui-kit-palette-text-secondary-dark)"
+                      style={{ fontSize: '12px' }}
+                    >
+                      {parseServerDate(ticket.contract_date)?.format(YYYY_MM_DD)}
+                    </Text>
+                  )}
+                </Flex>
+              )}
             </Box>
           </Flex>
 
