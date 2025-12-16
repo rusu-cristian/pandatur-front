@@ -260,7 +260,7 @@ export const GroupedMessages = ({
   return (
     <Flex direction="column" gap="xl" h="100%">
       {/* Кнопка загрузки старых сообщений (пагинация) */}
-      {hasMoreMessages && messages.length > 0 && (
+      {hasMoreMessages && allItems.length > 0 && (
         <Flex justify="center">
           <Button
             variant="filled"
