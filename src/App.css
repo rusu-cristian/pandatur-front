@@ -14,6 +14,15 @@ body {
   font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
 
+/* Safari-specific: use 100vh/100vw since transform doesn't affect layout */
+html.is-safari {
+  height: 100vh;
+}
+
+html.is-safari body {
+  height: 100vh;
+}
+
 /* html,
 body,
 * {
@@ -43,6 +52,16 @@ body,
 
 #root {
   zoom: 0.75;
+  height: 133.33vh;
+  width: 133.33vw;
+  overflow: hidden;
+}
+
+/* Safari fallback: use transform: scale() since Safari doesn't support zoom properly */
+html.is-safari #root {
+  zoom: 1; /* Reset zoom for Safari */
+  transform: scale(0.75);
+  transform-origin: 0 0;
   height: 133.33vh;
   width: 133.33vw;
   overflow: hidden;
@@ -302,6 +321,70 @@ a {
 
 
 [data-mantine-color-scheme] .mantine-Drawer-body .mantine-Select-root {
+  zoom: 1;
+}
+
+/* ===== Safari-specific Mantine overrides (using transform instead of zoom) ===== */
+html.is-safari [data-mantine-color-scheme] .mantine-SegmentedControl-indicator {
+  zoom: 1;
+  transform: scale(1.3333);
+  transform-origin: center;
+}
+
+html.is-safari [data-mantine-color-scheme] .mantine-Modal-root {
+  zoom: 1;
+}
+
+html.is-safari [data-mantine-color-scheme] .mantine-Modal-content {
+  zoom: 1;
+}
+
+html.is-safari [data-mantine-color-scheme] .mantine-Modal-body {
+  zoom: 1;
+  transform: scale(0.75);
+  transform-origin: top left;
+  width: 133.33%;
+  height: 133.33%;
+}
+
+html.is-safari [data-mantine-color-scheme] .mantine-Modal-header {
+  zoom: 1;
+  transform: scale(0.75);
+  transform-origin: top left;
+  width: 133.33%;
+}
+
+html.is-safari [data-mantine-color-scheme] .mantine-Drawer-root {
+  zoom: 1;
+}
+
+html.is-safari [data-mantine-color-scheme] .mantine-Drawer-content {
+  zoom: 1;
+  transform: scale(0.75);
+  transform-origin: top left;
+  width: 133.33%;
+  height: 133.33%;
+}
+
+html.is-safari [data-mantine-color-scheme] .mantine-Drawer-body .mantine-Button-root {
+  zoom: 1;
+}
+
+html.is-safari [data-mantine-color-scheme] .mantine-Drawer-body {
+  zoom: 1;
+}
+
+html.is-safari [data-mantine-color-scheme] .mantine-Drawer-header {
+  zoom: 1;
+}
+
+html.is-safari [data-mantine-color-scheme] .mantine-Drawer-title {
+  zoom: 1;
+  transform: scale(0.75);
+  transform-origin: top left;
+}
+
+html.is-safari [data-mantine-color-scheme] .mantine-Drawer-body .mantine-Select-root {
   zoom: 1;
 }
 
