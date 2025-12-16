@@ -202,9 +202,9 @@ export const MessagesLogItem = ({ log, technicians, isLive = false }) => {
         // Обработка логов изменения контактов клиента
         const fieldLabel = getFieldLabel(log.subject);
         if (log.action === "created") {
-            changed = `${fieldLabel}: ${getLanguageByKey("Added") || "Добавлено"} "${log.to}"`;
+            changed = `${fieldLabel}: ${getLanguageByKey("Added")} "${log.to}"`;
         } else if (log.action === "deleted") {
-            changed = `${fieldLabel}: ${getLanguageByKey("Deleted") || "Удалено"} "${log.from}"`;
+            changed = `${fieldLabel}: ${getLanguageByKey("Deleted")} "${log.from}"`;
         } else if (log.action === "updated") {
             changed = `${fieldLabel}: ${log.from} → ${log.to}`;
         } else {

@@ -5975,5 +5975,15 @@ export const translations = {
     RO: "Port Mall",
     RU: "Порт Mall",
     EN: "Port Mall"
+  },
+  "Added": {
+    RO: "Adăugat",
+    RU: "Добавлено",
+    EN: "Added"
+  },
+  "Deleted": {
+    RO: "Șters",
+    RU: "Удалено",
+    EN: "Deleted"
   }
 };
