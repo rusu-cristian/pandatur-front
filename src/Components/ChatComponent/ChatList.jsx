@@ -30,16 +30,14 @@ const ChatList = ({ ticketId }) => {
     tickets, 
     chatFilteredTickets, 
     chatSpinner, 
-    isChatFiltered,
     fetchChatFilteredTickets,
-    setIsChatFiltered,
     groupTitleForApi,
     workflowOptions,
   } = useApp();
   
   const { userId } = useUser();
   
-  // Единый хук для фильтров (URL как источник правды)
+  // Единый хук для фильтров (URL — единственный источник правды)
   const { filters, hasFilters, isFiltered, defaultFilters } = useChatFilters();
   
   // Ref для отслеживания загрузки (предотвращает дублирование)
@@ -47,11 +45,8 @@ const ChatList = ({ ticketId }) => {
   const isInitializedRef = useRef(false);
   
   // === ЭФФЕКТ ЗАГРУЗКИ ТИКЕТОВ ===
-  // (перенесён из useChatFilters, чтобы не срабатывал при открытии ChatFilter)
+  // URL — единственный источник правды для фильтров
   useEffect(() => {
-    console.log('[ChatList] Effect check:', { groupTitleForApi, workflowOptionsLength: workflowOptions.length, userId, isFiltered, hasFilters });
-    console.log('[ChatList] filters:', filters);
-    
     if (!groupTitleForApi || !workflowOptions.length || !userId) return;
 
     const filtersKey = JSON.stringify({ filters, groupTitleForApi, isFiltered });
@@ -59,12 +54,9 @@ const ChatList = ({ ticketId }) => {
     lastFiltersRef.current = filtersKey;
 
     if (isFiltered && hasFilters) {
-      console.log('[ChatList] Calling fetchChatFilteredTickets with:', filters);
-      // Есть фильтры — загружаем отфильтрованные тикеты
+      // Есть фильтры в URL — загружаем отфильтрованные тикеты
       fetchChatFilteredTickets(filters);
-      setIsChatFiltered(true);
     } else if (!isInitializedRef.current) {
-      console.log('[ChatList] Applying default filters');
       // Первая загрузка без фильтров в URL — применяем дефолтные
       isInitializedRef.current = true;
       const urlParams = prepareFiltersForUrl({
@@ -74,8 +66,6 @@ const ChatList = ({ ticketId }) => {
       });
       const basePath = ticketIdFromUrl ? `/chat/${ticketIdFromUrl}` : "/chat";
       navigate(`${basePath}?${urlParams.toString()}`, { replace: true });
-    } else {
-      console.log('[ChatList] No action taken - isFiltered:', isFiltered, 'hasFilters:', hasFilters);
     }
   }, [
     filters,
@@ -85,7 +75,6 @@ const ChatList = ({ ticketId }) => {
     workflowOptions,
     userId,
     fetchChatFilteredTickets,
-    setIsChatFiltered,
     defaultFilters,
     navigate,
     ticketIdFromUrl,
@@ -101,15 +90,10 @@ const ChatList = ({ ticketId }) => {
   const wrapperChatItemRef = useRef(null);
   const wrapperChatHeight = useDOMElementHeight(wrapperChatItemRef);
 
-  // Список тикетов для отображения (сортировка по last_interaction_date)
+  // Список тикетов для отображения
+  // isFiltered из URL определяет какой список показывать
   const displayedTickets = useMemo(() => {
-    console.log('[ChatList] displayedTickets calc:', { 
-      isChatFiltered, 
-      chatFilteredTicketsCount: chatFilteredTickets.length, 
-      ticketsCount: tickets.length 
-    });
-    
-    const ticketsList = isChatFiltered ? chatFilteredTickets : tickets;
+    const ticketsList = isFiltered ? chatFilteredTickets : tickets;
     
     // Сортируем по last_interaction_date (от новых к старым)
     return [...ticketsList].sort((a, b) => {
@@ -117,7 +101,7 @@ const ChatList = ({ ticketId }) => {
       const dateB = b.last_interaction_date ? new Date(b.last_interaction_date).getTime() : 0;
       return dateB - dateA; // DESC порядок (новые сверху)
     });
-  }, [isChatFiltered, chatFilteredTickets, tickets]);
+  }, [isFiltered, chatFilteredTickets, tickets]);
 
   // Рендер элемента списка
   const ChatItem = useCallback(

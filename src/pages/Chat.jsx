@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { Flex, ActionIcon, Box } from "@mantine/core";
-import { useApp, useClientContacts, useMessagesContext } from "@hooks";
+import { useApp, useClientContacts, useMessagesContext, useChatFilters } from "@hooks";
 import { useGetTechniciansList } from "../hooks";
 import { api } from "../api";
 import ChatExtraInfo from "../Components/ChatComponent/ChatExtraInfo";
@@ -12,13 +12,16 @@ import Can from "@components/CanComponent/Can";
 
 export const Chat = () => {
   const {
-    isChatFiltered,
     getTicketByIdWithFilters,
     groupTitleForApi,
     accessibleGroupTitles,
     customGroupTitle,
     setCustomGroupTitle,
   } = useApp();
+  
+  // URL — единственный источник правды для фильтров
+  const { isFiltered } = useChatFilters();
+  
   const { messages } = useMessagesContext();
   const { ticketId: ticketIdParam } = useParams();
   const ticketId = useMemo(() => {
@@ -36,8 +39,8 @@ export const Chat = () => {
 
   // Тикет из списков (если он там есть)
   const ticketFromLists = useMemo(() => {
-    return getTicketByIdWithFilters(ticketId, isChatFiltered);
-  }, [ticketId, isChatFiltered, getTicketByIdWithFilters]);
+    return getTicketByIdWithFilters(ticketId, isFiltered);
+  }, [ticketId, isFiltered, getTicketByIdWithFilters]);
 
   // Итоговый тикет: приоритет отдаём данным из списков,
   // но если там нет — используем напрямую загруженные данные

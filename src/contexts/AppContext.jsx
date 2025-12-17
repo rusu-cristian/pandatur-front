@@ -32,76 +32,7 @@ const getLeadsUrlViewMode = () => {
   return (params.get("view") || "").toUpperCase();
 };
 
-// Парсит фильтры напрямую из URL для страницы /chat
-const getChatFiltersFromUrl = () => {
-  if (typeof window === "undefined") return null;
-  const pathname = window.location.pathname;
-  if (!pathname.startsWith("/chat")) return null;
-  
-  const params = new URLSearchParams(window.location.search);
-  if (params.get("is_filtered") !== "true") return null;
-  
-  const filters = {};
-  
-  // workflow - массив
-  const workflows = params.getAll("workflow");
-  if (workflows.length > 0) {
-    filters.workflow = workflows;
-  }
-  
-  // action_needed - boolean
-  const actionNeeded = params.get("action_needed");
-  if (actionNeeded === "true") {
-    filters.action_needed = true;
-  } else if (actionNeeded === "false") {
-    filters.action_needed = false;
-  }
-  
-  // unseen - string "true"
-  const unseen = params.get("unseen");
-  if (unseen) {
-    filters.unseen = unseen;
-  }
-  
-  // last_message_author - массив чисел
-  const lastMessageAuthors = params.getAll("last_message_author");
-  if (lastMessageAuthors.length > 0) {
-    filters.last_message_author = lastMessageAuthors.map(Number);
-  }
-  
-  // technician_id - массив
-  const technicianIds = params.getAll("technician_id");
-  if (technicianIds.length > 0) {
-    filters.technician_id = technicianIds;
-  }
-  
-  // priority - массив
-  const priorities = params.getAll("priority");
-  if (priorities.length > 0) {
-    filters.priority = priorities;
-  }
-  
-  return Object.keys(filters).length > 0 ? filters : null;
-};
-
 export const AppProvider = ({ children }) => {
-
-
-  // Добавь в начало компонента AppContextProvider
-useEffect(() => {
-  const memoryCheck = setInterval(() => {
-    if (performance.memory) {
-      console.log('Memory:', {
-        used: Math.round(performance.memory.usedJSHeapSize / 1024 / 1024) + ' MB',
-        total: Math.round(performance.memory.totalJSHeapSize / 1024 / 1024) + ' MB',
-      });
-    }
-  }, 1000); // каждые 5 секунд
-
-  return () => clearInterval(memoryCheck);
-}, []);
-
-
   const { sendedValue } = useSocket();
   const { enqueueSnackbar } = useSnackbar();
   const { storage, changeLocalStorage } = useLocalStorage(SIDEBAR_COLLAPSE, "false");
@@ -111,8 +42,6 @@ useEffect(() => {
   const [lightTicketFilters, setLightTicketFilters] = useState({});
   const [chatFilteredTickets, setChatFilteredTickets] = useState([]);
   const [chatSpinner, setChatSpinner] = useState(false);
-  const [isChatFiltered, setIsChatFiltered] = useState(false);
-  const [currentChatFilters, setCurrentChatFilters] = useState({});
   const requestIdRef = useRef(0);
 
   // Hash map для быстрого доступа к тикетам по ID
@@ -247,20 +176,14 @@ useEffect(() => {
   };
 
   const fetchChatFilteredTickets = async (filters = {}) => {
-    console.log('[fetchChatFilteredTickets] Called with filters:', filters);
-    console.log('[fetchChatFilteredTickets] groupTitleForApi:', groupTitleForApi);
-    
     setChatSpinner(true);
     setChatFilteredTickets([]);
-    setIsChatFiltered(true);
-    setCurrentChatFilters(filters); // Сохраняем текущие фильтры
-
+    
     // Очищаем hash map для отфильтрованных тикетов
     chatFilteredTicketsMap.current.clear();
 
     try {
       const loadPage = async (page = 1) => {
-        console.log('[fetchChatFilteredTickets] Loading page:', page);
         const res = await api.tickets.filters({
           page,
           type: "light",
@@ -269,14 +192,8 @@ useEffect(() => {
           order: "DESC",
           attributes: filters,
         });
-        
-        console.log('[fetchChatFilteredTickets] API response:', { 
-          ticketsCount: res.tickets?.length, 
-          pagination: res.pagination 
-        });
 
         const normalized = normalizeLightTickets(res.tickets);
-        console.log('[fetchChatFilteredTickets] Normalized tickets:', normalized.length);
         setChatFilteredTickets((prev) => {
           // Создаем Set существующих ID для быстрой проверки
           const existingIds = new Set(prev.map(t => t.id));
@@ -305,102 +222,9 @@ useEffect(() => {
   };
 
   const resetChatFilters = () => {
-    setIsChatFiltered(false);
     setChatFilteredTickets([]);
-    setCurrentChatFilters({});
     chatFilteredTicketsMap.current.clear();
   };
-
-  // Функция для проверки соответствия тикета примененным фильтрам
-  const doesTicketMatchFilters = useCallback((ticket, filters) => {
-    if (!filters || Object.keys(filters).length === 0) return true;
-
-    // Проверяем workflow
-    if (filters.workflow) {
-      const workflowFilter = Array.isArray(filters.workflow) ? filters.workflow : [filters.workflow];
-      if (!workflowFilter.includes(ticket.workflow)) {
-        return false;
-      }
-    }
-
-    // Проверяем action_needed
-    if (filters.action_needed !== undefined) {
-      const ticketActionNeeded = Boolean(ticket.action_needed);
-      const filterActionNeeded = Boolean(filters.action_needed);
-      if (ticketActionNeeded !== filterActionNeeded) {
-        return false;
-      }
-    }
-
-    // Проверяем technician_id
-    if (filters.technician_id) {
-      const technicianFilter = Array.isArray(filters.technician_id) ? filters.technician_id : [filters.technician_id];
-      if (!technicianFilter.includes(String(ticket.technician_id))) {
-        return false;
-      }
-    }
-
-    // Проверяем priority
-    if (filters.priority) {
-      const priorityFilter = Array.isArray(filters.priority) ? filters.priority : [filters.priority];
-      if (!priorityFilter.includes(ticket.priority)) {
-        return false;
-      }
-    }
-
-    // Проверяем group_title
-    if (filters.group_title) {
-      const groupFilter = Array.isArray(filters.group_title) ? filters.group_title : [filters.group_title];
-      if (!groupFilter.includes(ticket.group_title)) {
-        return false;
-      }
-    }
-
-    // Проверяем unseen (наличие непрочитанных сообщений)
-    if (filters.unseen === "true") {
-      if (!ticket.unseen_count || ticket.unseen_count === 0) {
-        return false;
-      }
-    }
-
-    // Проверяем last_message_author (0 - клиент, 1 - пользователь)
-    if (filters.last_message_author) {
-      const authorFilter = Array.isArray(filters.last_message_author) ? filters.last_message_author : [filters.last_message_author];
-
-      // 0 означает клиент - проверяем, что последнее сообщение от клиента
-      if (authorFilter.includes(0)) {
-        const lastSenderId = ticket.last_message_sender_id;
-
-        // Если last_message_sender_id не установлен, считаем что сообщение от клиента (для совместимости)
-        if (lastSenderId === undefined || lastSenderId === null) {
-          return true;
-        }
-
-        // Проверяем, является ли отправитель клиентом (не система и не техник)
-        const senderId = Number(lastSenderId);
-
-        // sender_id = 1 - система, не клиент
-        if (senderId === 1) {
-          return false;
-        }
-
-        // Проверяем, что sender_id не совпадает с userId (не техник)
-        if (String(senderId) === String(userId)) {
-          return false;
-        }
-
-        // Проверяем, что отправитель является одним из клиентов тикета
-        if (ticket.clients && ticket.clients.length > 0) {
-          const clientIds = ticket.clients.map(client => Number(client.id));
-          if (!clientIds.includes(senderId)) {
-            return false;
-          }
-        }
-      }
-    }
-
-    return true;
-  }, [userId]);
 
   const hasLeadsFilterInUrl = () => {
     const params = new URLSearchParams(window.location.search);
@@ -521,19 +345,9 @@ useEffect(() => {
       // Обновляем или добавляем тикет в основной список
       setTickets((prev) => {
         const exists = getTicketById(ticketId);
-        
-        // Проверяем URL фильтры для страницы chat
-        // Если есть фильтры и тикет не соответствует — не добавляем в tickets
-        const urlFilters = getChatFiltersFromUrl();
-        if (urlFilters && !exists) {
-          const matchesFilters = doesTicketMatchFilters(normalizedTicket, urlFilters);
-          if (!matchesFilters) {
-            return prev;
-          }
-        }
 
         if (exists) {
-          // Обновляем существующий тикет - используем все данные из сервера
+          // Обновляем существующий тикет
           const updated = prev.map((t) => (t.id === ticketId ? normalizedTicket : t));
           ticketsMap.current.set(ticketId, normalizedTicket);
           return updated;
@@ -545,46 +359,21 @@ useEffect(() => {
         }
       });
 
-      // Обновляем или добавляем тикет в отфильтрованном списке
+      // Обновляем тикет в отфильтрованном списке (только если он там уже есть)
+      // Новые тикеты НЕ добавляем — они придут при перезагрузке фильтров
       setChatFilteredTickets((prev) => {
         const exists = getChatFilteredTicketById(ticketId);
         
-        // Получаем фильтры напрямую из URL (не из state)
-        const urlFilters = getChatFiltersFromUrl();
-
-        // Если есть фильтры в URL — проверяем соответствие тикета
-        if (urlFilters) {
-          const matchesFilters = doesTicketMatchFilters(normalizedTicket, urlFilters);
-          
-          if (!matchesFilters) {
-            // Тикет НЕ соответствует фильтрам — удаляем или не добавляем
-            if (exists) {
-              chatFilteredTicketsMap.current.delete(ticketId);
-              return prev.filter(t => t.id !== ticketId);
-            }
-            return prev;
-          }
-          
-          // Тикет соответствует фильтрам — обновляем или добавляем
-          if (exists) {
-            const updated = prev.map((t) => (t.id === ticketId ? normalizedTicket : t));
-            chatFilteredTicketsMap.current.set(ticketId, normalizedTicket);
-            return updated;
-          } else {
-            chatFilteredTicketsMap.current.set(ticketId, normalizedTicket);
-            return [normalizedTicket, ...prev];
-          }
-        }
-
-        // Нет фильтров в URL — просто обновляем или добавляем
         if (exists) {
+          // Обновляем существующий тикет
           const updated = prev.map((t) => (t.id === ticketId ? normalizedTicket : t));
           chatFilteredTicketsMap.current.set(ticketId, normalizedTicket);
           return updated;
-        } else {
-          chatFilteredTicketsMap.current.set(ticketId, normalizedTicket);
-          return [normalizedTicket, ...prev];
         }
+        
+        // Не добавляем новые тикеты в отфильтрованный список
+        // При смене фильтров список перезагружается через fetchChatFilteredTickets
+        return prev;
       });
 
       // Правильно пересчитываем общий счетчик непрочитанных
@@ -601,7 +390,7 @@ useEffect(() => {
     } catch (error) {
       enqueueSnackbar(showServerError(error), { variant: "warning" });
     }
-  }, [groupTitleForApi, accessibleGroupTitles, enqueueSnackbar, isChatFiltered, currentChatFilters, doesTicketMatchFilters]);
+  }, [groupTitleForApi, accessibleGroupTitles, enqueueSnackbar]);
 
   const handleWebSocketMessage = useCallback((message) => {
     switch (message.type) {
@@ -675,41 +464,8 @@ useEffect(() => {
             time_sent,
           };
 
-          // Проверяем, соответствует ли обновленный тикет текущим фильтрам чата
-          if (isChatFiltered && Object.keys(currentChatFilters).length > 0) {
-            const matchesFilters = doesTicketMatchFilters(updatedTicket, currentChatFilters);
-
-            if (!matchesFilters) {
-              // Тикет больше не соответствует фильтрам - удаляем его
-              if (existingTicket) {
-                chatFilteredTicketsMap.current.delete(ticket_id);
-                return prev.filter(t => t.id !== ticket_id);
-              }
-              return prev;
-            }
-
-            // Тикет соответствует фильтрам
-            if (existingTicket) {
-              // Обновляем существующий тикет
-              chatFilteredTicketsMap.current.set(ticket_id, updatedTicket);
-              return prev.map((ticket) =>
-                ticket.id === ticket_id ? updatedTicket : ticket
-              );
-            } else {
-              // Добавляем новый тикет, который теперь соответствует фильтрам
-              const alreadyInArray = prev.some(t => t.id === ticket_id);
-              if (alreadyInArray) {
-                chatFilteredTicketsMap.current.set(ticket_id, updatedTicket);
-                return prev.map((ticket) =>
-                  ticket.id === ticket_id ? updatedTicket : ticket
-                );
-              }
-              chatFilteredTicketsMap.current.set(ticket_id, updatedTicket);
-              return [updatedTicket, ...prev];
-            }
-          }
-
-          // Если фильтры не активны, просто обновляем существующий тикет или игнорируем
+          // Обновляем только существующие тикеты в отфильтрованном списке
+          // Новые тикеты НЕ добавляем — они придут при перезагрузке фильтров
           if (existingTicket) {
             chatFilteredTicketsMap.current.set(ticket_id, updatedTicket);
             return prev.map((ticket) =>
@@ -887,7 +643,7 @@ useEffect(() => {
 
       default:
     }
-  }, [userId, fetchSingleTicket, groupTitleForApi, isAdmin, workflowOptions, currentChatFilters, doesTicketMatchFilters, isChatFiltered]);
+  }, [userId, fetchSingleTicket, groupTitleForApi, isAdmin, workflowOptions]);
 
   useEffect(() => {
     if (sendedValue) {
@@ -923,12 +679,7 @@ useEffect(() => {
         fetchChatFilteredTickets,
         setChatFilteredTickets,
         chatSpinner,
-        isChatFiltered,
-        setIsChatFiltered,
         resetChatFilters,
-        currentChatFilters,
-        setCurrentChatFilters,
-        doesTicketMatchFilters,
 
         // technicians
         technicians,
