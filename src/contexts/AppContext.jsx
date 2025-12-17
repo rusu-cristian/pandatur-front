@@ -247,6 +247,9 @@ useEffect(() => {
   };
 
   const fetchChatFilteredTickets = async (filters = {}) => {
+    console.log('[fetchChatFilteredTickets] Called with filters:', filters);
+    console.log('[fetchChatFilteredTickets] groupTitleForApi:', groupTitleForApi);
+    
     setChatSpinner(true);
     setChatFilteredTickets([]);
     setIsChatFiltered(true);
@@ -257,6 +260,7 @@ useEffect(() => {
 
     try {
       const loadPage = async (page = 1) => {
+        console.log('[fetchChatFilteredTickets] Loading page:', page);
         const res = await api.tickets.filters({
           page,
           type: "light",
@@ -265,8 +269,14 @@ useEffect(() => {
           order: "DESC",
           attributes: filters,
         });
+        
+        console.log('[fetchChatFilteredTickets] API response:', { 
+          ticketsCount: res.tickets?.length, 
+          pagination: res.pagination 
+        });
 
         const normalized = normalizeLightTickets(res.tickets);
+        console.log('[fetchChatFilteredTickets] Normalized tickets:', normalized.length);
         setChatFilteredTickets((prev) => {
           // Создаем Set существующих ID для быстрой проверки
           const existingIds = new Set(prev.map(t => t.id));
@@ -419,10 +429,17 @@ useEffect(() => {
   }, [groupTitleForApi, workflowOptions, lightTicketFilters]);
 
   // При изменении groupTitleForApi сбрасываем чат фильтры
+  // НО: не сбрасываем если в URL уже есть фильтры (пользователь зашёл по ссылке)
   useEffect(() => {
     if (groupTitleForApi) {
-      // Сбрасываем фильтры чата при изменении группы
-      resetChatFilters();
+      // Проверяем есть ли фильтры в URL
+      const params = new URLSearchParams(window.location.search);
+      const hasFiltersInUrl = params.get("is_filtered") === "true";
+      
+      // Сбрасываем только если нет фильтров в URL
+      if (!hasFiltersInUrl) {
+        resetChatFilters();
+      }
     }
   }, [groupTitleForApi]);
 

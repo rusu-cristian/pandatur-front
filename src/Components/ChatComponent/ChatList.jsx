@@ -49,6 +49,9 @@ const ChatList = ({ ticketId }) => {
   // === ЭФФЕКТ ЗАГРУЗКИ ТИКЕТОВ ===
   // (перенесён из useChatFilters, чтобы не срабатывал при открытии ChatFilter)
   useEffect(() => {
+    console.log('[ChatList] Effect check:', { groupTitleForApi, workflowOptionsLength: workflowOptions.length, userId, isFiltered, hasFilters });
+    console.log('[ChatList] filters:', filters);
+    
     if (!groupTitleForApi || !workflowOptions.length || !userId) return;
 
     const filtersKey = JSON.stringify({ filters, groupTitleForApi, isFiltered });
@@ -56,10 +59,12 @@ const ChatList = ({ ticketId }) => {
     lastFiltersRef.current = filtersKey;
 
     if (isFiltered && hasFilters) {
+      console.log('[ChatList] Calling fetchChatFilteredTickets with:', filters);
       // Есть фильтры — загружаем отфильтрованные тикеты
       fetchChatFilteredTickets(filters);
       setIsChatFiltered(true);
     } else if (!isInitializedRef.current) {
+      console.log('[ChatList] Applying default filters');
       // Первая загрузка без фильтров в URL — применяем дефолтные
       isInitializedRef.current = true;
       const urlParams = prepareFiltersForUrl({
@@ -69,6 +74,8 @@ const ChatList = ({ ticketId }) => {
       });
       const basePath = ticketIdFromUrl ? `/chat/${ticketIdFromUrl}` : "/chat";
       navigate(`${basePath}?${urlParams.toString()}`, { replace: true });
+    } else {
+      console.log('[ChatList] No action taken - isFiltered:', isFiltered, 'hasFilters:', hasFilters);
     }
   }, [
     filters,
@@ -96,6 +103,12 @@ const ChatList = ({ ticketId }) => {
 
   // Список тикетов для отображения (сортировка по last_interaction_date)
   const displayedTickets = useMemo(() => {
+    console.log('[ChatList] displayedTickets calc:', { 
+      isChatFiltered, 
+      chatFilteredTicketsCount: chatFilteredTickets.length, 
+      ticketsCount: tickets.length 
+    });
+    
     const ticketsList = isChatFiltered ? chatFilteredTickets : tickets;
     
     // Сортируем по last_interaction_date (от новых к старым)
