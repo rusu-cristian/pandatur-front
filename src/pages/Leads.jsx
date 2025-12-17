@@ -3,8 +3,8 @@
  * 
  * Архитектура:
  * - useLeadsFilters — единый источник правды для фильтров (URL)
- * - useLeadsKanban — загрузка light тикетов для Kanban
- * - useLeadsTable — загрузка hard тикетов для List
+ * - useLeadsKanbanQuery — React Query хук для light тикетов (Kanban)
+ * - useLeadsTableQuery — React Query хук для hard тикетов (List)
  * - LeadsPageHeader — header с поиском и фильтрами
  * - LeadsContent — таблица или канбан
  * - LeadsModals — все модалки
@@ -13,7 +13,16 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
-import { useDOMElementHeight, useApp, useConfirmPopup, useGetTechniciansList, useLeadsFilters, useSearchInput } from "@hooks";
+import { 
+  useDOMElementHeight, 
+  useApp, 
+  useConfirmPopup, 
+  useGetTechniciansList, 
+  useLeadsFilters, 
+  useSearchInput,
+  useLeadsTableQuery,
+  useLeadsKanbanQuery,
+} from "@hooks";
 import { priorityOptions, groupTitleOptions } from "../FormOptions";
 import { workflowOptions as defaultWorkflowOptions } from "../FormOptions/workflowOptions";
 import { SpinnerRightBottom } from "@components";
@@ -24,8 +33,6 @@ import { VIEW_MODE, getEffectiveWorkflow } from "../Components/LeadsComponent/co
 import "../css/SnackBarComponent.css";
 import "../Components/LeadsComponent/LeadsHeader/LeadsFilter.css";
 
-import { useLeadsKanban } from "../hooks/useLeadsKanban";
-import { useLeadsTable } from "../hooks/useLeadsTable";
 import { useLeadsSelection } from "../hooks/useLeadsSelection";
 
 export const Leads = () => {
@@ -36,8 +43,6 @@ export const Leads = () => {
 
   // === КОНТЕКСТ ПРИЛОЖЕНИЯ ===
   const {
-    spinnerTickets,
-    fetchTickets,
     groupTitleForApi,
     workflowOptions,
     isCollapsed,
@@ -85,35 +90,36 @@ export const Leads = () => {
   });
 
   // === REFS ===
-  const didLoadGlobalTicketsRef = useRef(false);
-  const prevFiltersRef = useRef(null);
   const allIdsReqIdRef = useRef(0);
 
-  // === КАНБАН ===
+  // === КАНБАН (React Query) ===
   const {
     visibleTickets,
     kanbanSpinner,
     kanbanFilterActive,
     choiceWorkflow,
-    fetchKanbanTickets,
-    currentFetchTickets,
-    refreshKanbanTickets,
-    resetKanban,
-    setKanbanFilterActive,
+    refetch: refetchKanban,
     setChoiceWorkflow,
-  } = useLeadsKanban();
+  } = useLeadsKanbanQuery({
+    filters,
+    hasFilters,
+    enabled: viewMode === VIEW_MODE.KANBAN,
+  });
 
-  // === ТАБЛИЦА ===
+  // === ТАБЛИЦА (React Query) ===
   const {
     hardTickets,
     loading,
     totalLeads,
     currentPage,
     perPage,
-    fetchHardTickets,
+    refetch: refetchTable,
     setCurrentPage,
     handlePerPageChange,
-  } = useLeadsTable();
+  } = useLeadsTableQuery({
+    filters,
+    enabled: viewMode === VIEW_MODE.LIST,
+  });
 
   // === ВЫДЕЛЕНИЕ ===
   const {
@@ -137,38 +143,8 @@ export const Leads = () => {
     syncGroupTitleFromUrl();
   }, [syncGroupTitleFromUrl]);
 
-  // Главный эффект: загрузка данных
-  useEffect(() => {
-    if (!groupTitleForApi || !workflowOptions.length) return;
-
-    const filtersKey = JSON.stringify({ viewMode, filters, groupTitleForApi });
-    if (prevFiltersRef.current === filtersKey) return;
-    prevFiltersRef.current = filtersKey;
-
-    if (viewMode === VIEW_MODE.KANBAN) {
-      if (hasFilters) {
-        setKanbanFilterActive(true);
-        setChoiceWorkflow(filters.workflow || []);
-        fetchKanbanTickets(filters);
-      } else {
-        resetKanban();
-        if (!didLoadGlobalTicketsRef.current) {
-          fetchTickets().then(() => {
-            didLoadGlobalTicketsRef.current = true;
-          });
-        }
-      }
-    } else {
-      fetchHardTickets({ page: 1, filters });
-    }
-  }, [viewMode, hasFilters, filters, groupTitleForApi, workflowOptions, fetchKanbanTickets, fetchHardTickets, fetchTickets, resetKanban, setKanbanFilterActive, setChoiceWorkflow]);
-
-  // Загрузка при изменении страницы (LIST)
-  useEffect(() => {
-    if (viewMode === VIEW_MODE.LIST && groupTitleForApi && workflowOptions.length) {
-      fetchHardTickets({ page: currentPage, filters });
-    }
-  }, [currentPage, perPage]);
+  // React Query автоматически загружает данные при изменении фильтров/режима
+  // Больше не нужны ручные эффекты для загрузки!
 
   // IDs запрос для "выбрать все"
   useEffect(() => {
@@ -226,7 +202,6 @@ export const Leads = () => {
 
   const handleChangeViewMode = useCallback((mode) => {
     setViewMode(mode.toUpperCase?.() || mode);
-    didLoadGlobalTicketsRef.current = false;
     setCurrentPage(1);
   }, [setViewMode, setCurrentPage]);
 
@@ -240,12 +215,17 @@ export const Leads = () => {
         await api.tickets.deleteById(selectedTickets);
         setSelectedTickets([]);
         enqueueSnackbar(getLanguageByKey("Leadurile au fost șterse cu succes"), { variant: "success" });
-        fetchHardTickets({ page: currentPage, filters });
+        // React Query автоматически обновит список
+        if (viewMode === VIEW_MODE.LIST) {
+          refetchTable();
+        } else {
+          refetchKanban();
+        }
       } catch (error) {
         enqueueSnackbar(getLanguageByKey("A aparut o eroare la ștergere"), { variant: "error" });
       }
     });
-  }, [deleteBulkLeads, selectedTickets, setSelectedTickets, enqueueSnackbar, fetchHardTickets, currentPage, filters]);
+  }, [deleteBulkLeads, selectedTickets, setSelectedTickets, enqueueSnackbar, viewMode, refetchTable, refetchKanban]);
 
   const handleCreate = useCallback(() => {
     setCurrentTicket({
@@ -270,7 +250,7 @@ export const Leads = () => {
       localStorage.removeItem("leads_last_group_title");
       updateGroupTitle(null);
     }
-    didLoadGlobalTicketsRef.current = false;
+    // React Query автоматически перезагрузит данные при смене группы
   }, [accessibleGroupTitles, setCustomGroupTitle, updateGroupTitle]);
 
   const handleEditTicket = useCallback((ticket) => {
@@ -279,11 +259,13 @@ export const Leads = () => {
   }, []);
 
   const handleRefreshAfterEdit = useCallback(async () => {
-    await fetchHardTickets({ page: currentPage, filters });
-    if (kanbanFilterActive) {
-      refreshKanbanTickets(filters);
+    // React Query автоматически обновит данные
+    if (viewMode === VIEW_MODE.LIST) {
+      refetchTable();
+    } else {
+      refetchKanban();
     }
-  }, [fetchHardTickets, currentPage, filters, kanbanFilterActive, refreshKanbanTickets]);
+  }, [viewMode, refetchTable, refetchKanban]);
 
   // === ВЫЧИСЛЯЕМЫЕ ЗНАЧЕНИЯ ===
   const groupTitleSelectData = groupTitleOptions.filter((o) => accessibleGroupTitles.includes(o.value));
@@ -341,13 +323,12 @@ export const Leads = () => {
         onPerPageChange={handlePerPageChange}
         onSelectAllResults={() => setSelectedTickets(allHardIds)}
         onClearAllResults={() => setSelectedTickets([])}
-        fetchTickets={currentFetchTickets}
-        refreshKanbanTickets={() => refreshKanbanTickets(filters)}
+        fetchTickets={refetchKanban}
+        refreshKanbanTickets={refetchKanban}
         onEditTicket={handleEditTicket}
       />
 
-      {/* Спиннеры */}
-      {spinnerTickets && <SpinnerRightBottom />}
+      {/* Спиннер загрузки */}
       {kanbanSpinner && viewMode === VIEW_MODE.KANBAN && <SpinnerRightBottom />}
 
       <LeadsModals
@@ -362,7 +343,7 @@ export const Leads = () => {
         isAddModalOpen={isOpenAddLeadModal}
         groupTitleForApi={groupTitleForApi}
         onAddModalClose={() => setIsOpenAddLeadModal(false)}
-        onAddSuccess={() => fetchHardTickets({ page: currentPage, filters })}
+        onAddSuccess={() => viewMode === VIEW_MODE.LIST ? refetchTable() : refetchKanban()}
         isFilterModalOpen={isFilterModalOpen}
         filters={filters}
         isLoading={isLoading}

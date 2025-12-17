@@ -21,3 +21,6 @@ export * from "./useTheme";
 export * from "./useLeadsFilters";
 export * from "./useSearchInput";
 export * from "./useChatFilters";
+export * from "./useChatTicketsQuery";
+export * from "./useLeadsTableQuery";
+export * from "./useLeadsKanbanQuery";

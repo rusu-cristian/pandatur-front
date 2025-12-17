@@ -3,6 +3,7 @@ import Cookies from "js-cookie";
 import { useNavigate, useLocation } from "react-router-dom";
 import { SnackbarProvider } from "notistack";
 import { ModalsProvider } from "@mantine/modals";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AppProviders } from "@contexts";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import dayjs from "dayjs";
@@ -17,6 +18,20 @@ import "./colors.css";
 import "./App.css";
 
 dayjs.extend(customParseFormat);
+
+// React Query клиент с настройками
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // Не перезагружать при фокусе окна (для CRM это обычно не нужно)
+      refetchOnWindowFocus: false,
+      // Retry 1 раз при ошибке
+      retry: 1,
+      // Данные считаются свежими 30 секунд
+      staleTime: 30 * 1000,
+    },
+  },
+});
 
 function App() {
   const navigate = useNavigate();
@@ -46,25 +61,27 @@ function App() {
   }, [navigate, pathname, publicPaths, jwtToken]);
 
   return (
-    <MantineProvider>
-      <ModalsProvider>
-        <SnackbarProvider
-          autoHideDuration={5000}
-          maxSnack={5}
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        >
-          {jwtToken ? (
-            <AppProviders>
-              <AppLayout>
-                <PrivateRoutes />
-              </AppLayout>
-            </AppProviders>
-          ) : (
-            <PublicRoutes />
-          )}
-        </SnackbarProvider>
-      </ModalsProvider>
-    </MantineProvider>
+    <QueryClientProvider client={queryClient}>
+      <MantineProvider>
+        <ModalsProvider>
+          <SnackbarProvider
+            autoHideDuration={5000}
+            maxSnack={5}
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          >
+            {jwtToken ? (
+              <AppProviders>
+                <AppLayout>
+                  <PrivateRoutes />
+                </AppLayout>
+              </AppProviders>
+            ) : (
+              <PublicRoutes />
+            )}
+          </SnackbarProvider>
+        </ModalsProvider>
+      </MantineProvider>
+    </QueryClientProvider>
   );
 }
 

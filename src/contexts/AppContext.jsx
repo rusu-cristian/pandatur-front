@@ -4,7 +4,6 @@ import { useLocalStorage, useSocket } from "@hooks";
 import { api } from "../api";
 import { showServerError, getLanguageByKey } from "@utils";
 import { TYPE_SOCKET_EVENTS, MEDIA_TYPE } from "@app-constants";
-import { usePathnameWatcher } from "../Components/utils/usePathnameWatcher";
 import { UserContext } from "./UserContext";
 import { useGetTechniciansList } from "../hooks";
 
@@ -20,33 +19,15 @@ const normalizeLightTickets = (tickets) =>
     unseen_count: ticket.unseen_count || 0,
   }));
 
-const getLeadsUrlType = () => {
-  if (typeof window === "undefined") return null;
-  const params = new URLSearchParams(window.location.search);
-  return params.get("type");
-};
-
-const getLeadsUrlViewMode = () => {
-  if (typeof window === "undefined") return null;
-  const params = new URLSearchParams(window.location.search);
-  return (params.get("view") || "").toUpperCase();
-};
-
 export const AppProvider = ({ children }) => {
   const { sendedValue } = useSocket();
   const { enqueueSnackbar } = useSnackbar();
   const { storage, changeLocalStorage } = useLocalStorage(SIDEBAR_COLLAPSE, "false");
   const [tickets, setTickets] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [spinnerTickets, setSpinnerTickets] = useState(false);
-  const [lightTicketFilters, setLightTicketFilters] = useState({});
-  const [chatFilteredTickets, setChatFilteredTickets] = useState([]);
-  const [chatSpinner, setChatSpinner] = useState(false);
-  const requestIdRef = useRef(0);
 
   // Hash map для быстрого доступа к тикетам по ID
   const ticketsMap = useRef(new Map());
-  const chatFilteredTicketsMap = useRef(new Map());
 
   // Для отслеживания обработанных message_id (чтобы не дублировать счётчик при обновлении сообщений)
   const processedMessageIds = useRef(new Set());
@@ -59,26 +40,13 @@ export const AppProvider = ({ children }) => {
     });
   };
 
-  const updateChatFilteredTicketsMap = (ticketsArray) => {
-    chatFilteredTicketsMap.current.clear();
-    ticketsArray.forEach(ticket => {
-      chatFilteredTicketsMap.current.set(ticket.id, ticket);
-    });
-  };
-
   const getTicketById = (ticketId) => {
     return ticketsMap.current.get(ticketId);
   };
 
-  const getChatFilteredTicketById = (ticketId) => {
-    return chatFilteredTicketsMap.current.get(ticketId);
-  };
-
-  // Универсальная функция для получения тикета с учетом фильтров
+  // Универсальная функция для получения тикета
+  // Теперь Chat использует React Query, эта функция для совместимости
   const getTicketByIdWithFilters = (ticketId, isFiltered) => {
-    if (isFiltered) {
-      return getChatFilteredTicketById(ticketId) || getTicketById(ticketId);
-    }
     return getTicketById(ticketId);
   };
 
@@ -108,185 +76,9 @@ export const AppProvider = ({ children }) => {
     await fetchSingleTicket(ticketId);
   };
 
-  const getTicketsListRecursively = async (page = 1, requestId) => {
-    try {
-      const excluded = ["Realizat cu succes", "Închis și nerealizat"];
-      const baseWorkflow = lightTicketFilters.workflow ?? workflowOptions;
-      const filteredWorkflow = baseWorkflow.filter((w) => !excluded.includes(w));
-
-      const data = await api.tickets.filters({
-        page,
-        type: "light",
-        group_title: groupTitleForApi,
-        sort_by: "last_interaction_date",
-        order: "DESC",
-        attributes: {
-          ...lightTicketFilters,
-          workflow: filteredWorkflow,
-        },
-      });
-
-      if (requestIdRef.current !== requestId) return;
-
-      const totalPages = data.pagination?.total_pages || 1;
-      const totalUnread = data.tickets.reduce(
-        (sum, ticket) => sum + (ticket.unseen_count || 0),
-        0
-      );
-
-      setUnreadCount((prev) => prev + totalUnread);
-      const processedTickets = normalizeLightTickets(data.tickets);
-      setTickets((prev) => {
-        // Создаем Set существующих ID для быстрой проверки
-        const existingIds = new Set(prev.map(t => t.id));
-
-        // Добавляем только новые тикеты (без дубликатов)
-        const newTickets = processedTickets.filter(t => !existingIds.has(t.id));
-        const updated = [...prev, ...newTickets];
-
-        // Синхронизируем hash map
-        updateTicketsMap(updated);
-        return updated;
-      });
-
-      if (page < totalPages) {
-        await getTicketsListRecursively(page + 1, requestId);
-      } else {
-        setSpinnerTickets(false);
-      }
-    } catch (error) {
-      if (requestIdRef.current !== requestId) return;
-      enqueueSnackbar(showServerError(error), { variant: "error" });
-      setSpinnerTickets(false);
-    }
-  };
-
-  const fetchTickets = async () => {
-    const currentRequestId = Date.now();
-    requestIdRef.current = currentRequestId;
-
-    setSpinnerTickets(true);
-    setTickets([]);
-    setUnreadCount(0);
-
-    // Очищаем hash map
-    ticketsMap.current.clear();
-
-    await getTicketsListRecursively(1, currentRequestId);
-  };
-
-  const fetchChatFilteredTickets = async (filters = {}) => {
-    setChatSpinner(true);
-    setChatFilteredTickets([]);
-    
-    // Очищаем hash map для отфильтрованных тикетов
-    chatFilteredTicketsMap.current.clear();
-
-    try {
-      const loadPage = async (page = 1) => {
-        const res = await api.tickets.filters({
-          page,
-          type: "light",
-          group_title: groupTitleForApi,
-          sort_by: "last_interaction_date",
-          order: "DESC",
-          attributes: filters,
-        });
-
-        const normalized = normalizeLightTickets(res.tickets);
-        setChatFilteredTickets((prev) => {
-          // Создаем Set существующих ID для быстрой проверки
-          const existingIds = new Set(prev.map(t => t.id));
-
-          // Добавляем только новые тикеты (без дубликатов)
-          const newTickets = normalized.filter(t => !existingIds.has(t.id));
-          const updated = [...prev, ...newTickets];
-
-          // Синхронизируем hash map
-          updateChatFilteredTicketsMap(updated);
-          return updated;
-        });
-
-        if (page < res.pagination?.total_pages) {
-          await loadPage(page + 1);
-        } else {
-          setChatSpinner(false);
-        }
-      };
-
-      await loadPage(1);
-    } catch (err) {
-      enqueueSnackbar(showServerError(err), { variant: "error" });
-      setChatSpinner(false);
-    }
-  };
-
-  const resetChatFilters = () => {
-    setChatFilteredTickets([]);
-    chatFilteredTicketsMap.current.clear();
-  };
-
-  const hasLeadsFilterInUrl = () => {
-    const params = new URLSearchParams(window.location.search);
-    const filterKeys = Array.from(params.keys()).filter(
-      (key) => key !== "view" && key !== "type" && key !== "group_title"
-    );
-    return filterKeys.length > 0;
-  };
-
-  useEffect(() => {
-    const isLeadsItemView = /^\/leads\/\d+$/.test(window.location.pathname);
-    const urlType = getLeadsUrlType();
-    const urlViewMode = getLeadsUrlViewMode();
-
-    if (
-      groupTitleForApi &&
-      workflowOptions.length &&
-      !isLeadsItemView &&
-      !hasLeadsFilterInUrl() &&
-      (!urlType || urlType === "light") &&
-      (urlViewMode === "KANBAN" || !urlViewMode)
-    ) {
-      fetchTickets();
-    }
-    // eslint-disable-next-line
-  }, [groupTitleForApi, workflowOptions, lightTicketFilters]);
-
-  // При изменении groupTitleForApi сбрасываем чат фильтры
-  // НО: не сбрасываем если в URL уже есть фильтры (пользователь зашёл по ссылке)
-  useEffect(() => {
-    if (groupTitleForApi) {
-      // Проверяем есть ли фильтры в URL
-      const params = new URLSearchParams(window.location.search);
-      const hasFiltersInUrl = params.get("is_filtered") === "true";
-      
-      // Сбрасываем только если нет фильтров в URL
-      if (!hasFiltersInUrl) {
-        resetChatFilters();
-      }
-    }
-  }, [groupTitleForApi]);
-
-  usePathnameWatcher((pathname) => {
-    const isLeadsListView = pathname === "/leads";
-    const urlType = getLeadsUrlType();
-
-    if (
-      isLeadsListView &&
-      !spinnerTickets &&
-      groupTitleForApi &&
-      workflowOptions.length &&
-      !hasLeadsFilterInUrl() &&
-      (!urlType || urlType === "light")
-    ) {
-      // Сбрасываем состояние и загружаем тикеты
-      setTickets([]);
-      setUnreadCount(0);
-      // Очищаем hash map
-      ticketsMap.current.clear();
-      fetchTickets();
-    }
-  });
+  // Leads теперь использует React Query (useLeadsTableQuery, useLeadsKanbanQuery)
+  // Chat теперь использует React Query (useChatTicketsQuery)
+  // Автозагрузка тикетов больше не нужна в AppContext
 
   const fetchSingleTicket = useCallback(async (ticketId) => {
     try {
@@ -316,13 +108,8 @@ export const AppProvider = ({ children }) => {
             ticketsMap.current.delete(ticketId);
             setTickets((prev) => prev.filter((t) => t.id !== ticketId));
           }
-
-          // Удаляем из chatFilteredTickets
-          const existingChatTicket = getChatFilteredTicketById(ticketId);
-          if (existingChatTicket) {
-            chatFilteredTicketsMap.current.delete(ticketId);
-            setChatFilteredTickets((prev) => prev.filter((t) => t.id !== ticketId));
-          }
+          
+          // Chat использует React Query — обновление через событие ticketUpdated
           return;
         }
 
@@ -342,7 +129,7 @@ export const AppProvider = ({ children }) => {
       const existingTicket = getTicketById(ticketId);
       const oldUnseenCount = existingTicket?.unseen_count || 0;
 
-      // Обновляем или добавляем тикет в основной список
+      // Обновляем или добавляем тикет в основной список (для Leads)
       setTickets((prev) => {
         const exists = getTicketById(ticketId);
 
@@ -359,22 +146,8 @@ export const AppProvider = ({ children }) => {
         }
       });
 
-      // Обновляем тикет в отфильтрованном списке (только если он там уже есть)
-      // Новые тикеты НЕ добавляем — они придут при перезагрузке фильтров
-      setChatFilteredTickets((prev) => {
-        const exists = getChatFilteredTicketById(ticketId);
-        
-        if (exists) {
-          // Обновляем существующий тикет
-          const updated = prev.map((t) => (t.id === ticketId ? normalizedTicket : t));
-          chatFilteredTicketsMap.current.set(ticketId, normalizedTicket);
-          return updated;
-        }
-        
-        // Не добавляем новые тикеты в отфильтрованный список
-        // При смене фильтров список перезагружается через fetchChatFilteredTickets
-        return prev;
-      });
+      // Chat теперь использует React Query
+      // Обновление происходит через событие ticketUpdated (см. useChatTicketsQuery)
 
       // Правильно пересчитываем общий счетчик непрочитанных
       // Вычитаем старое значение и добавляем новое
@@ -384,8 +157,9 @@ export const AppProvider = ({ children }) => {
       }
 
       // Отправляем событие для обновления personalInfo в useFetchTicketChat
+      // и синхронизации с React Query кэшем
       window.dispatchEvent(new CustomEvent('ticketUpdated', {
-        detail: { ticketId }
+        detail: { ticketId, ticket: normalizedTicket }
       }));
     } catch (error) {
       enqueueSnackbar(showServerError(error), { variant: "warning" });
@@ -444,37 +218,8 @@ export const AppProvider = ({ children }) => {
           );
         });
 
-        setChatFilteredTickets((prev) => {
-          // Используем hash map для быстрого поиска O(1)
-          const existingTicket = getChatFilteredTicketById(ticket_id);
-
-          // Получаем тикет из основного списка, если его нет в отфильтрованном
-          const ticketFromMain = existingTicket || getTicketById(ticket_id);
-
-          if (!ticketFromMain) {
-            return prev; // Тикет не найден ни в одном списке
-          }
-
-          const updatedTicket = {
-            ...ticketFromMain,
-            // НЕ изменяем unseen_count - он придет через TICKET_UPDATE
-            // НЕ изменяем action_needed - он придет через TICKET_UPDATE
-            last_message_type: mtype,
-            last_message: msgText,
-            time_sent,
-          };
-
-          // Обновляем только существующие тикеты в отфильтрованном списке
-          // Новые тикеты НЕ добавляем — они придут при перезагрузке фильтров
-          if (existingTicket) {
-            chatFilteredTicketsMap.current.set(ticket_id, updatedTicket);
-            return prev.map((ticket) =>
-              ticket.id === ticket_id ? updatedTicket : ticket
-            );
-          }
-
-          return prev;
-        });
+        // Chat теперь использует React Query
+        // Обновление через событие ticketUpdated происходит в useChatTicketsQuery
 
         // ВАЖНО: Отправляем событие для обновления контекста сообщений
         // ТОЛЬКО для сообщений от других пользователей, системы или звонков
@@ -486,6 +231,9 @@ export const AppProvider = ({ children }) => {
             detail: message.data
           }));
         }
+        
+        // React Query кэш для Chat обновляется через событие ticketUpdated
+        // которое отправляется из fetchSingleTicket
 
         break;
       }
@@ -552,6 +300,9 @@ export const AppProvider = ({ children }) => {
             // Failed to fetch ticket
           }
         });
+        
+        // НЕ инвалидируем React Query — слишком частые события
+        // Новые тикеты появятся при смене фильтров или refetch
 
         break;
       }
@@ -593,19 +344,17 @@ export const AppProvider = ({ children }) => {
               }
             } else {
               // Условия не выполнены - удаляем тикет из списка
-              // Используем hash map для быстрого поиска O(1)
               const removedTicket = getTicketById(id);
 
               if (removedTicket?.unseen_count > 0) {
                 setUnreadCount((prev) => Math.max(0, prev - removedTicket.unseen_count));
               }
 
-              // Удаляем из hash map
+              // Удаляем из hash map и списка (для Leads)
               ticketsMap.current.delete(id);
-              chatFilteredTicketsMap.current.delete(id);
-
               setTickets((prev) => prev.filter((t) => t.id !== id));
-              setChatFilteredTickets((prev) => prev.filter((t) => t.id !== id));
+              
+              // Chat использует React Query — обновление через событие ticketUpdated
             }
           });
         }
@@ -623,11 +372,10 @@ export const AppProvider = ({ children }) => {
 
           if (ids.length > 0) {
             ids.forEach((id) => {
-              // Используем hash map для быстрого поиска O(1)
+              // Проверяем есть ли тикет в списке (для Leads)
               const existsInTickets = ticketsMap.current.has(id);
-              const existsInChatFiltered = chatFilteredTicketsMap.current.has(id);
 
-              if (existsInTickets || existsInChatFiltered) {
+              if (existsInTickets) {
                 try {
                   fetchSingleTicket(id);
                 } catch (e) {
@@ -637,6 +385,9 @@ export const AppProvider = ({ children }) => {
             });
           }
         }
+        
+        // fetchSingleTicket отправляет событие ticketUpdated
+        // которое синхронизирует React Query кэш для Chat
 
         break;
       }
@@ -660,7 +411,6 @@ export const AppProvider = ({ children }) => {
         setTickets,
         unreadCount,
         markMessagesAsRead,
-        spinnerTickets,
         isCollapsed: storage === "true",
         setIsCollapsed: collapsed,
         setUnreadCount,
@@ -668,25 +418,15 @@ export const AppProvider = ({ children }) => {
         groupTitleForApi,
         isAdmin,
         userGroups,
-        fetchTickets,
-        setLightTicketFilters,
         accessibleGroupTitles,
         setCustomGroupTitle,
         customGroupTitle,
-
-        // chat
-        chatFilteredTickets,
-        fetchChatFilteredTickets,
-        setChatFilteredTickets,
-        chatSpinner,
-        resetChatFilters,
 
         // technicians
         technicians,
 
         // utils
         getTicketById,
-        getChatFilteredTicketById,
         getTicketByIdWithFilters,
         fetchSingleTicket,
       }}
