@@ -24,3 +24,4 @@ export * from "./useChatFilters";
 export * from "./useChatTicketsQuery";
 export * from "./useLeadsTableQuery";
 export * from "./useLeadsKanbanQuery";
+export * from "./useTicketCacheSync";

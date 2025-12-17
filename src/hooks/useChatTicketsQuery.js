@@ -3,6 +3,7 @@
  * 
  * Заменяет логику fetchChatFilteredTickets из AppContext.
  * URL (через useChatFilters) — единственный источник правды для фильтров.
+ * Использует useTicketCacheSync для синхронизации с WebSocket.
  */
 
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
@@ -10,6 +11,7 @@ import { useMemo, useCallback, useEffect } from "react";
 import { fetchTicketsList, ticketKeys } from "../api/ticketsApi";
 import { useChatFilters } from "./useChatFilters";
 import { doesTicketMatchFilters, cleanFilters } from "../utils/ticketFilters";
+import { useTicketCacheSync } from "./useTicketCacheSync";
 
 /**
  * Хук для загрузки тикетов чата с фильтрами
@@ -138,35 +140,13 @@ export const useChatTicketsQuery = () => {
     }
   }, [hasNextPage, isFetchingNextPage, isLoading, data?.pages?.length, fetchNextPage]);
 
-  // Слушаем событие ticketUpdated для синхронизации с AppContext
-  // Когда fetchSingleTicket обновляет тикет — обновляем и React Query кэш
-  useEffect(() => {
-    const handleTicketUpdated = (event) => {
-      const { ticketId, ticket } = event.detail || {};
-      if (!ticketId || !ticket) return;
-      
-      // Проверяем соответствует ли обновлённый тикет текущим фильтрам
-      const matchesFilters = doesTicketMatchFilters(ticket, filters);
-      
-      queryClient.setQueryData(queryKey, (oldData) => {
-        if (!oldData?.pages) return oldData;
-        
-        const newPages = oldData.pages.map((page) => ({
-          ...page,
-          tickets: matchesFilters
-            // Если соответствует фильтрам — обновляем тикет
-            ? page.tickets.map((t) => t.id === ticketId ? { ...t, ...ticket } : t)
-            // Если НЕ соответствует — удаляем тикет из списка
-            : page.tickets.filter((t) => t.id !== ticketId),
-        }));
-        
-        return { ...oldData, pages: newPages };
-      });
-    };
-
-    window.addEventListener('ticketUpdated', handleTicketUpdated);
-    return () => window.removeEventListener('ticketUpdated', handleTicketUpdated);
-  }, [queryClient, queryKey, filters]);
+  // Синхронизация кэша с WebSocket через TicketSyncContext
+  const { updateTicket, removeTicket } = useTicketCacheSync({
+    queryKey,
+    filters,
+    matchFn: doesTicketMatchFilters,
+    dataPath: "pages", // infinite query
+  });
 
   return {
     // Данные
@@ -183,7 +163,9 @@ export const useChatTicketsQuery = () => {
     // Методы
     fetchNextPage,       // Загрузить следующую страницу
     refetch,             // Перезагрузить всё
-    updateTicketInCache, // Обновить тикет в кэше
+    updateTicketInCache, // Обновить тикет в кэше (legacy)
+    updateTicket,        // Обновить тикет (из useTicketCacheSync)
+    removeTicket,        // Удалить тикет из кэша
     getTicketById,       // Получить тикет по ID
     invalidateCache,     // Инвалидировать кэш
     

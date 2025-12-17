@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useCallback } from "react";
+import React, { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { Flex, ActionIcon, Box } from "@mantine/core";
@@ -9,6 +9,7 @@ import ChatExtraInfo from "../Components/ChatComponent/ChatExtraInfo";
 import ChatList from "../Components/ChatComponent/ChatList";
 import { ChatMessages } from "../Components/ChatComponent/components/ChatMessages";
 import Can from "@components/CanComponent/Can";
+import { useTicketSync, SYNC_EVENTS } from "../contexts/TicketSyncContext";
 
 export const Chat = () => {
   const {
@@ -78,26 +79,29 @@ export const Chat = () => {
     loadTicketDirectly(ticketId);
   }, [ticketId, loadTicketDirectly]);
 
-  // Слушаем событие ticketUpdated для обновления данных
-  useEffect(() => {
-    const handleTicketUpdated = (event) => {
-      const { ticketId: updatedId, ticket } = event.detail || {};
+  // Подписываемся на обновления тикетов через TicketSyncContext
+  const { subscribe } = useTicketSync();
+  
+  // Храним актуальные значения в ref
+  const ticketIdRef = useRef(ticketId);
+  const loadTicketDirectlyRef = useRef(loadTicketDirectly);
+  ticketIdRef.current = ticketId;
+  loadTicketDirectlyRef.current = loadTicketDirectly;
 
+  useEffect(() => {
+    const unsubscribe = subscribe(SYNC_EVENTS.TICKET_UPDATED, ({ ticketId: updatedId, ticket }) => {
       // Обновляем локальный state если это наш тикет
-      if (updatedId === ticketId) {
+      if (updatedId === ticketIdRef.current) {
         if (ticket) {
-          // Если в событии есть данные тикета — используем их
           setDirectTicketData(ticket);
         } else {
-          // Иначе перезапрашиваем с сервера
-          loadTicketDirectly(ticketId);
+          loadTicketDirectlyRef.current(ticketIdRef.current);
         }
       }
-    };
+    });
 
-    window.addEventListener("ticketUpdated", handleTicketUpdated);
-    return () => window.removeEventListener("ticketUpdated", handleTicketUpdated);
-  }, [ticketId, loadTicketDirectly]);
+    return unsubscribe;
+  }, [subscribe]);
 
   // Получаем последнее сообщение по времени для автоматического выбора платформы и контакта
   const lastMessage = useMemo(() => {

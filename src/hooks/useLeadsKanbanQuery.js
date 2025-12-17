@@ -3,26 +3,17 @@
  * 
  * Заменяет логику useLeadsKanban + глобальные tickets из AppContext.
  * URL (через useLeadsFilters) — единственный источник правды для фильтров.
+ * Использует useTicketCacheSync для синхронизации с WebSocket.
  */
 
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useCallback, useEffect, useState } from "react";
 import { useApp } from "./useApp";
 import { api } from "../api";
-import { getLanguageByKey } from "../Components/utils";
-import { getEffectiveWorkflow, EXCLUDED_WORKFLOWS } from "../Components/LeadsComponent/constants";
+import { getEffectiveWorkflow } from "../Components/LeadsComponent/constants";
 import { cleanFilters, doesTicketMatchFilters } from "../utils/ticketFilters";
-
-/**
- * Нормализация light тикетов
- */
-const normalizeLightTickets = (tickets) =>
-  tickets.map((ticket) => ({
-    ...ticket,
-    last_message: ticket.last_message || getLanguageByKey("no_messages"),
-    time_sent: ticket.time_sent || null,
-    unseen_count: ticket.unseen_count || 0,
-  }));
+import { normalizeLightTickets } from "../utils/ticketNormalizers";
+import { useTicketCacheSync } from "./useTicketCacheSync";
 
 /**
  * Загрузка одной страницы light тикетов
@@ -185,32 +176,13 @@ export const useLeadsKanbanQuery = ({
     return tickets.find((t) => t.id === ticketId);
   }, [tickets]);
 
-  // Слушаем событие ticketUpdated для синхронизации
-  useEffect(() => {
-    const handleTicketUpdated = (event) => {
-      const { ticketId, ticket } = event.detail || {};
-      if (!ticketId || !ticket) return;
-
-      // Проверяем соответствует ли тикет текущим фильтрам
-      const matchesFilters = doesTicketMatchFilters(ticket, filters);
-      
-      queryClient.setQueryData(queryKey, (oldData) => {
-        if (!oldData?.pages) return oldData;
-        
-        const newPages = oldData.pages.map((page) => ({
-          ...page,
-          tickets: matchesFilters
-            ? page.tickets.map((t) => t.id === ticketId ? { ...t, ...ticket } : t)
-            : page.tickets.filter((t) => t.id !== ticketId),
-        }));
-        
-        return { ...oldData, pages: newPages };
-      });
-    };
-
-    window.addEventListener('ticketUpdated', handleTicketUpdated);
-    return () => window.removeEventListener('ticketUpdated', handleTicketUpdated);
-  }, [queryClient, queryKey, filters]);
+  // Синхронизация кэша с WebSocket через TicketSyncContext
+  const { updateTicket, removeTicket } = useTicketCacheSync({
+    queryKey,
+    filters,
+    matchFn: doesTicketMatchFilters,
+    dataPath: "pages", // infinite query
+  });
 
   return {
     // Данные

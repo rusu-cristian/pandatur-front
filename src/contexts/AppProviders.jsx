@@ -3,20 +3,41 @@ import { UserProvider } from "./UserContext";
 import { SocketProvider } from "./SocketContext";
 import { AppProvider } from "./AppContext";
 import { MessagesProvider } from "./MessagesContext";
+import { TicketSyncProvider } from "./TicketSyncContext";
+import { UIProvider } from "./UIContext";
+import { TicketsProvider } from "./TicketsContext";
+import { WebSocketProvider } from "./WebSocketContext";
 
 /**
  * Единый компонент, объединяющий все кастомные провайдеры приложения
- * Это упрощает структуру App.js и уменьшает вложенность провайдеров
+ * 
+ * Порядок провайдеров важен:
+ * 1. UserProvider — данные пользователя (используется везде)
+ * 2. SocketProvider — WebSocket соединение
+ * 3. TicketSyncProvider — шина событий для синхронизации
+ * 4. UIProvider — UI состояние (sidebar, theme)
+ * 5. TicketsProvider — tickets state и методы
+ * 6. WebSocketProvider — обработка WebSocket сообщений
+ * 7. AppProvider — legacy фасад (для обратной совместимости)
+ * 8. MessagesProvider — сообщения в чате
  */
 export const AppProviders = ({ children }) => {
   return (
     <UserProvider>
       <SocketProvider>
-        <AppProvider>
-          <MessagesProvider>
-            {children}
-          </MessagesProvider>
-        </AppProvider>
+        <TicketSyncProvider>
+          <UIProvider>
+            <TicketsProvider>
+              <WebSocketProvider>
+                <AppProvider>
+                  <MessagesProvider>
+                    {children}
+                  </MessagesProvider>
+                </AppProvider>
+              </WebSocketProvider>
+            </TicketsProvider>
+          </UIProvider>
+        </TicketSyncProvider>
       </SocketProvider>
     </UserProvider>
   );

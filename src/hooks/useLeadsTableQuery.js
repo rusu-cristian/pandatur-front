@@ -3,6 +3,7 @@
  * 
  * Заменяет логику useLeadsTable.
  * URL (через useLeadsFilters) — единственный источник правды для фильтров.
+ * Использует useTicketCacheSync для синхронизации с WebSocket.
  */
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -11,6 +12,7 @@ import { useApp } from "./useApp";
 import { api } from "../api";
 import { getEffectiveWorkflow, DEFAULT_PER_PAGE, DEFAULT_PAGE } from "../Components/LeadsComponent/constants";
 import { cleanFilters } from "../utils/ticketFilters";
+import { useTicketCacheSync } from "./useTicketCacheSync";
 
 /**
  * Загрузка hard тикетов
@@ -137,19 +139,14 @@ export const useLeadsTableQuery = ({ filters: rawFilters = {}, enabled = true } 
     });
   }, [queryClient, queryKey]);
 
-  // Слушаем событие ticketUpdated для синхронизации
-  useEffect(() => {
-    const handleTicketUpdated = (event) => {
-      const { ticketId, ticket } = event.detail || {};
-      if (!ticketId || !ticket) return;
-
-      // Обновляем тикет в кэше если он там есть
-      updateTicketInCache(ticketId, ticket);
-    };
-
-    window.addEventListener('ticketUpdated', handleTicketUpdated);
-    return () => window.removeEventListener('ticketUpdated', handleTicketUpdated);
-  }, [updateTicketInCache]);
+  // Синхронизация кэша с WebSocket через TicketSyncContext
+  // Для Table не удаляем тикеты при изменении — просто обновляем данные
+  const { updateTicket } = useTicketCacheSync({
+    queryKey,
+    filters,
+    matchFn: null, // Всегда обновляем, не удаляем
+    dataPath: "tickets", // простой query, не infinite
+  });
 
   return {
     // Данные

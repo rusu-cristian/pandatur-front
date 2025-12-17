@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useCallback, useRef } from "react";
 import { useMessages, useSocket, useUser } from "@hooks";
 import { TYPE_SOCKET_EVENTS, MEDIA_TYPE } from "@app-constants";
+import { useTicketSync, SYNC_EVENTS } from "./TicketSyncContext";
 
 export const MessagesContext = createContext();
 
@@ -102,53 +103,42 @@ export const MessagesProvider = ({ children }) => {
     }
   }, [sendedValue, handleIncomingMessage]);
 
-  // Слушаем события от AppContext для обновления сообщений от других пользователей
+  // Подписываемся на события через TicketSyncContext
+  const { subscribe } = useTicketSync();
+  
+  // Храним актуальное значение handleIncomingMessage в ref
+  const handleIncomingMessageRef = useRef(handleIncomingMessage);
+  handleIncomingMessageRef.current = handleIncomingMessage;
+
+  // Подписка на новые сообщения
   useEffect(() => {
-    const handleNewMessageFromSocket = (event) => {
-      const messageData = event.detail;
+    const unsubscribe = subscribe(SYNC_EVENTS.MESSAGE_RECEIVED, (messageData) => {
       if (messageData) {
-        handleIncomingMessage({ data: messageData });
+        handleIncomingMessageRef.current({ data: messageData });
       }
-    };
+    });
+    return unsubscribe;
+  }, [subscribe]);
 
-    window.addEventListener('newMessageFromSocket', handleNewMessageFromSocket);
-    
-    return () => {
-      window.removeEventListener('newMessageFromSocket', handleNewMessageFromSocket);
-    };
-  }, [handleIncomingMessage]);
-
-  // Обрабатываем событие "seen" от клиента - обновляем статусы сообщений
+  // Подписка на событие "сообщения прочитаны"
   useEffect(() => {
-    const handleMessagesSeenByClient = (event) => {
-      const { ticket_id } = event.detail || {};
-      if (ticket_id && messagesRef.current.markMessagesAsSeen) {
-        messagesRef.current.markMessagesAsSeen(ticket_id);
+    const unsubscribe = subscribe(SYNC_EVENTS.MESSAGES_SEEN, ({ ticketId }) => {
+      if (ticketId && messagesRef.current.markMessagesAsSeen) {
+        messagesRef.current.markMessagesAsSeen(ticketId);
       }
-    };
+    });
+    return unsubscribe;
+  }, [subscribe]);
 
-    window.addEventListener('messagesSeenByClient', handleMessagesSeenByClient);
-    
-    return () => {
-      window.removeEventListener('messagesSeenByClient', handleMessagesSeenByClient);
-    };
-  }, []); // Пустой массив зависимостей, так как используем useRef
-
-  // Обрабатываем событие удаления сообщения
+  // Подписка на удаление сообщения
   useEffect(() => {
-    const handleMessageDeleted = (event) => {
-      const { message_id } = event.detail || {};
-      if (message_id && messagesRef.current.deleteMessage) {
-        messagesRef.current.deleteMessage(message_id);
+    const unsubscribe = subscribe(SYNC_EVENTS.MESSAGE_DELETED, ({ messageId }) => {
+      if (messageId && messagesRef.current.deleteMessage) {
+        messagesRef.current.deleteMessage(messageId);
       }
-    };
-
-    window.addEventListener('messageDeleted', handleMessageDeleted);
-    
-    return () => {
-      window.removeEventListener('messageDeleted', handleMessageDeleted);
-    };
-  }, []); // Пустой массив зависимостей, так как используем useRef
+    });
+    return unsubscribe;
+  }, [subscribe]);
 
   return (
     <MessagesContext.Provider value={messages}>

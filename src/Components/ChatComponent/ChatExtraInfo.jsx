@@ -26,6 +26,7 @@ import {
 } from "../TicketForms";
 import { InvoiceTab } from "./components";
 import Can from "@components/CanComponent/Can";
+import { useTicketSync } from "../../contexts/TicketSyncContext";
 
 const ChatExtraInfo = ({
   selectTicketId,
@@ -35,6 +36,7 @@ const ChatExtraInfo = ({
   onUpdateClientData,
   clientsData, // Данные клиентов из useClientContacts (чтобы избежать дублирующего запроса)
 }) => {
+  const { notifyTicketUpdated } = useTicketSync();
   const [extraInfo, setExtraInfo] = useState({});
   const [isLoadingExtraInfo, setIsLoadingExtraInfo] = useState(true);
   const [isLoadingGeneral, setIsLoadingGeneral] = useState(false);
@@ -305,10 +307,8 @@ const ChatExtraInfo = ({
 
       await api.tickets.ticket.create(ticketId, extraFields);
 
-      // Диспатчим событие для обновления данных тикета и клиентов
-      window.dispatchEvent(new CustomEvent('ticketUpdated', {
-        detail: { ticketId }
-      }));
+      // Оповещаем об обновлении тикета через TicketSyncContext
+      notifyTicketUpdated(ticketId, null);
 
       enqueueSnackbar(
         getLanguageByKey("Datele despre ticket au fost create cu succes"),
