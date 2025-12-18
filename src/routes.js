@@ -1,18 +1,20 @@
-import {
-  Logs,
-  Leads,
-  TaskPage,
-  Schedules,
-  Users,
-  Login,
-  Chat,
-  Dashboard,
-  TermsAndConditions,
-  Sales,
-} from "@pages";
+import { lazy } from "react";
 import { hasStrictPermission, hasRouteAccess } from "./Components/utils/permissions";
 import { convertRolesToMatrix, safeParseJson } from "./Components/UsersComponent/rolesUtils";
-import { Analytics } from "./pages/Analytics";
+
+// Lazy loading для страниц — уменьшает начальный bundle
+// Используем .then() для named exports
+const Logs = lazy(() => import("./pages/Logs").then(m => ({ default: m.Logs })));
+const Leads = lazy(() => import("./pages/Leads").then(m => ({ default: m.Leads })));
+const TaskPage = lazy(() => import("./pages/TaskPage").then(m => ({ default: m.TaskPage })));
+const Schedules = lazy(() => import("./pages/Schedules").then(m => ({ default: m.Schedules })));
+const Users = lazy(() => import("./pages/Users").then(m => ({ default: m.Users })));
+const Login = lazy(() => import("./pages/Login").then(m => ({ default: m.Login })));
+const Chat = lazy(() => import("./pages/Chat").then(m => ({ default: m.Chat })));
+const Dashboard = lazy(() => import("./pages/Dashboard").then(m => ({ default: m.Dashboard })));
+const TermsAndConditions = lazy(() => import("./pages/TermsAndConditions").then(m => ({ default: m.TermsAndConditions })));
+const Sales = lazy(() => import("./pages/Sales").then(m => ({ default: m.Sales })));
+const Analytics = lazy(() => import("./pages/Analytics").then(m => ({ default: m.Analytics })));
 
 export const privatePaths = [
   "dashboard",

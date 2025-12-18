@@ -37,7 +37,7 @@ const CONTACT_TYPE_COLORS = {
 };
 
 const ViberBotIcon = () => (
-  <img src="/viber-bot.svg" alt="Viber Bot" style={{ width: "24px", height: "24px", background: "#7360F2", borderRadius: "12px" }} />
+  <img src="/viber-bot.svg" alt="Viber Bot" loading="lazy" style={{ width: "24px", height: "24px", background: "#7360F2", borderRadius: "12px" }} />
 );
 
 const PLATFORM_ICONS = {
