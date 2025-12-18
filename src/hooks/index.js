@@ -3,6 +3,7 @@ export * from "./usePortal";
 export * from "./useDebounce";
 export * from "./useUser";
 export * from "./useGetTechniciansList";
+export * from "./useTechniciansQuery";
 export * from "./useConfirmPopup";
 export * from "./useFormTicket";
 export * from "./useLanguageToggle";

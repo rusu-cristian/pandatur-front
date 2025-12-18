@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
+import { useQueryClient } from "@tanstack/react-query";
 import Cookies from "js-cookie";
 import { api } from "../api";
 import {
@@ -11,12 +12,13 @@ import {
 } from "../Components/utils/workflowUtils";
 import { showServerError, getLanguageByKey } from "../Components/utils";
 import { LoadingOverlay } from "../Components";
-import { setRawTechniciansCache, setRawTechniciansPromise } from "../hooks/useGetTechniciansList";
+import { prefetchTechnicians } from "../hooks/useTechniciansQuery";
 
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [authLoading, setAuthLoading] = useState(true);
   const authCheckedRef = useRef(false); // Флаг для отслеживания, была ли проверка авторизации
   const [userId, setUserId] = useState(() => {
@@ -223,14 +225,9 @@ export const UserProvider = ({ children }) => {
 
       const groups = await api.user.getGroupsList();
       
-      // Создаём Promise ДО запроса — другие компоненты будут ждать его
-      const techniciansPromise = api.users.getTechnicianList();
-      setRawTechniciansPromise(techniciansPromise);
-      
-      const technicians = await techniciansPromise;
-      
-      // Сохраняем в общий кэш для useGetTechniciansList
-      setRawTechniciansCache(technicians);
+      // React Query гарантирует дедупликацию:
+      // если useTechniciansQuery уже загружает — fetchQuery вернёт тот же Promise
+      const technicians = await prefetchTechnicians(queryClient);
       
       const me = technicians.find((t) => t.user?.id === userId);
 
