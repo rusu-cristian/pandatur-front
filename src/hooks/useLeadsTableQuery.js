@@ -97,7 +97,7 @@ export const useLeadsTableQuery = ({ filters: rawFilters = {}, enabled = true } 
         filters,
       }),
     enabled: enabled && !!groupTitleForApi && workflowOptions.length > 0,
-    staleTime: 30 * 1000, // 30 секунд
+    staleTime: 0, // Без кэша
     refetchOnWindowFocus: false,
   });
 

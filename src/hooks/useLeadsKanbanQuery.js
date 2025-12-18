@@ -107,7 +107,7 @@ export const useLeadsKanbanQuery = ({
       return currentPage < totalPages ? currentPage + 1 : undefined;
     },
     enabled: enabled && !!groupTitleForApi && workflowOptions.length > 0,
-    staleTime: 30 * 1000, // 30 секунд
+    staleTime: 0, // Без кэша
     refetchOnWindowFocus: false,
   });
 

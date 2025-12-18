@@ -71,7 +71,8 @@ export const useRawTechniciansQuery = (options = {}) => {
   return useQuery({
     queryKey: TECHNICIANS_QUERY_KEY,
     queryFn: fetchRawTechnicians,
-    staleTime: 5 * 60 * 1000, // 5 минут
+    staleTime: 0, // Без кэша
+    gcTime: 0,
     refetchOnWindowFocus: false,
     ...options,
   });
@@ -103,6 +104,6 @@ export const prefetchTechnicians = (queryClient) => {
   return queryClient.fetchQuery({
     queryKey: TECHNICIANS_QUERY_KEY,
     queryFn: fetchRawTechnicians,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 0,
   });
 };

@@ -13,7 +13,7 @@ import { getLanguageByKey } from "../utils/getLanguageByKey";
 
 const SingleChat = ({ technicians, ticketId, onClose }) => {
   const { getTicketById, fetchSingleTicket, tickets } = useTickets();
-  const { messages } = useMessagesContext();
+  const { messages, clearAll: clearMessages } = useMessagesContext();
   const {
     accessibleGroupTitles,
     groupTitleForApi,
@@ -27,6 +27,17 @@ const SingleChat = ({ technicians, ticketId, onClose }) => {
   const fetchingRef = useRef(false);
   const fetchSingleTicketRef = useRef(fetchSingleTicket);
   fetchSingleTicketRef.current = fetchSingleTicket;
+  
+  // Очищаем память при размонтировании компонента (закрытие тикета)
+  useEffect(() => {
+    return () => {
+      // Освобождаем память сразу при закрытии
+      if (clearMessages) {
+        clearMessages();
+      }
+      setLoadedTicket(null);
+    };
+  }, [clearMessages]);
 
   // Получаем тикет из TicketsContext
   // Ищем в массиве tickets, чтобы компонент автоматически перерисовывался при обновлении

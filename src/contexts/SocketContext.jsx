@@ -114,14 +114,14 @@ export const SocketProvider = ({ children }) => {
     sendJSON(TYPE_SOCKET_EVENTS.SEEN, { ticket_id: ticketId, sender_id: userId });
   }, [sendJSON]);
 
-  // Отслеживаем изменения JWT токена
+  // Отслеживаем изменения JWT токена (проверка каждые 5 сек)
   useEffect(() => {
     const checkToken = () => {
       setJwtToken(Cookies.get("jwt"));
     };
     
     checkToken();
-    const interval = setInterval(checkToken, 1000);
+    const interval = setInterval(checkToken, 5000);
     
     return () => clearInterval(interval);
   }, []);

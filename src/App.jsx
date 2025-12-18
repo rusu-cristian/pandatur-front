@@ -3,7 +3,6 @@ import Cookies from "js-cookie";
 import { useNavigate, useLocation } from "react-router-dom";
 import { SnackbarProvider } from "notistack";
 import { ModalsProvider } from "@mantine/modals";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AppProviders } from "@contexts";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import dayjs from "dayjs";
@@ -19,19 +18,7 @@ import "./App.css";
 
 dayjs.extend(customParseFormat);
 
-// React Query клиент с настройками
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      // Не перезагружать при фокусе окна (для CRM это обычно не нужно)
-      refetchOnWindowFocus: false,
-      // Retry 1 раз при ошибке
-      retry: 1,
-      // Данные считаются свежими 30 секунд
-      staleTime: 30 * 1000,
-    },
-  },
-});
+// QueryClient создаётся в main.jsx — не дублируем!
 
 function App() {
   const navigate = useNavigate();
@@ -40,15 +27,14 @@ function App() {
 
   const publicPaths = publicRoutes.map(({ path }) => path);
 
-  // Слушаем изменения JWT токена
+  // Слушаем изменения JWT токена (проверка каждые 5 сек — достаточно для logout)
   useEffect(() => {
     const checkToken = () => {
       setJwtToken(Cookies.get("jwt"));
     };
 
-    // Проверяем при монтировании и настраиваем периодическую проверку
     checkToken();
-    const interval = setInterval(checkToken, 1000);
+    const interval = setInterval(checkToken, 5000);
 
     return () => clearInterval(interval);
   }, []);
@@ -61,7 +47,6 @@ function App() {
   }, [navigate, pathname, publicPaths, jwtToken]);
 
   return (
-    <QueryClientProvider client={queryClient}>
     <MantineProvider>
       <ModalsProvider>
         <SnackbarProvider
@@ -81,7 +66,6 @@ function App() {
         </SnackbarProvider>
       </ModalsProvider>
     </MantineProvider>
-    </QueryClientProvider>
   );
 }
 

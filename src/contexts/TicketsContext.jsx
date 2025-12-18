@@ -20,6 +20,9 @@ import { UserContext } from "./UserContext";
 
 const TicketsContext = createContext(null);
 
+// Максимальное количество тикетов в кэше (баланс памяти и UX)
+const MAX_CACHED_TICKETS = 100;
+
 // Финальные статусы, которые исключаем из подсчёта (как в useChatFilters)
 const EXCLUDED_WORKFLOWS = ["Realizat cu succes", "Închis și nerealizat", "Interesat"];
 
@@ -169,7 +172,20 @@ export const TicketsProvider = ({ children }) => {
         if (exists) {
           return prev.map((t) => (t.id === ticketId ? normalizedTicket : t));
         } else {
-          return [...prev, normalizedTicket];
+          // Добавляем новый тикет, но ограничиваем размер кэша
+          const updated = [...prev, normalizedTicket];
+          if (updated.length > MAX_CACHED_TICKETS) {
+            // Удаляем самые старые тикеты (без unseen_count)
+            const sorted = updated.sort((a, b) => {
+              // Сначала сортируем по unseen_count (с непрочитанными — в конец)
+              if (a.unseen_count > 0 && b.unseen_count === 0) return 1;
+              if (a.unseen_count === 0 && b.unseen_count > 0) return -1;
+              // Затем по дате последнего взаимодействия
+              return new Date(b.last_interaction_date) - new Date(a.last_interaction_date);
+            });
+            return sorted.slice(0, MAX_CACHED_TICKETS);
+          }
+          return updated;
         }
       });
 
