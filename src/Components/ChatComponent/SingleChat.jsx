@@ -1,21 +1,22 @@
 import { FaArrowLeft } from "react-icons/fa";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Flex, ActionIcon, Box } from "@mantine/core";
 import ChatExtraInfo from "./ChatExtraInfo";
 import { ChatMessages } from "./components";
 import { useClientContacts, useMessagesContext } from "@hooks";
 import { useTickets } from "../../contexts/TicketsContext";
+import { useTicketSync, SYNC_EVENTS } from "../../contexts/TicketSyncContext";
 import Can from "@components/CanComponent/Can";
 
-const SingleChat = ({ technicians, ticketId, onClose, tasks = [] }) => {
+const SingleChat = ({ technicians, ticketId, onClose }) => {
   const { getTicketById, fetchSingleTicket, tickets } = useTickets();
   const { getUserMessages, messages } = useMessagesContext();
   const [isLoadingTicket, setIsLoadingTicket] = useState(false);
   const [loadedTicket, setLoadedTicket] = useState(null);
 
-  // ВАЖНО: Всегда получаем тикет из AppContext
+  // Получаем тикет из TicketsContext
   // Ищем в массиве tickets, чтобы компонент автоматически перерисовывался при обновлении
-  // Тикет обновляется через TICKET_UPDATE и fetchSingleTicket
+  // Тикет обновляется через WebSocket (TICKET_UPDATE) и fetchSingleTicket
   const currentTicket = React.useMemo(() => {
     if (!ticketId) return null;
     const ticketIdNum = Number(ticketId);
@@ -77,8 +78,6 @@ const SingleChat = ({ technicians, ticketId, onClose, tasks = [] }) => {
     ticketData, // Сырые данные от API для PersonalData4ClientForm
   } = useClientContacts(Number(ticketId), lastMessage, currentTicket?.group_title);
 
-  const responsibleId = currentTicket?.technician_id?.toString() ?? null;
-
   useEffect(() => {
     if (ticketId) {
       getUserMessages(Number(ticketId));
@@ -117,6 +116,27 @@ const SingleChat = ({ technicians, ticketId, onClose, tasks = [] }) => {
       });
   }, [ticketId, fetchSingleTicket]);
 
+  // Подписываемся на WebSocket обновления тикета
+  const { subscribe } = useTicketSync();
+  const ticketIdRef = useRef(ticketId);
+  ticketIdRef.current = ticketId;
+
+  useEffect(() => {
+    const unsubscribe = subscribe(SYNC_EVENTS.TICKET_UPDATED, ({ ticketId: updatedId, ticket }) => {
+      // Обновляем локальный state если это наш тикет
+      if (updatedId === Number(ticketIdRef.current)) {
+        if (ticket) {
+          setLoadedTicket(ticket);
+        } else {
+          // Если данные не пришли — перезапрашиваем
+          fetchSingleTicket(Number(ticketIdRef.current)).then(setLoadedTicket);
+        }
+      }
+    });
+
+    return unsubscribe;
+  }, [subscribe, fetchSingleTicket]);
+
   // Получаем unseen_count из актуального тикета
   const unseenCount = currentTicket?.unseen_count || 0;
 
@@ -129,7 +149,7 @@ const SingleChat = ({ technicians, ticketId, onClose, tasks = [] }) => {
       </Box>
 
       <Flex w="70%">
-        <Can permission={{ module: "chat", action: "view" }} context={{ responsibleId }}>
+        <Can permission={{ module: "chat", action: "view" }} context={{ responsibleId: currentTicket?.technician_id?.toString() ?? null }}>
           <ChatMessages
             ticketId={ticketId ? Number(ticketId) : undefined}
             personalInfo={currentTicket}
