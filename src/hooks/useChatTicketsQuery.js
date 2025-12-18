@@ -4,6 +4,9 @@
  * Заменяет логику fetchChatFilteredTickets из AppContext.
  * URL (через useChatFilters) — единственный источник правды для фильтров.
  * Использует useTicketCacheSync для синхронизации с WebSocket.
+ * 
+ * ВАЖНО: unreadCount загружается глобально в TicketsContext,
+ * этот хук только показывает отфильтрованные тикеты.
  */
 
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";

@@ -10,12 +10,11 @@
  * - LeadsModals — все модалки
  */
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { 
   useDOMElementHeight, 
-  useApp, 
   useConfirmPopup, 
   useGetTechniciansList, 
   useLeadsFilters, 
@@ -23,6 +22,8 @@ import {
   useLeadsTableQuery,
   useLeadsKanbanQuery,
 } from "@hooks";
+import { useUI } from "../contexts/UIContext";
+import { UserContext } from "../contexts/UserContext";
 import { priorityOptions, groupTitleOptions } from "../FormOptions";
 import { workflowOptions as defaultWorkflowOptions } from "../FormOptions/workflowOptions";
 import { SpinnerRightBottom } from "@components";
@@ -41,15 +42,15 @@ export const Leads = () => {
   const navigate = useNavigate();
   const leadsFilterHeight = useDOMElementHeight(refLeadsHeader);
 
-  // === КОНТЕКСТ ПРИЛОЖЕНИЯ ===
+  // === КОНТЕКСТ (специализированные хуки) ===
+  const { isCollapsed } = useUI();
   const {
     groupTitleForApi,
     workflowOptions,
-    isCollapsed,
     accessibleGroupTitles,
     customGroupTitle,
     setCustomGroupTitle,
-  } = useApp();
+  } = useContext(UserContext);
 
   // === ФИЛЬТРЫ (URL как источник правды) ===
   const {

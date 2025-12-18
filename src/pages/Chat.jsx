@@ -1,9 +1,11 @@
-import React, { useState, useMemo, useEffect, useCallback, useRef } from "react";
+import React, { useState, useMemo, useEffect, useCallback, useRef, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { Flex, ActionIcon, Box } from "@mantine/core";
-import { useApp, useClientContacts, useMessagesContext, useChatFilters } from "@hooks";
+import { useClientContacts, useMessagesContext, useChatFilters } from "@hooks";
 import { useGetTechniciansList } from "../hooks";
+import { useTickets } from "../contexts/TicketsContext";
+import { UserContext } from "../contexts/UserContext";
 import { api } from "../api";
 import ChatExtraInfo from "../Components/ChatComponent/ChatExtraInfo";
 import ChatList from "../Components/ChatComponent/ChatList";
@@ -12,13 +14,13 @@ import Can from "@components/CanComponent/Can";
 import { useTicketSync, SYNC_EVENTS } from "../contexts/TicketSyncContext";
 
 export const Chat = () => {
+  const { getTicketByIdWithFilters } = useTickets();
   const {
-    getTicketByIdWithFilters,
     groupTitleForApi,
     accessibleGroupTitles,
     customGroupTitle,
     setCustomGroupTitle,
-  } = useApp();
+  } = useContext(UserContext);
   
   // URL — единственный источник правды для фильтров
   const { isFiltered } = useChatFilters();

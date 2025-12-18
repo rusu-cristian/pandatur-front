@@ -1,6 +1,7 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useContext } from "react";
 import { useSearchParams, useNavigate, useParams } from "react-router-dom";
-import { useApp, useUser } from "@hooks";
+import { useUser } from "@hooks";
+import { UserContext } from "../contexts/UserContext";
 import { parseFiltersFromUrl, prepareFiltersForUrl } from "../Components/utils/parseFiltersFromUrl";
 
 // Финальные статусы, которые исключаем из показа в чате
@@ -37,7 +38,7 @@ export const useChatFilters = () => {
     accessibleGroupTitles, 
     customGroupTitle, 
     setCustomGroupTitle,
-  } = useApp();
+  } = useContext(UserContext);
   const { userId } = useUser();
 
   // === ДЕФОЛТНЫЕ ФИЛЬТРЫ ДЛЯ ЧАТА ===

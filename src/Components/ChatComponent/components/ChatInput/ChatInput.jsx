@@ -23,7 +23,8 @@ import { getEmailsByGroupTitle } from "../../../utils/emailUtils";
 import { templateOptions, templateGroupsByKey, TEMPLATE_GROUP_BY_TITLE } from "../../../../FormOptions";
 import { useUploadMediaFile, filterPagesByGroupTitle } from "../../../../hooks";
 import { getMediaType } from "../../renderContent";
-import { useApp, useSocket, useUser } from "@hooks";
+import { useSocket, useUser } from "@hooks";
+import { useTickets } from "../../../../contexts/TicketsContext";
 import Can from "../../../CanComponent/Can";
 import { TYPE_SOCKET_EVENTS } from "@app-constants";
 import { api } from "../../../../api";
@@ -78,7 +79,7 @@ export const ChatInput = ({
   const { uploadFile } = useUploadMediaFile();
   const { userId } = useUser();
   const { socketRef } = useSocket();
-  const { markMessagesAsRead, getTicketById } = useApp();
+  const { markMessagesAsRead, getTicketById } = useTickets();
   const { enqueueSnackbar } = useSnackbar();
 
   // Получаем данные о воронке и email адресах

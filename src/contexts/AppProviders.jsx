@@ -1,7 +1,6 @@
 import React from "react";
 import { UserProvider } from "./UserContext";
 import { SocketProvider } from "./SocketContext";
-import { AppProvider } from "./AppContext";
 import { MessagesProvider } from "./MessagesContext";
 import { TicketSyncProvider } from "./TicketSyncContext";
 import { UIProvider } from "./UIContext";
@@ -18,8 +17,7 @@ import { WebSocketProvider } from "./WebSocketContext";
  * 4. UIProvider — UI состояние (sidebar, theme)
  * 5. TicketsProvider — tickets state и методы
  * 6. WebSocketProvider — обработка WebSocket сообщений
- * 7. AppProvider — legacy фасад (для обратной совместимости)
- * 8. MessagesProvider — сообщения в чате
+ * 7. MessagesProvider — сообщения в чате
  */
 export const AppProviders = ({ children }) => {
   return (
@@ -29,11 +27,9 @@ export const AppProviders = ({ children }) => {
           <UIProvider>
             <TicketsProvider>
               <WebSocketProvider>
-                <AppProvider>
-                  <MessagesProvider>
-                    {children}
-                  </MessagesProvider>
-                </AppProvider>
+                <MessagesProvider>
+                  {children}
+                </MessagesProvider>
               </WebSocketProvider>
             </TicketsProvider>
           </UIProvider>

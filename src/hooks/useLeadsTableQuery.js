@@ -7,8 +7,8 @@
  */
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useMemo, useCallback, useState, useEffect } from "react";
-import { useApp } from "./useApp";
+import { useMemo, useCallback, useState, useEffect, useContext } from "react";
+import { UserContext } from "../contexts/UserContext";
 import { api } from "../api";
 import { getEffectiveWorkflow, DEFAULT_PER_PAGE, DEFAULT_PAGE } from "../Components/LeadsComponent/constants";
 import { cleanFilters } from "../utils/ticketFilters";
@@ -61,7 +61,7 @@ const fetchHardTickets = async ({
  */
 export const useLeadsTableQuery = ({ filters: rawFilters = {}, enabled = true } = {}) => {
   const queryClient = useQueryClient();
-  const { groupTitleForApi, workflowOptions } = useApp();
+  const { groupTitleForApi, workflowOptions } = useContext(UserContext);
 
   // Пагинация (локальное состояние)
   const [currentPage, setCurrentPage] = useState(DEFAULT_PAGE);

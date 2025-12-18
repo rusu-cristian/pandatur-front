@@ -10,7 +10,7 @@ import { useSnackbar } from "notistack";
 import { WorkflowMultiSelect } from "../../Workflow/components/WorkflowMultiSelect";
 import { groupTitleOptions } from "../../../FormOptions";
 import { convertRolesToMatrix, safeParseJson } from "../../UsersComponent/rolesUtils";
-import { AppContext } from "../../../contexts/AppContext";
+import { UserContext } from "../../../contexts/UserContext";
 import { formatMultiSelectData } from "../../utils/multiSelectUtils";
 import { UserGroupMultiSelect } from "../../ChatComponent/components/UserGroupMultiSelect/UserGroupMultiSelect";
 
@@ -39,7 +39,7 @@ const TaskFilterModal = ({ opened, onClose, filters, onApply }) => {
   // Ref для отслеживания предыдущих значений, чтобы избежать бесконечных циклов
   const prevCreatedForRef = useRef(null);
 
-  const { workflowOptions, accessibleGroupTitles } = useContext(AppContext);
+  const { workflowOptions, accessibleGroupTitles } = useContext(UserContext);
 
   const allowedGroupTitleOptions = groupTitleOptions.filter((g) =>
     accessibleGroupTitles.includes(g.value)

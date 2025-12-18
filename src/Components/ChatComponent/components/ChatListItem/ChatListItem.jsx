@@ -14,7 +14,8 @@ import { IoCheckmarkDone } from "react-icons/io5";
 import { MdPendingActions } from "react-icons/md";
 import { DEFAULT_PHOTO, HH_mm, MEDIA_TYPE, TYPE_SOCKET_EVENTS } from "@app-constants";
 import { parseServerDate, getLanguageByKey } from "@utils";
-import { useSocket, useApp, useUser } from "@hooks";
+import { useSocket, useUser } from "@hooks";
+import { useTickets } from "../../../../contexts/TicketsContext";
 import { api } from "../../../../api";
 import "./ChatListItem.css";
 
@@ -108,7 +109,7 @@ export const ChatListItem = ({ chat, style, selectTicketId }) => {
   
   const { userId } = useUser();
   const { socketRef } = useSocket();
-  const { markMessagesAsRead, getTicketById } = useApp();
+  const { markMessagesAsRead, getTicketById } = useTickets();
   
   // Строим URL с сохранением query params (фильтров)
   const chatUrl = useMemo(() => {

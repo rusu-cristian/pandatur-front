@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useMemo, useCallback, useContext } from "react";
 import { enqueueSnackbar } from "notistack";
 import {
   Tabs,
@@ -14,9 +14,10 @@ import { getLanguageByKey, showServerError } from "@utils";
 import { api } from "../../api";
 import {
   useFormTicket,
-  useApp,
   useMessagesContext,
 } from "@hooks";
+import { useTickets } from "../../contexts/TicketsContext";
+import { UserContext } from "../../contexts/UserContext";
 import { PersonalData4ClientForm, Merge, Media } from "./components";
 import {
   ContractForm,
@@ -44,7 +45,8 @@ const ChatExtraInfo = ({
   const [isLoadingCombineClient, setIsLoadingClient] = useState(false);
   const [isLoadingInfoTicket, setIsLoadingInfoTicket] = useState(false);
 
-  const { setTickets, isAdmin } = useApp();
+  const { setTickets } = useTickets();
+  const { isAdmin } = useContext(UserContext);
   const { getUserMessages, mediaFiles } = useMessagesContext();
 
   const {

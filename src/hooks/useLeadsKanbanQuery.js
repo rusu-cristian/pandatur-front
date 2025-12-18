@@ -7,8 +7,8 @@
  */
 
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-import { useMemo, useCallback, useEffect, useState } from "react";
-import { useApp } from "./useApp";
+import { useMemo, useCallback, useEffect, useState, useContext } from "react";
+import { UserContext } from "../contexts/UserContext";
 import { api } from "../api";
 import { getEffectiveWorkflow } from "../Components/LeadsComponent/constants";
 import { cleanFilters, doesTicketMatchFilters } from "../utils/ticketFilters";
@@ -64,7 +64,7 @@ export const useLeadsKanbanQuery = ({
   enabled = true 
 } = {}) => {
   const queryClient = useQueryClient();
-  const { groupTitleForApi, workflowOptions } = useApp();
+  const { groupTitleForApi, workflowOptions } = useContext(UserContext);
 
   // Для подсветки выбранных колонок
   const [choiceWorkflow, setChoiceWorkflow] = useState([]);

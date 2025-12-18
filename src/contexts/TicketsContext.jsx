@@ -3,7 +3,7 @@
  * 
  * Содержит:
  * - tickets state (для SingleChat и legacy компонентов)
- * - unreadCount
+ * - unreadCount (загружается при старте через React Query)
  * - ticketsMap (Hash Map для O(1) поиска)
  * - fetchSingleTicket
  * - markMessagesAsRead
@@ -11,6 +11,7 @@
 
 import { createContext, useState, useRef, useContext, useCallback, useMemo, useEffect } from "react";
 import { useSnackbar } from "notistack";
+import { useQuery } from "@tanstack/react-query";
 import { api } from "../api";
 import { showServerError } from "@utils";
 import { normalizeLightTickets } from "../utils/ticketNormalizers";
@@ -19,6 +20,50 @@ import { UserContext } from "./UserContext";
 
 const TicketsContext = createContext(null);
 
+// Финальные статусы, которые исключаем из подсчёта (как в useChatFilters)
+const EXCLUDED_WORKFLOWS = ["Realizat cu succes", "Închis și nerealizat", "Interesat"];
+
+/**
+ * Загрузить unseen_count с первой страницы
+ * 
+ * ПРИМЕЧАНИЕ: Для точного подсчёта нужен бэкенд endpoint /tickets/unread-count.
+ * Пока используем приближённое значение с первой страницы.
+ */
+const fetchTotalUnreadCount = async ({ groupTitle, workflowOptions }) => {
+  if (!groupTitle || !workflowOptions?.length) return 0;
+
+  // Фильтруем закрытые статусы (как в useChatFilters)
+  const filteredWorkflow = workflowOptions.filter(
+    (w) => !EXCLUDED_WORKFLOWS.includes(w)
+  );
+
+  if (filteredWorkflow.length === 0) return 0;
+
+  try {
+    const response = await api.tickets.filters({
+      page: 1,
+      type: "light",
+      group_title: groupTitle,
+      sort_by: "last_interaction_date",
+      order: "DESC",
+      attributes: {
+        workflow: filteredWorkflow,
+      },
+    });
+
+    const tickets = response.tickets || [];
+    
+    // Считаем unseen_count только с первой страницы (приближённое значение)
+    return tickets.reduce(
+      (sum, ticket) => sum + (ticket.unseen_count || 0),
+      0
+    );
+  } catch (error) {
+    console.error("Error fetching unread count:", error);
+    return 0;
+  }
+};
+
 export const TicketsProvider = ({ children }) => {
   const { enqueueSnackbar } = useSnackbar();
   const { notifyTicketUpdated } = useTicketSync();
@@ -26,10 +71,27 @@ export const TicketsProvider = ({ children }) => {
   const {
     groupTitleForApi,
     accessibleGroupTitles,
+    workflowOptions,
   } = useContext(UserContext);
 
   const [tickets, setTickets] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
+
+  // React Query для загрузки unreadCount
+  const { data: fetchedUnreadCount, isLoading: isLoadingUnread } = useQuery({
+    queryKey: ["unreadCount", groupTitleForApi, workflowOptions],
+    queryFn: () => fetchTotalUnreadCount({ groupTitle: groupTitleForApi, workflowOptions }),
+    enabled: !!groupTitleForApi && workflowOptions?.length > 0,
+    staleTime: 60 * 1000, // 1 минута
+    refetchOnWindowFocus: false,
+  });
+
+  // Синхронизируем React Query данные с локальным state
+  useEffect(() => {
+    if (typeof fetchedUnreadCount === "number") {
+      setUnreadCount(fetchedUnreadCount);
+    }
+  }, [fetchedUnreadCount]);
 
   // Hash map для быстрого доступа к тикетам по ID
   const ticketsMap = useRef(new Map());

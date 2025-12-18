@@ -7,7 +7,7 @@
  * - Другие UI-related состояния
  */
 
-import { createContext, useContext, useMemo, useCallback } from "react";
+import { createContext, useContext, useMemo, useCallback, useRef } from "react";
 import { useLocalStorage } from "@hooks";
 
 const SIDEBAR_COLLAPSE = "SIDEBAR_COLLAPSE";
@@ -19,12 +19,31 @@ export const UIProvider = ({ children }) => {
   
   const isCollapsed = storage === "true";
   
+  // Храним актуальное значение в ref для использования в setIsCollapsed
+  const isCollapsedRef = useRef(isCollapsed);
+  isCollapsedRef.current = isCollapsed;
+  
   const toggleSidebar = useCallback(() => {
-    changeLocalStorage(isCollapsed ? "false" : "true");
-  }, [isCollapsed, changeLocalStorage]);
+    changeLocalStorage(isCollapsedRef.current ? "false" : "true");
+  }, [changeLocalStorage]);
 
-  const setIsCollapsed = useCallback((collapsed) => {
-    changeLocalStorage(collapsed ? "true" : "false");
+  /**
+   * setIsCollapsed поддерживает два варианта вызова:
+   * - setIsCollapsed(true/false) — прямое значение
+   * - setIsCollapsed((prev) => !prev) — функциональный апдейт (как useState)
+   */
+  const setIsCollapsed = useCallback((collapsedOrUpdater) => {
+    let newValue;
+    
+    if (typeof collapsedOrUpdater === "function") {
+      // Функциональный апдейт: (prev) => newValue
+      newValue = collapsedOrUpdater(isCollapsedRef.current);
+    } else {
+      // Прямое значение
+      newValue = collapsedOrUpdater;
+    }
+    
+    changeLocalStorage(newValue ? "true" : "false");
   }, [changeLocalStorage]);
 
   const value = useMemo(() => ({
