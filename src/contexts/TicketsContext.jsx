@@ -78,13 +78,20 @@ export const TicketsProvider = ({ children }) => {
   const [unreadCount, setUnreadCount] = useState(0);
 
   // React Query для загрузки unreadCount
-  const { data: fetchedUnreadCount, isLoading: isLoadingUnread } = useQuery({
-    queryKey: ["unreadCount", groupTitleForApi, workflowOptions],
-    queryFn: () => fetchTotalUnreadCount({ groupTitle: groupTitleForApi, workflowOptions }),
-    enabled: !!groupTitleForApi && workflowOptions?.length > 0,
-    staleTime: 60 * 1000, // 1 минута
-    refetchOnWindowFocus: false,
-  });
+  // ОТКЛЮЧЕНО: запрос дублировал загрузку тикетов на Leads/Chat
+  // TODO: Добавить бэкенд endpoint /tickets/unread-count для оптимизации
+  // Пока unreadCount обновляется только через WebSocket события
+  const fetchedUnreadCount = undefined;
+  const isLoadingUnread = false;
+  
+  // Оригинальный код (закомментирован для оптимизации):
+  // const { data: fetchedUnreadCount, isLoading: isLoadingUnread } = useQuery({
+  //   queryKey: ["unreadCount", groupTitleForApi, workflowOptions],
+  //   queryFn: () => fetchTotalUnreadCount({ groupTitle: groupTitleForApi, workflowOptions }),
+  //   enabled: !!groupTitleForApi && workflowOptions?.length > 0,
+  //   staleTime: 60 * 1000, // 1 минута
+  //   refetchOnWindowFocus: false,
+  // });
 
   // Синхронизируем React Query данные с локальным state
   useEffect(() => {

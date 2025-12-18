@@ -27,9 +27,9 @@ export const AppProviders = ({ children }) => {
           <UIProvider>
             <TicketsProvider>
               <WebSocketProvider>
-                <MessagesProvider>
-                  {children}
-                </MessagesProvider>
+          <MessagesProvider>
+            {children}
+          </MessagesProvider>
               </WebSocketProvider>
             </TicketsProvider>
           </UIProvider>

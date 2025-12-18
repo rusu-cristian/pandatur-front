@@ -62,25 +62,25 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <MantineProvider>
-        <ModalsProvider>
-          <SnackbarProvider
-            autoHideDuration={5000}
-            maxSnack={5}
-            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-          >
-            {jwtToken ? (
-              <AppProviders>
-                <AppLayout>
-                  <PrivateRoutes />
-                </AppLayout>
-              </AppProviders>
-            ) : (
-              <PublicRoutes />
-            )}
-          </SnackbarProvider>
-        </ModalsProvider>
-      </MantineProvider>
+    <MantineProvider>
+      <ModalsProvider>
+        <SnackbarProvider
+          autoHideDuration={5000}
+          maxSnack={5}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        >
+          {jwtToken ? (
+            <AppProviders>
+              <AppLayout>
+                <PrivateRoutes />
+              </AppLayout>
+            </AppProviders>
+          ) : (
+            <PublicRoutes />
+          )}
+        </SnackbarProvider>
+      </ModalsProvider>
+    </MantineProvider>
     </QueryClientProvider>
   );
 }

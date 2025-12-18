@@ -28,7 +28,7 @@ const ChatList = ({ ticketId }) => {
   const { userId } = useUser();
   
   // React Query хук для тикетов (заменяет fetchChatFilteredTickets из AppContext)
-  const {
+  const { 
     tickets: displayedTickets,
     isLoading,
     isFetching,
@@ -47,7 +47,7 @@ const ChatList = ({ ticketId }) => {
   // Эффект для применения дефолтных фильтров при первой загрузке
   useEffect(() => {
     if (!groupTitleForApi || !workflowOptions.length || !userId) return;
-    
+
     // Если нет фильтров в URL и ещё не инициализировались — применяем дефолтные
     if (!isFiltered && !isInitializedRef.current) {
       isInitializedRef.current = true;

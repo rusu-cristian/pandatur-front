@@ -11,6 +11,7 @@ import {
 } from "../Components/utils/workflowUtils";
 import { showServerError, getLanguageByKey } from "../Components/utils";
 import { LoadingOverlay } from "../Components";
+import { setRawTechniciansCache, setRawTechniciansPromise } from "../hooks/useGetTechniciansList";
 
 export const UserContext = createContext();
 
@@ -221,7 +222,16 @@ export const UserProvider = ({ children }) => {
       }
 
       const groups = await api.user.getGroupsList();
-      const technicians = await api.users.getTechnicianList();
+      
+      // Создаём Promise ДО запроса — другие компоненты будут ждать его
+      const techniciansPromise = api.users.getTechnicianList();
+      setRawTechniciansPromise(techniciansPromise);
+      
+      const technicians = await techniciansPromise;
+      
+      // Сохраняем в общий кэш для useGetTechniciansList
+      setRawTechniciansCache(technicians);
+      
       const me = technicians.find((t) => t.user?.id === userId);
 
       // Получаем роли из technicians (из me.user.roles)
