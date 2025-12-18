@@ -1,18 +1,32 @@
-import { FaArrowLeft } from "react-icons/fa";
-import React, { useEffect, useState, useRef } from "react";
-import { Flex, ActionIcon, Box } from "@mantine/core";
+import { FaArrowLeft, FaLock } from "react-icons/fa";
+import React, { useEffect, useState, useRef, useContext, useMemo } from "react";
+import { Flex, ActionIcon, Box, Text, Center, Stack } from "@mantine/core";
 import ChatExtraInfo from "./ChatExtraInfo";
 import { ChatMessages } from "./components";
 import { useClientContacts, useMessagesContext } from "@hooks";
 import { useTickets } from "../../contexts/TicketsContext";
 import { useTicketSync, SYNC_EVENTS } from "../../contexts/TicketSyncContext";
+import { UserContext } from "../../contexts/UserContext";
+import { Spin } from "@components";
 import Can from "@components/CanComponent/Can";
+import { getLanguageByKey } from "../utils/getLanguageByKey";
 
 const SingleChat = ({ technicians, ticketId, onClose }) => {
   const { getTicketById, fetchSingleTicket, tickets } = useTickets();
-  const { getUserMessages, messages } = useMessagesContext();
+  const { messages } = useMessagesContext();
+  const {
+    accessibleGroupTitles,
+    groupTitleForApi,
+    customGroupTitle,
+    setCustomGroupTitle,
+  } = useContext(UserContext);
   const [isLoadingTicket, setIsLoadingTicket] = useState(false);
   const [loadedTicket, setLoadedTicket] = useState(null);
+  
+  // Ref для предотвращения дублирования запросов
+  const fetchingRef = useRef(false);
+  const fetchSingleTicketRef = useRef(fetchSingleTicket);
+  fetchSingleTicketRef.current = fetchSingleTicket;
 
   // Получаем тикет из TicketsContext
   // Ищем в массиве tickets, чтобы компонент автоматически перерисовывался при обновлении
@@ -64,6 +78,14 @@ const SingleChat = ({ technicians, ticketId, onClose }) => {
     return lastMsg;
   }, [messages, ticketId]);
 
+  // Проверяем доступ к группе тикета (для раннего выхода)
+  const hasAccessToTicket = useMemo(() => {
+    if (!loadedTicket?.group_title) return null; // Ещё не знаем
+    return accessibleGroupTitles.includes(loadedTicket.group_title);
+  }, [loadedTicket?.group_title, accessibleGroupTitles]);
+
+  // useClientContacts загружает ticket-info — вызываем ТОЛЬКО если есть доступ
+  // Передаём null если нет доступа — хук не будет делать запрос
   const {
     platformOptions,
     selectedPlatform,
@@ -75,18 +97,16 @@ const SingleChat = ({ technicians, ticketId, onClose }) => {
     changePageId,
     loading,
     updateClientData,
-    ticketData, // Сырые данные от API для PersonalData4ClientForm
-  } = useClientContacts(Number(ticketId), lastMessage, currentTicket?.group_title);
+    ticketData,
+  } = useClientContacts(
+    hasAccessToTicket ? Number(ticketId) : null, // НЕ загружаем если нет доступа
+    lastMessage,
+    currentTicket?.group_title
+  );
 
-  useEffect(() => {
-    if (ticketId) {
-      getUserMessages(Number(ticketId));
-    }
-  }, [ticketId, getUserMessages]);
+  // НЕ вызываем getUserMessages здесь — ChatMessages сам загружает сообщения
 
-  // ВАЖНО: При открытии по прямой ссылке ВСЕГДА запрашиваем актуальный тикет
-  // Это гарантирует, что action_needed и другие поля будут актуальными
-  // После этого тикет будет автоматически обновляться через TICKET_UPDATE от сервера
+  // Загружаем актуальный тикет при открытии
   useEffect(() => {
     if (!ticketId) {
       setLoadedTicket(null);
@@ -99,22 +119,23 @@ const SingleChat = ({ technicians, ticketId, onClose }) => {
       return;
     }
 
-    setIsLoadingTicket(true);
-    setLoadedTicket(null);
+    // Предотвращаем дублирование запросов
+    if (fetchingRef.current) return;
+    fetchingRef.current = true;
 
-    // ВСЕГДА запрашиваем актуальный тикет при открытии компонента
-    // Сохраняем результат запроса для заполнения формы
-    fetchSingleTicket(ticketIdNum)
+    setIsLoadingTicket(true);
+
+    fetchSingleTicketRef.current(ticketIdNum)
       .then((ticket) => {
-        // Сохраняем загруженный тикет для использования в форме
         if (ticket) {
           setLoadedTicket(ticket);
         }
       })
       .finally(() => {
         setIsLoadingTicket(false);
+        fetchingRef.current = false;
       });
-  }, [ticketId, fetchSingleTicket]);
+  }, [ticketId]); // Убрали fetchSingleTicket из зависимостей
 
   // Подписываемся на WebSocket обновления тикета
   const { subscribe } = useTicketSync();
@@ -124,21 +145,66 @@ const SingleChat = ({ technicians, ticketId, onClose }) => {
   useEffect(() => {
     const unsubscribe = subscribe(SYNC_EVENTS.TICKET_UPDATED, ({ ticketId: updatedId, ticket }) => {
       // Обновляем локальный state если это наш тикет
-      if (updatedId === Number(ticketIdRef.current)) {
-        if (ticket) {
-          setLoadedTicket(ticket);
-        } else {
-          // Если данные не пришли — перезапрашиваем
-          fetchSingleTicket(Number(ticketIdRef.current)).then(setLoadedTicket);
-        }
+      if (updatedId === Number(ticketIdRef.current) && ticket) {
+        // Обновляем только если данные пришли в событии
+        // НЕ перезапрашиваем — это избыточно, данные уже в TicketsContext
+        setLoadedTicket(ticket);
       }
     });
 
     return unsubscribe;
-  }, [subscribe, fetchSingleTicket]);
+  }, [subscribe]);
+
+  // Переключаем группу если тикет из другой группы И есть доступ
+  useEffect(() => {
+    if (!loadedTicket?.group_title || !hasAccessToTicket) return;
+    
+    const ticketGroup = loadedTicket.group_title;
+    if (ticketGroup !== groupTitleForApi && ticketGroup !== customGroupTitle) {
+      setCustomGroupTitle(ticketGroup);
+      localStorage.setItem("leads_last_group_title", ticketGroup);
+    }
+  }, [loadedTicket?.group_title, hasAccessToTicket, groupTitleForApi, customGroupTitle, setCustomGroupTitle]);
 
   // Получаем unseen_count из актуального тикета
   const unseenCount = currentTicket?.unseen_count || 0;
+
+  // Показываем спиннер пока загружается тикет
+  if (isLoadingTicket || hasAccessToTicket === null) {
+    return (
+      <div className="chat-container">
+        <Box pos="absolute" left="10px" top="16px">
+          <ActionIcon onClick={onClose} variant="default">
+            <FaArrowLeft size="12" />
+          </ActionIcon>
+        </Box>
+        <Center h="100%" w="100%">
+          <Spin />
+        </Center>
+      </div>
+    );
+  }
+
+  // Показываем "Нет доступа" если пользователь не имеет прав на эту группу
+  if (!hasAccessToTicket) {
+    return (
+      <div className="chat-container">
+        <Box pos="absolute" left="10px" top="16px">
+          <ActionIcon onClick={onClose} variant="default">
+            <FaArrowLeft size="12" />
+          </ActionIcon>
+        </Box>
+        <Center h="100%" w="100%">
+          <Stack align="center" gap="md">
+            <FaLock size={48} color="var(--crm-ui-kit-palette-text-secondary)" />
+            <Text size="lg" fw={500} c="dimmed">
+            {getLanguageByKey("noAccesTicket")}
+            </Text>
+          </Stack>
+        </Center>
+      </div>
+    );
+  }
 
   return (
     <div className="chat-container">
@@ -164,7 +230,7 @@ const SingleChat = ({ technicians, ticketId, onClose }) => {
             selectedClient={selectedClient}
             selectedPageId={selectedPageId}
             changePageId={changePageId}
-            clientContactsLoading={loading || isLoadingTicket}
+            clientContactsLoading={loading}
           />
         </Can>
       </Flex>
@@ -174,7 +240,7 @@ const SingleChat = ({ technicians, ticketId, onClose }) => {
         ticketId={ticketId}
         updatedTicket={currentTicket}
         onUpdateClientData={updateClientData}
-        clientsData={ticketData} // Передаем данные из useClientContacts
+        clientsData={ticketData}
       />
 
     </div>

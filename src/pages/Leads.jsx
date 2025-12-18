@@ -177,27 +177,13 @@ export const Leads = () => {
     setAllHardIds([]);
   }, [groupTitleForApi, JSON.stringify(filters), setSelectedTickets]);
 
-  // Открытие чата
+  // Открытие чата — НЕ загружаем тикет здесь, SingleChat сам загрузит
+  // и передаст данные через TicketsContext
   useEffect(() => {
     if (ticketId) {
       setIsChatOpen(true);
-      
-      const loadTicketGroup = async () => {
-        try {
-          const ticketData = await api.tickets.ticket.getLightById(Number(ticketId));
-          if (ticketData?.group_title && accessibleGroupTitles.includes(ticketData.group_title)) {
-            if (ticketData.group_title !== groupTitleForApi && ticketData.group_title !== customGroupTitle) {
-              setCustomGroupTitle(ticketData.group_title);
-              localStorage.setItem("leads_last_group_title", ticketData.group_title);
-            }
-          }
-        } catch (error) {
-          console.error("Failed to load ticket group:", error);
-        }
-      };
-      loadTicketGroup();
     }
-  }, [ticketId, accessibleGroupTitles, groupTitleForApi, customGroupTitle, setCustomGroupTitle]);
+  }, [ticketId]);
 
   // === ОБРАБОТЧИКИ ===
 

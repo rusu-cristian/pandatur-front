@@ -121,6 +121,9 @@ const TaskListOverlay = ({ ticketId, creatingTask, setCreatingTask }) => {
   const [actionLoading, setActionLoading] = useState(false);
 
   const skipNextSocketRef = useRef(false);
+  const fetchingTasksRef = useRef(false);
+  const ticketIdRef = useRef(ticketId);
+  ticketIdRef.current = ticketId;
 
   const confirmDelete = useConfirmPopup({
     subTitle: translations["Confirmare ștergere"][language],
@@ -128,7 +131,7 @@ const TaskListOverlay = ({ ticketId, creatingTask, setCreatingTask }) => {
 
   const fetchTasks = useCallback(
     async ({ idOverride, silent } = {}) => {
-      const qId = Number(idOverride ?? ticketId);
+      const qId = Number(idOverride ?? ticketIdRef.current);
       if (!qId) { setTasks([]); return; }
 
       if (!silent) setListLoading(true);
@@ -147,18 +150,24 @@ const TaskListOverlay = ({ ticketId, creatingTask, setCreatingTask }) => {
         setTasks([]);
       } finally {
         if (!silent) setListLoading(false);
+        fetchingTasksRef.current = false;
       }
     },
-    [ticketId]
+    [] // Без зависимостей — используем ref
   );
 
-  useEffect(() => { fetchTasks(); }, [fetchTasks]);
+  // Загружаем задачи при изменении ticketId
+  useEffect(() => {
+    if (!ticketId || fetchingTasksRef.current) return;
+    fetchingTasksRef.current = true;
+    fetchTasks();
+  }, [ticketId, fetchTasks]);
 
   useEffect(() => {
     if (!onEvent) return;
     const handler = (evt) => {
       const fromSocket = Number(evt?.data?.ticket_id ?? evt?.data?.ticketId);
-      if (!fromSocket || Number(fromSocket) !== Number(ticketId)) return;
+      if (!fromSocket || Number(fromSocket) !== Number(ticketIdRef.current)) return;
       if (skipNextSocketRef.current) {
         skipNextSocketRef.current = false;
         return;
@@ -167,7 +176,7 @@ const TaskListOverlay = ({ ticketId, creatingTask, setCreatingTask }) => {
     };
     const unsub = onEvent("task", handler);
     return () => { typeof unsub === "function" && unsub(); };
-  }, [onEvent, ticketId, fetchTasks]);
+  }, [onEvent, fetchTasks]);
 
   useEffect(() => {
     if (creatingTask) {
