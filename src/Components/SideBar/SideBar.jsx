@@ -33,7 +33,7 @@ import { useTickets } from "../../contexts/TicketsContext";
 import { UserContext } from "../../contexts/UserContext";
 import { SocketContext } from "../../contexts/SocketContext";
 
-const LOGO = "/logo.png";
+const LOGO = "/logo.svg";
 
 const ConnectionIndicator = ({ isConnected }) => {
   const handleReload = () => {
