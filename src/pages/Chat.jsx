@@ -45,9 +45,21 @@ export const Chat = () => {
     return getTicketByIdWithFilters(ticketId, isFiltered);
   }, [ticketId, isFiltered, getTicketByIdWithFilters]);
 
-  // Итоговый тикет: приоритет отдаём данным из списков,
-  // но если там нет — используем напрямую загруженные данные
-  const currentTicket = ticketFromLists || directTicketData;
+  // Итоговый тикет: приоритет отдаём directTicketData (обновляется через WebSocket),
+  // данные из списков используем как fallback или для дополнительных полей
+  const currentTicket = useMemo(() => {
+    if (!ticketFromLists && !directTicketData) return null;
+    
+    // directTicketData приоритетнее — он обновляется через TICKET_UPDATED
+    if (directTicketData) {
+      // Объединяем: directTicketData перезаписывает поля из ticketFromLists
+      return ticketFromLists 
+        ? { ...ticketFromLists, ...directTicketData }
+        : directTicketData;
+    }
+    
+    return ticketFromLists;
+  }, [ticketFromLists, directTicketData]);
 
   // Загрузка данных тикета напрямую по ID
   const loadTicketDirectly = useCallback(async (id) => {
