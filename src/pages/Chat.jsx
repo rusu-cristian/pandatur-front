@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useCallback, useRef, useContext } from "react";
+import { useState, useMemo, useEffect, useCallback, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { Flex, ActionIcon, Box } from "@mantine/core";
@@ -57,17 +57,21 @@ export const Chat = () => {
         setDirectTicketData(ticketData);
 
         // Если группа тикета отличается от текущей — переключаем воронку
+        // Используем функциональное обновление чтобы избежать лишних зависимостей
         if (ticketData.group_title && accessibleGroupTitles.includes(ticketData.group_title)) {
-          if (ticketData.group_title !== groupTitleForApi && ticketData.group_title !== customGroupTitle) {
-            setCustomGroupTitle(ticketData.group_title);
-            localStorage.setItem("leads_last_group_title", ticketData.group_title);
-          }
+          setCustomGroupTitle(prev => {
+            if (ticketData.group_title !== prev) {
+              localStorage.setItem("leads_last_group_title", ticketData.group_title);
+              return ticketData.group_title;
+            }
+            return prev;
+          });
         }
       }
     } catch (error) {
       console.error("Failed to load ticket:", error);
     }
-  }, [accessibleGroupTitles, groupTitleForApi, customGroupTitle, setCustomGroupTitle]);
+  }, [accessibleGroupTitles, setCustomGroupTitle]);
 
   // Загружаем тикет напрямую при открытии страницы или смене ticketId
   useEffect(() => {
@@ -83,54 +87,42 @@ export const Chat = () => {
 
   // Подписываемся на обновления тикетов через TicketSyncContext
   const { subscribe } = useTicketSync();
-  
-  // Храним актуальные значения в ref
-  const ticketIdRef = useRef(ticketId);
-  const loadTicketDirectlyRef = useRef(loadTicketDirectly);
-  ticketIdRef.current = ticketId;
-  loadTicketDirectlyRef.current = loadTicketDirectly;
 
   useEffect(() => {
+    if (!ticketId) return;
+    
     const unsubscribe = subscribe(SYNC_EVENTS.TICKET_UPDATED, ({ ticketId: updatedId, ticket }) => {
       // Обновляем локальный state если это наш тикет
-      if (updatedId === ticketIdRef.current) {
+      if (updatedId === ticketId) {
         if (ticket) {
           setDirectTicketData(ticket);
         } else {
-          loadTicketDirectlyRef.current(ticketIdRef.current);
+          loadTicketDirectly(ticketId);
         }
       }
     });
 
     return unsubscribe;
-  }, [subscribe]);
+  }, [subscribe, ticketId, loadTicketDirectly]);
 
   // Получаем последнее сообщение по времени для автоматического выбора платформы и контакта
+  // Используем reduce O(n) вместо sort O(n log n) для производительности
   const lastMessage = useMemo(() => {
-    if (!messages || messages.length === 0 || !ticketId) {
-      return null;
-    }
+    if (!messages?.length || !ticketId) return null;
 
-    // Фильтруем сообщения только для текущего тикета и исключаем sipuni/mail
-    const currentTicketMessages = messages.filter(msg => {
+    return messages.reduce((latest, msg) => {
       const platform = msg.platform?.toLowerCase();
-      return msg.ticket_id === ticketId && platform !== 'sipuni' && platform !== 'mail';
-    });
-
-    if (currentTicketMessages.length === 0) {
-      return null;
-    }
-
-    // Сортируем по времени и берем последнее
-    const sortedMessages = [...currentTicketMessages].sort((a, b) => {
-      const timeA = new Date(a.time_sent || a.created_at || 0);
-      const timeB = new Date(b.time_sent || b.created_at || 0);
-      return timeB - timeA; // От новых к старым
-    });
-
-    const lastMsg = sortedMessages[0];
-
-    return lastMsg;
+      // Пропускаем сообщения не из текущего тикета и sipuni/mail
+      if (msg.ticket_id !== ticketId || platform === 'sipuni' || platform === 'mail') {
+        return latest;
+      }
+      
+      if (!latest) return msg;
+      
+      const msgTime = new Date(msg.time_sent || msg.created_at || 0);
+      const latestTime = new Date(latest.time_sent || latest.created_at || 0);
+      return msgTime > latestTime ? msg : latest;
+    }, null);
   }, [messages, ticketId]);
 
   // Получаем ВСЕ данные из хука, чтобы передать их вниз через props
@@ -189,8 +181,7 @@ export const Chat = () => {
           </Can>
         </Flex>
 
-        {!isNaN(ticketId) && (
-
+        {ticketId && (
           <ChatExtraInfo
             selectedClient={selectedClient}
             ticketId={ticketId}
