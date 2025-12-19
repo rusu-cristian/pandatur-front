@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback, useEffect, useTransition } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { FixedSizeList } from "react-window";
 import { LuFilter } from "react-icons/lu";
@@ -74,6 +74,9 @@ const ChatList = ({ ticketId }) => {
   
   // Модал фильтра
   const [openFilter, setOpenFilter] = useState(false);
+  
+  // startTransition для не-срочных обновлений UI (открытие тяжёлой модалки фильтра)
+  const [, startTransition] = useTransition();
 
   // Refs для высоты списка
   const wrapperChatItemRef = useRef(null);
@@ -105,10 +108,11 @@ const ChatList = ({ ticketId }) => {
                 {displayedTickets.length}
               </Badge>
             </Flex>
+            {/* Кнопка фильтра — onMouseDown для мгновенного отклика */}
             <ActionIcon
               variant={hasFilters ? "filled" : "default"}
               size="36"
-              onClick={() => setOpenFilter(true)}
+              onMouseDown={() => startTransition(() => setOpenFilter(true))}
             >
               <LuFilter size={16} />
             </ActionIcon>
