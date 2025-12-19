@@ -16,10 +16,9 @@ import {
 import { FaUsers, FaBars } from "react-icons/fa6";
 import { MdLightMode, MdDarkMode } from "react-icons/md";
 import { Badge, Flex, Divider, Select, Burger } from "@mantine/core";
-import { clearCookies } from "@utils";
 import { api } from "@api";
 import { LoadingOverlay } from "@components";
-import { useLanguageToggle, useUser, useMobile, useTheme } from "../../hooks";
+import { useLanguageToggle, useUser, useMobile, useTheme, useAuth } from "../../hooks";
 import { getLanguageByKey } from "@utils";
 import Can from "../CanComponent/Can";
 import "./SideBar.css";
@@ -67,6 +66,7 @@ export const SideBar = () => {
   const { unreadCount } = useTickets();                // Только счётчик
   
   const { surname, name, userId, userRoles } = useUser();
+  const { logout: authLogout } = useAuth();
   const [loading, setLoading] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useMobile();
@@ -89,15 +89,16 @@ export const SideBar = () => {
     return location.pathname === `/${page}`;
   };
 
+  // Logout с оповещением App.jsx через authEvents
   const logout = async () => {
     setLoading(true);
     try {
       await api.auth.logout();
-      clearCookies();
     } catch (_) {
-      clearCookies();
+      // Игнорируем ошибку API — всё равно разлогиниваем
     } finally {
       setLoading(false);
+      authLogout(); // Очищает куки, оповещает App.jsx и делает редирект
     }
   };
 
