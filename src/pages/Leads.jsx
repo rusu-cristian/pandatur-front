@@ -10,7 +10,7 @@
  * - LeadsModals — все модалки
  */
 
-import { useState, useEffect, useRef, useCallback, useContext } from "react";
+import { useState, useEffect, useRef, useCallback, useContext, useTransition } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { 
@@ -76,6 +76,9 @@ export const Leads = () => {
   const [isOpenAddLeadModal, setIsOpenAddLeadModal] = useState(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(!!ticketId);
+
+  // startTransition для не-срочных обновлений UI (открытие тяжёлых модалок)
+  const [, startTransition] = useTransition();
 
   // === ПОИСК ===
   const {
@@ -281,7 +284,7 @@ export const Leads = () => {
         onSearchKeyPress={handleSearchKeyPress}
         onSearch={handleSearch}
         onSearchClear={handleSearchClear}
-        onFilterOpen={() => setIsFilterModalOpen(true)}
+        onFilterOpen={() => startTransition(() => setIsFilterModalOpen(true))}
         onGroupTitleChange={handleGroupTitleChange}
         onViewModeChange={handleChangeViewMode}
         onDelete={handleDelete}

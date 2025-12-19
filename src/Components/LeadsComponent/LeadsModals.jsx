@@ -1,11 +1,15 @@
-import { memo } from "react";
+import { memo, lazy, Suspense } from "react";
 import { Modal } from "@mantine/core";
 import { ChatModal } from "../ChatComponent/ChatModal";
 import SingleChat from "@components/ChatComponent/SingleChat";
 import { AddLeadModal } from "@components";
 import { ManageLeadInfoTabs } from "./ManageLeadInfoTabs";
-import { LeadsFilter } from "./LeadsFilter";
 import { getLanguageByKey } from "../utils";
+
+// Lazy load тяжёлого компонента фильтра
+const LeadsFilter = lazy(() => 
+  import("./LeadsFilter").then(module => ({ default: module.LeadsFilter }))
+);
 
 // Общие стили для модалок
 const MODAL_STYLES = {
@@ -73,7 +77,7 @@ export const LeadsModals = memo(({
         />
       </Modal>
 
-      {/* МОДАЛ ФИЛЬТРА */}
+      {/* МОДАЛ ФИЛЬТРА — lazy load + Suspense для быстрого открытия */}
       <Modal
         opened={isFilterModalOpen}
         onClose={onFilterModalClose}
@@ -83,11 +87,15 @@ export const LeadsModals = memo(({
         size="lg"
         styles={MODAL_STYLES}
       >
-        <LeadsFilter
-          initialData={filters}
-          loading={isLoading}
-          onClose={onFilterModalClose}
-        />
+        {isFilterModalOpen && (
+          <Suspense fallback={null}>
+            <LeadsFilter
+              initialData={filters}
+              loading={isLoading}
+              onClose={onFilterModalClose}
+            />
+          </Suspense>
+        )}
       </Modal>
 
       {/* МОДАЛ РЕДАКТИРОВАНИЯ */}

@@ -86,7 +86,8 @@ export const LeadsFilter = ({
           </Tabs.Tab>
         </Tabs.List>
 
-        <Tabs.Panel value="filter_ticket" pt="xs" style={{ flex: 1, overflowY: "auto", minHeight: 0 }}>
+        {/* keepMounted={false} — рендерим только активный таб */}
+        <Tabs.Panel value="filter_ticket" pt="xs" style={{ flex: 1, overflowY: "auto", minHeight: 0 }} keepMounted={false}>
           <TicketFormTabs
             ref={ticketFormRef}
             initialData={initialData}
@@ -94,7 +95,7 @@ export const LeadsFilter = ({
           />
         </Tabs.Panel>
 
-        <Tabs.Panel value="filter_message" pt="xs" style={{ flex: 1, overflowY: "auto", minHeight: 0 }}>
+        <Tabs.Panel value="filter_message" pt="xs" style={{ flex: 1, overflowY: "auto", minHeight: 0 }} keepMounted={false}>
           <MessageFilterForm
             ref={messageFormRef}
             initialData={initialData}
