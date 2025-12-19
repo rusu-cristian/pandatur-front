@@ -123,8 +123,8 @@ export const ChatListItem = ({ chat, style, selectTicketId }) => {
 
   // actionNeeded всегда берется из AppContext через getTicketById
 
-  // Фото берётся напрямую из тикета
-  const userPhoto = chat?.photo_url || null;
+  // Фото берётся напрямую из тикета (проверяем на пустую строку)
+  const userPhoto = chat?.photo_url && chat.photo_url.trim() !== "" ? chat.photo_url : null;
 
   // Определяем, является ли последнее сообщение от клиента
   // Сравниваем last_message_sender_id с last_message_client_id
