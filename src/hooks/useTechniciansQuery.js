@@ -8,6 +8,10 @@ export const TECHNICIANS_QUERY_KEY = ["technicians"];
 // Стабильная ссылка на пустой массив
 const EMPTY_ARRAY = [];
 
+// Время кэширования (техники редко меняются)
+const STALE_TIME = 5 * 60 * 1000; // 5 минут — данные считаются свежими
+const GC_TIME = 10 * 60 * 1000;   // 10 минут — держать в памяти
+
 /**
  * Загружает сырые данные техников из API
  */
@@ -66,14 +70,23 @@ export const transformTechniciansForSelect = (data) => {
 
 /**
  * React Query хук для загрузки сырых данных техников
+ * 
+ * Кэширование:
+ * - staleTime: 5 минут — данные считаются свежими, не делаем повторный запрос
+ * - gcTime: 10 минут — держим в памяти даже после unmount всех компонентов
+ * - refetchOnWindowFocus: false — не обновляем при фокусе
+ * 
+ * React Query автоматически дедуплицирует запросы — если 10 компонентов
+ * используют этот хук, будет только 1 запрос к API.
  */
 export const useRawTechniciansQuery = (options = {}) => {
   return useQuery({
     queryKey: TECHNICIANS_QUERY_KEY,
     queryFn: fetchRawTechnicians,
-    staleTime: 0, // Без кэша
-    gcTime: 0,
+    staleTime: STALE_TIME,
+    gcTime: GC_TIME,
     refetchOnWindowFocus: false,
+    refetchOnMount: false, // Не делать запрос при каждом mount если данные свежие
     ...options,
   });
 };
@@ -104,6 +117,14 @@ export const prefetchTechnicians = (queryClient) => {
   return queryClient.fetchQuery({
     queryKey: TECHNICIANS_QUERY_KEY,
     queryFn: fetchRawTechnicians,
-    staleTime: 0,
+    staleTime: STALE_TIME,
   });
+};
+
+/**
+ * Утилита для инвалидации кэша техников
+ * Вызывать после добавления/удаления/изменения техника
+ */
+export const invalidateTechnicians = (queryClient) => {
+  return queryClient.invalidateQueries({ queryKey: TECHNICIANS_QUERY_KEY });
 };
