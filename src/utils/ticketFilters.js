@@ -16,6 +16,28 @@
 export const doesTicketMatchFilters = (ticket, filters) => {
   if (!ticket || !filters || Object.keys(filters).length === 0) return true;
 
+  // Проверяем search (поиск по текстовым полям)
+  if (filters.search) {
+    const searchTerm = filters.search.trim().toLowerCase();
+    if (searchTerm) {
+      // Собираем все текстовые поля для поиска
+      const searchableFields = [
+        ticket.contact,
+        ticket.last_message,
+        ticket.description,
+        ticket.tags,
+        ticket.contract_number,
+        // Имя клиента может быть в contact
+      ].filter(Boolean).map(field => String(field).toLowerCase());
+
+      // Проверяем есть ли совпадение хотя бы в одном поле
+      const hasMatch = searchableFields.some(field => field.includes(searchTerm));
+      if (!hasMatch) {
+        return false;
+      }
+    }
+  }
+
   // Проверяем workflow
   if (filters.workflow) {
     const workflowFilter = Array.isArray(filters.workflow) 
