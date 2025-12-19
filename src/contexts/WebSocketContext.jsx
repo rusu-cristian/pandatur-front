@@ -37,7 +37,6 @@ export const WebSocketProvider = ({ children }) => {
   
   const {
     userId,
-    isAdmin,
     workflowOptions,
     groupTitleForApi,
   } = useContext(UserContext);
@@ -150,36 +149,53 @@ export const WebSocketProvider = ({ children }) => {
 
   /**
    * Обработка обновления тикета
+   * 
+   * Логика:
+   * 1. Если groupTitleForApi не определён — пропускаем (данные ещё грузятся)
+   * 2. Если group_title изменился на ДРУГОЙ и тикет есть в списке → УДАЛИТЬ
+   * 3. Если group_title совпадает и workflow разрешён → FETCH (добавить/обновить)
+   * 4. Если group_title совпадает но workflow не разрешён → УДАЛИТЬ (если был)
    */
   const handleTicketUpdate = useCallback((message) => {
     const { ticket_id, ticket_ids, tickets: ticketsList } = message.data || {};
 
+    // Если groupTitleForApi или workflowOptions не определены — данные ещё грузятся
+    if (!groupTitleForApi || !workflowOptions?.length) return;
+
     // Новый формат с массивом tickets
     if (Array.isArray(ticketsList) && ticketsList.length > 0) {
       ticketsList.forEach((ticketData) => {
-        const { id, technician_id, workflow, group_title } = ticketData;
+        const { id, workflow, group_title } = ticketData;
         if (!id) return;
 
+        const existsInOurList = ticketsMap.current.has(id);
         const isMatchingGroup = group_title === groupTitleForApi;
-        if (!isMatchingGroup) return;
 
-        const isResponsible = String(technician_id) === String(userId);
-        const isWorkflowAllowed = Array.isArray(workflowOptions) && workflowOptions.includes(workflow);
+        // Если тикет ушёл в другую группу — удаляем из нашего списка
+        if (!isMatchingGroup) {
+          if (existsInOurList) {
+            removeTicket(id);
+          }
+          return;
+        }
 
-        const shouldFetch = isAdmin ? isWorkflowAllowed : (isResponsible && isWorkflowAllowed);
+        // group_title совпадает — проверяем workflow
+        const isWorkflowAllowed = workflowOptions.includes(workflow);
 
-        if (shouldFetch) {
+        if (isWorkflowAllowed) {
+          // Workflow разрешён (или workflowOptions ещё не загружен) — загружаем/обновляем тикет
           try {
             fetchSingleTicket(id);
           } catch { /* ignore */ }
-        } else {
+        } else if (existsInOurList) {
+          // Workflow не разрешён и тикет был в списке — удаляем
           removeTicket(id);
         }
       });
       return;
     }
 
-    // Старый формат
+    // Старый формат (без group_title в событии — fetch чтобы получить актуальные данные)
     const idsRaw = Array.isArray(ticket_ids)
       ? ticket_ids
       : (ticket_id ? [ticket_id] : []);
@@ -192,13 +208,14 @@ export const WebSocketProvider = ({ children }) => {
       ids.forEach((id) => {
         const existsInTickets = ticketsMap.current.has(id);
         if (existsInTickets) {
+          // fetchSingleTicket сам проверит group_title и удалит если нужно
           try {
             fetchSingleTicket(id);
           } catch { /* ignore */ }
         }
       });
     }
-  }, [userId, isAdmin, workflowOptions, groupTitleForApi, fetchSingleTicket, removeTicket, ticketsMap]);
+  }, [workflowOptions, groupTitleForApi, fetchSingleTicket, removeTicket, ticketsMap]);
 
   // === Подписка на события через onEvent ===
   // Это эффективнее чем слушать sendedValue — не вызывает ре-рендер компонента

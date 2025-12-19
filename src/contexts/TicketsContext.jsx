@@ -73,7 +73,6 @@ export const TicketsProvider = ({ children }) => {
   
   const {
     groupTitleForApi,
-    accessibleGroupTitles,
     workflowOptions,
   } = useContext(UserContext);
 
@@ -127,6 +126,10 @@ export const TicketsProvider = ({ children }) => {
 
   /**
    * Загрузить и обновить один тикет
+   * 
+   * Логика:
+   * - Если group_title изменился → удаляем из текущего списка
+   * - Если group_title совпадает → обновляем в списке
    */
   const fetchSingleTicket = useCallback(async (ticketId) => {
     try {
@@ -137,28 +140,20 @@ export const TicketsProvider = ({ children }) => {
       const isMatchingGroup = normalizedTicket.group_title === groupTitleForApi;
 
       if (!isMatchingGroup) {
-        const hasAccessToTicketGroup = accessibleGroupTitles.includes(normalizedTicket.group_title);
+        // Тикет ушёл в другую группу — ВСЕГДА удаляем из текущего списка
+        const existingTicket = getTicketById(ticketId);
 
-        if (!hasAccessToTicketGroup) {
-          // Пользователь НЕ имеет доступа — удаляем из списков
-          const existingTicket = getTicketById(ticketId);
-
-          if (existingTicket) {
-            if (existingTicket.unseen_count > 0) {
-              setUnreadCount((prev) => Math.max(0, prev - existingTicket.unseen_count));
-            }
-            ticketsMap.current.delete(ticketId);
-            setTickets((prev) => prev.filter((t) => t.id !== ticketId));
+        if (existingTicket) {
+          if (existingTicket.unseen_count > 0) {
+            setUnreadCount((prev) => Math.max(0, prev - existingTicket.unseen_count));
           }
-          
-          // Оповещаем через TicketSync (React Query хуки подхватят)
-          notifyTicketUpdated(ticketId, normalizedTicket);
-          return;
+          ticketsMap.current.delete(ticketId);
+          setTickets((prev) => prev.filter((t) => t.id !== ticketId));
         }
-
-        // Есть доступ, но другая группа — только оповещаем
+        
+        // Оповещаем через TicketSync (React Query хуки подхватят)
         notifyTicketUpdated(ticketId, normalizedTicket);
-        return normalizedTicket;
+        return;
       }
 
       // Группа совпадает — обновляем state
@@ -202,7 +197,7 @@ export const TicketsProvider = ({ children }) => {
     } catch (error) {
       enqueueSnackbar(showServerError(error), { variant: "warning" });
     }
-  }, [groupTitleForApi, accessibleGroupTitles, enqueueSnackbar, getTicketById, notifyTicketUpdated]);
+  }, [groupTitleForApi, enqueueSnackbar, getTicketById, notifyTicketUpdated]);
 
   /**
    * Пометить сообщения как прочитанные

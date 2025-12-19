@@ -22,6 +22,7 @@ import { WebSocketProvider } from "./WebSocketContext";
  * 6. WebSocketProvider — обработка WS сообщений
  * 7. MessagesProvider — сообщения в чате
  */
+
 export const AppProviders = ({ children }) => {
   return (
     <UserProvider>

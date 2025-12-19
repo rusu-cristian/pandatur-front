@@ -36,37 +36,87 @@ export const useTicketCacheSync = ({
   matchFnRef.current = matchFn;
 
   /**
-   * Обновляет тикет в кэше infinite query (pages структура)
+   * Обновляет или добавляет тикет в кэше infinite query (pages структура)
    */
   const updateInfiniteCache = useCallback((ticketId, ticket, shouldKeep) => {
     queryClient.setQueryData(queryKeyRef.current, (oldData) => {
-      if (!oldData?.pages) return oldData;
+      // Если кэш ещё не инициализирован — пропускаем (данные загрузятся при первом запросе)
+      if (!oldData?.pages || oldData.pages.length === 0) return oldData;
 
-      const newPages = oldData.pages.map((page) => ({
-        ...page,
-        tickets: shouldKeep
-          // Если соответствует фильтрам — обновляем
-          ? page.tickets.map((t) => (t.id === ticketId ? { ...t, ...ticket } : t))
-          // Если НЕ соответствует — удаляем
-          : page.tickets.filter((t) => t.id !== ticketId),
-      }));
+      // Проверяем есть ли тикет в кэше
+      const ticketExists = oldData.pages.some((page) =>
+        page.tickets.some((t) => t.id === ticketId)
+      );
+
+      if (!shouldKeep) {
+        // Удаляем тикет из всех страниц
+        return {
+          ...oldData,
+          pages: oldData.pages.map((page) => ({
+            ...page,
+            tickets: page.tickets.filter((t) => t.id !== ticketId),
+          })),
+        };
+      }
+
+      if (ticketExists) {
+        // Обновляем существующий тикет
+        return {
+          ...oldData,
+          pages: oldData.pages.map((page) => ({
+            ...page,
+            tickets: page.tickets.map((t) =>
+              t.id === ticketId ? { ...t, ...ticket } : t
+            ),
+          })),
+        };
+      }
+
+      // Тикета нет в кэше и он соответствует фильтрам — ДОБАВЛЯЕМ на первую страницу
+      // (сортировка по last_interaction_date сделает его в правильном месте)
+      const newPages = [...oldData.pages];
+      if (newPages.length > 0 && newPages[0].tickets) {
+        newPages[0] = {
+          ...newPages[0],
+          tickets: [ticket, ...newPages[0].tickets],
+        };
+      }
 
       return { ...oldData, pages: newPages };
     });
   }, [queryClient]);
 
   /**
-   * Обновляет тикет в кэше обычного query (tickets структура)
+   * Обновляет или добавляет тикет в кэше обычного query (tickets структура)
    */
   const updateSimpleCache = useCallback((ticketId, ticket, shouldKeep) => {
     queryClient.setQueryData(queryKeyRef.current, (oldData) => {
       if (!oldData?.tickets) return oldData;
 
+      const ticketExists = oldData.tickets.some((t) => t.id === ticketId);
+
+      if (!shouldKeep) {
+        // Удаляем тикет
+        return {
+          ...oldData,
+          tickets: oldData.tickets.filter((t) => t.id !== ticketId),
+        };
+      }
+
+      if (ticketExists) {
+        // Обновляем существующий
+        return {
+          ...oldData,
+          tickets: oldData.tickets.map((t) =>
+            t.id === ticketId ? { ...t, ...ticket } : t
+          ),
+        };
+      }
+
+      // Добавляем новый тикет в начало списка
       return {
         ...oldData,
-        tickets: shouldKeep
-          ? oldData.tickets.map((t) => (t.id === ticketId ? { ...t, ...ticket } : t))
-          : oldData.tickets.filter((t) => t.id !== ticketId),
+        tickets: [ticket, ...oldData.tickets],
       };
     });
   }, [queryClient]);
