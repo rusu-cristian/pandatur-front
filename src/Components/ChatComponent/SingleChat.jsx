@@ -190,7 +190,7 @@ const SingleChat = ({ technicians, ticketId, onClose }) => {
           </ActionIcon>
         </Box>
         <Center h="100%" w="100%">
-          <Spin />
+          {/* <Spin /> */}
         </Center>
       </div>
     );
