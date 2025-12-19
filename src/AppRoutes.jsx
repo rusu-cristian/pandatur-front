@@ -1,19 +1,21 @@
 import { Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
-import { Center } from "@mantine/core";
 import { useUser } from "@hooks";
-import { Spin } from "@components";
 import { privateRoutes, publicRoutes } from "./routes";
 
-// Fallback для Suspense — показывается пока страница загружается
-const PageLoader = () => (
-  <Center h="100vh" w="100%">
-    <Spin />
-  </Center>
-);
+/**
+ * Suspense fallback = null
+ * 
+ * Почему не спиннер:
+ * 1. Lazy-компоненты загружаются очень быстро (~50-100ms)
+ * 2. Спиннер на 100ms только "моргает" и раздражает пользователя
+ * 3. null — страница появляется сразу, задержка незаметна
+ * 
+ * Если нужен лоадер для медленных сетей — используй Skeleton внутри страницы
+ */
 
 export const PublicRoutes = () => (
-  <Suspense fallback={<PageLoader />}>
+  <Suspense fallback={null}>
     <Routes>
       {publicRoutes.map(({ path, component: Component }) => (
         <Route key={path} path={path} element={<Component />} />
@@ -26,7 +28,7 @@ export const PrivateRoutes = () => {
   const { userRoles } = useUser();
 
   return (
-    <Suspense fallback={<PageLoader />}>
+    <Suspense fallback={null}>
       <Routes>
         {privateRoutes(userRoles).map(({ path, component: Component }) => (
           <Route key={path} path={path} element={<Component />} />
