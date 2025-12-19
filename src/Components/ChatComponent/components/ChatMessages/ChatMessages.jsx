@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { Flex, Text, Paper } from "@mantine/core";
 import dayjs from "dayjs";
 import { useUser, useMessagesContext } from "@hooks";
@@ -132,11 +132,25 @@ export const ChatMessages = ({
     [setMessages]
   );
 
-  const handleScroll = useCallback(() => {
-    const el = messageContainerRef.current;
-    if (!el) return;
-    const { scrollTop, scrollHeight, clientHeight } = el;
-    setIsUserAtBottom(scrollHeight - scrollTop <= clientHeight + 50);
+  // Throttled scroll handler — вызывается максимум раз в 100ms
+  const handleScroll = useMemo(() => {
+    let lastCall = 0;
+    let rafId = null;
+    
+    return () => {
+      const now = Date.now();
+      if (now - lastCall < 100) return; // throttle 100ms
+      lastCall = now;
+      
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const el = messageContainerRef.current;
+        if (!el) return;
+        const { scrollTop, scrollHeight, clientHeight } = el;
+        const atBottom = scrollHeight - scrollTop <= clientHeight + 50;
+        setIsUserAtBottom(prev => prev !== atBottom ? atBottom : prev);
+      });
+    };
   }, []);
 
   useEffect(() => {
@@ -165,7 +179,8 @@ export const ChatMessages = ({
   useEffect(() => {
     const el = messageContainerRef.current;
     if (!el) return;
-    el.addEventListener("scroll", handleScroll);
+    // passive: true — браузер не ждёт preventDefault, скролл плавнее
+    el.addEventListener("scroll", handleScroll, { passive: true });
     return () => el.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
@@ -219,6 +234,33 @@ export const ChatMessages = ({
     setNoteMode((v) => !v);
   }, []);
 
+  // Мемоизированные callbacks для предотвращения лишних ре-рендеров
+  const handleSendMessage = useCallback((value) => {
+    sendMessage({
+      ...value,
+      time_sent: dayjs().format(YYYY_MM_DD_HH_mm_ss),
+      messageStatus: MESSAGES_STATUS.PENDING,
+    });
+  }, [sendMessage]);
+
+  const handleCreateTask = useCallback(() => {
+    setCreatingTask(true);
+  }, []);
+
+  const handleCancelNote = useCallback(() => {
+    setNoteMode(false);
+  }, []);
+
+  const handleSaveNote = useCallback(async () => {
+    setNoteSaving(true);
+    try {
+      await getUserMessages(Number(ticketId));
+      setNoteMode(false);
+    } finally {
+      setNoteSaving(false);
+    }
+  }, [getUserMessages, ticketId]);
+
   return (
     <Flex w="100%" h="100%" direction="column" className="chat-area">
       {ticketId && (
@@ -245,16 +287,8 @@ export const ChatMessages = ({
                 ticketId={ticketId}
                 technicianId={Number(userId)}
                 loading={noteSaving}
-                onCancel={() => setNoteMode(false)}
-                onSave={async () => {
-                  setNoteSaving(true);
-                  try {
-                    await getUserMessages(Number(ticketId));
-                    setNoteMode(false);
-                  } finally {
-                    setNoteSaving(false);
-                  }
-                }}
+                onCancel={handleCancelNote}
+                onSave={handleSaveNote}
               />
             </div>
           )}
@@ -270,18 +304,9 @@ export const ChatMessages = ({
               ticketId={ticketId}
               unseenCount={unseenCount}
               personalInfo={personalInfo}
-              onCreateTask={() => setCreatingTask(true)}
+              onCreateTask={handleCreateTask}
               onToggleNoteComposer={handleToggleNoteComposer}
-              onSendMessage={(value) => {
-                // Все проверки теперь выполняются в ChatInput.buildBasePayload()
-                // Здесь просто передаем данные в sendMessage
-                sendMessage({
-                  ...value,
-                  time_sent: dayjs().format(YYYY_MM_DD_HH_mm_ss),
-                  messageStatus: MESSAGES_STATUS.PENDING,
-                });
-              }}
-              // Передаем данные из useClientContacts (вызван в Chat.js)
+              onSendMessage={handleSendMessage}
               platformOptions={platformOptions}
               selectedPlatform={selectedPlatform}
               changePlatform={changePlatform}

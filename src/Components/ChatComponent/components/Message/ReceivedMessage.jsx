@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Flex, Text, Image, Box } from "@mantine/core";
 import { Tooltip, Typography } from "@mui/material";
 import { DEFAULT_PHOTO, HH_mm, MEDIA_TYPE } from "../../../../app-constants";
@@ -12,7 +13,7 @@ import { parseCallParticipants } from "../../../utils/callUtils";
 import { InfoOutlineRounded } from '@mui/icons-material';
 import { getPageById } from "../../../../constants/webhookPagesConfig";
 
-export const ReceivedMessage = ({ personalInfo, msg, technicians = [] }) => {
+export const ReceivedMessage = memo(({ personalInfo, msg, technicians = [] }) => {
   const clients = personalInfo?.clients || [];
   const isCall = msg.mtype === MEDIA_TYPE.CALL;
 
@@ -67,9 +68,7 @@ export const ReceivedMessage = ({ personalInfo, msg, technicians = [] }) => {
 
   return (
     <Flex w="100%">
-      <Flex w="90%" direction="column" className="chat-message received" style={{
-        animation: 'fadeIn 0.3s ease-out'
-      }}>
+      <Flex w="90%" direction="column" className="chat-message received">
         <Flex gap="8">
           <Image 
             w={36} 
@@ -138,4 +137,6 @@ export const ReceivedMessage = ({ personalInfo, msg, technicians = [] }) => {
       </Flex>
     </Flex>
   );
-};
+});
+
+ReceivedMessage.displayName = "ReceivedMessage";

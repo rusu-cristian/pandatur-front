@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, memo } from "react";
 import { Flex, Divider, Text, Box, Button } from "@mantine/core";
 import { useMessagesContext } from "@hooks";
 import { YYYY_MM_DD_HH_mm_ss, MEDIA_TYPE } from "@app-constants";
@@ -70,7 +70,7 @@ const createDialogBlocks = (dayItems) => {
   return blocks;
 };
 
-export const GroupedMessages = ({
+export const GroupedMessages = memo(({
   personalInfo,
   ticketId,
   technicians,
@@ -395,4 +395,6 @@ export const GroupedMessages = ({
       )}
     </Flex>
   );
-};
+});
+
+GroupedMessages.displayName = "GroupedMessages";

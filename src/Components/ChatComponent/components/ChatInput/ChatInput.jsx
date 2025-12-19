@@ -11,7 +11,7 @@ import {
 import { AttachmentsPreview } from "../AttachmentsPreview";
 import { useDisclosure } from "@mantine/hooks";
 import { FaTasks, FaEnvelope } from "react-icons/fa";
-import { useState, useRef, useMemo, useEffect, lazy, Suspense } from "react";
+import { useState, useRef, useMemo, useEffect, lazy, Suspense, memo, useCallback } from "react";
 import { createPortal } from "react-dom";
 
 // Lazy load EmojiPicker — это ~300KB бандла, грузим только когда нужно
@@ -56,7 +56,7 @@ const renderPlatformOption = ({ option }) => (
   </Flex>
 );
 
-export const ChatInput = ({
+export const ChatInput = memo(({
   onSendMessage,
   onHandleFileSelect,
   onCreateTask,
@@ -198,7 +198,7 @@ export const ChatInput = ({
       ? Boolean(currentTicketFromContext.action_needed) 
       : false;
 
-  const handleEmojiClickButton = (event) => {
+  const handleEmojiClickButton = useCallback((event) => {
     const rect = event.currentTarget.getBoundingClientRect();
     const emojiPickerHeight = 450;
     setEmojiPickerPosition({
@@ -206,9 +206,9 @@ export const ChatInput = ({
       left: rect.left + window.scrollX,
     });
     setShowEmojiPicker((prev) => !prev);
-  };
+  }, []);
 
-  const uploadAndAddFiles = async (files) => {
+  const uploadAndAddFiles = useCallback(async (files) => {
     if (!files?.length) return;
     handlers.open();
     try {
@@ -228,39 +228,39 @@ export const ChatInput = ({
       handlers.close();
       requestAnimationFrame(() => textAreaRef.current?.focus());
     }
-  };
+  }, [handlers, uploadFile]);
 
-  const handleFileButton = async (fileOrFiles) => {
+  const handleFileButton = useCallback(async (fileOrFiles) => {
     const files = Array.isArray(fileOrFiles) ? fileOrFiles : [fileOrFiles];
     await uploadAndAddFiles(files);
-  };
+  }, [uploadAndAddFiles]);
 
-  const handleDrop = async (e) => {
+  const handleDrop = useCallback(async (e) => {
     e.preventDefault();
     setIsDragOver(false);
     const files = Array.from(e.dataTransfer.files || []);
     await uploadAndAddFiles(files);
-  };
+  }, [uploadAndAddFiles]);
 
-  const handlePaste = async (e) => {
+  const handlePaste = useCallback(async (e) => {
     const files = Array.from(e.clipboardData?.files || []);
     if (!files.length) return;
     e.preventDefault();
     await uploadAndAddFiles(files);
-  };
+  }, [uploadAndAddFiles]);
 
-  const removeAttachment = (url) => {
+  const removeAttachment = useCallback((url) => {
     setAttachments((prev) => prev.filter((a) => a.media_url !== url));
-  };
+  }, []);
 
-  const clearState = () => {
+  const clearState = useCallback(() => {
     setMessage("");
     setAttachments([]);
     setTemplate(null);
     warningShownRef.current = false;
-  };
+  }, []);
 
-  const handleMessageChange = (e) => {
+  const handleMessageChange = useCallback((e) => {
     const newValue = e.target.value;
     setMessage(newValue);
 
@@ -279,7 +279,7 @@ export const ChatInput = ({
       // Сбрасываем флаг, если длина вернулась в норму
       warningShownRef.current = false;
     }
-  };
+  }, [isLengthLimited, enqueueSnackbar]);
 
   const buildBasePayload = () => {
     // Проверка актуальности: убеждаемся, что currentClient соответствует текущему ticketId
@@ -757,4 +757,6 @@ export const ChatInput = ({
         )}
     </>
   );
-};
+});
+
+ChatInput.displayName = "ChatInput";

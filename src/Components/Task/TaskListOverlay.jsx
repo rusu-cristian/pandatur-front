@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useCallback, useRef, startTransition } from "react";
+import { useState, useEffect, useContext, useCallback, useRef, startTransition, memo } from "react";
 import {
   Paper, Text, Box, Group, Stack, Card, Divider, Collapse,
   TextInput, Button, ActionIcon, Loader, Center, Badge
@@ -82,7 +82,7 @@ const getTasksBadgeColor = (tasks = []) => {
 
 const language = localStorage.getItem("language") || "RO";
 
-const TaskListOverlay = ({ ticketId, creatingTask, setCreatingTask }) => {
+const TaskListOverlay = memo(({ ticketId, creatingTask, setCreatingTask }) => {
   const [tasks, setTasks] = useState([]);
   const [expandedCard, setExpandedCard] = useState(null);
   const [listCollapsed, setListCollapsed] = useState(true);
@@ -530,6 +530,8 @@ const TaskListOverlay = ({ ticketId, creatingTask, setCreatingTask }) => {
       </Paper>
     </Box>
   );
-};
+});
+
+TaskListOverlay.displayName = "TaskListOverlay";
 
 export default TaskListOverlay;
