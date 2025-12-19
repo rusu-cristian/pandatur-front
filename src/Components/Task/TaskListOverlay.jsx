@@ -8,7 +8,7 @@ import { formatTasksToEdits, sortTasksByDate } from "../utils/taskUtils";
 import { translations } from "../utils/translations";
 import { api } from "../../api";
 import { TypeTask } from "./OptionsTaskType";
-import { formatDate } from "../utils/date";
+import { formatDate, toDate } from "../utils/date";
 import DateQuickInput from "./Components/DateQuickPicker";
 import { useGetTechniciansList, useUser, useConfirmPopup } from "../../hooks";
 import IconSelect from "../IconSelect/IconSelect";
@@ -81,18 +81,6 @@ const getTasksBadgeColor = (tasks = []) => {
 };
 
 const language = localStorage.getItem("language") || "RO";
-
-const toDate = (val) => {
-  if (!val) return null;
-  if (val instanceof Date) return isNaN(val.getTime()) ? null : val;
-  if (typeof val === "number") {
-    const d = new Date(val);
-    return isNaN(d.getTime()) ? null : d;
-  }
-  const s = String(val).trim().replace(" ", "T").replace(/Z$/, "");
-  const d = new Date(s);
-  return isNaN(d.getTime()) ? null : d;
-};
 
 const TaskListOverlay = ({ ticketId, creatingTask, setCreatingTask }) => {
   const [tasks, setTasks] = useState([]);

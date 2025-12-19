@@ -6,7 +6,6 @@ import {
     Button,
     ActionIcon,
     FileButton,
-    Box,
     Badge,
     CloseButton,
     Loader,
@@ -16,6 +15,7 @@ import { RiAttachment2 } from "react-icons/ri";
 import { useUploadMediaFile } from "../hooks";
 import { getMediaType } from "./ChatComponent/renderContent";
 import { messages } from "../api/messages";
+import { AttachmentsPreview } from "./ChatComponent/components/AttachmentsPreview";
 
 export const InlineNoteComposer = ({ ticketId, technicianId, onCancel, onSave, loading }) => {
     const [text, setText] = useState("");
@@ -145,53 +145,6 @@ export const InlineNoteComposer = ({ ticketId, technicianId, onCancel, onSave, l
         return () => el.removeEventListener("keydown", onKey);
     }, [handleSend, onCancel]);
 
-    const AttachmentsPreview = () => {
-        if (!attachments.length) return null;
-        return (
-            <Flex gap={8} wrap="wrap">
-                {attachments.map((att) => {
-                    const isImage =
-                        att.media_type === "image" ||
-                        att.media_type === "photo" ||
-                        att.media_type === "image_url";
-                    return (
-                        <Box
-                            key={att.media_url}
-                            style={{
-                                position: "relative",
-                                width: 72,
-                                height: 72,
-                                borderRadius: 8,
-                                overflow: "hidden",
-                                border: "1px solid var(--mantine-color-gray-3)",
-                                background: "#fafafa",
-                            }}
-                            title={att.name}
-                        >
-                            {isImage ? (
-                                // eslint-disable-next-line jsx-a11y/img-redundant-alt
-                                <img
-                                    src={att.media_url}
-                                    alt={att.name || "attachment"}
-                                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                                />
-                            ) : (
-                                <Flex w="100%" h="100%" align="center" justify="center">
-                                    <Badge size="xs">{att.media_type}</Badge>
-                                </Flex>
-                            )}
-                            <CloseButton
-                                size="sm"
-                                onClick={() => removeAttachment(att.media_url)}
-                                style={{ position: "absolute", top: 2, right: 2, background: "white" }}
-                            />
-                        </Box>
-                    );
-                })}
-            </Flex>
-        );
-    };
-
     return (
         <Paper p="12" radius="md" withBorder style={{ background: "var(--crm-ui-kit-palette-background-primary)" }}>
             <Flex direction="column" gap="8">
@@ -238,7 +191,7 @@ export const InlineNoteComposer = ({ ticketId, technicianId, onCancel, onSave, l
                         },
                     }}
                 />
-                <AttachmentsPreview />
+                <AttachmentsPreview attachments={attachments} onRemove={removeAttachment} mb={0} />
 
                 <Flex justify="space-between" align="center" gap="8">
 

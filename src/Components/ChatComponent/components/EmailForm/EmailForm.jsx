@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   TextInput,
@@ -6,7 +6,6 @@ import {
   Button,
   Flex,
   Stack,
-  CloseButton,
   ActionIcon,
   FileButton,
   Group,
@@ -22,6 +21,7 @@ import { getMediaType } from "../../renderContent";
 import { useUser } from "@hooks";
 import { api } from "../../../../api";
 import { useSnackbar } from "notistack";
+import { AttachmentsPreview } from "../AttachmentsPreview";
 
 // Функция для проверки и добавления email без дублирования
 const addEmailIfNotExists = (currentEmails, newEmail) => {
@@ -181,14 +181,6 @@ export const EmailForm = ({
     await uploadAndAddFiles(files);
   };
 
-  const formatFileSize = (bytes) => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  };
-
   const handleSend = async () => {
     if (!user?.id) {
       enqueueSnackbar(getLanguageByKey("User ID not found"), { variant: "error" });
@@ -249,79 +241,6 @@ export const EmailForm = ({
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const AttachmentPreview = ({ attachment }) => {
-    const isImage = attachment.media_type === "image" ||
-      attachment.media_type === "photo" ||
-      attachment.media_type === "image_url";
-
-    return (
-      <Box
-        style={{
-          position: "relative",
-          width: 80,
-          height: 80,
-          borderRadius: 8,
-          overflow: "hidden",
-          border: "1px solid var(--mantine-color-gray-3)",
-          background: "var(--crm-ui-kit-palette-background-default)",
-          marginBottom: 8,
-        }}
-      >
-        {isImage ? (
-          <img
-            src={attachment.media_url}
-            alt={attachment.name || "attachment"}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover"
-            }}
-          />
-        ) : (
-          <Flex
-            w="100%"
-            h="100%"
-            align="center"
-            justify="center"
-            direction="column"
-            gap={4}
-          >
-            <FaPaperclip size={16} color="#666" />
-            <Text size="xs" c="dimmed" ta="center" style={{ fontSize: 10 }}>
-              {attachment.media_type}
-            </Text>
-          </Flex>
-        )}
-        <CloseButton
-          size="xs"
-          onClick={() => removeAttachment(attachment.media_url)}
-          style={{
-            position: "absolute",
-            top: 2,
-            right: 2,
-            background: "color-mix(in srgb, var(--crm-ui-kit-palette-background-primary) 90%, transparent)",
-            borderRadius: "50%"
-          }}
-        />
-        <Box
-            style={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              right: 0,
-              background: "color-mix(in srgb, var(--crm-ui-kit-palette-background-default) 70%, transparent)",
-              color: "var(--crm-ui-kit-palette-text-primary)",
-              padding: "2px 4px",
-              fontSize: 10,
-              textAlign: "center"
-            }}
-        >
-          {formatFileSize(attachment.size)}
-        </Box>
-      </Box>
-    );
   };
 
   return (
@@ -565,12 +484,14 @@ export const EmailForm = ({
                     <Loader size="sm" />
                   </Box>
                 )}
-                {attachments.map((attachment) => (
-                  <AttachmentPreview
-                    key={attachment.media_url}
-                    attachment={attachment}
-                  />
-                ))}
+                <AttachmentsPreview 
+                  attachments={attachments} 
+                  onRemove={removeAttachment}
+                  size={80}
+                  showFileSize
+                  showFileIcon
+                  mb={0}
+                />
               </Flex>
             </Box>
           )}

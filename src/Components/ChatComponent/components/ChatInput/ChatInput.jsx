@@ -7,14 +7,15 @@ import {
   Select,
   Loader,
   FileButton,
-  Badge,
-  CloseButton,
 } from "@mantine/core";
+import { AttachmentsPreview } from "../AttachmentsPreview";
 import { useDisclosure } from "@mantine/hooks";
 import { FaTasks, FaEnvelope } from "react-icons/fa";
-import { useState, useRef, useMemo, useEffect } from "react";
+import { useState, useRef, useMemo, useEffect, lazy, Suspense } from "react";
 import { createPortal } from "react-dom";
-import EmojiPicker from "emoji-picker-react";
+
+// Lazy load EmojiPicker — это ~300KB бандла, грузим только когда нужно
+const EmojiPicker = lazy(() => import("emoji-picker-react"));
 import { LuSmile, LuStickyNote } from "react-icons/lu";
 import { RiAttachment2 } from "react-icons/ri";
 import { useSnackbar } from "notistack";
@@ -44,6 +45,16 @@ const resolveTemplateGroup = (groupTitle) => {
   const normalized = groupTitle.toUpperCase();
   return TEMPLATE_GROUP_BY_TITLE[normalized] || null;
 };
+
+// Вынесено наружу — не зависит от props/state
+const renderPlatformOption = ({ option }) => (
+  <Flex align="center" justify="space-between" w="100%">
+    <span>{option.label}</span>
+    {socialMediaIcons[option.value] && (
+      <Flex>{socialMediaIcons[option.value]}</Flex>
+    )}
+  </Flex>
+);
 
 export const ChatInput = ({
   onSendMessage,
@@ -132,16 +143,6 @@ export const ChatInput = ({
     }
   }, [isLengthLimited]);
 
-  // Функция для рендеринга опций с иконками
-  const renderPlatformOption = ({ option }) => (
-    <Flex align="center" justify="space-between" w="100%">
-      <span>{option.label}</span>
-      {socialMediaIcons[option.value] && (
-        <Flex>{socialMediaIcons[option.value]}</Flex>
-      )}
-    </Flex>
-  );
-
   const templateGroup = useMemo(() => resolveTemplateGroup(groupTitle), [groupTitle]);
 
   const templateSelectOptions = useMemo(() => {
@@ -187,17 +188,15 @@ export const ChatInput = ({
     return selectedPageId && pageIdOptions.some(opt => opt.value === selectedPageId);
   }, [selectedPageId, pageIdOptions]);
 
-  // Получаем actionNeeded всегда из тикета из AppContext
-  // НЕ используем локальное состояние - всегда берем актуальное значение из AppContext
-  // Тикет обновляется автоматически через TICKET_UPDATE от сервера
+  // Получаем actionNeeded из personalInfo (приоритет) или из AppContext (fallback)
+  // personalInfo содержит актуальные данные тикета, загруженные напрямую
+  // getTicketById может содержать устаревшие данные из кэша списков
   const currentTicketFromContext = getTicketById(ticketId);
-  const actionNeeded = currentTicketFromContext ? Boolean(currentTicketFromContext.action_needed) : false;
-
-  // actionNeeded меняется только:
-  // 1. При получении сообщения от клиента (в AppContext)
-  // 2. При нажатии кнопки NeedAnswer (через сервер)
-
-  // actionNeeded всегда берется из тикета через AppContext
+  const actionNeeded = personalInfo?.action_needed !== undefined
+    ? Boolean(personalInfo.action_needed)
+    : currentTicketFromContext 
+      ? Boolean(currentTicketFromContext.action_needed) 
+      : false;
 
   const handleEmojiClickButton = (event) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -450,50 +449,6 @@ export const ChatInput = ({
     }
   };
 
-  const AttachmentsPreview = () => {
-    if (!attachments.length) return null;
-    return (
-      <Flex gap={8} wrap="wrap" mb="xs">
-        {attachments.map((att) => {
-          const isImage = att.media_type === "image" || att.media_type === "photo" || att.media_type === "image_url";
-          return (
-            <Box
-              key={att.media_url}
-              style={{
-                position: "relative",
-                width: 72,
-                height: 72,
-                borderRadius: 8,
-                overflow: "hidden",
-                border: "1px solid var(--mantine-color-gray-3)",
-                background: "var(--crm-ui-kit-palette-background-default)",
-              }}
-              title={att.name}
-            >
-              {isImage ? (
-                // eslint-disable-next-line jsx-a11y/img-redundant-alt
-                <img
-                  src={att.media_url}
-                  alt={att.name || "attachment"}
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
-              ) : (
-                <Flex w="100%" h="100%" align="center" justify="center">
-                  <Badge size="xs">{att.media_type}</Badge>
-                </Flex>
-              )}
-              <CloseButton
-                size="sm"
-                onClick={() => removeAttachment(att.media_url)}
-                style={{ position: "absolute", top: 2, right: 2, background: "var(--crm-ui-kit-palette-background-primary)" }}
-              />
-            </Box>
-          );
-        })}
-      </Flex>
-    );
-  };
-
   return (
     <>
       <Box className="chat-input" p="16">
@@ -597,7 +552,7 @@ export const ChatInput = ({
               )}
             </Flex>
 
-            <AttachmentsPreview />
+            <AttachmentsPreview attachments={attachments} onRemove={removeAttachment} />
 
             <Textarea
               ref={textAreaRef}
@@ -792,9 +747,11 @@ export const ChatInput = ({
             onMouseEnter={() => setShowEmojiPicker(true)}
             onMouseLeave={() => setShowEmojiPicker(false)}
           >
-            <EmojiPicker
-              onEmojiClick={(emoji) => setMessage((prev) => prev + emoji.emoji)}
-            />
+            <Suspense fallback={<Loader size="lg" />}>
+              <EmojiPicker
+                onEmojiClick={(emoji) => setMessage((prev) => prev + emoji.emoji)}
+              />
+            </Suspense>
           </div>,
           document.body
         )}
