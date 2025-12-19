@@ -1,42 +1,55 @@
+/**
+ * MessagesContext — контекст для работы с сообщениями чата
+ * 
+ * Отвечает за:
+ * - Хранение списка сообщений текущего чата
+ * - Обработку входящих сообщений
+ * - Обработку ошибок отправки
+ * - Синхронизацию с TicketSyncContext
+ * 
+ * Использует onEvent из SocketContext для обработки ошибок
+ */
+
 import React, { createContext, useEffect, useCallback, useRef } from "react";
 import { useMessages, useSocket, useUser } from "@hooks";
 import { TYPE_SOCKET_EVENTS, MEDIA_TYPE } from "@app-constants";
 import { useTicketSync, SYNC_EVENTS } from "./TicketSyncContext";
 
-export const MessagesContext = createContext();
+export const MessagesContext = createContext(null);
 
 const ERROR_PREFIX = "❗️❗️❗️Mesajul nu poate fi trimis";
 
 export const MessagesProvider = ({ children }) => {
   const messages = useMessages();
-  const { sendedValue } = useSocket();
+  const { onEvent } = useSocket();
   const { userId } = useUser();
+  const { subscribe } = useTicketSync();
 
-  // Создаем стабильные ссылки на функции
+  // Стабильная ссылка на messages
   const messagesRef = useRef(messages);
   messagesRef.current = messages;
 
-  const handleIncomingMessage = useCallback((message) => {
-    const incoming = message.data;
-
-    // Для звонков: всегда обновляем сообщение (независимо от sender_id)
-    // Потому что звонок сначала приходит без записи, потом с URL записи
+  /**
+   * Обработка входящего сообщения
+   */
+  const handleIncomingMessage = useCallback((incoming) => {
+    // Для звонков: всегда обновляем сообщение
     const isCall = incoming.mtype === MEDIA_TYPE.CALL;
     
-    // Для сообщений от других пользователей: добавляем/обновляем
+    // Для сообщений от других пользователей
     const isFromAnotherUser = Number(incoming.sender_id) !== Number(userId) && Number(incoming.sender_id) !== 1;
     
-    // Для сообщений от системы (sender_id = 1): всегда добавляем
+    // Для сообщений от системы (sender_id = 1)
     const isFromSystem = Number(incoming.sender_id) === 1;
     
-    // Для сообщений от текущего пользователя: обрабатываем только ошибки
+    // Для сообщений от текущего пользователя
     const isFromCurrentUser = Number(incoming.sender_id) === Number(userId);
     
-    // Обработка ошибок для сообщений текущего пользователя
-    // Проверяем два случая: ошибка в тексте сообщения или ошибка в поле error_message
+    // Проверяем ошибки
     const hasErrorInText = incoming.message?.startsWith(ERROR_PREFIX);
     const hasErrorInField = (incoming.status === "NOT_SENT" || incoming.message_status === "NOT_SENT") && incoming.error_message;
     
+    // Обработка ошибок для сообщений текущего пользователя
     if (isFromCurrentUser && (hasErrorInText || hasErrorInField)) {
       messagesRef.current.setMessages((prev) => {
         const index = prev.findIndex((m) => {
@@ -44,14 +57,14 @@ export const MessagesProvider = ({ children }) => {
           const sameSender = Number(m.sender_id) === Number(incoming.sender_id);
           const sameTicket = Number(m.ticket_id) === Number(incoming.ticket_id);
           
-          // Если есть message_id или id - используем их для точного сопоставления
+          // Если есть message_id — используем для точного сопоставления
           if (incoming.message_id) {
             return (Number(m.message_id) === Number(incoming.message_id) || 
                     Number(m.id) === Number(incoming.message_id)) && 
                    sameTicket;
           }
           
-          // Иначе ищем по тексту сообщения (старая логика)
+          // Иначе ищем по тексту сообщения
           if (hasErrorInText) {
             const originalText = m.message?.trim();
             const fullText = incoming.message?.trim();
@@ -59,7 +72,7 @@ export const MessagesProvider = ({ children }) => {
             return isPending && sameSender && sameTicket && errorIncludesOriginal;
           }
           
-          // Для ошибок с error_message ищем по platform_id (temp_xxx)
+          // Для ошибок с error_message ищем по platform_id
           if (hasErrorInField && incoming.platform_id) {
             return isPending && sameSender && sameTicket && 
                    (m.platform_id === incoming.platform_id || 
@@ -90,37 +103,35 @@ export const MessagesProvider = ({ children }) => {
     // Для всех остальных сообщений (от других пользователей, системы, звонков)
     if (isCall || isFromAnotherUser || isFromSystem) {
       messagesRef.current.updateMessage(incoming);
-      return;
     }
     
-    // Игнорируем сообщения от текущего пользователя (кроме ошибок)
-  }, [userId]); // Убираем messages из зависимостей, используем useRef
+    // Игнорируем обычные сообщения от текущего пользователя (они уже добавлены как pending)
+  }, [userId]);
 
-  // Обрабатываем сообщения от сокета напрямую (для ошибок от текущего пользователя)
+  // === Подписка на WebSocket события через onEvent ===
+  // Обрабатываем только ошибки и служебные сообщения
   useEffect(() => {
-    if (sendedValue?.type === TYPE_SOCKET_EVENTS.MESSAGE) {
-      handleIncomingMessage(sendedValue);
-    }
-  }, [sendedValue, handleIncomingMessage]);
-
-  // Подписываемся на события через TicketSyncContext
-  const { subscribe } = useTicketSync();
-  
-  // Храним актуальное значение handleIncomingMessage в ref
-  const handleIncomingMessageRef = useRef(handleIncomingMessage);
-  handleIncomingMessageRef.current = handleIncomingMessage;
-
-  // Подписка на новые сообщения
-  useEffect(() => {
-    const unsubscribe = subscribe(SYNC_EVENTS.MESSAGE_RECEIVED, (messageData) => {
-      if (messageData) {
-        handleIncomingMessageRef.current({ data: messageData });
+    const unsubscribe = onEvent(TYPE_SOCKET_EVENTS.MESSAGE, (message) => {
+      if (message?.data) {
+        handleIncomingMessage(message.data);
       }
     });
     return unsubscribe;
-  }, [subscribe]);
+  }, [onEvent, handleIncomingMessage]);
 
-  // Подписка на событие "сообщения прочитаны"
+  // === Подписка на TicketSync события ===
+  
+  // Новые сообщения от других пользователей
+  useEffect(() => {
+    const unsubscribe = subscribe(SYNC_EVENTS.MESSAGE_RECEIVED, (messageData) => {
+      if (messageData) {
+        handleIncomingMessage(messageData);
+      }
+    });
+    return unsubscribe;
+  }, [subscribe, handleIncomingMessage]);
+
+  // Сообщения прочитаны
   useEffect(() => {
     const unsubscribe = subscribe(SYNC_EVENTS.MESSAGES_SEEN, ({ ticketId }) => {
       if (ticketId && messagesRef.current.markMessagesAsSeen) {
@@ -130,7 +141,7 @@ export const MessagesProvider = ({ children }) => {
     return unsubscribe;
   }, [subscribe]);
 
-  // Подписка на удаление сообщения
+  // Удаление сообщения
   useEffect(() => {
     const unsubscribe = subscribe(SYNC_EVENTS.MESSAGE_DELETED, ({ messageId }) => {
       if (messageId && messagesRef.current.deleteMessage) {
@@ -146,4 +157,3 @@ export const MessagesProvider = ({ children }) => {
     </MessagesContext.Provider>
   );
 };
-

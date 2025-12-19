@@ -2,6 +2,7 @@ export * from "./useDOMElementHeight";
 export * from "./usePortal";
 export * from "./useDebounce";
 export * from "./useUser";
+export * from "./useAuth";
 export * from "./useGetTechniciansList";
 export * from "./useTechniciansQuery";
 export * from "./useConfirmPopup";

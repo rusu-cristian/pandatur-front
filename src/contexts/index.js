@@ -1,10 +1,20 @@
-export * from "./UserContext";
-export * from "./SocketContext";
-export * from "./MessagesContext";
-export * from "./AppProviders";
+// Авторизация
+export * from "./AuthContext";
 
-// Специализированные контексты
+// Пользователь
+export * from "./UserContext";
+
+// WebSocket
+export * from "./SocketContext";
+export * from "./WebSocketContext";
+
+// Сообщения
+export * from "./MessagesContext";
+
+// Синхронизация и UI
 export * from "./TicketSyncContext";
 export * from "./UIContext";
 export * from "./TicketsContext";
-export * from "./WebSocketContext";
+
+// App Providers
+export * from "./AppProviders";

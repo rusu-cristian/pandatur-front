@@ -6,6 +6,13 @@ import { showServerError } from "../../Components/utils/showServerError";
 import { useMobile } from "../../hooks";
 import "./Login.css";
 
+/**
+ * Login компонент находится вне AppProviders,
+ * поэтому использует Cookies напрямую.
+ * 
+ * После успешного логина App.jsx обнаружит токен и покажет приватные маршруты.
+ */
+
 const setCookieToken = (token) => {
   Cookies.set("jwt", token, {
     secure: window.location.protocol === "https:",
@@ -19,7 +26,7 @@ export const Login = () => {
   const [form, setForm] = useState({ email: "", username: "", password: "" });
   const [isLogin, setIsLogin] = useState(true);
   const [message, setMessage] = useState("");
-  const [messageType, setMessageType] = useState("error"); // "success" или "error"
+  const [messageType, setMessageType] = useState("error");
   const [isLoading, setIsLoading] = useState(false);
   const isMobile = useMobile();
 
@@ -58,14 +65,14 @@ export const Login = () => {
 
     try {
       const response = await request(data);
-      const { token, message } = response;
+      const { token, message: responseMessage } = response;
 
-      setMessage(message || "Success!");
+      setMessage(responseMessage || "Success!");
       setMessageType("success");
 
-      if (isLogin) {
+      if (isLogin && token) {
         setCookieToken(token);
-        // Navigate будет выполнен в UserContext после успешной проверки авторизации
+        // App.jsx автоматически обнаружит токен и перенаправит на приватные маршруты
       }
     } catch (error) {
       setMessage(showServerError(error));
