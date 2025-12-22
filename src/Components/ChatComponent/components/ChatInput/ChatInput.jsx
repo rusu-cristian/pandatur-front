@@ -673,6 +673,7 @@ export const ChatInput = memo(({
                 </Can>
               </Flex>
 
+
               <Flex gap="xs">
                 <Can permission={{ module: "CHAT", action: "CREATE" }} context={{ responsibleId }}>
                   <ActionIcon
