@@ -11,12 +11,8 @@ import {
 import { AttachmentsPreview } from "../AttachmentsPreview";
 import { useDisclosure } from "@mantine/hooks";
 import { FaTasks, FaEnvelope } from "react-icons/fa";
-import { useState, useRef, useMemo, useEffect, lazy, Suspense, memo, useCallback } from "react";
-import { createPortal } from "react-dom";
-
-// Lazy load EmojiPicker — это ~300KB бандла, грузим только когда нужно
-const EmojiPicker = lazy(() => import("emoji-picker-react"));
-import { LuSmile, LuStickyNote } from "react-icons/lu";
+import { useState, useRef, useMemo, useEffect, memo, useCallback } from "react";
+import { LuStickyNote } from "react-icons/lu";
 import { RiAttachment2 } from "react-icons/ri";
 import { useSnackbar } from "notistack";
 import { getLanguageByKey } from "../../../utils";
@@ -77,9 +73,7 @@ export const ChatInput = memo(({
 }) => {
   const [opened, handlers] = useDisclosure(false);
   const [message, setMessage] = useState("");
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [template, setTemplate] = useState();
-  const [emojiPickerPosition, setEmojiPickerPosition] = useState({ top: 0, left: 0 });
   const [isDragOver, setIsDragOver] = useState(false);
   const [showEmailForm, setShowEmailForm] = useState(false);
 
@@ -197,16 +191,6 @@ export const ChatInput = memo(({
     : currentTicketFromContext 
       ? Boolean(currentTicketFromContext.action_needed) 
       : false;
-
-  const handleEmojiClickButton = useCallback((event) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const emojiPickerHeight = 450;
-    setEmojiPickerPosition({
-      top: rect.top + window.scrollY - emojiPickerHeight,
-      left: rect.left + window.scrollX,
-    });
-    setShowEmojiPicker((prev) => !prev);
-  }, []);
 
   const uploadAndAddFiles = useCallback(async (files) => {
     if (!files?.length) return;
@@ -697,10 +681,6 @@ export const ChatInput = memo(({
                     )}
                   </FileButton>
 
-                  <ActionIcon onClick={handleEmojiClickButton} variant="default">
-                    <LuSmile size={20} />
-                  </ActionIcon>
-
                   <ActionIcon
                     onClick={onToggleNoteComposer}
                     variant="default"
@@ -734,28 +714,6 @@ export const ChatInput = memo(({
           />
         )}
       </Box>
-
-      {showEmojiPicker &&
-        createPortal(
-          <div
-            className="emoji-picker-popup"
-            style={{
-              position: "absolute",
-              top: emojiPickerPosition.top,
-              left: emojiPickerPosition.left,
-              zIndex: 1000,
-            }}
-            onMouseEnter={() => setShowEmojiPicker(true)}
-            onMouseLeave={() => setShowEmojiPicker(false)}
-          >
-            <Suspense fallback={<Loader size="lg" />}>
-              <EmojiPicker
-                onEmojiClick={(emoji) => setMessage((prev) => prev + emoji.emoji)}
-              />
-            </Suspense>
-          </div>,
-          document.body
-        )}
     </>
   );
 });

@@ -1,29 +1,12 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import purgecss from "vite-plugin-purgecss";
 import path from "path";
 
 export default defineConfig({
   plugins: [
     react(),
-    // PurgeCSS удаляет неиспользуемый CSS в production build
-    purgecss({
-      content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
-      // Сохраняем классы Mantine и динамические классы
-      safelist: {
-        standard: [
-          /^mantine-/,
-          /^rc-/,
-          /^ps-/,
-          /^pro-sidebar/,
-          /^react-/,
-          /^ant-/,
-          /^Mui/,
-          /^css-/,
-        ],
-        deep: [/mantine/, /rc-table/, /sidebar/, /MuiDataGrid/],
-      },
-    }),
+    // PurgeCSS отключён — слишком агрессивно удаляет стили сторонних библиотек
+    // (react-pro-sidebar, MUI, react-select и др.)
   ],
   resolve: {
     alias: {
@@ -72,8 +55,8 @@ export default defineConfig({
           "vendor-date": ["dayjs", "date-fns"],
           // HTTP client
           "vendor-http": ["axios"],
-          // Emotion (стили)
-          "vendor-emotion": ["@emotion/react", "@emotion/styled"],
+          // Emotion убран из manualChunks — включается автоматически в нужные чанки
+          // чтобы избежать проблем с порядком инициализации
         },
       },
     },
