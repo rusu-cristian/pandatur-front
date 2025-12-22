@@ -361,6 +361,12 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_name: "catalantravel_odesa",
       type: "instagram",
       group_title: ["CATALAN",]
+    },
+    {
+      page_id: "17841474848946740",
+      page_name: "Nisporeni",
+      type: "instagram",
+      group_title: ["NISPORENI",]
     }
   ],
   whatsapps: [

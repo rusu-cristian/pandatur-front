@@ -126,6 +126,7 @@ export const GeneralForm = ({ data, formInstance }) => {
   const handleTechnicianChange = useCallback(
     (value) => {
       formInstance.setFieldValue("technician_id", value[0] || undefined);
+      formInstance.clearFieldError("technician_id");
     },
     [formInstance]
   );
@@ -164,15 +165,19 @@ export const GeneralForm = ({ data, formInstance }) => {
         )}
       </Box>
 
-      <UserGroupMultiSelect
-        mt="md"
-        label={getLanguageByKey("Responsabil")}
-        placeholder={getLanguageByKey("Selectează responsabil")}
-        value={technicianValue}
-        onChange={handleTechnicianChange}
-        techniciansData={formattedTechnicians}
-        mode="single"
-      />
+      <Box mt="md">
+        <UserGroupMultiSelect
+          label={`${getLanguageByKey("Responsabil")} *`}
+          placeholder={getLanguageByKey("Selectează responsabil")}
+          value={technicianValue}
+          onChange={handleTechnicianChange}
+          techniciansData={formattedTechnicians}
+          mode="single"
+        />
+        {formInstance.errors.technician_id && (
+          <div style={errorStyle}>{formInstance.errors.technician_id}</div>
+        )}
+      </Box>
 
       <Select
         disabled
