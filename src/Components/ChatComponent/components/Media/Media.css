@@ -1,0 +1,38 @@
+.media-wrapper-delete-btn {
+  opacity: 0;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.media-wrapper:hover .media-wrapper-delete-btn {
+  opacity: 1;
+}
+
+.video-preview {
+  max-width: 100%;
+  display: inline;
+}
+
+.media-wrapper.media-files {
+  border: 1px solid var(--crm-ui-kit-palette-border-default);
+}
+
+.file-link {
+  color: var(--crm-ui-kit-palette-text-primary);
+}
+
+.file-link:hover {
+  color: var(--crm-ui-kit-palette-link-hover-primary);
+}
+
+.media-tabs .mantine-Tabs-panel[data-orientation="horizontal"] {
+  height: calc(100% - 36px);
+}
+
+.media-tabs .mantine-Tabs-root[data-orientation="vertical"] {
+  height: calc(100% - 36px);
+}
+
+.media-tabs .mantine-Tabs-root[data-orientation="horizontal"] {
+  height: calc(100% - 36px);
+}

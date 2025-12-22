@@ -1,0 +1,894 @@
+html {
+  height: 133.33vh;
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 133.33vh;
+  /* Компенсируем уменьшение высоты от zoom */
+  overflow: hidden;
+  background-color: var(--crm-ui-kit-palette-background-default);
+  color: var(--crm-ui-kit-palette-text-primary);
+  font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* Safari-specific: use 100vh/100vw since transform doesn't affect layout */
+html.is-safari {
+  height: 100vh;
+}
+
+html.is-safari body {
+  height: 100vh;
+}
+
+/* html,
+body,
+* {
+  scrollbar-gutter: stable;
+  padding-right: 5px;
+} */
+
+.crm-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  /* даёт место под скролл */
+  padding-right: 10px;
+
+  /* делает скролл независимым, не накладывающимся */
+  scrollbar-gutter: stable;
+}
+
+/* Для маленьких виджетов — чуть компактнее */
+.crm-scroll.compact {
+  padding-right: 6px;
+}
+
+* {
+  font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
+
+#root {
+  zoom: 0.75;
+  height: 133.33vh;
+  width: 133.33vw;
+  overflow: hidden;
+}
+
+/* Safari fallback: use transform: scale() since Safari doesn't support zoom properly */
+html.is-safari #root {
+  zoom: 1; /* Reset zoom for Safari */
+  transform: scale(0.75);
+  transform-origin: 0 0;
+  height: 133.33vh;
+  width: 133.33vw;
+  overflow: hidden;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* ===== WebKit (Chrome / Safari / Edge) ===== */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+/* Прозрачная дорожка */
+*::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+/* Прозрачный бегунок (полупрозрачный, чтобы быть видимым, но не мешать) */
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.12);
+  /* светлая прозрачность */
+  border-radius: 8px;
+  border: 2px solid transparent;
+  /* убираем рамку, чтобы не увеличивать пятно */
+}
+
+/* Ховер — тоже прозрачный, но чуть заметнее */
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
+/* Leads Page */
+
+.leads-container {
+  margin-top: 60px;
+  height: 100%;
+  /* padding-top: 10px; */
+}
+
+/* Chat Page */
+
+.chat-wrapper {
+  flex: 1;
+}
+
+/* Mobile scroll styles */
+.mobile-scroll-container {
+  scrollbar-width: thin;
+  scrollbar-color: var(--crm-ui-kit-palette-scrollbar-thumb-background) transparent;
+}
+
+.mobile-scroll-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.mobile-scroll-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.mobile-scroll-container::-webkit-scrollbar-thumb {
+  background-color: var(--crm-ui-kit-palette-scrollbar-thumb-background);
+  border-radius: 3px;
+}
+
+.mobile-scroll-container::-webkit-scrollbar-thumb:hover {
+  background-color: var(--crm-ui-kit-palette-border-default);
+}
+
+.chat-container {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  /* TODO: Use `overflow: hidden` as a temporary
+      workaround, further investigation is needed
+      to identify the root cause.
+  */
+  overflow: hidden;
+}
+
+.chat-extra-info-scroll-area>div>div {
+  height: calc(100% - 50px);
+}
+
+/* Dashboard Page */
+
+.dashboard-container-wrapper {
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+}
+
+.dashboard-layout>div {
+  border: 1px solid var(--crm-ui-kit-palette-border-default);
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  text-align: center;
+  background-color: var(--crm-ui-kit-palette-background-primary);
+  padding: 12px;
+  cursor: pointer;
+}
+
+.react-grid-layout {
+  width: 100%;
+  height: auto;
+  position: relative;
+}
+
+.dashboard-loading {
+  height: calc(100% - (42px + 66px + 20px));
+}
+
+/* Utility class names */
+
+.text-center {
+  text-align: center;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.justify-content-end {
+  justify-content: end;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.justify-content-between {
+  justify-content: space-between;
+}
+
+.gap-4 {
+  gap: 4px;
+}
+
+.gap-8 {
+  gap: 8px;
+}
+
+.gap-16 {
+  gap: 16px;
+}
+
+.mb-16 {
+  margin-bottom: 16px;
+}
+
+.mb-24 {
+  margin-bottom: 24px;
+}
+
+.mb-8 {
+  margin-bottom: 8px;
+}
+
+.white-space-nowrap {
+  white-space: nowrap;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.overflow-x-scroll {
+  overflow-x: scroll;
+}
+
+.min-w-300 {
+  min-width: 250px;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.break-word {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
+[data-mantine-color-scheme] .mantine-SegmentedControl-indicator {
+  zoom: 1.3333;
+}
+
+/* Компенсация zoom для Mantine Modal */
+[data-mantine-color-scheme] .mantine-Modal-root {
+  zoom: 1;
+}
+
+[data-mantine-color-scheme] .mantine-Modal-content {
+  zoom: 1;
+}
+
+[data-mantine-color-scheme] .mantine-Modal-body {
+  zoom: 0.75;
+}
+
+[data-mantine-color-scheme] .mantine-Modal-header {
+  zoom: 0.75;
+}
+
+[data-mantine-color-scheme] .mantine-Drawer-root {
+  zoom: 1;
+}
+
+
+[data-mantine-color-scheme] .mantine-Drawer-content {
+  zoom: 0.75;
+}
+
+[data-mantine-color-scheme] .mantine-Drawer-body .mantine-Button-root {
+  zoom: 1;
+}
+
+[data-mantine-color-scheme] .mantine-Drawer-body {
+  zoom: 1;
+}
+
+[data-mantine-color-scheme] .mantine-Drawer-header {
+  zoom: 1;
+  background: var(--crm-ui-kit-palette-background-primary);
+  color: var(--crm-ui-kit-palette-text-primary);
+}
+
+[data-mantine-color-scheme] .mantine-Drawer-title {
+  zoom: 0.75;
+}
+
+
+[data-mantine-color-scheme] .mantine-Drawer-body .mantine-Select-root {
+  zoom: 1;
+}
+
+/* ===== Safari-specific Mantine overrides (using transform instead of zoom) ===== */
+html.is-safari [data-mantine-color-scheme] .mantine-SegmentedControl-indicator {
+  zoom: 1;
+  transform: scale(1.3333);
+  transform-origin: center;
+}
+
+html.is-safari [data-mantine-color-scheme] .mantine-Modal-root {
+  zoom: 1;
+}
+
+html.is-safari [data-mantine-color-scheme] .mantine-Modal-content {
+  zoom: 1;
+}
+
+html.is-safari [data-mantine-color-scheme] .mantine-Modal-body {
+  zoom: 1;
+  transform: scale(0.75);
+  transform-origin: top left;
+  width: 133.33%;
+  height: 133.33%;
+}
+
+html.is-safari [data-mantine-color-scheme] .mantine-Modal-header {
+  zoom: 1;
+  transform: scale(0.75);
+  transform-origin: top left;
+  width: 133.33%;
+}
+
+html.is-safari [data-mantine-color-scheme] .mantine-Drawer-root {
+  zoom: 1;
+}
+
+html.is-safari [data-mantine-color-scheme] .mantine-Drawer-content {
+  zoom: 1;
+  transform: scale(0.75);
+  transform-origin: top left;
+  width: 133.33%;
+  height: 133.33%;
+}
+
+html.is-safari [data-mantine-color-scheme] .mantine-Drawer-body .mantine-Button-root {
+  zoom: 1;
+}
+
+html.is-safari [data-mantine-color-scheme] .mantine-Drawer-body {
+  zoom: 1;
+}
+
+html.is-safari [data-mantine-color-scheme] .mantine-Drawer-header {
+  zoom: 1;
+}
+
+html.is-safari [data-mantine-color-scheme] .mantine-Drawer-title {
+  zoom: 1;
+  transform: scale(0.75);
+  transform-origin: top left;
+}
+
+html.is-safari [data-mantine-color-scheme] .mantine-Drawer-body .mantine-Select-root {
+  zoom: 1;
+}
+
+/* Стили для Mantine Menu/Dropdown под темы */
+.mantine-Menu-dropdown {
+  background-color: var(--crm-ui-kit-palette-background-primary) !important;
+  border: 1px solid var(--crm-ui-kit-palette-border-default) !important;
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+}
+
+.mantine-Menu-item {
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+}
+
+.mantine-Menu-item:hover {
+  background-color: var(--crm-ui-kit-palette-button-classic-hover-background) !important;
+}
+
+.mantine-Menu-divider {
+  border-color: var(--crm-ui-kit-palette-border-primary) !important;
+}
+
+/* ActionIcon стили */
+.mantine-ActionIcon-root[data-variant="default"] {
+  background-color: var(--crm-ui-kit-palette-background-primary) !important;
+  border: 1px solid var(--crm-ui-kit-palette-border-default) !important;
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+}
+
+.mantine-ActionIcon-root[data-variant="default"]:hover {
+  background-color: var(--crm-ui-kit-palette-button-classic-hover-background) !important;
+}
+
+.mantine-ActionIcon-root[data-variant="filled"] {
+  background-color: var(--crm-ui-kit-palette-link-primary) !important;
+  color: white !important;
+}
+
+.mantine-ActionIcon-root[data-variant="filled"]:hover {
+  background-color: var(--crm-ui-kit-palette-link-hover-primary) !important;
+}
+
+/* Input стили (TextInput, Input, Select и т.д.) */
+.mantine-Input-input,
+.mantine-TextInput-input,
+.mantine-Select-input,
+.mantine-Textarea-input,
+.mantine-NumberInput-input {
+  background-color: var(--crm-ui-kit-palette-background-primary) !important;
+  border: 1px solid var(--crm-ui-kit-palette-border-default) !important;
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+  font-weight: 500 !important;
+}
+
+/* Акцентирование значений в инпутах формы - адаптивный цвет */
+.mantine-Input-input:not(:placeholder-shown),
+.mantine-TextInput-input:not(:placeholder-shown),
+.mantine-Select-input:not(:placeholder-shown),
+.mantine-Textarea-input:not(:placeholder-shown),
+.mantine-NumberInput-input:not(:placeholder-shown) {
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+  font-weight: 600 !important;
+}
+
+.mantine-Input-input::placeholder,
+.mantine-TextInput-input::placeholder,
+.mantine-Select-input::placeholder,
+.mantine-Textarea-input::placeholder,
+.mantine-NumberInput-input::placeholder {
+  color: var(--crm-ui-kit-palette-placeholder-default) !important;
+}
+
+.mantine-Input-input:focus,
+.mantine-TextInput-input:focus,
+.mantine-Select-input:focus,
+.mantine-Textarea-input:focus,
+.mantine-NumberInput-input:focus {
+  border-color: var(--crm-ui-kit-palette-link-primary) !important;
+}
+
+/* Кнопки очистки инпутов (крестики) */
+.mantine-CloseButton-root,
+.mantine-Input-section[data-position="right"] button,
+.mantine-Select-section[data-position="right"] button,
+.mantine-MultiSelect-section[data-position="right"] button {
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+  background-color: transparent !important;
+}
+
+.mantine-CloseButton-root:hover,
+.mantine-Input-section[data-position="right"] button:hover,
+.mantine-Select-section[data-position="right"] button:hover,
+.mantine-MultiSelect-section[data-position="right"] button:hover {
+  background-color: var(--crm-ui-kit-palette-button-classic-hover-background) !important;
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+}
+
+/* Select dropdown */
+.mantine-Select-dropdown {
+  background-color: var(--crm-ui-kit-palette-background-primary) !important;
+  border: 1px solid var(--crm-ui-kit-palette-border-default) !important;
+}
+
+.mantine-Select-option {
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+}
+
+.mantine-Select-option:hover {
+  background-color: var(--crm-ui-kit-palette-button-classic-hover-background) !important;
+}
+
+.mantine-Select-option[data-selected="true"] {
+  background-color: var(--crm-ui-kit-palette-surface-hover-background-color) !important;
+}
+
+/* Modal стили */
+.mantine-Modal-content {
+  background-color: var(--crm-ui-kit-palette-background-primary) !important;
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+}
+
+.mantine-Modal-header {
+  background-color: var(--crm-ui-kit-palette-background-primary) !important;
+  border-bottom: 1px solid var(--crm-ui-kit-palette-border-primary) !important;
+}
+
+.mantine-Modal-title {
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+  font-weight: 600;
+}
+
+.mantine-Modal-close {
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+}
+
+.mantine-Modal-close:hover {
+  background-color: var(--crm-ui-kit-palette-button-classic-hover-background) !important;
+}
+
+/* Paper стили */
+.mantine-Paper-root {
+  background-color: var(--crm-ui-kit-palette-background-primary);
+  border-color: var(--crm-ui-kit-palette-border-default) !important;
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+}
+
+/* Button стили */
+.mantine-Button-root {
+  background-color: var(--crm-ui-kit-palette-link-primary) !important;
+  color: white !important;
+  border: none !important;
+}
+
+.mantine-Button-root:hover:not(:disabled) {
+  background-color: var(--crm-ui-kit-palette-link-hover-primary) !important;
+  opacity: 0.9;
+}
+
+.mantine-Button-root:disabled {
+  background-color: var(--crm-ui-kit-palette-background-primary-disabled) !important;
+  color: var(--crm-ui-kit-palette-text-secondary-light) !important;
+  opacity: 0.6;
+}
+
+/* Button outline variant */
+.mantine-Button-root[data-variant="outline"] {
+  background-color: transparent !important;
+  border: 1px solid var(--crm-ui-kit-palette-border-default) !important;
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+}
+
+.mantine-Button-root[data-variant="outline"]:hover:not(:disabled) {
+  background-color: var(--crm-ui-kit-palette-button-classic-hover-background) !important;
+  border-color: var(--crm-ui-kit-palette-link-primary) !important;
+  opacity: 1;
+}
+
+/* Button danger/warning variants */
+.mantine-Button-root[data-variant="danger"] {
+  background-color: #ef4444 !important;
+  color: white !important;
+}
+
+.mantine-Button-root[data-variant="warning"] {
+  background-color: #f59e0b !important;
+  color: white !important;
+}
+
+/* Text стили */
+.mantine-Text-root {
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+}
+
+/* Loader стили */
+.mantine-Loader-root {
+  color: var(--crm-ui-kit-palette-link-primary) !important;
+}
+
+/* Collapse стили */
+.mantine-Collapse-root {
+  background-color: transparent !important;
+}
+
+/* Stack стили */
+.mantine-Stack-root {
+  background-color: transparent !important;
+}
+
+/* MultiSelect стили */
+.mantine-MultiSelect-input {
+  background-color: var(--crm-ui-kit-palette-background-primary) !important;
+  border: 1px solid var(--crm-ui-kit-palette-border-default) !important;
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+}
+
+.mantine-MultiSelect-input::placeholder {
+  color: var(--crm-ui-kit-palette-placeholder-default) !important;
+}
+
+.mantine-MultiSelect-input:focus {
+  border-color: var(--crm-ui-kit-palette-link-primary) !important;
+}
+
+.mantine-MultiSelect-dropdown {
+  background-color: var(--crm-ui-kit-palette-background-primary) !important;
+  border: 1px solid var(--crm-ui-kit-palette-border-default) !important;
+}
+
+.mantine-MultiSelect-option {
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+}
+
+.mantine-MultiSelect-option:hover {
+  background-color: var(--crm-ui-kit-palette-button-classic-hover-background) !important;
+}
+
+.mantine-MultiSelect-label {
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+}
+
+/* Badge стили */
+.mantine-Badge-root[data-variant="light"] {
+  background-color: var(--crm-ui-kit-palette-surface-hover-background-color) !important;
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+}
+
+.mantine-Badge-root[data-variant="filled"] {
+  background-color: var(--crm-ui-kit-palette-link-primary) !important;
+  color: white !important;
+}
+
+.mantine-Badge-root[data-variant="outline"] {
+  background-color: transparent !important;
+  border: 1px solid var(--crm-ui-kit-palette-border-default) !important;
+  /* color: var(--crm-ui-kit-palette-text-primary) !important; */
+}
+
+.mantine-Badge-root:not([data-variant]) {
+  color: white !important;
+}
+
+/* SegmentedControl стили */
+.mantine-SegmentedControl-root {
+  background-color: var(--crm-ui-kit-palette-background-primary) !important;
+  border: 1px solid var(--crm-ui-kit-palette-border-default) !important;
+}
+
+.mantine-SegmentedControl-label {
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+}
+
+.mantine-SegmentedControl-indicator {
+  background-color: var(--crm-ui-kit-palette-link-primary) !important;
+  box-shadow: none !important;
+}
+
+.mantine-SegmentedControl-control[data-active="true"] .mantine-SegmentedControl-label {
+  color: white !important;
+}
+
+/* Combobox стили */
+.mantine-Combobox-dropdown {
+  background-color: var(--crm-ui-kit-palette-background-primary) !important;
+  border: 1px solid var(--crm-ui-kit-palette-border-default) !important;
+}
+
+.mantine-Combobox-option {
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+}
+
+.mantine-Combobox-option:hover {
+  background-color: var(--crm-ui-kit-palette-button-classic-hover-background) !important;
+}
+
+.mantine-Combobox-option[data-selected="true"] {
+  background-color: var(--crm-ui-kit-palette-surface-hover-background-color) !important;
+}
+
+/* DatePickerInput стили */
+.mantine-DatePickerInput-root .mantine-Input-input,
+.mantine-DateInput-root .mantine-Input-input {
+  background-color: var(--crm-ui-kit-palette-background-primary) !important;
+  border: 1px solid var(--crm-ui-kit-palette-border-default) !important;
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+}
+
+.mantine-DatePickerInput-root .mantine-Input-input::placeholder,
+.mantine-DateInput-root .mantine-Input-input::placeholder {
+  color: var(--crm-ui-kit-palette-placeholder-default) !important;
+}
+
+.mantine-DatePickerInput-root .mantine-Input-input:focus,
+.mantine-DateInput-root .mantine-Input-input:focus {
+  border-color: var(--crm-ui-kit-palette-link-primary) !important;
+}
+
+.mantine-DatePickerInput-label,
+.mantine-DateInput-label {
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+}
+
+/* DatePicker Popover и Calendar */
+.mantine-Popover-dropdown {
+  background-color: var(--crm-ui-kit-palette-background-primary) !important;
+  border: 1px solid var(--crm-ui-kit-palette-border-default) !important;
+}
+
+.mantine-DatePicker-calendarHeader,
+.mantine-MonthPicker-calendarHeader,
+.mantine-YearPicker-calendarHeader {
+  background-color: var(--crm-ui-kit-palette-background-primary) !important;
+}
+
+.mantine-DatePicker-calendarHeaderControl,
+.mantine-MonthPicker-calendarHeaderControl,
+.mantine-YearPicker-calendarHeaderControl {
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+}
+
+.mantine-DatePicker-calendarHeaderControl:hover,
+.mantine-MonthPicker-calendarHeaderControl:hover,
+.mantine-YearPicker-calendarHeaderControl:hover {
+  background-color: var(--crm-ui-kit-palette-button-classic-hover-background) !important;
+}
+
+.mantine-DatePicker-calendarHeaderLevel {
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+}
+
+.mantine-DatePicker-calendarHeaderLevel:hover {
+  background-color: var(--crm-ui-kit-palette-button-classic-hover-background) !important;
+}
+
+.mantine-DatePicker-weekday,
+.mantine-MonthPicker-monthsListCell,
+.mantine-YearPicker-yearsListCell {
+  color: var(--crm-ui-kit-palette-text-secondary-light) !important;
+}
+
+.mantine-DatePicker-day,
+.mantine-MonthPicker-monthsListCell button,
+.mantine-YearPicker-yearsListCell button {
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+}
+
+.mantine-DatePicker-day:hover,
+.mantine-MonthPicker-monthsListCell button:hover,
+.mantine-YearPicker-yearsListCell button:hover {
+  background-color: var(--crm-ui-kit-palette-button-classic-hover-background) !important;
+}
+
+.mantine-DatePicker-day[data-selected="true"],
+.mantine-MonthPicker-monthsListCell button[data-selected="true"],
+.mantine-YearPicker-yearsListCell button[data-selected="true"] {
+  background-color: var(--crm-ui-kit-palette-link-primary) !important;
+  color: white !important;
+}
+
+.mantine-DatePicker-day[data-weekend="true"] {
+  color: var(--crm-ui-kit-palette-text-secondary-light) !important;
+}
+
+/* Дополнительные DatePicker стили для Mantine v8 */
+[class*="DatePicker"] [class*="calendar"],
+[class*="DatePickerInput"] [class*="dropdown"],
+div[class*="mantine-"][class*="Popover-dropdown"] {
+  background-color: var(--crm-ui-kit-palette-background-primary) !important;
+}
+
+/* button[class*="mantine-DatePicker"],
+button[class*="mantine-MonthPicker"],
+button[class*="mantine-YearPicker"] {
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+} */
+
+button[class*="mantine-DatePicker"]:hover,
+button[class*="mantine-MonthPicker"]:hover,
+button[class*="mantine-YearPicker"]:hover:not([data-selected="true"]) {
+  background-color: var(--crm-ui-kit-palette-button-classic-hover-background) !important;
+}
+
+button[class*="mantine-"][data-selected="true"] {
+  background-color: var(--crm-ui-kit-palette-link-primary) !important;
+  color: white !important;
+}
+
+/* Pagination стили */
+.mantine-Pagination-control {
+  background-color: var(--crm-ui-kit-palette-background-primary) !important;
+  border: 1px solid var(--crm-ui-kit-palette-border-default) !important;
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+}
+
+.mantine-Pagination-control:hover:not([data-active="true"]):not(:disabled) {
+  background-color: var(--crm-ui-kit-palette-button-classic-hover-background) !important;
+}
+
+.mantine-Pagination-control[data-active="true"] {
+  background-color: var(--crm-ui-kit-palette-link-primary) !important;
+  color: white !important;
+  border-color: var(--crm-ui-kit-palette-link-primary) !important;
+}
+
+/* Tooltip стили */
+.mantine-Tooltip-tooltip {
+  background-color: var(--crm-ui-kit-palette-background-primary) !important;
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+  border: 1px solid var(--crm-ui-kit-palette-border-default) !important;
+}
+
+/* Anchor стили */
+.mantine-Anchor-root {
+  color: var(--crm-ui-kit-palette-link-primary) !important;
+}
+
+.mantine-Anchor-root:hover {
+  color: var(--crm-ui-kit-palette-link-hover-primary) !important;
+}
+
+/* Tabs стили */
+.mantine-Tabs-root {
+  background-color: transparent !important;
+}
+
+.mantine-Tabs-list {
+  background-color: transparent !important;
+  border-bottom: 1px solid var(--crm-ui-kit-palette-border-default) !important;
+}
+
+.mantine-Tabs-tab {
+  background-color: transparent !important;
+  border: none !important;
+  border-bottom: 2px solid transparent !important;
+  transition: all 0.2s ease;
+}
+
+.mantine-Tabs-tab .mantine-Text-root {
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+}
+
+/* Специальное правило для ошибок валидации - должно переопределить стандартный цвет */
+.mantine-Tabs-tab .mantine-Text-root[data-error="true"] {
+  color: red !important;
+}
+
+.mantine-Tabs-tab:hover:not([data-active="true"]) {
+  background-color: var(--crm-ui-kit-palette-button-classic-hover-background) !important;
+  border-bottom-color: var(--crm-ui-kit-palette-border-default) !important;
+}
+
+.mantine-Tabs-tab[data-active="true"] {
+  background-color: transparent !important;
+  border-bottom-color: var(--crm-ui-kit-palette-link-primary) !important;
+}
+
+.mantine-Tabs-tab[data-active="true"] .mantine-Text-root {
+  color: var(--crm-ui-kit-palette-link-primary) !important;
+}
+
+.mantine-Tabs-panel {
+  background-color: transparent !important;
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+}
+
+/* Title стили */
+.mantine-Title-root {
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+}
+
+/* Divider стили */
+.mantine-Divider-root {
+  border-color: var(--crm-ui-kit-palette-border-default) !important;
+}
+
+/* Ticket Card стили */
+.mantine-Card-root {
+  background-color: var(--crm-ui-kit-palette-background-primary);
+  border-color: var(--crm-ui-kit-palette-border-default) !important;
+  color: var(--crm-ui-kit-palette-text-primary) !important;
+}
+
+/* Ticket Card - My Ticket стили */
+.ticket-card-my-ticket {
+  background-color: var(--crm-ui-kit-palette-surface-hover-background-color) !important;
+  border-color: var(--crm-ui-kit-palette-link-primary) !important;
+  border-width: 2px !important;
+}

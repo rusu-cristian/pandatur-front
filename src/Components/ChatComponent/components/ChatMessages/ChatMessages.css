@@ -1,0 +1,14 @@
+.chat-area {
+  border-left: 1px solid var(--crm-ui-kit-palette-border-default);
+  border-right: 1px solid var(--crm-ui-kit-palette-border-default);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  /* scroll-behavior: smooth; */
+}

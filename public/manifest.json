@@ -1,0 +1,15 @@
+{
+  "short_name": "Panda Tur CRM",
+  "name": "Panda Tur CRM",
+  "icons": [
+    {
+      "src": "panda-tur.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

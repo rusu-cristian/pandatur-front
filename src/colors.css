@@ -1,0 +1,200 @@
+/* Тёмная тема (по умолчанию) */
+:root,
+:root[data-theme="dark"] {
+  /* Фоны */
+  --crm-ui-kit-palette-background-default: #0f2231;
+  /* Базовый фон приложения */
+  --crm-ui-kit-palette-background-primary: #153043;
+  /* Основной фон блоков/карточек */
+  --crm-ui-kit-palette-background-primary-disabled: #132b3c;
+  /* Отключенные/неактивные элементы */
+  --crm-ui-kit-palette-sidebar-background: #0a1929;
+  /* Фон сайдбара - темно-синий */
+  --crm-ui-kit-palette-sidebar-text: #f2f2f2;
+  /* Цвет текста в сайдбаре */
+
+  /* Текст */
+  --crm-ui-kit-palette-text-primary: #f2f2f2;
+  /* --crm-ui-kit-palette-text-primary-black: #000000; */
+
+  /* Основной цвет текста */
+  --crm-ui-kit-palette-text-secondary-light: #7f8ba4;
+  /* Вторичный текст (светлый) */
+  --crm-ui-kit-palette-text-secondary-dark: #8092ad;
+  /* Вторичный текст (тёмный) */
+
+  /* Ссылки */
+  --crm-ui-kit-palette-link-primary: #10b981;
+  /* Основной цвет ссылок/активных элементов - мягкий зелёный */
+  --crm-ui-kit-palette-link-hover-primary: #059669;
+  /* Цвет ссылок при наведении - чуть темнее */
+  --crm-ui-kit-palette-button-active-background: #047857;
+  /* Фон активных/выбранных кнопок - тёмно-зелёный */
+
+  /* Границы */
+  --crm-ui-kit-palette-border-default: #596683;
+  /* Базовые границы/разделители */
+  --crm-ui-kit-palette-border-primary: #284860;
+  /* Акцентные/активные границы */
+
+  /* Плейсхолдеры */
+  --crm-ui-kit-palette-placeholder-primary: #6a7991;
+  /* Плейсхолдер активных инпутов */
+  --crm-ui-kit-palette-placeholder-default: #6a7991;
+  /* Плейсхолдер по умолчанию */
+
+  /* Поверхности */
+  --crm-ui-kit-palette-surface-background-color: #0f2231;
+  /* Фон поверхностей/карточек */
+  --crm-ui-kit-palette-surface-hover-background-color: #264b79;
+
+  /* Фон активной карточки чата */
+  --crm-ui-kit-palette-surface-active-background-color: #38a27e;
+  /* Цвет ховера для активной карточки чата */
+  --crm-ui-kit-palette-surface-active-hover-background-color: #2f8f6e;
+
+  /* Ховер для поверхностей */
+  --crm-ui-kit-palette-surface-text-color: #f2f2f2;
+  /* Текст на поверхностях */
+
+  /* Скроллбар */
+  --crm-ui-kit-palette-scrollbar-thumb-background: #394e5f;
+  /* Цвет бегунка скроллбара */
+
+  /* Кнопки */
+  --crm-ui-kit-palette-button-classic-hover-background: #19374d;
+  /* Фон кнопки (hover) */
+
+  /* Тени */
+  --crm-ui-kit-palette-box-shadow-default: #132b3c;
+  /* Базовый цвет тени (если используется) */
+  --crm-ui-kit-palette-content-block-box-shadow: none;
+  /* Отключение тени контент-блоков */
+  --crm-ui-kit-palette-accordion-item-box-shadow: 0px 1px 6px 2px rgba(0, 19, 45, .06);
+  /* Тень элементов аккордеона */
+
+  /* Всплывающие блоки (callouts) */
+  --crm-ui-kit-palette-callout-error-background-color: #0f2231;
+  /* Ошибка — фон */
+  --crm-ui-kit-palette-callout-warning-background-color: #264b79;
+  /* Предупреждение — фон */
+  --crm-ui-kit-palette-callout-info-background-color: #264b79;
+  /* Информация — фон */
+  --crm-ui-kit-palette-callout-success-background-color: #0f2231;
+  /* Успех — фон */
+
+  /* Сообщения чата */
+  --crm-ui-kit-palette-message-received-background: #0f2231;
+  /* Фон полученных сообщений (от клиента) */
+  --crm-ui-kit-palette-message-sent-background: #203e57;
+  /* Фон отправленных сообщений (от техника) */
+  --crm-ui-kit-palette-message-manager-text-color: #94a3b8;
+  /* Цвет текста последнего сообщения от техника/менеджера */
+  --crm-ui-kit-palette-message-client-text-color: #ffffff;
+  /* Цвет текста последнего сообщения от клиента */
+  --crm-ui-kit-palette-chat-list-client-background: #1c3754;
+  /* Фон карточки чата, когда последнее сообщение от клиента */
+  --crm-ui-kit-palette-chat-list-client-text-color: #ffffff;
+  /* Цвет текста сообщения клиента в списке чатов */
+  --crm-ui-kit-palette-chat-list-manager-text-color: #94a3b8;
+  /* Цвет текста сообщения менеджера в списке чатов */
+}
+
+/* Светлая тема */
+:root[data-theme="light"] {
+  /* Фоны */
+  --crm-ui-kit-palette-background-default: #edf1f5;
+  /* Базовый фон приложения */
+  --crm-ui-kit-palette-background-primary: #f6f8fb;
+  /* Основной фон блоков/карточек */
+  --crm-ui-kit-palette-background-primary-disabled: #dfe5ec;
+  /* Отключенные/неактивные элементы */
+  --crm-ui-kit-palette-sidebar-background: #eef3f8;
+  /* Фон сайдбара - белый для светлой темы */
+  --crm-ui-kit-palette-sidebar-text: #212529;
+  /* Цвет текста в сайдбаре - темный для светлой темы */
+
+  /* Текст */
+  --crm-ui-kit-palette-text-primary: #212529;
+  /* Основной цвет текста */
+  --crm-ui-kit-palette-text-secondary-light: #5c6673;
+  /* Вторичный текст (светлый) */
+  --crm-ui-kit-palette-text-secondary-dark: #3c4654;
+  /* Вторичный текст (тёмный) */
+
+  /* Ссылки */
+  --crm-ui-kit-palette-link-primary: #10b981;
+  /* Основной цвет ссылок/активных элементов - мягкий зелёный */
+  --crm-ui-kit-palette-link-hover-primary: #059669;
+  /* Цвет ссылок при наведении - чуть темнее */
+  --crm-ui-kit-palette-button-active-background: #047857;
+  /* Фон активных/выбранных кнопок - тёмно-зелёный */
+
+  /* Границы */
+  --crm-ui-kit-palette-border-default: #c8d0da;
+  /* Базовые границы/разделители */
+  --crm-ui-kit-palette-border-primary: #b6c0cc;
+  /* Акцентные/активные границы */
+
+  /* Плейсхолдеры */
+  --crm-ui-kit-palette-placeholder-primary: #9aa6b6;
+  /* Плейсхолдер активных инпутов */
+  --crm-ui-kit-palette-placeholder-default: #9aa6b6;
+  /* Плейсхолдер по умолчанию */
+
+  /* Поверхности */
+  --crm-ui-kit-palette-surface-background-color: #f7f9fc;
+  /* Фон поверхностей/карточек */
+  --crm-ui-kit-palette-surface-hover-background-color: #e1e8f2;
+
+  /* Фон активной карточки чата */
+  --crm-ui-kit-palette-surface-active-background-color: #91deb8;
+  /* Цвет ховера для активной карточки чата */
+  --crm-ui-kit-palette-surface-active-hover-background-color: #76bba3;
+
+  /* Ховер для поверхностей */
+  --crm-ui-kit-palette-surface-text-color: #212529;
+  /* Текст на поверхностях */
+
+  /* Скроллбар */
+  --crm-ui-kit-palette-scrollbar-thumb-background: #bcc6d3;
+  /* Цвет бегунка скроллбара */
+
+  /* Кнопки */
+  --crm-ui-kit-palette-button-classic-hover-background: #dbe2eb;
+  /* Фон кнопки (hover) */
+
+  /* Тени */
+  --crm-ui-kit-palette-box-shadow-default: rgba(23, 42, 68, 0.12);
+  /* Базовый цвет тени (если используется) */
+  --crm-ui-kit-palette-content-block-box-shadow: 0 1px 3px rgba(23, 42, 68, 0.12);
+  /* Тень контент-блоков */
+  --crm-ui-kit-palette-accordion-item-box-shadow: 0px 1px 6px 2px rgba(23, 42, 68, 0.08);
+  /* Тень элементов аккордеона */
+
+  /* Всплывающие блоки (callouts) */
+  --crm-ui-kit-palette-callout-error-background-color: #f0dfe5;
+  /* Ошибка — фон */
+  --crm-ui-kit-palette-callout-warning-background-color: #e9eef7;
+  /* Предупреждение — фон */
+  --crm-ui-kit-palette-callout-info-background-color: #d8e4f6;
+  /* Информация — фон */
+  --crm-ui-kit-palette-callout-success-background-color: #d8ecec;
+  /* Успех — фон */
+
+  /* Сообщения чата */
+  --crm-ui-kit-palette-message-received-background: #e3f2ea;
+  /* Фон полученных сообщений (от клиента) - светло-зеленый с серым оттенком */
+  --crm-ui-kit-palette-message-sent-background: #e5eae2;
+  /* Фон отправленных сообщений (от техника) - светло-серый с зелёным подтоном */
+  --crm-ui-kit-palette-message-manager-text-color: #4e5a55;
+  /* Цвет текста последнего сообщения от техника/менеджера */
+  --crm-ui-kit-palette-message-client-text-color: #1f3528;
+  /* Цвет текста последнего сообщения от клиента */
+  --crm-ui-kit-palette-chat-list-client-background: #d3ecdd;
+  /* Фон карточки чата, когда последнее сообщение от клиента */
+  --crm-ui-kit-palette-chat-list-client-text-color: #203029;
+  /* Цвет текста сообщения клиента в списке чатов */
+  --crm-ui-kit-palette-chat-list-manager-text-color: #4e5a55;
+  /* Цвет текста сообщения менеджера в списке чатов */
+}

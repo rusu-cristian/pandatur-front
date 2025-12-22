@@ -1,0 +1,18 @@
+.spin {
+  width: var(--width);
+  height: var(--height);
+  border: var(--stroke) solid rgba(255, 255, 255, 0.1);
+  border-top: var(--stroke) solid #0f824c;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}

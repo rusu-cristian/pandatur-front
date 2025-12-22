@@ -1,0 +1,19 @@
+.root {
+  &[data-variant="danger"] {
+    background-color: var(--mantine-color-red-9);
+    color: var(--mantine-color-red-0);
+  }
+}
+
+.rootActionIcon {
+  &[data-variant="danger"] {
+    border: 1px solid var(--mantine-color-red-9);
+    background-color: transparent;
+    color: var(--mantine-color-red-9);
+
+    &:hover {
+      background-color: var(--mantine-color-red-1);
+      color: var(--mantine-color-red-9);
+    }
+  }
+}

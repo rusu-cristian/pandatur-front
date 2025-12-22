@@ -1,0 +1,4 @@
+.call-message {
+  border-radius: var(--mantine-radius-lg);
+  border: 1px solid var(--mantine-color-gray-4);
+}

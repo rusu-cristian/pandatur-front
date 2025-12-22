@@ -1,0 +1,7 @@
+.leads-modal-filter-tabs .mantine-Tabs-panel[data-orientation="horizontal"] {
+  height: calc(100% - 36px);
+}
+
+.leads-modal-filter-tabs .mantine-Tabs-root[data-orientation="vertical"] {
+  height: 100%;
+}

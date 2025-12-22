@@ -1,0 +1,4 @@
+export const ibanOptions = [
+  "MD41VI000002224926286MDL",
+  "MD16VI000000002224926286EUR"
+]

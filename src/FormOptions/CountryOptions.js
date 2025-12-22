@@ -1,0 +1,42 @@
+import { getLanguageByKey } from "../Components/utils/getLanguageByKey";
+
+const countryOptionKeys = [
+  "Albania",
+  "Altele",
+  "Bulgaria",
+  "Canada",
+  "Cipru",
+  "Cuba",
+  "Dubai (Emiratele arabe unite)",
+  "Egipt",
+  "Europa",
+  "Franta",
+  "Grecia",
+  "Grecia,Creta",
+  "India",
+  "Indonesia,Balti",
+  "Israel",
+  "Italia",
+  "Laponia",
+  "Maldive",
+  "Moldova",
+  "Muntenegru",
+  "Republica Dominicana",
+  "Romania",
+  "Spania",
+  "Sri Lanka",
+  "Tanzania",
+  "Thailand",
+  "Tunisia",
+  "Turcia",
+  "Ucraina",
+  "Ungaria",
+  "USA",
+  "Zanzibar",
+  "Nu este specificat",
+];
+
+export const countryOptions = countryOptionKeys.map((key) => ({
+  value: key,
+  label: getLanguageByKey(key) || key,
+}));

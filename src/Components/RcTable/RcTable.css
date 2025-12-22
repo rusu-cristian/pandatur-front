@@ -1,0 +1,93 @@
+.table table {
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid var(--crm-ui-kit-palette-border-default);
+  border-collapse: collapse;
+  border-spacing: 0;
+  background-color: var(--crm-ui-kit-palette-background-primary);
+  color: var(--crm-ui-kit-palette-text-primary);
+}
+
+.table .rc-table-header {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background-color: var(--crm-ui-kit-palette-background-primary);
+}
+
+.table thead .rc-table-cell {
+  text-align: left;
+  color: var(--crm-ui-kit-palette-text-primary);
+}
+
+.table thead .rc-table-cell,
+.table tbody .rc-table-cell {
+  border-bottom: 1px solid var(--crm-ui-kit-palette-border-primary);
+  padding: 8px;
+  color: var(--crm-ui-kit-palette-text-primary);
+}
+
+.table thead .rc-table-cell {
+  position: relative;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.table thead .rc-table-cell:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 50%;
+  background-color: var(--crm-ui-kit-palette-border-default);
+}
+
+.table tbody .rc-table-row {
+  transition: 0.3s ease;
+  background-color: var(--crm-ui-kit-palette-background-primary);
+}
+
+.table tbody .rc-table-row:hover {
+  background-color: var(--crm-ui-kit-palette-button-classic-hover-background);
+}
+
+.table tbody .rc-table-row.border .rc-table-cell {
+  border-right: 1px solid var(--crm-ui-kit-palette-border-default);
+}
+
+.table tbody .rc-table-row.row-selection {
+  background-color: var(--crm-ui-kit-palette-surface-hover-background-color);
+}
+
+.table tbody .rc-table-row.row-selection:hover {
+  background-color: var(--crm-ui-kit-palette-surface-hover-background-color);
+  opacity: 0.8;
+}
+
+.table-spinner-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 667px; /* Компенсируем zoom: 0.75 (500 * 1.3333) */
+}
+
+.table-container-custom {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+}
+
+.table .rc-table-expanded-row-fixed {
+  width: 100% !important;
+}
+
+.table td.rc-table-cell-fix-right-first {
+  background-color: var(--crm-ui-kit-palette-background-primary);
+  box-shadow: -3px 0 4px 0 var(--crm-ui-kit-palette-box-shadow-default);
+}
+
+.table th.rc-table-cell-fix-right-first {
+  background-color: var(--crm-ui-kit-palette-background-primary);
+}

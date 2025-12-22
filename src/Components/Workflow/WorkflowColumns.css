@@ -1,0 +1,33 @@
+.workflow-columns {
+  overflow-x: scroll;
+  overflow-y: hidden;
+  height: 100%;
+  cursor: grab;
+  padding: 0 20px;
+  background-color: var(--crm-ui-kit-palette-background-default);
+  color: var(--crm-ui-kit-palette-text-primary);
+}
+
+.workflow-columns:active {
+  cursor: grabbing;
+}
+
+/* WebKit scrollbars */
+.workflow-columns::-webkit-scrollbar {
+  height: 10px;
+}
+
+.workflow-columns::-webkit-scrollbar-track {
+  background: var(--crm-ui-kit-palette-background-default);
+}
+
+.workflow-columns::-webkit-scrollbar-thumb {
+  background-color: var(--crm-ui-kit-palette-scrollbar-thumb-background);
+  border-radius: 8px;
+}
+
+/* Firefox */
+.workflow-columns {
+  scrollbar-color: var(--crm-ui-kit-palette-scrollbar-thumb-background) var(--crm-ui-kit-palette-background-default);
+  scrollbar-width: thin;
+}

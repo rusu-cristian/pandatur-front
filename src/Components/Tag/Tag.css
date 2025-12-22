@@ -1,0 +1,35 @@
+.tag {
+  border-radius: 4px;
+  padding: 2px 6px;
+  border-width: 1px;
+  border-style: solid;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.tag-default {
+  background-color: #f5f5f5;
+  color: #777777;
+}
+
+.tag-processing {
+  color: #1677ff;
+  background: #e6f4ff;
+  border-color: #91caff;
+}
+
+.tag-success {
+  color: #52c41a;
+  background: #f6ffed;
+  border-color: #b7eb8f;
+}
+
+.tag-warning {
+  background-color: #fffbe6;
+  color: #faad14;
+}
+
+.tag-danger {
+  background-color: #fff2f0;
+  color: #ff4d4f;
+}

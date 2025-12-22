@@ -1,0 +1,11 @@
+.placeholder-spinner {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0;
+  z-index: 9999;
+}

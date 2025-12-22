@@ -1,0 +1,28 @@
+.chat-item {
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+  cursor: pointer;
+}
+
+.chat-item.client-message {
+  background-color: var(--crm-ui-kit-palette-chat-list-client-background);
+}
+
+.chat-item.active {
+  background-color: var(--crm-ui-kit-palette-surface-active-background-color);
+  border-left: 4px solid var(--crm-ui-kit-palette-link-primary);
+}
+
+.chat-item.active:hover {
+  background-color: var(--crm-ui-kit-palette-surface-active-hover-background-color);
+}
+
+.chat-item:hover {
+  background-color: var(--crm-ui-kit-palette-button-classic-hover-background);
+  color: var(--crm-ui-kit-palette-text-primary);
+}
+
+.chat-item .right-count {
+  transition: opacity 0.3s ease;
+}

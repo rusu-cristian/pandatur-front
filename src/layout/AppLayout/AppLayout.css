@@ -1,0 +1,31 @@
+.app-container {
+  display: flex;
+  height: 133.33vh; /* Компенсируем уменьшение высоты от zoom */
+  min-height: 133.33vh;
+  width: 133.33vw; /* Компенсируем уменьшение ширины от zoom */
+}
+
+.page-content {
+  height: 133.33vh; /* Компенсируем уменьшение высоты от zoom */
+  min-height: 133.33vh;
+  width: calc(133.33vw - var(--side-bar-width)); /* Компенсируем уменьшение ширины от zoom */
+  overflow: hidden;
+}
+
+/* Мобильная адаптация */
+@media (max-width: 768px) {
+  .app-container {
+    flex-direction: column;
+  }
+  
+  .page-content {
+    width: 100%;
+    height: calc(100vh - 60px); /* Высота минус высота мобильного меню */
+  }
+}
+
+@media (max-width: 480px) {
+  .page-content {
+    height: calc(100vh - 50px);
+  }
+}

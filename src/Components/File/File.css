@@ -1,0 +1,10 @@
+.file {
+  border-radius: var(--mantine-radius-lg);
+  color: var(--crm-ui-kit-palette-text-primary);
+  transition: all 0.2s ease;
+}
+
+.file:hover {
+  color: var(--crm-ui-kit-palette-link-hover-primary);
+  background-color: var(--crm-ui-kit-palette-button-classic-hover-background) !important;
+}

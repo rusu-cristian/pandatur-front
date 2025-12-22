@@ -1,0 +1,5 @@
+.leads-header-container {
+  position: fixed;
+  width: calc(100% - var(--side-bar-width));
+  /* padding: 20px 20px 0 20px; */
+}

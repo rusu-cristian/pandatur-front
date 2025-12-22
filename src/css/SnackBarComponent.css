@@ -1,0 +1,101 @@
+/* Main container for the snackbar notification */
+.snack-bar-notification {
+  display: flex;
+  align-items: center; /* Centers items vertically */
+  justify-content: space-between; /* Ensures proper spacing between elements */
+  padding: 8px 0px 8px 8px; /* Adds some space around the content */
+  width: 100%; /* Full width of the snackbar */
+  gap: 8px; /* Adds space between elements */
+  box-sizing: border-box; /* Includes padding in width calculation */
+  margin-right: 10px;
+}
+
+/* Container for the icon and message */
+.snack-object {
+  display: flex;
+  flex-wrap: wrap; /* Allows wrapping to the next row */
+  align-items: center; /* Centers content vertically */
+  flex: 1; /* Fills the remaining space */
+  gap: 12px; /* Adds spacing between the icon and message */
+  min-width: 0; /* Allows text overflow to work correctly */
+  cursor: pointer;
+}
+
+/* Envelope icon (far left) */
+.snack-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0; /* Prevents icon from shrinking */
+  font-size: 20px; /* Adjust size of the envelope icon */
+  color: #ffffff; /* Icon color */
+}
+
+/* Message text (middle, can wrap to second line) */
+.snack-message {
+  flex: 1; /* Fills available space */
+  font-size: 14px; /* Adjust font size */
+  color: #333; /* Text color */
+  overflow: hidden; /* Hides overflow content */
+  text-overflow: ellipsis; /* Adds "..." when content overflows */
+  white-space: nowrap; /* Prevents wrapping initially */
+  word-wrap: break-word; /* Break long words if necessary */
+  display: inline-block; /* Ensures proper text alignment */
+}
+
+/* Trash icon (far right) */
+.snack-close {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0; /* Prevents the button from shrinking */
+}
+
+.snack-close button {
+  border: none; /* Remove button border */
+  background: none; /* Remove button background */
+  cursor: pointer; /* Pointer cursor on hover */
+  color: rgb(255, 255, 255); /* Button color */
+  font-size: 20px; /* Adjust size of the envelope icon */
+  cursor: pointer;
+}
+
+/* Multi-line behavior */
+.snack-bar-notification {
+  flex-wrap: wrap; /* Allow items to wrap */
+  row-gap: 4px; /* Adds spacing between rows */
+}
+
+.snack-object .snack-message {
+  white-space: normal; /* Allows text to wrap to the next line */
+  line-height: 1.4; /* Adjust line spacing for better readability */
+}
+
+.go703367398 {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  align-items: stretch;
+}
+
+.go1888806478.notistack-MuiContent.notistack-MuiContent-info.go167266335.go1930647212,
+.go1888806478.notistack-MuiContent.notistack-MuiContent-warning.go167266335.go4215275574.go3162094071 {
+  width: 350px;
+  height: 60px;
+  padding: 0;
+  align-items: center;
+}
+
+.go1453831412 {
+  width: 100%;
+  height: 100%;
+  flex-wrap: nowrap;
+}
+
+.go1475592160.go1671063245 {
+  width: 350px;
+}
+
+.notistack-SnackbarContainer.go1453831412.go2989568495.go1141946668 {
+  z-index: 999;
+}

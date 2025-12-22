@@ -1,0 +1,20 @@
+.leads-table {
+  width: 100%;
+  /* TODO: Replace 67px with dynamic heigh of pagination */
+  height: calc(100% - 67px);
+  overflow-y: scroll;
+}
+
+.row-id {
+  color: #007bff;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.row-id:hover {
+  color: #0056b3;
+}
+
+.leads-table-pagination {
+  border-top: 1px solid var(--crm-ui-kit-palette-border-primary);
+}

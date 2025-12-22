@@ -1,0 +1,189 @@
+/* Переопределение фона корневого элемента сайдбара */
+.ps-sidebar-root,
+.ps-sidebar-root > *,
+aside[class*="css-"] {
+  background-color: var(--crm-ui-kit-palette-sidebar-background) !important;
+}
+
+.ps-sidebar-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: var(--crm-ui-kit-palette-sidebar-text);
+  background-color: var(--crm-ui-kit-palette-sidebar-background) !important;
+}
+
+.ps-sidebar-container .ps-menuitem-root .ps-menu-button {
+  transition: 0.3s ease;
+}
+
+.ps-sidebar-container .ps-menuitem-root .ps-menu-button:hover {
+  background-color: var(--crm-ui-kit-palette-button-classic-hover-background) !important;
+}
+
+.ps-sidebar-container .ps-menuitem-root .ps-menu-button.ps-active {
+  background-color: var(--crm-ui-kit-palette-background-primary-disabled) !important;
+  color: var(--crm-ui-kit-palette-sidebar-text) !important;
+  border-left: 3px solid var(--crm-ui-kit-palette-link-primary) !important;
+}
+
+.ps-sidebar-container .ps-menuitem-root .ps-menu-button.ps-active:hover {
+  background-color: var(--crm-ui-kit-palette-surface-hover-background-color) !important;
+  color: var(--crm-ui-kit-palette-sidebar-text) !important;
+}
+
+.ps-sidebar-container .ps-menu {
+  margin-top: 20px;
+}
+
+.ps-sidebar-root.css-1wvake5 {
+  border-right: 1px solid var(--crm-ui-kit-palette-border-primary);
+}
+
+/* Тень для светлой темы */
+:root[data-theme="light"] .ps-sidebar-root {
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+}
+
+:root[data-theme="light"] .ps-sidebar-root.css-1wvake5 {
+  border-right: 1px solid var(--crm-ui-kit-palette-border-default);
+}
+
+/* Индикатор подключения к сокету */
+.connection-indicator {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.connection-indicator.connected {
+  background-color: #4caf50;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.connection-indicator.disconnected {
+  background-color: red;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+/* Кнопка переподключения */
+.reconnect-button {
+  background: transparent;
+  border: 1px solid var(--crm-ui-kit-palette-border-primary);
+  border-radius: 4px;
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--crm-ui-kit-palette-text-primary);
+  transition: all 0.2s ease;
+  width: 30px;
+  height: 30px;
+}
+
+.reconnect-button:hover {
+  background-color: var(--crm-ui-kit-palette-button-classic-hover-background);
+  transform: rotate(180deg);
+}
+
+.reconnect-button:active {
+  transform: scale(0.95) rotate(180deg);
+}
+
+/* Мобильная адаптация */
+@media (max-width: 768px) {
+  .ps-sidebar-root {
+    position: fixed !important;
+    top: 0;
+    left: -100%;
+    width: 280px !important;
+    height: 100vh;
+    z-index: 1000;
+    transition: left 0.3s ease;
+    background-color: var(--crm-ui-kit-palette-sidebar-background) !important;
+  }
+  
+  .ps-sidebar-root.mobile-open {
+    left: 0;
+  }
+  
+  .ps-sidebar-container {
+    height: 100vh;
+    overflow-y: auto;
+  }
+  
+  .ps-sidebar-container .ps-menu {
+    margin-top: 30px;
+  }
+  
+  /* Мобильная верхняя панель */
+  .mobile-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background-color: var(--crm-ui-kit-palette-sidebar-background) !important;
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    border-bottom: 1px solid var(--crm-ui-kit-palette-border-primary);
+    color: var(--crm-ui-kit-palette-sidebar-text);
+  }
+  
+  .mobile-header .logo {
+    width: 120px;
+    height: 40px;
+  }
+  
+  .mobile-header .burger {
+    color: var(--crm-ui-kit-palette-surface-text-color);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+  }
+  
+  .mobile-header .burger:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Оверлей для мобильного меню */
+  .mobile-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+}
+
+@media (max-width: 480px) {
+  .ps-sidebar-root {
+    width: 100% !important;
+  }
+  
+  .mobile-header {
+    height: 50px;
+    padding: 0 12px;
+  }
+  
+  .mobile-header .logo {
+    width: 100px;
+    height: 35px;
+  }
+}

@@ -1,0 +1,13 @@
+.emoji-picker-popup {
+  background: var(--crm-ui-kit-palette-background-primary);
+  border: 1px solid var(--crm-ui-kit-palette-border-default);
+  box-shadow: 0px 4px 8px var(--crm-ui-kit-palette-box-shadow-default);
+  border-radius: 8px;
+  transition: opacity 0.2s;
+}
+
+.chat-input {
+  border-top: 1px solid var(--crm-ui-kit-palette-border-default);
+  flex-shrink: 0;
+  background: var(--crm-ui-kit-palette-background-primary);
+}

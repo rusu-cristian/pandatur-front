@@ -1,0 +1,139 @@
+.workflow-select-container {
+  position: relative;
+  width: 100%;
+}
+
+.workflow-select-label {
+  display: block;
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: var(--crm-ui-kit-palette-text-primary, #333);
+}
+
+.workflow-select-trigger {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 36px;
+}
+
+.workflow-select-trigger:hover:not(.disabled) {
+  opacity: 0.9;
+}
+
+.workflow-select-trigger.disabled {
+  opacity: 0.6;
+  background-color: #f5f5f5 !important;
+}
+
+.workflow-select-placeholder {
+  color: var(--crm-ui-kit-palette-text-primary);
+  font-size: 14px;
+}
+
+.workflow-select-arrow {
+  font-size: 12px;
+  color: #666;
+}
+
+.workflow-select-clear {
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+}
+
+.workflow-select-clear:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  color: #333;
+}
+
+.workflow-select-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  background: var(--crm-ui-kit-palette-background-primary);
+  border: 1px solid var(--crm-ui-kit-palette-border-default);
+  border-radius: 4px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  max-height: 300px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.workflow-select-search {
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  color: var(--crm-ui-kit-palette-text-primary);
+  outline: none;
+  font-size: 14px;
+  background-color: var(--crm-ui-kit-palette-background-primary);
+}
+
+.workflow-select-search:focus {
+  border-bottom-color: #17a2b8;
+}
+
+.workflow-select-options {
+  max-height: 250px;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.workflow-select-option {
+  padding: 8px 12px;
+  margin: 2px 0;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.workflow-select-option.selected {
+  font-weight: 600;
+}
+
+.workflow-select-check {
+  color: #17a2b8;
+  font-weight: bold;
+  margin-left: 8px;
+}
+
+.workflow-select-no-results {
+  padding: 12px;
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+}
+
+/* Стилизация скроллбара */
+.workflow-select-options::-webkit-scrollbar {
+  width: 6px;
+}
+
+.workflow-select-options::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.workflow-select-options::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.workflow-select-options::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
