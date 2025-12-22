@@ -9,9 +9,9 @@ export const LabelSwitch = ({ mt, label, ...props }) => {
         <Switch {...rest} />
       </Flex>
       {error && (
-        <Text size="xs" c="red">
+        <div style={{ color: "#fa5252", fontSize: "12px", marginTop: "4px" }}>
           {error}
-        </Text>
+        </div>
       )}
     </>
   );

@@ -213,6 +213,11 @@ export const useFormTicket = ({ groupTitle } = {}) => {
           return getLanguageByKey("workflow_change_field_required");
         }
       },
+      technician_id: (value) => {
+        if (!value) {
+          return getLanguageByKey("workflow_change_field_required");
+        }
+      },
     },
 
     transformValues: ({
