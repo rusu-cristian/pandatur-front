@@ -12,7 +12,7 @@ import { AttachmentsPreview } from "../AttachmentsPreview";
 import { useDisclosure } from "@mantine/hooks";
 import { FaTasks, FaEnvelope } from "react-icons/fa";
 import { useState, useRef, useMemo, useEffect, memo, useCallback } from "react";
-import { LuStickyNote } from "react-icons/lu";
+import { LuSmile, LuStickyNote } from "react-icons/lu";
 import { RiAttachment2 } from "react-icons/ri";
 import { useSnackbar } from "notistack";
 import { getLanguageByKey } from "../../../utils";
@@ -28,6 +28,7 @@ import { api } from "../../../../api";
 import { EmailForm } from "../EmailForm/EmailForm";
 import { getPagesByType } from "../../../../constants/webhookPagesConfig";
 import { socialMediaIcons } from "../../../utils/socialMediaIcons";
+import { SimpleEmojiPicker } from "../SimpleEmojiPicker";
 import "./ChatInput.css";
 
 const MESSAGE_LENGTH_LIMIT = 999;
@@ -76,6 +77,7 @@ export const ChatInput = memo(({
   const [template, setTemplate] = useState();
   const [isDragOver, setIsDragOver] = useState(false);
   const [showEmailForm, setShowEmailForm] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const [attachments, setAttachments] = useState([]);
   const textAreaRef = useRef(null);
@@ -680,6 +682,25 @@ export const ChatInput = memo(({
                       </ActionIcon>
                     )}
                   </FileButton>
+
+                  <Box style={{ position: 'relative' }}>
+                    <ActionIcon
+                      onClick={() => setShowEmojiPicker(prev => !prev)}
+                      variant="default"
+                      title="Emoji"
+                    >
+                      <LuSmile size={20} />
+                    </ActionIcon>
+                    {showEmojiPicker && (
+                      <SimpleEmojiPicker
+                        onSelect={(emoji) => {
+                          setMessage(prev => prev + emoji);
+                          textAreaRef.current?.focus();
+                        }}
+                        onClose={() => setShowEmojiPicker(false)}
+                      />
+                    )}
+                  </Box>
 
                   <ActionIcon
                     onClick={onToggleNoteComposer}
