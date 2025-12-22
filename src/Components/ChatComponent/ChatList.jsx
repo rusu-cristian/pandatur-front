@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback, useEffect, useTransition } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { FixedSizeList } from "react-window";
 import { LuFilter } from "react-icons/lu";
@@ -15,7 +15,7 @@ import {
   Loader
 } from "@mantine/core";
 import { getLanguageByKey } from "../utils";
-import { useApp, useDOMElementHeight, useChatFilters, useUser } from "../../hooks";
+import { useDOMElementHeight, useChatFilters, useUser, useChatTicketsQuery } from "../../hooks";
 import { ChatListItem } from "./components";
 import { ChatFilter } from "./ChatFilter";
 import { prepareFiltersForUrl } from "../utils/parseFiltersFromUrl";
@@ -25,47 +25,31 @@ const CHAT_ITEM_HEIGHT = 94;
 const ChatList = ({ ticketId }) => {
   const navigate = useNavigate();
   const { ticketId: ticketIdFromUrl } = useParams();
-  
-  const { 
-    tickets, 
-    chatFilteredTickets, 
-    chatSpinner, 
-    isChatFiltered,
-    fetchChatFilteredTickets,
-    setIsChatFiltered,
-    groupTitleForApi,
-    workflowOptions,
-  } = useApp();
-  
   const { userId } = useUser();
   
-  // Единый хук для фильтров (URL как источник правды)
-  const { filters, hasFilters, isFiltered, defaultFilters } = useChatFilters();
+  // React Query хук для тикетов (заменяет fetchChatFilteredTickets из AppContext)
+  const { 
+    tickets: displayedTickets,
+    isLoading,
+    isFetching,
+    hasFilters,
+    isFiltered,
+    groupTitleForApi,
+    filters,
+  } = useChatTicketsQuery();
   
-  // Ref для отслеживания загрузки (предотвращает дублирование)
-  const lastFiltersRef = useRef(null);
+  // Хук для управления фильтрами (URL — источник правды)
+  const { defaultFilters, workflowOptions } = useChatFilters();
+  
+  // Ref для отслеживания инициализации
   const isInitializedRef = useRef(false);
   
-  // === ЭФФЕКТ ЗАГРУЗКИ ТИКЕТОВ ===
-  // (перенесён из useChatFilters, чтобы не срабатывал при открытии ChatFilter)
+  // Эффект для применения дефолтных фильтров при первой загрузке
   useEffect(() => {
-    console.log('[ChatList] Effect check:', { groupTitleForApi, workflowOptionsLength: workflowOptions.length, userId, isFiltered, hasFilters });
-    console.log('[ChatList] filters:', filters);
-    
     if (!groupTitleForApi || !workflowOptions.length || !userId) return;
 
-    const filtersKey = JSON.stringify({ filters, groupTitleForApi, isFiltered });
-    if (lastFiltersRef.current === filtersKey) return;
-    lastFiltersRef.current = filtersKey;
-
-    if (isFiltered && hasFilters) {
-      console.log('[ChatList] Calling fetchChatFilteredTickets with:', filters);
-      // Есть фильтры — загружаем отфильтрованные тикеты
-      fetchChatFilteredTickets(filters);
-      setIsChatFiltered(true);
-    } else if (!isInitializedRef.current) {
-      console.log('[ChatList] Applying default filters');
-      // Первая загрузка без фильтров в URL — применяем дефолтные
+    // Если нет фильтров в URL и ещё не инициализировались — применяем дефолтные
+    if (!isFiltered && !isInitializedRef.current) {
       isInitializedRef.current = true;
       const urlParams = prepareFiltersForUrl({
         ...defaultFilters,
@@ -74,18 +58,12 @@ const ChatList = ({ ticketId }) => {
       });
       const basePath = ticketIdFromUrl ? `/chat/${ticketIdFromUrl}` : "/chat";
       navigate(`${basePath}?${urlParams.toString()}`, { replace: true });
-    } else {
-      console.log('[ChatList] No action taken - isFiltered:', isFiltered, 'hasFilters:', hasFilters);
     }
   }, [
-    filters,
-    hasFilters,
     isFiltered,
     groupTitleForApi,
     workflowOptions,
     userId,
-    fetchChatFilteredTickets,
-    setIsChatFiltered,
     defaultFilters,
     navigate,
     ticketIdFromUrl,
@@ -96,28 +74,13 @@ const ChatList = ({ ticketId }) => {
   
   // Модал фильтра
   const [openFilter, setOpenFilter] = useState(false);
+  
+  // startTransition для не-срочных обновлений UI (открытие тяжёлой модалки фильтра)
+  const [, startTransition] = useTransition();
 
   // Refs для высоты списка
   const wrapperChatItemRef = useRef(null);
   const wrapperChatHeight = useDOMElementHeight(wrapperChatItemRef);
-
-  // Список тикетов для отображения (сортировка по last_interaction_date)
-  const displayedTickets = useMemo(() => {
-    console.log('[ChatList] displayedTickets calc:', { 
-      isChatFiltered, 
-      chatFilteredTicketsCount: chatFilteredTickets.length, 
-      ticketsCount: tickets.length 
-    });
-    
-    const ticketsList = isChatFiltered ? chatFilteredTickets : tickets;
-    
-    // Сортируем по last_interaction_date (от новых к старым)
-    return [...ticketsList].sort((a, b) => {
-      const dateA = a.last_interaction_date ? new Date(a.last_interaction_date).getTime() : 0;
-      const dateB = b.last_interaction_date ? new Date(b.last_interaction_date).getTime() : 0;
-      return dateB - dateA; // DESC порядок (новые сверху)
-    });
-  }, [isChatFiltered, chatFilteredTickets, tickets]);
 
   // Рендер элемента списка
   const ChatItem = useCallback(
@@ -145,10 +108,11 @@ const ChatList = ({ ticketId }) => {
                 {displayedTickets.length}
               </Badge>
             </Flex>
+            {/* Кнопка фильтра — onMouseDown для мгновенного отклика */}
             <ActionIcon
               variant={hasFilters ? "filled" : "default"}
               size="36"
-              onClick={() => setOpenFilter(true)}
+              onMouseDown={() => startTransition(() => setOpenFilter(true))}
             >
               <LuFilter size={16} />
             </ActionIcon>
@@ -164,7 +128,11 @@ const ChatList = ({ ticketId }) => {
         <Divider color="var(--crm-ui-kit-palette-border-default)" />
 
         <Box style={{ height: "calc(100% - 110px)", position: "relative" }} ref={wrapperChatItemRef}>
-          {displayedTickets.length === 0 ? (
+          {isLoading ? (
+            <Flex h="100%" align="center" justify="center">
+              <Loader size="xl" color="green" />
+            </Flex>
+          ) : displayedTickets.length === 0 ? (
             <Flex h="100%" align="center" justify="center" px="md">
               <Text c="dimmed">{getLanguageByKey("Nici un lead")}</Text>
             </Flex>
@@ -179,9 +147,10 @@ const ChatList = ({ ticketId }) => {
             </FixedSizeList>
           )}
 
-          {chatSpinner && (
+          {/* Индикатор фоновой загрузки (refetch) */}
+          {isFetching && !isLoading && (
             <Box style={{ position: "absolute", bottom: 10, right: 10 }}>
-              <Loader size="xl" color="green" />
+              <Loader size="sm" color="green" />
             </Box>
           )}
         </Box>
@@ -213,7 +182,7 @@ const ChatList = ({ ticketId }) => {
       >
         <ChatFilter
           initialData={filters}
-          loading={chatSpinner}
+          loading={isFetching}
           onClose={() => setOpenFilter(false)}
         />
       </Modal>

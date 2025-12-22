@@ -7,14 +7,11 @@ import {
   Select,
   Loader,
   FileButton,
-  Badge,
-  CloseButton,
 } from "@mantine/core";
+import { AttachmentsPreview } from "../AttachmentsPreview";
 import { useDisclosure } from "@mantine/hooks";
 import { FaTasks, FaEnvelope } from "react-icons/fa";
-import { useState, useRef, useMemo, useEffect } from "react";
-import { createPortal } from "react-dom";
-import EmojiPicker from "emoji-picker-react";
+import { useState, useRef, useMemo, useEffect, memo, useCallback } from "react";
 import { LuSmile, LuStickyNote } from "react-icons/lu";
 import { RiAttachment2 } from "react-icons/ri";
 import { useSnackbar } from "notistack";
@@ -23,13 +20,15 @@ import { getEmailsByGroupTitle } from "../../../utils/emailUtils";
 import { templateOptions, templateGroupsByKey, TEMPLATE_GROUP_BY_TITLE } from "../../../../FormOptions";
 import { useUploadMediaFile, filterPagesByGroupTitle } from "../../../../hooks";
 import { getMediaType } from "../../renderContent";
-import { useApp, useSocket, useUser } from "@hooks";
+import { useSocket, useUser } from "@hooks";
+import { useTickets } from "../../../../contexts/TicketsContext";
 import Can from "../../../CanComponent/Can";
 import { TYPE_SOCKET_EVENTS } from "@app-constants";
 import { api } from "../../../../api";
 import { EmailForm } from "../EmailForm/EmailForm";
 import { getPagesByType } from "../../../../constants/webhookPagesConfig";
 import { socialMediaIcons } from "../../../utils/socialMediaIcons";
+import { SimpleEmojiPicker } from "../SimpleEmojiPicker";
 import "./ChatInput.css";
 
 const MESSAGE_LENGTH_LIMIT = 999;
@@ -44,7 +43,17 @@ const resolveTemplateGroup = (groupTitle) => {
   return TEMPLATE_GROUP_BY_TITLE[normalized] || null;
 };
 
-export const ChatInput = ({
+// Вынесено наружу — не зависит от props/state
+const renderPlatformOption = ({ option }) => (
+  <Flex align="center" justify="space-between" w="100%">
+    <span>{option.label}</span>
+    {socialMediaIcons[option.value] && (
+      <Flex>{socialMediaIcons[option.value]}</Flex>
+    )}
+  </Flex>
+);
+
+export const ChatInput = memo(({
   onSendMessage,
   onHandleFileSelect,
   onCreateTask,
@@ -65,11 +74,10 @@ export const ChatInput = ({
 }) => {
   const [opened, handlers] = useDisclosure(false);
   const [message, setMessage] = useState("");
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [template, setTemplate] = useState();
-  const [emojiPickerPosition, setEmojiPickerPosition] = useState({ top: 0, left: 0 });
   const [isDragOver, setIsDragOver] = useState(false);
   const [showEmailForm, setShowEmailForm] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const [attachments, setAttachments] = useState([]);
   const textAreaRef = useRef(null);
@@ -78,7 +86,7 @@ export const ChatInput = ({
   const { uploadFile } = useUploadMediaFile();
   const { userId } = useUser();
   const { socketRef } = useSocket();
-  const { markMessagesAsRead, getTicketById } = useApp();
+  const { markMessagesAsRead, getTicketById } = useTickets();
   const { enqueueSnackbar } = useSnackbar();
 
   // Получаем данные о воронке и email адресах
@@ -131,16 +139,6 @@ export const ChatInput = ({
     }
   }, [isLengthLimited]);
 
-  // Функция для рендеринга опций с иконками
-  const renderPlatformOption = ({ option }) => (
-    <Flex align="center" justify="space-between" w="100%">
-      <span>{option.label}</span>
-      {socialMediaIcons[option.value] && (
-        <Flex>{socialMediaIcons[option.value]}</Flex>
-      )}
-    </Flex>
-  );
-
   const templateGroup = useMemo(() => resolveTemplateGroup(groupTitle), [groupTitle]);
 
   const templateSelectOptions = useMemo(() => {
@@ -186,29 +184,17 @@ export const ChatInput = ({
     return selectedPageId && pageIdOptions.some(opt => opt.value === selectedPageId);
   }, [selectedPageId, pageIdOptions]);
 
-  // Получаем actionNeeded всегда из тикета из AppContext
-  // НЕ используем локальное состояние - всегда берем актуальное значение из AppContext
-  // Тикет обновляется автоматически через TICKET_UPDATE от сервера
+  // Получаем actionNeeded из personalInfo (приоритет) или из AppContext (fallback)
+  // personalInfo содержит актуальные данные тикета, загруженные напрямую
+  // getTicketById может содержать устаревшие данные из кэша списков
   const currentTicketFromContext = getTicketById(ticketId);
-  const actionNeeded = currentTicketFromContext ? Boolean(currentTicketFromContext.action_needed) : false;
+  const actionNeeded = personalInfo?.action_needed !== undefined
+    ? Boolean(personalInfo.action_needed)
+    : currentTicketFromContext 
+      ? Boolean(currentTicketFromContext.action_needed) 
+      : false;
 
-  // actionNeeded меняется только:
-  // 1. При получении сообщения от клиента (в AppContext)
-  // 2. При нажатии кнопки NeedAnswer (через сервер)
-
-  // actionNeeded всегда берется из тикета через AppContext
-
-  const handleEmojiClickButton = (event) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const emojiPickerHeight = 450;
-    setEmojiPickerPosition({
-      top: rect.top + window.scrollY - emojiPickerHeight,
-      left: rect.left + window.scrollX,
-    });
-    setShowEmojiPicker((prev) => !prev);
-  };
-
-  const uploadAndAddFiles = async (files) => {
+  const uploadAndAddFiles = useCallback(async (files) => {
     if (!files?.length) return;
     handlers.open();
     try {
@@ -228,39 +214,39 @@ export const ChatInput = ({
       handlers.close();
       requestAnimationFrame(() => textAreaRef.current?.focus());
     }
-  };
+  }, [handlers, uploadFile]);
 
-  const handleFileButton = async (fileOrFiles) => {
+  const handleFileButton = useCallback(async (fileOrFiles) => {
     const files = Array.isArray(fileOrFiles) ? fileOrFiles : [fileOrFiles];
     await uploadAndAddFiles(files);
-  };
+  }, [uploadAndAddFiles]);
 
-  const handleDrop = async (e) => {
+  const handleDrop = useCallback(async (e) => {
     e.preventDefault();
     setIsDragOver(false);
     const files = Array.from(e.dataTransfer.files || []);
     await uploadAndAddFiles(files);
-  };
+  }, [uploadAndAddFiles]);
 
-  const handlePaste = async (e) => {
+  const handlePaste = useCallback(async (e) => {
     const files = Array.from(e.clipboardData?.files || []);
     if (!files.length) return;
     e.preventDefault();
     await uploadAndAddFiles(files);
-  };
+  }, [uploadAndAddFiles]);
 
-  const removeAttachment = (url) => {
+  const removeAttachment = useCallback((url) => {
     setAttachments((prev) => prev.filter((a) => a.media_url !== url));
-  };
+  }, []);
 
-  const clearState = () => {
+  const clearState = useCallback(() => {
     setMessage("");
     setAttachments([]);
     setTemplate(null);
     warningShownRef.current = false;
-  };
+  }, []);
 
-  const handleMessageChange = (e) => {
+  const handleMessageChange = useCallback((e) => {
     const newValue = e.target.value;
     setMessage(newValue);
 
@@ -279,7 +265,7 @@ export const ChatInput = ({
       // Сбрасываем флаг, если длина вернулась в норму
       warningShownRef.current = false;
     }
-  };
+  }, [isLengthLimited, enqueueSnackbar]);
 
   const buildBasePayload = () => {
     // Проверка актуальности: убеждаемся, что currentClient соответствует текущему ticketId
@@ -449,50 +435,6 @@ export const ChatInput = ({
     }
   };
 
-  const AttachmentsPreview = () => {
-    if (!attachments.length) return null;
-    return (
-      <Flex gap={8} wrap="wrap" mb="xs">
-        {attachments.map((att) => {
-          const isImage = att.media_type === "image" || att.media_type === "photo" || att.media_type === "image_url";
-          return (
-            <Box
-              key={att.media_url}
-              style={{
-                position: "relative",
-                width: 72,
-                height: 72,
-                borderRadius: 8,
-                overflow: "hidden",
-                border: "1px solid var(--mantine-color-gray-3)",
-                background: "var(--crm-ui-kit-palette-background-default)",
-              }}
-              title={att.name}
-            >
-              {isImage ? (
-                // eslint-disable-next-line jsx-a11y/img-redundant-alt
-                <img
-                  src={att.media_url}
-                  alt={att.name || "attachment"}
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
-              ) : (
-                <Flex w="100%" h="100%" align="center" justify="center">
-                  <Badge size="xs">{att.media_type}</Badge>
-                </Flex>
-              )}
-              <CloseButton
-                size="sm"
-                onClick={() => removeAttachment(att.media_url)}
-                style={{ position: "absolute", top: 2, right: 2, background: "var(--crm-ui-kit-palette-background-primary)" }}
-              />
-            </Box>
-          );
-        })}
-      </Flex>
-    );
-  };
-
   return (
     <>
       <Box className="chat-input" p="16">
@@ -596,7 +538,7 @@ export const ChatInput = ({
               )}
             </Flex>
 
-            <AttachmentsPreview />
+            <AttachmentsPreview attachments={attachments} onRemove={removeAttachment} />
 
             <Textarea
               ref={textAreaRef}
@@ -717,6 +659,7 @@ export const ChatInput = ({
                 </Can>
               </Flex>
 
+
               <Flex gap="xs">
                 <Can permission={{ module: "CHAT", action: "CREATE" }} context={{ responsibleId }}>
                   <ActionIcon
@@ -740,9 +683,24 @@ export const ChatInput = ({
                     )}
                   </FileButton>
 
-                  <ActionIcon onClick={handleEmojiClickButton} variant="default">
-                    <LuSmile size={20} />
-                  </ActionIcon>
+                  <Box style={{ position: 'relative' }}>
+                    <ActionIcon
+                      onClick={() => setShowEmojiPicker(prev => !prev)}
+                      variant="default"
+                      title="Emoji"
+                    >
+                      <LuSmile size={20} />
+                    </ActionIcon>
+                    {showEmojiPicker && (
+                      <SimpleEmojiPicker
+                        onSelect={(emoji) => {
+                          setMessage(prev => prev + emoji);
+                          textAreaRef.current?.focus();
+                        }}
+                        onClose={() => setShowEmojiPicker(false)}
+                      />
+                    )}
+                  </Box>
 
                   <ActionIcon
                     onClick={onToggleNoteComposer}
@@ -777,26 +735,8 @@ export const ChatInput = ({
           />
         )}
       </Box>
-
-      {showEmojiPicker &&
-        createPortal(
-          <div
-            className="emoji-picker-popup"
-            style={{
-              position: "absolute",
-              top: emojiPickerPosition.top,
-              left: emojiPickerPosition.left,
-              zIndex: 1000,
-            }}
-            onMouseEnter={() => setShowEmojiPicker(true)}
-            onMouseLeave={() => setShowEmojiPicker(false)}
-          >
-            <EmojiPicker
-              onEmojiClick={(emoji) => setMessage((prev) => prev + emoji.emoji)}
-            />
-          </div>,
-          document.body
-        )}
     </>
   );
-};
+});
+
+ChatInput.displayName = "ChatInput";

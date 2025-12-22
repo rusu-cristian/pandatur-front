@@ -19,7 +19,7 @@ import { useSearchParams } from "react-router-dom";
 import { priorityOptions, groupTitleOptions } from "../../../FormOptions";
 import { getLanguageByKey } from "../../utils";
 import { useGetTechniciansList } from "../../../hooks";
-import { AppContext } from "../../../contexts/AppContext";
+import { UserContext } from "../../../contexts/UserContext";
 import { formatMultiSelectData } from "../../utils/multiSelectUtils";
 import {
   formatDateOrUndefinedFilter,
@@ -46,7 +46,7 @@ export const BasicGeneralFormFilter = forwardRef(
       setCustomGroupTitle,
       isAdmin,
       userGroups,
-    } = useContext(AppContext);
+    } = useContext(UserContext);
     const [, setSearchParams] = useSearchParams();
 
     const form = useForm({

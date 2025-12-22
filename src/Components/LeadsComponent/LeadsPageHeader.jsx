@@ -117,11 +117,11 @@ export const LeadsPageHeader = memo(forwardRef(({
               </>
             )}
 
-            {/* Кнопка фильтра */}
+            {/* Кнопка фильтра — onMouseDown для мгновенного отклика */}
             <ActionIcon
               variant={hasFilters ? "filled" : "default"}
               size="36"
-              onClick={onFilterOpen}
+              onMouseDown={onFilterOpen}
             >
               <LuFilter size={16} />
             </ActionIcon>

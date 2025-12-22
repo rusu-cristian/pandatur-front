@@ -1,0 +1,279 @@
+/**
+ * TicketsContext — контекст для работы с тикетами
+ * 
+ * Содержит:
+ * - tickets state (для SingleChat и legacy компонентов)
+ * - unreadCount (загружается при старте через React Query)
+ * - ticketsMap (Hash Map для O(1) поиска)
+ * - fetchSingleTicket
+ * - markMessagesAsRead
+ */
+
+import { createContext, useState, useRef, useContext, useCallback, useMemo, useEffect } from "react";
+import { useSnackbar } from "notistack";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "../api";
+import { showServerError } from "@utils";
+import { normalizeLightTickets } from "../utils/ticketNormalizers";
+import { useTicketSync } from "./TicketSyncContext";
+import { UserContext } from "./UserContext";
+
+const TicketsContext = createContext(null);
+
+// Максимальное количество тикетов в кэше (баланс памяти и UX)
+const MAX_CACHED_TICKETS = 100;
+
+// Финальные статусы, которые исключаем из подсчёта (как в useChatFilters)
+const EXCLUDED_WORKFLOWS = ["Realizat cu succes", "Închis și nerealizat", "Interesat"];
+
+/**
+ * Загрузить unseen_count с первой страницы
+ * 
+ * ПРИМЕЧАНИЕ: Для точного подсчёта нужен бэкенд endpoint /tickets/unread-count.
+ * Пока используем приближённое значение с первой страницы.
+ */
+const fetchTotalUnreadCount = async ({ groupTitle, workflowOptions }) => {
+  if (!groupTitle || !workflowOptions?.length) return 0;
+
+  // Фильтруем закрытые статусы (как в useChatFilters)
+  const filteredWorkflow = workflowOptions.filter(
+    (w) => !EXCLUDED_WORKFLOWS.includes(w)
+  );
+
+  if (filteredWorkflow.length === 0) return 0;
+
+  try {
+    const response = await api.tickets.filters({
+      page: 1,
+      type: "light",
+      group_title: groupTitle,
+      sort_by: "last_interaction_date",
+      order: "DESC",
+      attributes: {
+        workflow: filteredWorkflow,
+      },
+    });
+
+    const tickets = response.tickets || [];
+    
+    // Считаем unseen_count только с первой страницы (приближённое значение)
+    return tickets.reduce(
+      (sum, ticket) => sum + (ticket.unseen_count || 0),
+      0
+    );
+  } catch (error) {
+    console.error("Error fetching unread count:", error);
+    return 0;
+  }
+};
+
+export const TicketsProvider = ({ children }) => {
+  const { enqueueSnackbar } = useSnackbar();
+  const { notifyTicketUpdated } = useTicketSync();
+  
+  const {
+    groupTitleForApi,
+    workflowOptions,
+  } = useContext(UserContext);
+
+  const [tickets, setTickets] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  // React Query для загрузки unreadCount
+  // ОТКЛЮЧЕНО: запрос дублировал загрузку тикетов на Leads/Chat
+  // TODO: Добавить бэкенд endpoint /tickets/unread-count для оптимизации
+  // Пока unreadCount обновляется только через WebSocket события
+  const fetchedUnreadCount = undefined;
+  const isLoadingUnread = false;
+  
+  // Оригинальный код (закомментирован для оптимизации):
+  // const { data: fetchedUnreadCount, isLoading: isLoadingUnread } = useQuery({
+  //   queryKey: ["unreadCount", groupTitleForApi, workflowOptions],
+  //   queryFn: () => fetchTotalUnreadCount({ groupTitle: groupTitleForApi, workflowOptions }),
+  //   enabled: !!groupTitleForApi && workflowOptions?.length > 0,
+  //   staleTime: 60 * 1000, // 1 минута
+  //   refetchOnWindowFocus: false,
+  // });
+
+  // Синхронизируем React Query данные с локальным state
+  useEffect(() => {
+    if (typeof fetchedUnreadCount === "number") {
+      setUnreadCount(fetchedUnreadCount);
+    }
+  }, [fetchedUnreadCount]);
+
+  // Hash map для быстрого доступа к тикетам по ID
+  const ticketsMap = useRef(new Map());
+
+  // Синхронизируем ticketsMap с tickets через useEffect
+  // Это гарантирует что Map всегда актуален после рендера
+  useEffect(() => {
+    ticketsMap.current.clear();
+    tickets.forEach(ticket => {
+      ticketsMap.current.set(ticket.id, ticket);
+    });
+  }, [tickets]);
+
+  // Получить тикет по ID из Hash Map (O(1))
+  const getTicketById = useCallback((ticketId) => {
+    return ticketsMap.current.get(ticketId);
+  }, []);
+
+  // Универсальная функция для получения тикета (для совместимости)
+  const getTicketByIdWithFilters = useCallback((ticketId, isFiltered) => {
+    return getTicketById(ticketId);
+  }, [getTicketById]);
+
+  /**
+   * Загрузить и обновить один тикет
+   * 
+   * Логика:
+   * - Если group_title изменился → удаляем из текущего списка
+   * - Если group_title совпадает → обновляем в списке
+   */
+  const fetchSingleTicket = useCallback(async (ticketId) => {
+    try {
+      const ticket = await api.tickets.ticket.getLightById(ticketId);
+      const normalizedTicket = normalizeLightTickets([ticket])[0];
+
+      // Проверяем группу тикета
+      const isMatchingGroup = normalizedTicket.group_title === groupTitleForApi;
+
+      if (!isMatchingGroup) {
+        // Тикет ушёл в другую группу — ВСЕГДА удаляем из текущего списка
+        const existingTicket = getTicketById(ticketId);
+
+        if (existingTicket) {
+          if (existingTicket.unseen_count > 0) {
+            setUnreadCount((prev) => Math.max(0, prev - existingTicket.unseen_count));
+          }
+          ticketsMap.current.delete(ticketId);
+          setTickets((prev) => prev.filter((t) => t.id !== ticketId));
+        }
+        
+        // Оповещаем через TicketSync (React Query хуки подхватят)
+        notifyTicketUpdated(ticketId, normalizedTicket);
+        return;
+      }
+
+      // Группа совпадает — обновляем state
+      const existingTicket = getTicketById(ticketId);
+      const oldUnseenCount = existingTicket?.unseen_count || 0;
+      const newUnseenCount = normalizedTicket.unseen_count || 0;
+
+      // Обновляем tickets state (ticketsMap синхронизируется автоматически через useEffect)
+      setTickets((prev) => {
+        const exists = prev.find((t) => t.id === ticketId);
+        if (exists) {
+          return prev.map((t) => (t.id === ticketId ? normalizedTicket : t));
+        } else {
+          // Добавляем новый тикет, но ограничиваем размер кэша
+          const updated = [...prev, normalizedTicket];
+          if (updated.length > MAX_CACHED_TICKETS) {
+            // Удаляем самые старые тикеты (без unseen_count)
+            const sorted = updated.sort((a, b) => {
+              // Сначала сортируем по unseen_count (с непрочитанными — в конец)
+              if (a.unseen_count > 0 && b.unseen_count === 0) return 1;
+              if (a.unseen_count === 0 && b.unseen_count > 0) return -1;
+              // Затем по дате последнего взаимодействия
+              return new Date(b.last_interaction_date) - new Date(a.last_interaction_date);
+            });
+            return sorted.slice(0, MAX_CACHED_TICKETS);
+          }
+          return updated;
+        }
+      });
+
+      // Пересчитываем unreadCount
+      const diff = newUnseenCount - oldUnseenCount;
+      if (diff !== 0) {
+        setUnreadCount((prev) => Math.max(0, prev + diff));
+      }
+
+      // Оповещаем через TicketSync
+      notifyTicketUpdated(ticketId, normalizedTicket);
+      
+      return normalizedTicket;
+    } catch (error) {
+      enqueueSnackbar(showServerError(error), { variant: "warning" });
+    }
+  }, [groupTitleForApi, enqueueSnackbar, getTicketById, notifyTicketUpdated]);
+
+  /**
+   * Пометить сообщения как прочитанные
+   */
+  const markMessagesAsRead = useCallback(async (ticketId, count = 0) => {
+    if (!ticketId) return;
+    await fetchSingleTicket(ticketId);
+  }, [fetchSingleTicket]);
+
+  /**
+   * Удалить тикет из state
+   */
+  const removeTicket = useCallback((ticketId) => {
+    const ticket = getTicketById(ticketId);
+    
+    if (ticket?.unseen_count > 0) {
+      setUnreadCount((prev) => Math.max(0, prev - ticket.unseen_count));
+    }
+    
+    // ticketsMap синхронизируется автоматически через useEffect
+    setTickets((prev) => prev.filter((t) => t.id !== ticketId));
+  }, [getTicketById]);
+
+  /**
+   * Обновить тикет в state (без API запроса)
+   */
+  const updateTicketInState = useCallback((ticketId, updates) => {
+    // ticketsMap синхронизируется автоматически через useEffect
+    setTickets((prev) => {
+      const exists = prev.find((t) => t.id === ticketId);
+      if (!exists) return prev;
+
+      const updated = { ...exists, ...updates };
+      return prev.map((t) => (t.id === ticketId ? updated : t));
+    });
+  }, []);
+
+  const value = useMemo(() => ({
+    // State
+    tickets,
+    setTickets,
+    unreadCount,
+    setUnreadCount,
+    
+    // Методы
+    getTicketById,
+    getTicketByIdWithFilters,
+    fetchSingleTicket,
+    markMessagesAsRead,
+    removeTicket,
+    updateTicketInState,
+    
+    // Внутренние (для WebSocket) — ticketsMap синхронизируется автоматически
+    ticketsMap,
+  }), [
+    tickets, 
+    unreadCount, 
+    getTicketById, 
+    getTicketByIdWithFilters, 
+    fetchSingleTicket, 
+    markMessagesAsRead,
+    removeTicket,
+    updateTicketInState,
+  ]);
+
+  return (
+    <TicketsContext.Provider value={value}>
+      {children}
+    </TicketsContext.Provider>
+  );
+};
+
+export const useTickets = () => {
+  const context = useContext(TicketsContext);
+  if (!context) {
+    throw new Error("useTickets must be used within TicketsProvider");
+  }
+  return context;
+};

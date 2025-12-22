@@ -16,6 +16,9 @@ const FORMAT_MEDIA = [
   "document", // Тип для документов (PDF и т.д.)
 ];
 
+// Максимальное количество сообщений в памяти (баланс памяти и UX)
+const MAX_MESSAGES_IN_MEMORY = 200;
+
 const getMediaFileMessages = (messageList) => {
   return messageList.filter((msg) => FORMAT_MEDIA.includes(msg.mtype));
 };
@@ -74,7 +77,15 @@ export const useMessages = () => {
       const newNotesData = Array.isArray(response?.notes) ? response.notes : [];
 
       // Добавляем новые сообщения к существующим (вначало списка, так как это старые сообщения)
-      setMessages((prev) => [...newData, ...prev]);
+      // Ограничиваем максимальное количество сообщений в памяти
+      setMessages((prev) => {
+        const combined = [...newData, ...prev];
+        if (combined.length > MAX_MESSAGES_IN_MEMORY) {
+          // Оставляем только последние MAX_MESSAGES_IN_MEMORY сообщений
+          return combined.slice(0, MAX_MESSAGES_IN_MEMORY);
+        }
+        return combined;
+      });
       setLogs((prev) => [...newLogsData, ...prev]);
       setNotes((prev) => [...newNotesData, ...prev]);
       setCurrentPage(nextPage);
@@ -266,6 +277,17 @@ export const useMessages = () => {
     };
   }, [onEvent, offEvent]);
 
+  // Полная очистка всех данных (для освобождения памяти)
+  const clearAll = useCallback(() => {
+    setMessages([]);
+    setLogs([]);
+    setNotes([]);
+    setMediaFiles([]);
+    setLastMessage(undefined);
+    setCurrentPage(1);
+    setHasMoreMessages(false);
+  }, []);
+
   return useMemo(
     () => ({
       messages,
@@ -283,10 +305,11 @@ export const useMessages = () => {
       markMessageSeen,
       markMessagesAsSeen,
       deleteMessage,
+      clearAll, // Для освобождения памяти
       setMessages,
       setLogs,
       setNotes,
     }),
-    [messages, logs, notes, lastMessage, mediaFiles, loading, currentPage, hasMoreMessages, getUserMessages, loadMoreMessages, markMessageRead, updateMessage, markMessageSeen, markMessagesAsSeen, deleteMessage]
+    [messages, logs, notes, lastMessage, mediaFiles, loading, currentPage, hasMoreMessages, getUserMessages, loadMoreMessages, markMessageRead, updateMessage, markMessageSeen, markMessagesAsSeen, deleteMessage, clearAll]
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useMemo, useCallback, useContext } from "react";
 import { enqueueSnackbar } from "notistack";
 import {
   Tabs,
@@ -14,9 +14,10 @@ import { getLanguageByKey, showServerError } from "@utils";
 import { api } from "../../api";
 import {
   useFormTicket,
-  useApp,
   useMessagesContext,
 } from "@hooks";
+import { useTickets } from "../../contexts/TicketsContext";
+import { UserContext } from "../../contexts/UserContext";
 import { PersonalData4ClientForm, Merge, Media } from "./components";
 import {
   ContractForm,
@@ -26,6 +27,7 @@ import {
 } from "../TicketForms";
 import { InvoiceTab } from "./components";
 import Can from "@components/CanComponent/Can";
+import { useTicketSync } from "../../contexts/TicketSyncContext";
 
 const ChatExtraInfo = ({
   selectTicketId,
@@ -35,6 +37,7 @@ const ChatExtraInfo = ({
   onUpdateClientData,
   clientsData, // Данные клиентов из useClientContacts (чтобы избежать дублирующего запроса)
 }) => {
+  const { notifyTicketUpdated } = useTicketSync();
   const [extraInfo, setExtraInfo] = useState({});
   const [isLoadingExtraInfo, setIsLoadingExtraInfo] = useState(true);
   const [isLoadingGeneral, setIsLoadingGeneral] = useState(false);
@@ -42,7 +45,8 @@ const ChatExtraInfo = ({
   const [isLoadingCombineClient, setIsLoadingClient] = useState(false);
   const [isLoadingInfoTicket, setIsLoadingInfoTicket] = useState(false);
 
-  const { setTickets, isAdmin } = useApp();
+  const { setTickets } = useTickets();
+  const { isAdmin } = useContext(UserContext);
   const { getUserMessages, mediaFiles } = useMessagesContext();
 
   const {
@@ -305,10 +309,8 @@ const ChatExtraInfo = ({
 
       await api.tickets.ticket.create(ticketId, extraFields);
 
-      // Диспатчим событие для обновления данных тикета и клиентов
-      window.dispatchEvent(new CustomEvent('ticketUpdated', {
-        detail: { ticketId }
-      }));
+      // Оповещаем об обновлении тикета через TicketSyncContext
+      notifyTicketUpdated(ticketId, null);
 
       enqueueSnackbar(
         getLanguageByKey("Datele despre ticket au fost create cu succes"),

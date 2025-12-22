@@ -24,7 +24,7 @@ import { PageHeader } from "../PageHeader";
 import { useUser } from "../../hooks";
 import { useSnackbar } from "notistack";
 import { showServerError } from "../utils";
-import { AppContext } from "../../contexts/AppContext";
+import { UserContext } from "../../contexts/UserContext";
 
 const language = localStorage.getItem("language") || "RO";
 
@@ -36,7 +36,7 @@ const TaskComponent = ({
   setFetchTasksRef,
 }) => {
   const { userId: currentUserId } = useUser();
-  const { accessibleGroupTitles, workflowOptions } = useContext(AppContext);
+  const { accessibleGroupTitles, workflowOptions } = useContext(UserContext);
 
   // Отдельные фильтры для kanban и list
   const [kanbanFilters, setKanbanFilters] = useState(null);

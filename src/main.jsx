@@ -12,17 +12,17 @@ if (isSafari) {
   document.documentElement.classList.add('is-safari');
 }
 
-// Создаем QueryClient с оптимальными настройками
+// QueryClient БЕЗ кэширования — данные всегда свежие с API
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnWindowFocus: false, // Не перезагружать при возврате на вкладку (можно включить)
-      retry: 1, // Повторить запрос 1 раз при ошибке
-      staleTime: 5 * 60 * 1000, // Данные считаются свежими 5 минут
-      gcTime: 10 * 60 * 1000, // Кэш хранится 10 минут (в React Query v5 переименовано из cacheTime)
+      refetchOnWindowFocus: false,
+      retry: 1,
+      staleTime: 0, // Данные всегда "устаревшие"
+      gcTime: 0, // Не храним в кэше
     },
     mutations: {
-      retry: 0, // Не повторять mutations при ошибке
+      retry: 0,
     },
   },
 })

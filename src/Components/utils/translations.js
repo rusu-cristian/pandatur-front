@@ -5986,5 +5986,10 @@ export const translations = {
     RO: "Șters",
     RU: "Удалено",
     EN: "Deleted"
+  },
+  "noAccesTicket":{
+    RO: "Nu aveți acces la acest lead",
+    RU: "У вас нету доступа на просмотр этого лида",
+    EN: "You do not have access to this lead"
   }
 };

@@ -10,7 +10,7 @@ import { useEffect, useContext } from "react";
 import { priorityOptions } from "../../FormOptions";
 import { getLanguageByKey } from "../utils";
 import { useGetTechniciansList } from "../../hooks";
-import { AppContext } from "../../contexts/AppContext";
+import { UserContext } from "../../contexts/UserContext";
 
 const GENERAL_FORM_FILTER_ID = "GENERAL_FORM_FILTER_ID";
 
@@ -24,7 +24,7 @@ export const BasicGeneralForm = ({
 }) => {
   const idForm = formId || GENERAL_FORM_FILTER_ID;
   const { technicians } = useGetTechniciansList();
-  const { workflowOptions } = useContext(AppContext);
+  const { workflowOptions } = useContext(UserContext);
 
   const form = useForm({
     mode: "uncontrolled",

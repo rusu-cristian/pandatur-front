@@ -1,8 +1,8 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, memo } from "react";
 import { Flex, Divider, Text, Box, Button } from "@mantine/core";
 import { useMessagesContext } from "@hooks";
 import { YYYY_MM_DD_HH_mm_ss, MEDIA_TYPE } from "@app-constants";
-import { getLanguageByKey } from "@utils";
+import { getLanguageByKey, toDate } from "@utils";
 import dayjs from "dayjs";
 import { SendedMessage, ReceivedMessage } from "../Message";
 import { ChatNoteCard } from "../../../ChatNoteCard";
@@ -12,36 +12,65 @@ import BackTabs from "../BackTabs/BackTabs";
 import LogCluster from "../LogCluster/LogCluster";
 import "./GroupedMessages.css";
 
-
-const toDate = (val) => {
-  if (!val) return null;
-  if (val instanceof Date) return isNaN(val.getTime()) ? null : val;
-  if (typeof val === "number") {
-    const d = new Date(val);
-    return isNaN(d.getTime()) ? null : d;
-  }
-
-  let s = String(val).trim();
-
-  // Проверяем формат DD-MM-YYYY HH:mm:ss (приходит из WebSocket)
-  const ddMmMatch = s.match(/^(\d{2})-(\d{2})-(\d{4})[ T](.+)$/);
-  if (ddMmMatch) {
-    const [, dd, MM, yyyy, time] = ddMmMatch;
-    s = `${yyyy}-${MM}-${dd}T${time}`;
-  } else {
-    // Стандартный формат YYYY-MM-DD HH:mm:ss
-    s = s.replace(" ", "T").replace(/Z$/, "");
-  }
-
-  const d = new Date(s);
-  return isNaN(d.getTime()) ? null : d;
-};
-
 const makeNoteKey = (n) =>
   `${n.ticket_id}|${n.technician_id}|${n.type}|${String(n.value ?? "").trim()}|${n.created_at}`;
 
+/**
+ * Создаёт диалоговые блоки из массива элементов дня
+ * Вынесено наружу — чистая функция без зависимостей от state
+ */
+const createDialogBlocks = (dayItems) => {
+  const blocks = [];
+  let currentDialogBlock = null;
+  let currentLogCluster = null;
 
-export const GroupedMessages = ({
+  const flushDialogBlock = () => {
+    if (currentDialogBlock) {
+      blocks.push(currentDialogBlock);
+      currentDialogBlock = null;
+    }
+  };
+
+  const flushLogCluster = () => {
+    if (currentLogCluster) {
+      blocks.push({ logs: currentLogCluster });
+      currentLogCluster = null;
+    }
+  };
+
+  dayItems.forEach((item) => {
+    if (item.itemType === "message") {
+      flushLogCluster();
+      const needNewDialog = !currentDialogBlock;
+
+      if (needNewDialog) {
+        flushDialogBlock();
+        currentDialogBlock = {
+          type: "dialog",
+          items: [item],
+          startTime: item.sortTime,
+        };
+      } else {
+        currentDialogBlock.items.push(item);
+      }
+    } else if (item.itemType === "log") {
+      flushDialogBlock();
+      if (!currentLogCluster) currentLogCluster = [];
+      currentLogCluster.push(item);
+    } else if (item.itemType === "note") {
+      flushDialogBlock();
+      flushLogCluster();
+      blocks.push({ note: item });
+    }
+  });
+
+  flushDialogBlock();
+  flushLogCluster();
+
+  return blocks;
+};
+
+export const GroupedMessages = memo(({
   personalInfo,
   ticketId,
   technicians,
@@ -207,65 +236,6 @@ export const GroupedMessages = ({
     );
   }, [itemsByDate]);
 
-  // Функция для создания диалоговых блоков
-  const createDialogBlocks = (dayItems) => {
-    const blocks = [];
-    let currentDialogBlock = null;
-    let currentLogCluster = null;
-
-    const flushDialogBlock = () => {
-      if (currentDialogBlock) {
-        blocks.push(currentDialogBlock);
-        currentDialogBlock = null;
-      }
-    };
-
-    const flushLogCluster = () => {
-      if (currentLogCluster) {
-        blocks.push({ logs: currentLogCluster });
-        currentLogCluster = null;
-      }
-    };
-
-    dayItems.forEach((item) => {
-      if (item.itemType === "message") {
-        // Прерываем лог-кластер при появлении сообщения
-        flushLogCluster();
-
-        // Определяем, нужно ли создать новый диалоговый блок
-        const needNewDialog = !currentDialogBlock;
-
-        if (needNewDialog) {
-          flushDialogBlock();
-          currentDialogBlock = {
-            type: "dialog",
-            items: [item],
-            startTime: item.sortTime,
-          };
-        } else {
-          // Добавляем сообщение в текущий диалоговый блок
-          currentDialogBlock.items.push(item);
-        }
-      } else if (item.itemType === "log") {
-        // Прерываем диалоговый блок при появлении лога
-        flushDialogBlock();
-        if (!currentLogCluster) currentLogCluster = [];
-        currentLogCluster.push(item);
-      } else if (item.itemType === "note") {
-        // Прерываем диалоговый блок и лог-кластер при появлении заметки
-        flushDialogBlock();
-        flushLogCluster();
-        blocks.push({ note: item });
-      }
-    });
-
-    // Завершаем последние блоки
-    flushDialogBlock();
-    flushLogCluster();
-
-    return blocks;
-  };
-
   // Количество скрытых email сообщений
   const hiddenEmailCount = totalEmailCount - visibleEmailCount;
 
@@ -425,4 +395,6 @@ export const GroupedMessages = ({
       )}
     </Flex>
   );
-};
+});
+
+GroupedMessages.displayName = "GroupedMessages";

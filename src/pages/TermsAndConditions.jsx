@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import { getLanguageByKey } from "../Components/utils";
 
-const LOGO = "/logo.png";
+const LOGO = "/logo.svg";
 
 const convertMarkdownToHTML = (text) => {
   let replacedText = text;

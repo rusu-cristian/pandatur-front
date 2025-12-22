@@ -13,7 +13,7 @@ import {
 import { getLanguageByKey } from "../utils";
 import { useGetTechniciansList } from "../../hooks";
 import { parseTags } from "../../stringUtils";
-import { AppContext } from "../../contexts/AppContext";
+import { UserContext } from "../../contexts/UserContext";
 import { UserGroupMultiSelect } from "../ChatComponent/components/UserGroupMultiSelect/UserGroupMultiSelect";
 import { formatMultiSelectData } from "../utils/multiSelectUtils";
 import {
@@ -31,7 +31,7 @@ const errorStyle = { color: "red", fontSize: "12px", marginTop: "4px" };
 
 export const GeneralForm = ({ data, formInstance }) => {
   const { technicians } = useGetTechniciansList();
-  const { accessibleGroupTitles, isAdmin, userGroups } = useContext(AppContext);
+  const { accessibleGroupTitles, isAdmin, userGroups } = useContext(UserContext);
 
   // Флаг, чтобы один раз инициализировать форму из data
   const isInitializedRef = useRef(false);

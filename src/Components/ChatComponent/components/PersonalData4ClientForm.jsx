@@ -25,6 +25,7 @@ import { useSnackbar } from "notistack";
 import { useConfirmPopup } from "../../../hooks/useConfirmPopup";
 import "./PersonalData4ClientForm.css";
 import Can from "@components/CanComponent/Can";
+import { useTicketSync } from "../../../contexts/TicketSyncContext";
 
 const CONTACT_TYPE_COLORS = {
   facebook: "#1877F2",
@@ -36,7 +37,7 @@ const CONTACT_TYPE_COLORS = {
 };
 
 const ViberBotIcon = () => (
-  <img src="/viber-bot.svg" alt="Viber Bot" style={{ width: "24px", height: "24px", background: "#7360F2", borderRadius: "12px" }} />
+  <img src="/viber-bot.svg" alt="Viber Bot" loading="lazy" style={{ width: "24px", height: "24px", background: "#7360F2", borderRadius: "12px" }} />
 );
 
 const PLATFORM_ICONS = {
@@ -54,6 +55,7 @@ export const PersonalData4ClientForm = ({
   clientsData, // Данные из useClientContacts (если переданы, не делаем запрос)
 }) => {
   const { enqueueSnackbar } = useSnackbar();
+  const { notifyTicketUpdated } = useTicketSync();
   const [loading, setLoading] = useState(true);
   const [clients, setClients] = useState([]);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -231,10 +233,8 @@ export const PersonalData4ClientForm = ({
       // Перезагружаем данные клиентов
       await loadClientsData();
 
-      // Диспатчим событие для обновления данных тикета
-      window.dispatchEvent(new CustomEvent('ticketUpdated', {
-        detail: { ticketId }
-      }));
+      // Оповещаем об обновлении тикета через TicketSyncContext
+      notifyTicketUpdated(ticketId, null);
     } catch (error) {
       console.error("Ошибка добавления клиента:", error);
     } finally {
@@ -283,10 +283,8 @@ export const PersonalData4ClientForm = ({
       // Перезагружаем данные клиентов
       await loadClientsData();
 
-      // Диспатчим событие для обновления данных тикета
-      window.dispatchEvent(new CustomEvent('ticketUpdated', {
-        detail: { ticketId }
-      }));
+      // Оповещаем об обновлении тикета через TicketSyncContext
+      notifyTicketUpdated(ticketId, null);
     } catch (error) {
       console.error("Ошибка добавления контакта:", error);
     } finally {
@@ -343,10 +341,8 @@ export const PersonalData4ClientForm = ({
       // Перезагружаем данные клиентов
       await loadClientsData();
 
-      // Диспатчим событие для обновления данных тикета
-      window.dispatchEvent(new CustomEvent('ticketUpdated', {
-        detail: { ticketId }
-      }));
+      // Оповещаем об обновлении тикета через TicketSyncContext
+      notifyTicketUpdated(ticketId, null);
     } catch (error) {
       console.error("Ошибка обновления контакта:", error);
       enqueueSnackbar(getLanguageByKey("Eroare la actualizarea contactului"), {
@@ -449,10 +445,8 @@ export const PersonalData4ClientForm = ({
       // Перезагружаем данные клиентов
       await loadClientsData();
 
-      // Диспатчим событие для обновления данных тикета
-      window.dispatchEvent(new CustomEvent('ticketUpdated', {
-        detail: { ticketId }
-      }));
+      // Оповещаем об обновлении тикета через TicketSyncContext
+      notifyTicketUpdated(ticketId, null);
     } catch (error) {
       console.error("Ошибка обновления клиента:", error);
       enqueueSnackbar(getLanguageByKey("Eroare la actualizarea clientului"), {

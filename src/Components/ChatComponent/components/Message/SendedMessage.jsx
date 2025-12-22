@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Flex, Text, Image, Box } from "@mantine/core";
 import { Tooltip, Box as MuiBox, Typography } from "@mui/material";
 import { ReportRounded } from "@mui/icons-material";
@@ -29,7 +30,7 @@ const MESSAGE_STATUS_LABELS = {
   [MESSAGES_STATUS.SEEN]: getLanguageByKey("message_status_seen"),
 };
 
-export const SendedMessage = ({
+export const SendedMessage = memo(({
   msg,
   technician,
   technicians = [],
@@ -142,9 +143,7 @@ export const SendedMessage = ({
 
   return (
     <Flex w="100%" justify="end">
-      <Flex w="90%" direction="column" className="chat-message sent" style={{
-        animation: 'fadeIn 0.3s ease-out'
-      }}>
+      <Flex w="90%" direction="column" className="chat-message sent">
         <Flex justify="end" gap="8">
           <Flex>
             <Flex
@@ -234,4 +233,6 @@ export const SendedMessage = ({
       </Flex>
     </Flex>
   );
-};
+});
+
+SendedMessage.displayName = "SendedMessage";

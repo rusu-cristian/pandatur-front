@@ -51,7 +51,7 @@ export const socialMediaIcons = {
   ),
   "viber-bot": (
     <IconWrapper bgColor="#7360F2">
-      <img src="/viber-bot.svg" alt="Viber Bot" style={{ width: "24px", height: "24px" }} />
+      <img src="/viber-bot.svg" alt="Viber Bot" loading="lazy" style={{ width: "24px", height: "24px" }} />
     </IconWrapper>
   )
 };

@@ -49,16 +49,19 @@ export const UserGroupMultiSelect = ({
       // Создаем Map всех пользователей (активных из techniciansData + неактивных из usersData)
       const allUsersMap = new Map();
       
-      // Добавляем всех пользователей из techniciansData
+      // Добавляем только АКТИВНЫХ пользователей из techniciansData (status === true)
       techniciansData.forEach(item => {
-        if (!item.value.startsWith("__group__")) {
+        if (!item.value.startsWith("__group__") && item.status === true) {
           allUsersMap.set(item.value, item);
         }
       });
       
-      // Добавляем неактивных пользователей из usersData (если они есть)
+      // Добавляем только АКТИВНЫХ пользователей из usersData (status === true)
       if (usersData && usersData.length > 0) {
         usersData.forEach(user => {
+          // Пропускаем неактивных пользователей
+          if (user.status !== true) return;
+          
           const userId = String(user.id);
           // Если пользователь еще не добавлен, добавляем его
           if (!allUsersMap.has(userId)) {
@@ -71,7 +74,7 @@ export const UserGroupMultiSelect = ({
               label: `${name}${sipuniId}${userIdLabel}`,
               id: user.id,
               sipuni_id: user.sipuni_id,
-              status: user.status, // Сохраняем статус для фильтрации
+              status: user.status,
               groupName: user.groups?.[0]?.name,
               name: user.name,
               surname: user.surname
@@ -151,26 +154,13 @@ export const UserGroupMultiSelect = ({
         result.push(...groupUsers);
       });
       
-      // Добавляем неактивных пользователей из allUsersMap (которых нет в result)
-      allUsersMap.forEach((userItem, userId) => {
-        // Проверяем, есть ли пользователь уже в result
-        const existsInResult = result.some(opt => opt.value === userId);
-        if (!existsInResult) {
-          // Добавляем неактивного пользователя
-          result.push({
-            ...userItem,
-            disabled: false
-          });
-        }
-      });
-
       return result;
     }
 
     // Вариант 2: Если есть raw данные пользователей из API
     if (usersData && usersData.length > 0) {
-      // Берем ВСЕХ пользователей (не фильтруем по статусу)
-      const allUsers = usersData;
+      // Берем только АКТИВНЫХ пользователей (status === true)
+      const allUsers = usersData.filter(user => user.status === true);
       
       // Собираем все уникальные группы
       const allGroups = new Map();

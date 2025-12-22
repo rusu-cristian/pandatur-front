@@ -3,7 +3,16 @@ import react from "@vitejs/plugin-react";
 import path from "path";
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react({
+      jsxImportSource: '@emotion/react',
+      babel: {
+        plugins: ['@emotion/babel-plugin'],
+      },
+    }),
+    // PurgeCSS отключён — слишком агрессивно удаляет стили сторонних библиотек
+    // (react-pro-sidebar, MUI, react-select и др.)
+  ],
   resolve: {
     alias: {
       "@components": path.resolve(__dirname, "src/Components"),
@@ -22,5 +31,39 @@ export default defineConfig({
   },
   build: {
     outDir: "build",
+    rollupOptions: {
+      output: {
+        // Разбиваем vendor библиотеки на отдельные чанки
+        manualChunks: {
+          // React core
+          "vendor-react": ["react", "react-dom", "react-router-dom"],
+          // Mantine UI
+          "vendor-mantine": [
+            "@mantine/core",
+            "@mantine/hooks",
+            "@mantine/dates",
+            "@mantine/modals",
+          ],
+          // MUI (большая библиотека)
+          "vendor-mui": [
+            "@mui/material",
+            "@mui/icons-material",
+            "@mui/x-data-grid",
+          ],
+          // Tanstack / React Query
+          "vendor-query": ["@tanstack/react-query"],
+          // Charts
+          "vendor-charts": ["chart.js", "react-chartjs-2"],
+          // Иконки
+          "vendor-icons": ["react-icons"],
+          // Date utilities
+          "vendor-date": ["dayjs", "date-fns"],
+          // HTTP client
+          "vendor-http": ["axios"],
+          // Emotion убран из manualChunks — включается автоматически в нужные чанки
+          // чтобы избежать проблем с порядком инициализации
+        },
+      },
+    },
   },
 });

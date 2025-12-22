@@ -1,24 +1,30 @@
-import React, { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useMemo, useEffect, useCallback, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { Flex, ActionIcon, Box } from "@mantine/core";
-import { useApp, useClientContacts, useMessagesContext } from "@hooks";
+import { useClientContacts, useMessagesContext, useChatFilters } from "@hooks";
 import { useGetTechniciansList } from "../hooks";
+import { useTickets } from "../contexts/TicketsContext";
+import { UserContext } from "../contexts/UserContext";
 import { api } from "../api";
 import ChatExtraInfo from "../Components/ChatComponent/ChatExtraInfo";
 import ChatList from "../Components/ChatComponent/ChatList";
 import { ChatMessages } from "../Components/ChatComponent/components/ChatMessages";
 import Can from "@components/CanComponent/Can";
+import { useTicketSync, SYNC_EVENTS } from "../contexts/TicketSyncContext";
 
 export const Chat = () => {
+  const { getTicketByIdWithFilters } = useTickets();
   const {
-    isChatFiltered,
-    getTicketByIdWithFilters,
     groupTitleForApi,
     accessibleGroupTitles,
     customGroupTitle,
     setCustomGroupTitle,
-  } = useApp();
+  } = useContext(UserContext);
+  
+  // URL — единственный источник правды для фильтров
+  const { isFiltered } = useChatFilters();
+  
   const { messages } = useMessagesContext();
   const { ticketId: ticketIdParam } = useParams();
   const ticketId = useMemo(() => {
@@ -36,12 +42,24 @@ export const Chat = () => {
 
   // Тикет из списков (если он там есть)
   const ticketFromLists = useMemo(() => {
-    return getTicketByIdWithFilters(ticketId, isChatFiltered);
-  }, [ticketId, isChatFiltered, getTicketByIdWithFilters]);
+    return getTicketByIdWithFilters(ticketId, isFiltered);
+  }, [ticketId, isFiltered, getTicketByIdWithFilters]);
 
-  // Итоговый тикет: приоритет отдаём данным из списков,
-  // но если там нет — используем напрямую загруженные данные
-  const currentTicket = ticketFromLists || directTicketData;
+  // Итоговый тикет: приоритет отдаём directTicketData (обновляется через WebSocket),
+  // данные из списков используем как fallback или для дополнительных полей
+  const currentTicket = useMemo(() => {
+    if (!ticketFromLists && !directTicketData) return null;
+    
+    // directTicketData приоритетнее — он обновляется через TICKET_UPDATED
+    if (directTicketData) {
+      // Объединяем: directTicketData перезаписывает поля из ticketFromLists
+      return ticketFromLists 
+        ? { ...ticketFromLists, ...directTicketData }
+        : directTicketData;
+    }
+    
+    return ticketFromLists;
+  }, [ticketFromLists, directTicketData]);
 
   // Загрузка данных тикета напрямую по ID
   const loadTicketDirectly = useCallback(async (id) => {
@@ -51,17 +69,21 @@ export const Chat = () => {
         setDirectTicketData(ticketData);
 
         // Если группа тикета отличается от текущей — переключаем воронку
+        // Используем функциональное обновление чтобы избежать лишних зависимостей
         if (ticketData.group_title && accessibleGroupTitles.includes(ticketData.group_title)) {
-          if (ticketData.group_title !== groupTitleForApi && ticketData.group_title !== customGroupTitle) {
-            setCustomGroupTitle(ticketData.group_title);
-            localStorage.setItem("leads_last_group_title", ticketData.group_title);
-          }
+          setCustomGroupTitle(prev => {
+            if (ticketData.group_title !== prev) {
+              localStorage.setItem("leads_last_group_title", ticketData.group_title);
+              return ticketData.group_title;
+            }
+            return prev;
+          });
         }
       }
     } catch (error) {
       console.error("Failed to load ticket:", error);
     }
-  }, [accessibleGroupTitles, groupTitleForApi, customGroupTitle, setCustomGroupTitle]);
+  }, [accessibleGroupTitles, setCustomGroupTitle]);
 
   // Загружаем тикет напрямую при открытии страницы или смене ticketId
   useEffect(() => {
@@ -75,53 +97,44 @@ export const Chat = () => {
     loadTicketDirectly(ticketId);
   }, [ticketId, loadTicketDirectly]);
 
-  // Слушаем событие ticketUpdated для обновления данных
-  useEffect(() => {
-    const handleTicketUpdated = (event) => {
-      const { ticketId: updatedId, ticket } = event.detail || {};
+  // Подписываемся на обновления тикетов через TicketSyncContext
+  const { subscribe } = useTicketSync();
 
+  useEffect(() => {
+    if (!ticketId) return;
+    
+    const unsubscribe = subscribe(SYNC_EVENTS.TICKET_UPDATED, ({ ticketId: updatedId, ticket }) => {
       // Обновляем локальный state если это наш тикет
       if (updatedId === ticketId) {
         if (ticket) {
-          // Если в событии есть данные тикета — используем их
           setDirectTicketData(ticket);
         } else {
-          // Иначе перезапрашиваем с сервера
           loadTicketDirectly(ticketId);
         }
       }
-    };
+    });
 
-    window.addEventListener("ticketUpdated", handleTicketUpdated);
-    return () => window.removeEventListener("ticketUpdated", handleTicketUpdated);
-  }, [ticketId, loadTicketDirectly]);
+    return unsubscribe;
+  }, [subscribe, ticketId, loadTicketDirectly]);
 
   // Получаем последнее сообщение по времени для автоматического выбора платформы и контакта
+  // Используем reduce O(n) вместо sort O(n log n) для производительности
   const lastMessage = useMemo(() => {
-    if (!messages || messages.length === 0 || !ticketId) {
-      return null;
-    }
+    if (!messages?.length || !ticketId) return null;
 
-    // Фильтруем сообщения только для текущего тикета и исключаем sipuni/mail
-    const currentTicketMessages = messages.filter(msg => {
+    return messages.reduce((latest, msg) => {
       const platform = msg.platform?.toLowerCase();
-      return msg.ticket_id === ticketId && platform !== 'sipuni' && platform !== 'mail';
-    });
-
-    if (currentTicketMessages.length === 0) {
-      return null;
-    }
-
-    // Сортируем по времени и берем последнее
-    const sortedMessages = [...currentTicketMessages].sort((a, b) => {
-      const timeA = new Date(a.time_sent || a.created_at || 0);
-      const timeB = new Date(b.time_sent || b.created_at || 0);
-      return timeB - timeA; // От новых к старым
-    });
-
-    const lastMsg = sortedMessages[0];
-
-    return lastMsg;
+      // Пропускаем сообщения не из текущего тикета и sipuni/mail
+      if (msg.ticket_id !== ticketId || platform === 'sipuni' || platform === 'mail') {
+        return latest;
+      }
+      
+      if (!latest) return msg;
+      
+      const msgTime = new Date(msg.time_sent || msg.created_at || 0);
+      const latestTime = new Date(latest.time_sent || latest.created_at || 0);
+      return msgTime > latestTime ? msg : latest;
+    }, null);
   }, [messages, ticketId]);
 
   // Получаем ВСЕ данные из хука, чтобы передать их вниз через props
@@ -180,8 +193,7 @@ export const Chat = () => {
           </Can>
         </Flex>
 
-        {!isNaN(ticketId) && (
-
+        {ticketId && (
           <ChatExtraInfo
             selectedClient={selectedClient}
             ticketId={ticketId}

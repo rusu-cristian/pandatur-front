@@ -16,10 +16,9 @@ import {
 import { FaUsers, FaBars } from "react-icons/fa6";
 import { MdLightMode, MdDarkMode } from "react-icons/md";
 import { Badge, Flex, Divider, Select, Burger } from "@mantine/core";
-import { clearCookies } from "@utils";
 import { api } from "@api";
 import { LoadingOverlay } from "@components";
-import { useApp, useLanguageToggle, useUser, useMobile, useTheme } from "../../hooks";
+import { useLanguageToggle, useUser, useMobile, useTheme, useAuth } from "../../hooks";
 import { getLanguageByKey } from "@utils";
 import Can from "../CanComponent/Can";
 import "./SideBar.css";
@@ -27,10 +26,13 @@ import { safeParseJson } from "../UsersComponent/rolesUtils";
 import { convertRolesToMatrix } from "../UsersComponent/rolesUtils";
 import { hasRouteAccess, hasStrictPermission } from "../utils/permissions";
 import { groupTitleOptions } from "../../FormOptions/GroupTitleOptions";
-import { AppContext } from "../../contexts/AppContext";
+// Специализированные контексты (оптимизация ре-рендеров)
+import { useUI } from "../../contexts/UIContext";
+import { useTickets } from "../../contexts/TicketsContext";
+import { UserContext } from "../../contexts/UserContext";
 import { SocketContext } from "../../contexts/SocketContext";
 
-const LOGO = "/logo.png";
+const LOGO = "/logo.svg";
 
 const ConnectionIndicator = ({ isConnected }) => {
   const handleReload = () => {
@@ -58,15 +60,21 @@ const ConnectionIndicator = ({ isConnected }) => {
 
 export const SideBar = () => {
   const location = useLocation();
-  const { unreadCount, isCollapsed, setIsCollapsed } = useApp();
+  
+  // Специализированные хуки (каждый подписывается только на свой контекст)
+  const { isCollapsed, setIsCollapsed } = useUI();    // UI состояние
+  const { unreadCount } = useTickets();                // Только счётчик
+  
   const { surname, name, userId, userRoles } = useUser();
+  const { logout: authLogout } = useAuth();
   const [loading, setLoading] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useMobile();
   const { setLanguage, selectedLanguage, LANGUAGE_OPTIONS, LANGUAGES } = useLanguageToggle();
   const { toggleTheme, isDark } = useTheme();
 
-  const { customGroupTitle, groupTitleForApi } = useContext(AppContext);
+  // Данные пользователя и сокет
+  const { customGroupTitle, groupTitleForApi } = useContext(UserContext);
   const { isConnected } = useContext(SocketContext);
   const currentGroupTitle = customGroupTitle || groupTitleForApi;
   const currentGroupTitleLabel = useMemo(() => {
@@ -81,15 +89,16 @@ export const SideBar = () => {
     return location.pathname === `/${page}`;
   };
 
+  // Logout с оповещением App.jsx через authEvents
   const logout = async () => {
     setLoading(true);
     try {
       await api.auth.logout();
-      clearCookies();
     } catch (_) {
-      clearCookies();
+      // Игнорируем ошибку API — всё равно разлогиниваем
     } finally {
       setLoading(false);
+      authLogout(); // Очищает куки, оповещает App.jsx и делает редирект
     }
   };
 

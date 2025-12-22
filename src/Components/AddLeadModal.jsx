@@ -15,7 +15,7 @@ import { getLanguageByKey, showServerError } from "@utils";
 import { priorityOptions, groupTitleOptions } from "../FormOptions";
 import { api } from "@api";
 import { useUser } from "@hooks";
-import { AppContext } from "../contexts/AppContext";
+import { UserContext } from "../contexts/UserContext";
 import { useNavigate } from "react-router-dom";
 
 export const AddLeadModal = ({
@@ -27,7 +27,7 @@ export const AddLeadModal = ({
   const { userId } = useUser();
   const { enqueueSnackbar } = useSnackbar();
   const [loading, handlers] = useDisclosure(false);
-  const { workflowOptions, groupTitleForApi } = useContext(AppContext);
+  const { workflowOptions, groupTitleForApi } = useContext(UserContext);
   const navigate = useNavigate();
 
   const form = useForm({

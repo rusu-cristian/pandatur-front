@@ -1,5 +1,5 @@
 import { Modal, Text } from "@mantine/core";
-import { useApp } from "../hooks";
+import { useUI } from "../contexts/UIContext";
 
 export const MantineModal = ({
   children,
@@ -9,7 +9,7 @@ export const MantineModal = ({
   height = "100vh",
   ...props
 }) => {
-  const { isCollapsed } = useApp();
+  const { isCollapsed } = useUI();
   const sidebarWidth = isCollapsed ? 80 : 250;
   const { style, ...rest } = props;
 

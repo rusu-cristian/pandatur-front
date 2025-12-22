@@ -1,6 +1,6 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useContext } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useApp } from "@hooks";
+import { UserContext } from "../contexts/UserContext";
 import { parseFiltersFromUrl, prepareFiltersForUrl } from "../Components/utils/parseFiltersFromUrl";
 import {
   VIEW_MODE,
@@ -20,7 +20,7 @@ import {
  */
 export const useLeadsFilters = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { groupTitleForApi, workflowOptions, accessibleGroupTitles, customGroupTitle, setCustomGroupTitle } = useApp();
+  const { groupTitleForApi, workflowOptions, accessibleGroupTitles, customGroupTitle, setCustomGroupTitle } = useContext(UserContext);
 
   // === ЧИТАЕМ ИЗ URL ===
   

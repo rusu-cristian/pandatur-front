@@ -1,27 +1,27 @@
 import React, { useState } from "react";
-import Cookies from "js-cookie";
 import { Button, Flex, TextInput, Title, Box, Text, Stack } from "@mantine/core";
 import { api } from "../../api";
 import { showServerError } from "../../Components/utils/showServerError";
-import { useMobile } from "../../hooks";
+import { useMobile, useAuth } from "../../hooks";
 import "./Login.css";
 
-const setCookieToken = (token) => {
-  Cookies.set("jwt", token, {
-    secure: window.location.protocol === "https:",
-    sameSite: "Lax",
-    expires: 1,
-    path: "/",
-  });
-};
-
+/**
+ * Login — страница авторизации
+ * 
+ * Best Practices:
+ * - Использует useAuth для логина (Single Source of Truth)
+ * - Нет прямой работы с cookies — всё через AuthContext
+ * - Простая и понятная логика
+ */
 export const Login = () => {
   const [form, setForm] = useState({ email: "", username: "", password: "" });
   const [isLogin, setIsLogin] = useState(true);
   const [message, setMessage] = useState("");
-  const [messageType, setMessageType] = useState("error"); // "success" или "error"
+  const [messageType, setMessageType] = useState("error");
   const [isLoading, setIsLoading] = useState(false);
+  
   const isMobile = useMobile();
+  const { login } = useAuth();
 
   const handleInputChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -58,14 +58,14 @@ export const Login = () => {
 
     try {
       const response = await request(data);
-      const { token, message } = response;
+      const { token, message: responseMessage, user_id } = response;
 
-      setMessage(message || "Success!");
+      setMessage(responseMessage || "Success!");
       setMessageType("success");
 
-      if (isLogin) {
-        setCookieToken(token);
-        // Navigate будет выполнен в UserContext после успешной проверки авторизации
+      if (isLogin && token) {
+        // Используем login из AuthContext — он сохранит токен и сделает редирект
+        login(token, user_id);
       }
     } catch (error) {
       setMessage(showServerError(error));

@@ -373,8 +373,8 @@ export const useClientContacts = (ticketId, lastMessage, groupTitle) => {
       return await api.users.getUsersClientContactsByPlatform(ticketId, null);
     },
     enabled: !!ticketId,
-    staleTime: 5 * 60 * 1000,
-    cacheTime: 10 * 60 * 1000,
+    staleTime: 0, // Всегда свежие данные
+    gcTime: 0, // Без кэша
     retry: 1,
     onError: (err) => {
       enqueueSnackbar(showServerError(err), { variant: "error" });

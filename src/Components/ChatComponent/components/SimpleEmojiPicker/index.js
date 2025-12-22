@@ -1,0 +1,2 @@
+export { SimpleEmojiPicker } from './SimpleEmojiPicker';
+

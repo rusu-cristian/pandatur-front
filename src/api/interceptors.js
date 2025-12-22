@@ -1,7 +1,6 @@
 import Cookies from "js-cookie"
-import { clearCookies } from "../Components/utils/clearCookies"
+import { authEvents, AUTH_EVENTS } from "../contexts/AuthContext"
 
-// const STATUS_CODE = [401, 403]
 const STATUS_CODE = [401]
 
 export const authInterceptor = (config) => {
@@ -17,7 +16,14 @@ export const responseInterceptor = [
   (res) => res,
   async (err) => {
     if (STATUS_CODE.includes(err?.response?.status)) {
-      clearCookies()
+      // Очищаем куки и оповещаем App.jsx о logout
+      Cookies.remove("jwt", { path: "/" })
+      localStorage.removeItem("user_id")
+      localStorage.removeItem("user_name")
+      localStorage.removeItem("user_surname")
+      localStorage.removeItem("user_roles")
+      
+      authEvents.emit(AUTH_EVENTS.LOGOUT)
     }
 
     return Promise.reject(err)
