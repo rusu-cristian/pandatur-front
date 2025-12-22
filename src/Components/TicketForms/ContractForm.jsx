@@ -123,6 +123,7 @@ export const ContractForm = ({
         })}
       />
 
+
       <LabelSwitch
         mt="md"
         color="var(--crm-ui-kit-palette-link-primary)"
