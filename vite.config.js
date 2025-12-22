@@ -4,7 +4,12 @@ import path from "path";
 
 export default defineConfig({
   plugins: [
-    react(),
+    react({
+      jsxImportSource: '@emotion/react',
+      babel: {
+        plugins: ['@emotion/babel-plugin'],
+      },
+    }),
     // PurgeCSS отключён — слишком агрессивно удаляет стили сторонних библиотек
     // (react-pro-sidebar, MUI, react-select и др.)
   ],
