@@ -461,6 +461,12 @@ export const WEBHOOK_PAGES_CONFIG = {
       group_title: ["RO"]
     },
     {
+      page_id: "40790571838",
+      page_name: "Iasi - 40790571838",
+      type: "phone",
+      group_title: ["RO"]
+    },
+    {
       page_id: "380984284284",
       page_name: "Catalan - 380984284284",
       type: "phone",
