@@ -26,22 +26,17 @@ export const LeadsFilter = ({
 
   const { updateFilters, resetFilters, groupTitleForApi } = useLeadsFilters();
 
-  // Собираем значения из форм и убираем пустые
+  // Собираем значения из форм
+  // ВАЖНО: НЕ фильтруем пустые значения здесь!
+  // updateFilters сам удалит пустые значения из URL.
+  // Если мы отфильтруем пустые значения, updateFilters не узнает, 
+  // что поле нужно удалить, и старое значение останется в URL.
   const collectFormValues = () => {
     const ticketValues = ticketFormRef.current?.getValues?.() || {};
     const messageValues = messageFormRef.current?.getValues?.() || {};
 
-    // Объединяем и фильтруем пустые значения
-    const combined = { ...ticketValues, ...messageValues };
-    
-    return Object.fromEntries(
-      Object.entries(combined).filter(([_, value]) => {
-        if (value === undefined || value === null || value === "") return false;
-        if (Array.isArray(value) && value.length === 0) return false;
-        if (typeof value === "object" && !Array.isArray(value) && Object.keys(value).length === 0) return false;
-        return true;
-      })
-    );
+    // Объединяем без фильтрации — пустые значения нужны для удаления из URL
+    return { ...ticketValues, ...messageValues };
   };
 
   const handleSubmit = () => {
@@ -86,8 +81,8 @@ export const LeadsFilter = ({
           </Tabs.Tab>
         </Tabs.List>
 
-        {/* keepMounted={false} — рендерим только активный таб */}
-        <Tabs.Panel value="filter_ticket" pt="xs" style={{ flex: 1, overflowY: "auto", minHeight: 0 }} keepMounted={false}>
+        {/* Формы остаются в DOM, чтобы изменения не терялись при переключении табов */}
+        <Tabs.Panel value="filter_ticket" pt="xs" style={{ flex: 1, overflowY: "auto", minHeight: 0 }}>
           <TicketFormTabs
             ref={ticketFormRef}
             initialData={initialData}
@@ -95,7 +90,7 @@ export const LeadsFilter = ({
           />
         </Tabs.Panel>
 
-        <Tabs.Panel value="filter_message" pt="xs" style={{ flex: 1, overflowY: "auto", minHeight: 0 }} keepMounted={false}>
+        <Tabs.Panel value="filter_message" pt="xs" style={{ flex: 1, overflowY: "auto", minHeight: 0 }}>
           <MessageFilterForm
             ref={messageFormRef}
             initialData={initialData}

@@ -60,8 +60,8 @@ export const TicketFormTabs = forwardRef(
           </Tabs.Tab>
         </Tabs.List>
 
-        {/* keepMounted={false} — рендерим только активный таб для производительности */}
-        <Tabs.Panel value="filter_general_info" pl="lg" keepMounted={false}>
+        {/* keepMounted — форма остаётся в DOM, чтобы изменения не терялись при переключении табов */}
+        <Tabs.Panel value="filter_general_info" pl="lg">
           <Flex direction="column" justify="space-between" h="100%">
             <BasicGeneralFormFilter
               ref={generalRef}
@@ -73,7 +73,7 @@ export const TicketFormTabs = forwardRef(
           </Flex>
         </Tabs.Panel>
 
-        <Tabs.Panel value="filter_ticket_info" pl="lg" keepMounted={false}>
+        <Tabs.Panel value="filter_ticket_info" pl="lg">
           <ScrollArea h="100%">
             <TicketInfoFormFilter
               ref={ticketInfoRef}
@@ -83,7 +83,7 @@ export const TicketFormTabs = forwardRef(
           </ScrollArea>
         </Tabs.Panel>
 
-        <Tabs.Panel value="filter_contract" pl="lg" keepMounted={false}>
+        <Tabs.Panel value="filter_contract" pl="lg">
           <ScrollArea h="100%">
             <ContractFormFilter
               ref={contractRef}
@@ -93,7 +93,7 @@ export const TicketFormTabs = forwardRef(
           </ScrollArea>
         </Tabs.Panel>
 
-        <Tabs.Panel value="filter_quality_control" pl="lg" keepMounted={false}>
+        <Tabs.Panel value="filter_quality_control" pl="lg">
           <Flex direction="column" justify="space-between" h="100%">
             <QualityControlFormFilter
               ref={qualityRef}
