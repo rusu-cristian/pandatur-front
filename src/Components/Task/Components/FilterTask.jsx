@@ -220,8 +220,8 @@ const TaskFilterModal = ({ opened, onClose, filters, onApply }) => {
   const isFullAccessUser = useMemo(() => hasFullAccess(userGroups), [userGroups]);
 
   // Выбранные воронки (или все доступные по умолчанию)
-  const selectedGroupTitles = localFilters.group_titles?.length 
-    ? localFilters.group_titles 
+  const selectedGroupTitles = localFilters.group_titles?.length
+    ? localFilters.group_titles
     : accessibleGroupTitles;
 
   // Фильтруем пользователей по выбранным воронкам
@@ -243,7 +243,7 @@ const TaskFilterModal = ({ opened, onClose, filters, onApply }) => {
       const groups = getUserGroupsForFunnel(groupTitle);
       groups.forEach(g => allowedUserGroups.add(g));
     });
-    
+
     // Если для воронок не настроены группы — показываем пустой список
     if (allowedUserGroups.size === 0) {
       return [];
@@ -252,11 +252,11 @@ const TaskFilterModal = ({ opened, onClose, filters, onApply }) => {
     // Фильтруем: оставляем группы и пользователей из разрешённых групп
     return formattedTechnicians.filter((item) => {
       const isGroup = item.value.startsWith("__group__");
-      
+
       if (isGroup) {
         return allowedUserGroups.has(item.label);
       }
-      
+
       return allowedUserGroups.has(item.groupName);
     });
   }, [formattedTechnicians, selectedGroupTitles, isFullAccessUser]);
@@ -312,7 +312,7 @@ const TaskFilterModal = ({ opened, onClose, filters, onApply }) => {
               placeholder={translations["intervalDate"][language]}
             />
           </div>
-          
+
           <MultiSelect
             label={translations["groupTitle"][language]}
             placeholder={translations["groupTitle"][language]}
