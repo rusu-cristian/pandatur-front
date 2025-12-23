@@ -32,6 +32,7 @@ import {
   TikTokworkflowOptionsByGroupTitle,
 } from "../../utils/workflowUtils";
 import { WorkflowMultiSelect } from "../../Workflow/components/WorkflowMultiSelect";
+import { getUserGroupsForFunnel } from "../../utils/funnelUserGroupsMap";
 
 const GENERAL_FORM_FILTER_ID = "GENERAL_FORM_FILTER_ID";
 
@@ -99,6 +100,34 @@ export const BasicGeneralFormFilter = forwardRef(
 
     const selectedGroupTitle = customGroupTitle ?? groupTitleForApi ?? null;
 
+    // Фильтруем пользователей по выбранной воронке
+    // Если воронка не выбрана — показываем пустой список
+    const filteredTechnicians = useMemo(() => {
+      if (!selectedGroupTitle) {
+        return []; // Воронка не выбрана — никого не показываем
+      }
+
+      const allowedUserGroups = getUserGroupsForFunnel(selectedGroupTitle);
+      
+      // Если для воронки не настроены группы — показываем пустой список
+      if (!allowedUserGroups.length) {
+        return [];
+      }
+
+      // Фильтруем: оставляем группы и пользователей из разрешённых групп
+      return formattedTechnicians.filter((item) => {
+        const isGroup = item.value.startsWith("__group__");
+        
+        if (isGroup) {
+          // Группу показываем только если она в списке разрешённых
+          return allowedUserGroups.includes(item.label);
+        }
+        
+        // Пользователя показываем если его группа в списке разрешённых
+        return allowedUserGroups.includes(item.groupName);
+      });
+    }, [formattedTechnicians, selectedGroupTitle]);
+
     // Определяем, находится ли пользователь в группе TikTok Manager
     const isTikTokManager = useMemo(() => {
       return userGroups?.some((group) => group.name === "TikTok Manager");
@@ -140,6 +169,7 @@ export const BasicGeneralFormFilter = forwardRef(
       // Он должен полностью обработать смену группы и сбросить фильтры
       if (externalOnGroupTitleChange) {
         form.setFieldValue("workflow", []);
+        form.setFieldValue("technician_id", []); // Сбрасываем пользователей при смене воронки
         externalOnGroupTitleChange(valueToSet);
         return;
       }
@@ -163,6 +193,7 @@ export const BasicGeneralFormFilter = forwardRef(
       );
 
       form.setFieldValue("workflow", []);
+      form.setFieldValue("technician_id", []); // Сбрасываем пользователей при смене воронки
 
       if (valueToSet && accessibleGroupTitles.includes(valueToSet)) {
         setCustomGroupTitle(valueToSet);
@@ -319,7 +350,7 @@ export const BasicGeneralFormFilter = forwardRef(
           placeholder={getLanguageByKey("Selectează responsabil")}
           value={form.values.technician_id}
           onChange={(value) => form.setFieldValue("technician_id", value)}
-          techniciansData={formattedTechnicians}
+          techniciansData={filteredTechnicians}
           mode="multi"
         />
 
