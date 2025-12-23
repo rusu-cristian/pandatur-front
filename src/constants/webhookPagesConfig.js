@@ -442,12 +442,12 @@ export const WEBHOOK_PAGES_CONFIG = {
       type: "phone",
       group_title: ["FILIALE"]
     },
-    {
-      page_id: "40720949119",
-      page_name: "General RO - 40720949119",
-      type: "phone",
-      group_title: ["RO"]
-    },
+    // {
+    //   page_id: "40720949119",
+    //   page_name: "General RO - 40720949119",
+    //   type: "phone",
+    //   group_title: ["RO"]
+    // },
     {
       page_id: "40728932931",
       page_name: "Bucuresti - 40728932931",

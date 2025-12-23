@@ -2,7 +2,7 @@
 export const PANDA_NUMBERS = [
   { value: "37360991919", label: "37360991919 - Panda Tur Moldova", platforms: ["whatsapp", "viber", "telegram"] },
   { value: "37369440400", label: "37369440400 - Panda Tur Moldova", platforms: ["whatsapp"] },
-  { value: "40720949119", label: "40720949119 - Panda Tur Iasi (Romania)", platforms: ["whatsapp"] },
+  // { value: "40720949119", label: "40720949119 - Panda Tur Iasi (Romania)", platforms: ["whatsapp"] },
   { value: "40728932931", label: "40728932931 - Panda Tur Bucuresti (Romania)", platforms: ["whatsapp"] },
   { value: "40721205105", label: "40721205105 - Panda Tur Brasov (Romania)", platforms: ["whatsapp"] },
   { value: "40790571838", label: "40790571838 - Panda Tur Iasi (Romania)", platforms: ["whatsapp"] },
@@ -20,7 +20,7 @@ export const getPandaNumbersByGroupTitle = (groupTitle, platform = 'whatsapp') =
     return PANDA_NUMBERS.filter(num => num.platforms.includes(platform));
   }
 
-  const groupTitleUpper = groupTitle.toUpperCase();
+  const groupTitleUpper = groupTitle.toUpperCase();s
   const normalizedPlatform = platform.toLowerCase();
 
   // Для MD воронки - показать только MD номера для данной платформы
