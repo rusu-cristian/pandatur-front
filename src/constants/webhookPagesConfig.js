@@ -450,7 +450,7 @@ export const WEBHOOK_PAGES_CONFIG = {
     // },
     {
       page_id: "40730436216",
-      page_name: "Call Centru RO - 40730436216",
+      page_name: "Back RO - 40730436216",
       type: "phone",
       group_title: ["RO"]
     },
