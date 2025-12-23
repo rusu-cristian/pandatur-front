@@ -57,6 +57,7 @@ const GroupChangeModal = ({ opened, onClose, onConfirm }) => {
           rightSection={loading ? <Loader size={16} /> : null}
           disabled={loading}
           nothingFound={translations["Nu există grupuri"][language]}
+          searchable
         />
 
         {groups.length === 0 && !loading && (
