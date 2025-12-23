@@ -353,7 +353,7 @@ const TaskFilterModal = ({ opened, onClose, filters, onApply }) => {
 
           <UserGroupMultiSelect
             label={translations["Responsabil"][language]}
-            techniciansData={formattedTechnicians}
+            techniciansData={filteredTechnicians}
             value={
               isIfResponsible
                 ? [String(userId)]
