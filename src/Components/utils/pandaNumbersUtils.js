@@ -20,7 +20,7 @@ export const getPandaNumbersByGroupTitle = (groupTitle, platform = 'whatsapp') =
     return PANDA_NUMBERS.filter(num => num.platforms.includes(platform));
   }
 
-  const groupTitleUpper = groupTitle.toUpperCase();s
+  const groupTitleUpper = groupTitle.toUpperCase();
   const normalizedPlatform = platform.toLowerCase();
 
   // Для MD воронки - показать только MD номера для данной платформы
