@@ -32,7 +32,7 @@ import {
   TikTokworkflowOptionsByGroupTitle,
 } from "../../utils/workflowUtils";
 import { WorkflowMultiSelect } from "../../Workflow/components/WorkflowMultiSelect";
-import { getUserGroupsForFunnel } from "../../utils/funnelUserGroupsMap";
+import { getUserGroupsForFunnel, hasFullAccess } from "../../utils/funnelUserGroupsMap";
 
 const GENERAL_FORM_FILTER_ID = "GENERAL_FORM_FILTER_ID";
 
@@ -100,11 +100,22 @@ export const BasicGeneralFormFilter = forwardRef(
 
     const selectedGroupTitle = customGroupTitle ?? groupTitleForApi ?? null;
 
+    // Проверяем, имеет ли текущий пользователь полный доступ (Admin / IT dep.)
+    // Для них фильтрация по воронке игнорируется — они видят всех
+    const isFullAccessUser = useMemo(() => hasFullAccess(userGroups), [userGroups]);
+
     // Фильтруем пользователей по выбранной воронке
-    // Если воронка не выбрана — показываем пустой список
+    // Пользователи с полным доступом видят всех независимо от воронки
+    // Остальные видят только пользователей своей воронки
     const filteredTechnicians = useMemo(() => {
+      // Полный доступ — видят всех (Dismissed фильтруется в UserGroupMultiSelect)
+      if (isFullAccessUser) {
+        return formattedTechnicians;
+      }
+
+      // Для остальных: если воронка не выбрана — никого не показываем
       if (!selectedGroupTitle) {
-        return []; // Воронка не выбрана — никого не показываем
+        return [];
       }
 
       const allowedUserGroups = getUserGroupsForFunnel(selectedGroupTitle);
@@ -126,7 +137,7 @@ export const BasicGeneralFormFilter = forwardRef(
         // Пользователя показываем если его группа в списке разрешённых
         return allowedUserGroups.includes(item.groupName);
       });
-    }, [formattedTechnicians, selectedGroupTitle]);
+    }, [formattedTechnicians, selectedGroupTitle, isFullAccessUser]);
 
     // Определяем, находится ли пользователь в группе TikTok Manager
     const isTikTokManager = useMemo(() => {

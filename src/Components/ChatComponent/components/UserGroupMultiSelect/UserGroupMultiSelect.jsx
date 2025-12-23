@@ -2,20 +2,21 @@ import React, { useState, useMemo, useEffect } from "react";
 import { MultiSelect, Group, Text, Badge, Box } from "@mantine/core";
 import { FaUsers, FaUser, FaCheck } from "react-icons/fa";
 import { useUser } from "@hooks";
+import { isHiddenGroup } from "../../../utils/funnelUserGroupsMap";
 
 /**
  * Компонент для выбора пользователей и групп
  * 
  * ЛОГИКА РАБОТЫ:
- * 1. В options включаем ВСЕХ пользователей (активных + неактивных)
- *    - Это нужно чтобы в выбранных значениях (pills) показывались имена, а не ID
+ * 1. В options включаем всех пользователей (кроме тех, что в скрытых группах)
+ *    - Скрытые группы определены в HIDDEN_GROUPS (funnelUserGroupsMap.js)
+ *    - Это нужно чтобы в pills показывались имена, а не ID
  * 
- * 2. В dropdown показываем только активных пользователей
- *    - Фильтрация происходит в renderOption
- *    - Выбранные неактивные пользователи НЕ показываются в dropdown, но остаются в pills
+ * 2. Пользователи из скрытых групп полностью скрыты
+ *    - Не показываются в dropdown и pills
+ *    - Скрытые группы тоже не показываются
  * 
- * 3. При выборе группы добавляются ВСЕ пользователи группы (включая неактивных)
- *    - Это нужно для сохранения выбранных значений
+ * 3. При выборе группы добавляются все пользователи группы
  */
 export const UserGroupMultiSelect = ({
   value = [],
@@ -41,56 +42,31 @@ export const UserGroupMultiSelect = ({
     ? (placeholder === "Select users and groups" ? "Select user" : placeholder)
     : placeholder;
 
-  // Создаем полный список опций (ВСЕХ пользователей - активных и неактивных)
+  // Создаем полный список опций (всех пользователей, кроме тех что в скрытых группах)
   // Это нужно чтобы в pills показывались имена, а не ID
   const options = useMemo(() => {
     // Вариант 1: Если есть techniciansData (отформатированные данные)
     if (techniciansData && techniciansData.length > 0) {
-      // Создаем Map всех пользователей (активных из techniciansData + неактивных из usersData)
-      const allUsersMap = new Map();
-      
-      // Добавляем только АКТИВНЫХ пользователей из techniciansData (status === true)
-      techniciansData.forEach(item => {
-        if (!item.value.startsWith("__group__") && item.status === true) {
-          allUsersMap.set(item.value, item);
-        }
-      });
-      
-      // Добавляем только АКТИВНЫХ пользователей из usersData (status === true)
-      if (usersData && usersData.length > 0) {
-        usersData.forEach(user => {
-          // Пропускаем неактивных пользователей
-          if (user.status !== true) return;
-          
-          const userId = String(user.id);
-          // Если пользователь еще не добавлен, добавляем его
-          if (!allUsersMap.has(userId)) {
-            const name = `${user.name || ''} ${user.surname || ''}`.trim();
-            const sipuniId = user.sipuni_id ? ` (SIP: ${user.sipuni_id})` : '';
-            const userIdLabel = ` (ID: ${user.id})`;
-            
-            allUsersMap.set(userId, {
-              value: userId,
-              label: `${name}${sipuniId}${userIdLabel}`,
-              id: user.id,
-              sipuni_id: user.sipuni_id,
-              status: user.status,
-              groupName: user.groups?.[0]?.name,
-              name: user.name,
-              surname: user.surname
-            });
-          }
-        });
-      }
-      
       // Обрабатываем данные
       const filtered = techniciansData
         .filter(item => {
-          // НЕ фильтруем по статусу - берем все
+          const isGroupItem = item.value.startsWith("__group__");
+          
+          // Пропускаем скрытые группы (например "Dismissed")
+          if (isGroupItem && isHiddenGroup(item.label)) {
+            return false;
+          }
+          
+          // Для пользователей: пропускаем тех, кто в скрытой группе
+          if (!isGroupItem && isHiddenGroup(item.groupName)) {
+            return false;
+          }
+          
           // Фильтрация по allowedUserIds
-          if (allowedUserIds && !item.value.startsWith("__group__")) {
+          if (allowedUserIds && !isGroupItem) {
             return allowedUserIds.has(item.value);
           }
+          
           return true;
         })
         .map(item => {
@@ -123,7 +99,7 @@ export const UserGroupMultiSelect = ({
               ...item,
               label: enhancedLabel,
               disabled: false,
-              status: item.status // Сохраняем статус для фильтрации в dropdown
+              status: item.status // Сохраняем статус (для совместимости)
             };
           }
         });
@@ -159,14 +135,23 @@ export const UserGroupMultiSelect = ({
 
     // Вариант 2: Если есть raw данные пользователей из API
     if (usersData && usersData.length > 0) {
-      // Берем только АКТИВНЫХ пользователей (status === true)
-      const allUsers = usersData.filter(user => user.status === true);
+      // Фильтруем: убираем пользователей из скрытых групп
+      const allUsers = usersData.filter(user => {
+        // Пропускаем пользователей, которые состоят в скрытой группе
+        if (user.groups && user.groups.some(g => isHiddenGroup(g.name))) {
+          return false;
+        }
+        return true;
+      });
       
-      // Собираем все уникальные группы
+      // Собираем все уникальные группы (кроме скрытых)
       const allGroups = new Map();
       allUsers.forEach(user => {
         if (user.groups && user.groups.length > 0) {
           user.groups.forEach(group => {
+            // Пропускаем скрытые группы
+            if (isHiddenGroup(group.name)) return;
+            
             if (!allGroups.has(group.id)) {
               allGroups.set(group.id, {
                 id: group.id,
@@ -215,7 +200,7 @@ export const UserGroupMultiSelect = ({
             options.push({
               value: String(user.id),
               label: `${name}${sipuniId}${userId}`,
-              status: user.status, // Сохраняем статус для фильтрации
+              status: user.status, // Сохраняем статус (для совместимости)
               groupName: group.name
             });
           });
@@ -228,8 +213,11 @@ export const UserGroupMultiSelect = ({
     if (userGroups && userGroups.length > 0) {
       const options = [];
       
+      // Фильтруем группы: убираем скрытые
+      const filteredGroups = userGroups.filter(group => !isHiddenGroup(group.name));
+      
       // Сортируем группы по алфавиту
-      const sortedGroups = userGroups.sort((a, b) => a.name.localeCompare(b.name));
+      const sortedGroups = filteredGroups.sort((a, b) => a.name.localeCompare(b.name));
       
       sortedGroups.forEach(group => {
         // Добавляем группу
@@ -337,14 +325,7 @@ export const UserGroupMultiSelect = ({
     const isGroup = option.value.startsWith("__group__");
     const isDisabled = option.disabled;
     
-    // ФИЛЬТРАЦИЯ: Скрываем неактивных пользователей в dropdown
-    // Но НЕ скрываем выбранных (чтобы можно было снять галочку)
-    if (!isGroup && !checked) {
-      const isActive = option.status === true || option.status === undefined;
-      if (!isActive) {
-        return null; // Не показываем неактивного пользователя
-      }
-    }
+    // Пользователи из скрытых групп уже отфильтрованы в options
 
     return (
       <Group
@@ -423,13 +404,12 @@ export const UserGroupMultiSelect = ({
             {(() => {
               const groupName = option.label;
               
-              // Считаем только активных пользователей в группе из options
+              // Считаем всех пользователей в группе из options
               const userCount = options.filter(opt => {
                 // Пропускаем группы, берем только пользователей
                 if (opt.value.startsWith("__group__")) return false;
-                // Проверяем принадлежность к группе и активный статус
-                const isActive = opt.status === true || opt.status === undefined;
-                return opt.groupName === groupName && isActive;
+                // Проверяем принадлежность к группе
+                return opt.groupName === groupName;
               }).length;
               
               return `${userCount} users`;

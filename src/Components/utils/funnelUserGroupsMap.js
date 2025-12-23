@@ -7,6 +7,37 @@
  * Значение: массив названий групп пользователей
  */
 
+// ============ КОНСТАНТЫ ДЛЯ СПЕЦИАЛЬНЫХ ГРУПП ============
+
+/**
+ * Группы с полным доступом — игнорируют фильтрацию по воронке
+ */
+export const FULL_ACCESS_GROUPS = ["Admin", "IT dep."];
+
+/**
+ * Скрытые группы — не показываются в селектах
+ */
+export const HIDDEN_GROUPS = ["Dismissed"];
+
+/**
+ * Проверить, имеет ли пользователь полный доступ (Admin или IT dep.)
+ * @param {Array<{name: string}>} userGroups - группы пользователя
+ * @returns {boolean}
+ */
+export const hasFullAccess = (userGroups) => {
+    if (!userGroups?.length) return false;
+    return userGroups.some(group => FULL_ACCESS_GROUPS.includes(group.name));
+};
+
+/**
+ * Проверить, находится ли пользователь в скрытой группе
+ * @param {string} groupName - название группы
+ * @returns {boolean}
+ */
+export const isHiddenGroup = (groupName) => {
+    return HIDDEN_GROUPS.includes(groupName);
+};
+
 export const groupTitleToUserGroups = {
     MD: [
         "Front Office",
