@@ -12,7 +12,6 @@ import { UserContext } from "../contexts/UserContext";
 import { api } from "../api";
 import { getEffectiveWorkflow, DEFAULT_PER_PAGE, DEFAULT_PAGE } from "../Components/LeadsComponent/constants";
 import { cleanFilters } from "../utils/ticketFilters";
-import { useTicketCacheSync } from "./useTicketCacheSync";
 
 /**
  * Загрузка hard тикетов
@@ -139,14 +138,9 @@ export const useLeadsTableQuery = ({ filters: rawFilters = {}, enabled = true } 
     });
   }, [queryClient, queryKey]);
 
-  // Синхронизация кэша с WebSocket через TicketSyncContext
-  // Для Table не удаляем тикеты при изменении — просто обновляем данные
-  const { updateTicket } = useTicketCacheSync({
-    queryKey,
-    filters,
-    matchFn: null, // Всегда обновляем, не удаляем
-    dataPath: "tickets", // простой query, не infinite
-  });
+  // ВАЖНО: Hard тикеты НЕ синхронизируются через WebSocket!
+  // Через сокет приходят только light тикеты.
+  // Hard тикеты обновляются только через API (refetch).
 
   return {
     // Данные
