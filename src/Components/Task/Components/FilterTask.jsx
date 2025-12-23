@@ -13,6 +13,7 @@ import { convertRolesToMatrix, safeParseJson } from "../../UsersComponent/rolesU
 import { UserContext } from "../../../contexts/UserContext";
 import { formatMultiSelectData } from "../../utils/multiSelectUtils";
 import { UserGroupMultiSelect } from "../../ChatComponent/components/UserGroupMultiSelect/UserGroupMultiSelect";
+import { getUserGroupsForFunnel, hasFullAccess } from "../../utils/funnelUserGroupsMap";
 
 const language = localStorage.getItem("language") || "RO";
 
@@ -24,7 +25,7 @@ const taskTypeOptions = TypeTask.map((task) => ({
 const TaskFilterModal = ({ opened, onClose, filters, onApply }) => {
   const [localFilters, setLocalFilters] = useState({});
   const { technicians, loading: loadingTechnicians } = useGetTechniciansList();
-  const { userId, user, teamUserIds } = useUser();
+  const { userId, user, teamUserIds, userGroups } = useUser();
   const [groupOptions, setGroupOptions] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
   const rolesMatrix = convertRolesToMatrix(safeParseJson(user?.roles || "[]"));
@@ -214,6 +215,51 @@ const TaskFilterModal = ({ opened, onClose, filters, onApply }) => {
   }, [isTeam, localFilters.created_for, teamTechnicians, userId]);
 
   const formattedTechnicians = useMemo(() => formatMultiSelectData(technicians), [technicians]);
+
+  // Проверяем, имеет ли текущий пользователь полный доступ (Admin / IT dep.)
+  const isFullAccessUser = useMemo(() => hasFullAccess(userGroups), [userGroups]);
+
+  // Выбранные воронки (или все доступные по умолчанию)
+  const selectedGroupTitles = localFilters.group_titles?.length 
+    ? localFilters.group_titles 
+    : accessibleGroupTitles;
+
+  // Фильтруем пользователей по выбранным воронкам
+  // Пользователи с полным доступом видят всех независимо от воронок
+  const filteredTechnicians = useMemo(() => {
+    // Полный доступ — видят всех (Dismissed фильтруется в UserGroupMultiSelect)
+    if (isFullAccessUser) {
+      return formattedTechnicians;
+    }
+
+    // Для остальных: если воронки не выбраны — никого не показываем
+    if (!selectedGroupTitles?.length) {
+      return [];
+    }
+
+    // Собираем группы пользователей из всех выбранных воронок
+    const allowedUserGroups = new Set();
+    selectedGroupTitles.forEach(groupTitle => {
+      const groups = getUserGroupsForFunnel(groupTitle);
+      groups.forEach(g => allowedUserGroups.add(g));
+    });
+    
+    // Если для воронок не настроены группы — показываем пустой список
+    if (allowedUserGroups.size === 0) {
+      return [];
+    }
+
+    // Фильтруем: оставляем группы и пользователей из разрешённых групп
+    return formattedTechnicians.filter((item) => {
+      const isGroup = item.value.startsWith("__group__");
+      
+      if (isGroup) {
+        return allowedUserGroups.has(item.label);
+      }
+      
+      return allowedUserGroups.has(item.groupName);
+    });
+  }, [formattedTechnicians, selectedGroupTitles, isFullAccessUser]);
 
   const handleCreatedForChange = (val) => {
     // UserGroupMultiSelect уже обрабатывает логику групп внутри себя

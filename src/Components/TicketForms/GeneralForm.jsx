@@ -22,6 +22,7 @@ import {
   TikTokworkflowOptionsByGroupTitle,
 } from "../utils/workflowUtils";
 import { WorkflowSelect } from "../Workflow/components/WorkflowSelect";
+import { getUserGroupsForFunnel, hasFullAccess } from "../utils/funnelUserGroupsMap";
 
 const FINAL_WORKFLOWS = ["Realizat cu succes", "Închis și nerealizat"];
 
@@ -67,6 +68,41 @@ export const GeneralForm = ({ data, formInstance }) => {
     [accessibleGroupTitles]
   );
 
+  // Проверяем, имеет ли текущий пользователь полный доступ (Admin / IT dep.)
+  const isFullAccessUser = useMemo(() => hasFullAccess(userGroups), [userGroups]);
+
+  // Фильтруем пользователей по выбранной воронке
+  // Пользователи с полным доступом видят всех независимо от воронки
+  const filteredTechnicians = useMemo(() => {
+    // Полный доступ — видят всех (Dismissed фильтруется в UserGroupMultiSelect)
+    if (isFullAccessUser) {
+      return formattedTechnicians;
+    }
+
+    // Для остальных: если воронка не выбрана — никого не показываем
+    if (!group_title) {
+      return [];
+    }
+
+    const allowedUserGroups = getUserGroupsForFunnel(group_title);
+    
+    // Если для воронки не настроены группы — показываем пустой список
+    if (!allowedUserGroups.length) {
+      return [];
+    }
+
+    // Фильтруем: оставляем группы и пользователей из разрешённых групп
+    return formattedTechnicians.filter((item) => {
+      const isGroup = item.value.startsWith("__group__");
+      
+      if (isGroup) {
+        return allowedUserGroups.includes(item.label);
+      }
+      
+      return allowedUserGroups.includes(item.groupName);
+    });
+  }, [formattedTechnicians, group_title, isFullAccessUser]);
+
   // Определяем, находится ли пользователь в группе TikTok Manager
   const isTikTokManager = useMemo(
     () => userGroups?.some((group) => group.name === "TikTok Manager"),
@@ -99,17 +135,19 @@ export const GeneralForm = ({ data, formInstance }) => {
 
   // --- ОБРАБОТЧИКИ ---
 
-  // Здесь и делаем нужный сброс workflow ТОЛЬКО при реальном изменении group_title
+  // Здесь и делаем нужный сброс workflow и technician_id при изменении group_title
   const handleGroupTitleChange = useCallback(
     (value) => {
       const prev = formInstance.values.group_title;
 
       formInstance.setFieldValue("group_title", value);
 
-      // Сбрасываем workflow, только если был старый group_title и он реально изменился
+      // Сбрасываем workflow и technician_id, только если был старый group_title и он реально изменился
       if (prev && prev !== value) {
         formInstance.setFieldValue("workflow", undefined);
+        formInstance.setFieldValue("technician_id", undefined);
         formInstance.clearFieldError("workflow");
+        formInstance.clearFieldError("technician_id");
       }
     },
     [formInstance]
@@ -171,7 +209,7 @@ export const GeneralForm = ({ data, formInstance }) => {
           placeholder={getLanguageByKey("Selectează responsabil")}
           value={technicianValue}
           onChange={handleTechnicianChange}
-          techniciansData={formattedTechnicians}
+          techniciansData={filteredTechnicians}
           mode="single"
         />
         {formInstance.errors.technician_id && (
