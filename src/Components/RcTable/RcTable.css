@@ -91,3 +91,8 @@
 .table th.rc-table-cell-fix-right-first {
   background-color: var(--crm-ui-kit-palette-background-primary);
 }
+
+/* Скрываем служебный ряд для измерения ширины колонок */
+.table .rc-table-measure-row {
+  display: none;
+}
