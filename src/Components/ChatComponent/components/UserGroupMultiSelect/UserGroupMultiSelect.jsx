@@ -45,8 +45,14 @@ export const UserGroupMultiSelect = ({
   // Создаем полный список опций (всех пользователей, кроме тех что в скрытых группах)
   // Это нужно чтобы в pills показывались имена, а не ID
   const options = useMemo(() => {
-    // Вариант 1: Если есть techniciansData (отформатированные данные)
-    if (techniciansData && techniciansData.length > 0) {
+    // Вариант 1: Если переданы techniciansData (отформатированные данные)
+    // Важно: проверяем на undefined/null, а не на length, чтобы пустой массив [] 
+    // не падал в fallback на userGroups (где нет имён пользователей)
+    if (techniciansData !== undefined && techniciansData !== null) {
+      // Если массив пустой — возвращаем пустой список (не падаем в fallback)
+      if (techniciansData.length === 0) {
+        return [];
+      }
       // Обрабатываем данные
       const filtered = techniciansData
         .filter(item => {
