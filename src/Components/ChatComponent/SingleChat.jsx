@@ -208,6 +208,7 @@ const SingleChat = ({ technicians, ticketId, onClose }) => {
     );
   }
 
+  
   // Показываем "Нет доступа" если пользователь не имеет прав на эту группу
   if (!hasAccessToTicket) {
     return (
