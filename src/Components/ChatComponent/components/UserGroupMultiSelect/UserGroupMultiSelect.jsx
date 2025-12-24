@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useMemo } from "react";
 import { MultiSelect, Group, Text, Badge, Box } from "@mantine/core";
 import { FaUsers, FaUser, FaCheck } from "react-icons/fa";
 import { useUser } from "@hooks";
@@ -29,13 +29,11 @@ export const UserGroupMultiSelect = ({
   allowedUserIds = null, // Set с разрешенными ID пользователей для фильтрации
   disabled = false
 }) => {
-  const [selectedValues, setSelectedValues] = useState(value);
+  // Компонент полностью контролируемый — используем value напрямую от родителя
+  // Убрали внутренний state (selectedValues) чтобы избежать бесконечного цикла:
+  // - form.values создаёт новую ссылку при каждом рендере
+  // - useEffect срабатывал на новую ссылку → setSelectedValues → ререндер → цикл
   const { userGroups } = useUser();
-
-  // Синхронизируем selectedValues с внешним value
-  useEffect(() => {
-    setSelectedValues(value);
-  }, [value]);
 
   // Определяем placeholder в зависимости от режима
   const actualPlaceholder = mode === "single"
@@ -275,7 +273,6 @@ export const UserGroupMultiSelect = ({
       }
       // Оставляем только последний выбранный пользователь
       const singleValue = [lastValue].filter(Boolean);
-      setSelectedValues(singleValue);
       onChange(singleValue);
       return;
     }
@@ -302,7 +299,8 @@ export const UserGroupMultiSelect = ({
         })
         .map(opt => opt.value);
 
-      const current = selectedValues || [];
+      // Используем value напрямую от родителя
+      const current = value || [];
 
       // Проверяем, были ли уже выбраны пользователи этой группы
       const groupUsersSelected = groupUsers.every(userId => current.includes(userId));
@@ -316,11 +314,9 @@ export const UserGroupMultiSelect = ({
         newSelection = Array.from(new Set([...current, ...groupUsers]));
       }
 
-      setSelectedValues(newSelection);
       onChange(newSelection);
     } else {
       // Обычный выбор пользователя
-      setSelectedValues(newValues);
       onChange(newValues);
     }
   };
@@ -432,7 +428,7 @@ export const UserGroupMultiSelect = ({
       <MultiSelect
         label={label}
         placeholder={actualPlaceholder}
-        value={selectedValues}
+        value={value}
         onChange={handleChange}
         data={options}
         searchable

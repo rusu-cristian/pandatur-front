@@ -1,5 +1,6 @@
 import { FaArrowLeft, FaLock } from "react-icons/fa";
 import React, { useEffect, useState, useRef, useContext, useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Flex, ActionIcon, Box, Text, Center, Stack } from "@mantine/core";
 import ChatExtraInfo from "./ChatExtraInfo";
 import { ChatMessages } from "./components";
@@ -14,6 +15,7 @@ import { getLanguageByKey } from "../utils/getLanguageByKey";
 const SingleChat = ({ technicians, ticketId, onClose }) => {
   const { getTicketById, fetchSingleTicket, tickets } = useTickets();
   const { messages, clearAll: clearMessages } = useMessagesContext();
+  const [searchParams, setSearchParams] = useSearchParams();
   const {
     accessibleGroupTitles,
     groupTitleForApi,
@@ -167,15 +169,25 @@ const SingleChat = ({ technicians, ticketId, onClose }) => {
   }, [subscribe]);
 
   // Переключаем группу если тикет из другой группы И есть доступ
+  // ВАЖНО: также обновляем URL, чтобы избежать конфликта с syncGroupTitleFromUrl в Leads
   useEffect(() => {
     if (!loadedTicket?.group_title || !hasAccessToTicket) return;
     
     const ticketGroup = loadedTicket.group_title;
     if (ticketGroup !== groupTitleForApi && ticketGroup !== customGroupTitle) {
+      // 1. Обновляем контекст
       setCustomGroupTitle(ticketGroup);
       localStorage.setItem("leads_last_group_title", ticketGroup);
+      
+      // 2. Обновляем URL чтобы syncGroupTitleFromUrl не конфликтовал
+      // Без этого syncGroupTitleFromUrl пытается вернуть старую группу из URL → бесконечный цикл
+      setSearchParams((prev) => {
+        const newParams = new URLSearchParams(prev);
+        newParams.set("group_title", ticketGroup);
+        return newParams;
+      }, { replace: true });
     }
-  }, [loadedTicket?.group_title, hasAccessToTicket, groupTitleForApi, customGroupTitle, setCustomGroupTitle]);
+  }, [loadedTicket?.group_title, hasAccessToTicket, groupTitleForApi, customGroupTitle, setCustomGroupTitle, setSearchParams]);
 
   // Получаем unseen_count из актуального тикета
   const unseenCount = currentTicket?.unseen_count || 0;
