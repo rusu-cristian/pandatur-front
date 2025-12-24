@@ -119,7 +119,7 @@ export const BasicGeneralFormFilter = forwardRef(
       }
 
       const allowedUserGroups = getUserGroupsForFunnel(selectedGroupTitle);
-      
+
       // Если для воронки не настроены группы — показываем пустой список
       if (!allowedUserGroups.length) {
         return [];
@@ -128,12 +128,12 @@ export const BasicGeneralFormFilter = forwardRef(
       // Фильтруем: оставляем группы и пользователей из разрешённых групп
       return formattedTechnicians.filter((item) => {
         const isGroup = item.value.startsWith("__group__");
-        
+
         if (isGroup) {
           // Группу показываем только если она в списке разрешённых
           return allowedUserGroups.includes(item.label);
         }
-        
+
         // Пользователя показываем если его группа в списке разрешённых
         return allowedUserGroups.includes(item.groupName);
       });
@@ -325,6 +325,16 @@ export const BasicGeneralFormFilter = forwardRef(
           />
         </div>
 
+        <UserGroupMultiSelect
+          mt="md"
+          label={getLanguageByKey("Responsabil")}
+          placeholder={getLanguageByKey("Selectează responsabil")}
+          value={form.values.technician_id}
+          onChange={(value) => form.setFieldValue("technician_id", value)}
+          techniciansData={filteredTechnicians}
+          mode="multi"
+        />
+
         <MultiSelect
           name="priority"
           mt="md"
@@ -353,16 +363,6 @@ export const BasicGeneralFormFilter = forwardRef(
           placeholder={getLanguageByKey("Introdu tag-uri separate prin virgule")}
           key={form.key("tags")}
           {...form.getInputProps("tags")}
-        />
-
-        <UserGroupMultiSelect
-          mt="md"
-          label={getLanguageByKey("Responsabil")}
-          placeholder={getLanguageByKey("Selectează responsabil")}
-          value={form.values.technician_id}
-          onChange={(value) => form.setFieldValue("technician_id", value)}
-          techniciansData={filteredTechnicians}
-          mode="multi"
         />
 
         <div style={{ marginTop: "1rem" }}>
