@@ -1,4 +1,5 @@
 import { getLanguageByKey } from "../Components/utils/getLanguageByKey";
+import { sortOptionsWithLastItems } from "./sortOptions";
 
 const nameExcursionOptionKeys = [
   "Excursie de 4 zile la Istanbul cu Autocarul",
@@ -70,7 +71,9 @@ const nameExcursionOptionKeys = [
   "Alte"
 ];
 
-export const nameExcursionOptions = nameExcursionOptionKeys.map((key) => ({
-  value: key,
-  label: getLanguageByKey(key) || key,
-}));
+export const nameExcursionOptions = sortOptionsWithLastItems(
+  nameExcursionOptionKeys.map((key) => ({
+    value: key,
+    label: getLanguageByKey(key) || key,
+  }))
+);

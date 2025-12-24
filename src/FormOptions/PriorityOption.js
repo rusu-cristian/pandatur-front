@@ -7,7 +7,9 @@ const priorityOptionKeys = [
   "critică"
 ];
 
-export const priorityOptions = priorityOptionKeys.map((key) => ({
-  value: key,
-  label: getLanguageByKey(key) || key,
-}));
+export const priorityOptions = priorityOptionKeys
+  .map((key) => ({
+    value: key,
+    label: getLanguageByKey(key) || key,
+  }))
+  .sort((a, b) => a.label.localeCompare(b.label, undefined, { sensitivity: 'base' }));

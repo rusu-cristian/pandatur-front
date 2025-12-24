@@ -5,7 +5,9 @@ const valutaOptionKeys = [
   "Eur"
 ];
 
-export const valutaOptions = valutaOptionKeys.map((key) => ({
-  value: key,
-  label: getLanguageByKey(key) || key,
-}));
+export const valutaOptions = valutaOptionKeys
+  .map((key) => ({
+    value: key,
+    label: getLanguageByKey(key) || key,
+  }))
+  .sort((a, b) => a.label.localeCompare(b.label, undefined, { sensitivity: 'base' }));

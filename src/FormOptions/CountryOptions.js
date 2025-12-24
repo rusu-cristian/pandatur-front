@@ -1,8 +1,8 @@
 import { getLanguageByKey } from "../Components/utils/getLanguageByKey";
+import { sortOptionsWithLastItems } from "./sortOptions";
 
 const countryOptionKeys = [
   "Albania",
-  "Altele",
   "Bulgaria",
   "Canada",
   "Cipru",
@@ -33,10 +33,13 @@ const countryOptionKeys = [
   "Ungaria",
   "USA",
   "Zanzibar",
+  "Altele",
   "Nu este specificat",
 ];
 
-export const countryOptions = countryOptionKeys.map((key) => ({
-  value: key,
-  label: getLanguageByKey(key) || key,
-}));
+export const countryOptions = sortOptionsWithLastItems(
+  countryOptionKeys.map((key) => ({
+    value: key,
+    label: getLanguageByKey(key) || key,
+  }))
+);

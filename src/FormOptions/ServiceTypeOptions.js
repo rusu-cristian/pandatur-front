@@ -1,7 +1,7 @@
 import { getLanguageByKey } from "../Components/utils/getLanguageByKey";
+import { sortOptionsWithLastItems } from "./sortOptions";
 
 const serviceTypeOptionKeys = [
-  "Altele",
   "Angajare",
   "Bilete de avion",
   "Bilet de fotbal",
@@ -19,9 +19,12 @@ const serviceTypeOptionKeys = [
   "Tabara la munte cu Panda tur si Iuliana Beregoi",
   "Tratament",
   "Viza",
+  "Altele"
 ];
 
-export const serviceTypeOptions = serviceTypeOptionKeys.map((key) => ({
-  value: key,
-  label: getLanguageByKey(key) || key,
-}));
+export const serviceTypeOptions = sortOptionsWithLastItems(
+  serviceTypeOptionKeys.map((key) => ({
+    value: key,
+    label: getLanguageByKey(key) || key,
+  }))
+);

@@ -1,4 +1,5 @@
 import { getLanguageByKey } from "../Components/utils/getLanguageByKey";
+import { sortOptionsWithLastItems } from "./sortOptions";
 
 const promoOptionKeys = [
   "Black Fryday",
@@ -10,7 +11,9 @@ const promoOptionKeys = [
   "Nu e specificat"
 ];
 
-export const promoOptions = promoOptionKeys.map((key) => ({
-  value: key,
-  label: getLanguageByKey(key) || key,
-}));
+export const promoOptions = sortOptionsWithLastItems(
+  promoOptionKeys.map((key) => ({
+    value: key,
+    label: getLanguageByKey(key) || key,
+  }))
+);

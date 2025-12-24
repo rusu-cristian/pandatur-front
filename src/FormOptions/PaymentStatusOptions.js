@@ -5,7 +5,9 @@ const paymentStatusOptionKeys = [
   "Full pay"
 ];
 
-export const paymentStatusOptions = paymentStatusOptionKeys.map((key) => ({
-  value: key,
-  label: getLanguageByKey(key) || key,
-}));
+export const paymentStatusOptions = paymentStatusOptionKeys
+  .map((key) => ({
+    value: key,
+    label: getLanguageByKey(key) || key,
+  }))
+  .sort((a, b) => a.label.localeCompare(b.label, undefined, { sensitivity: 'base' }));

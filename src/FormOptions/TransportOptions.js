@@ -7,7 +7,9 @@ const transportOptionKeys = [
   "Fara transport"
 ];
 
-export const transportOptions = transportOptionKeys.map((key) => ({
-  value: key,
-  label: getLanguageByKey(key) || key,
-}));
+export const transportOptions = transportOptionKeys
+  .map((key) => ({
+    value: key,
+    label: getLanguageByKey(key) || key,
+  }))
+  .sort((a, b) => a.label.localeCompare(b.label, undefined, { sensitivity: 'base' }));

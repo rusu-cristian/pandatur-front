@@ -5,7 +5,9 @@ const purchaseProcessingOptionKeys = [
   "La birou"
 ];
 
-export const purchaseProcessingOptions = purchaseProcessingOptionKeys.map((key) => ({
-  value: key,
-  label: getLanguageByKey(key) || key,
-}));
+export const purchaseProcessingOptions = purchaseProcessingOptionKeys
+  .map((key) => ({
+    value: key,
+    label: getLanguageByKey(key) || key,
+  }))
+  .sort((a, b) => a.label.localeCompare(b.label, undefined, { sensitivity: 'base' }));
