@@ -141,7 +141,7 @@ export const groupTitleToUserGroups = {
     ANENIINOI: [
         "Anenii Noi Franchise"
     ],
-    
+
     VARNITA: [
         "Varnita Franchise"
     ],
@@ -162,7 +162,7 @@ export const groupTitleToUserGroups = {
         "Nisporeni Franchise"
     ],
 
-    FRANCHISECLUJ: [
+    CLUJ: [
         "Cluj Franchise"
     ],
 
