@@ -11,7 +11,9 @@ import {
   ActionIcon,
   ScrollArea,
   Loader,
+  TextInput,
 } from "@mantine/core";
+import { IoSearch } from "react-icons/io5";
 import { groupSchedules } from "../../api/groupSchedules";
 import ScheduleView from "./ScheduleView";
 import { useSnackbar } from "notistack";
@@ -29,6 +31,7 @@ const SchedulesGroupList = ({ reload, setInGroupView }) => {
   const [editOpened, setEditOpened] = useState(false);
   const [editingGroup, setEditingGroup] = useState(null);
   const [loadingGroup, setLoadingGroup] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { enqueueSnackbar } = useSnackbar();
   const confirmDelete = useConfirmPopup({ loading: false });
@@ -45,7 +48,12 @@ const SchedulesGroupList = ({ reload, setInGroupView }) => {
         supervisor_id: group.supervisor_id,
       }));
 
-      setGroups(formattedGroups);
+      // Сортируем группы по имени в алфавитном порядке
+      const sortedGroups = formattedGroups.sort((a, b) =>
+        a.name.localeCompare(b.name)
+      );
+
+      setGroups(sortedGroups);
     } catch (err) {
       enqueueSnackbar(translations["Eroare la încărcare"][language], {
         variant: "error",
@@ -149,6 +157,11 @@ const SchedulesGroupList = ({ reload, setInGroupView }) => {
     );
   }
 
+  // Фильтруем группы по поисковому запросу
+  const filteredGroups = groups.filter((group) =>
+    group.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <>
       {loadingGroup ? (
@@ -156,9 +169,18 @@ const SchedulesGroupList = ({ reload, setInGroupView }) => {
           <Loader />
         </Group>
       ) : (
-        <ScrollArea h="calc(130vh - 100px)" type="auto">
-          <Stack spacing="md">
-            {groups.map((group) => {
+        <>
+          <TextInput
+            placeholder={translations["Căutare grup"][language] || "Căutare grup"}
+            leftSection={<IoSearch size={16} />}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            mb="md"
+            style={{ maxWidth: 300 }}
+          />
+          <ScrollArea h="calc(130vh - 150px)" type="auto">
+            <Stack spacing="md">
+              {filteredGroups.map((group) => {
               const groupUsers = technicians.filter((u) =>
                 group.user_ids.includes(u.id)
               );
@@ -260,8 +282,9 @@ const SchedulesGroupList = ({ reload, setInGroupView }) => {
                 </Card>
               );
             })}
-          </Stack>
-        </ScrollArea>
+            </Stack>
+          </ScrollArea>
+        </>
       )}
 
       <ModalGroup

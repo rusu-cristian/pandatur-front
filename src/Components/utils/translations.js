@@ -2402,6 +2402,11 @@ export const translations = {
     RU: "Поиск",
     EN: "Search"
   },
+  "Căutare grup": {
+    RO: "Căutare grup",
+    RU: "Поиск группы",
+    EN: "Search group"
+  },
   "Nu există potriviri": {
     RO: "Nu există potriviri",
     RU: "Нет совпадений",
