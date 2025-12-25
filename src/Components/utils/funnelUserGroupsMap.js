@@ -134,6 +134,18 @@ export const groupTitleToUserGroups = {
         "Soldanesti Franchise"
     ],
 
+    SOROCA: [
+        "Soroca Franchise"
+    ],  
+
+    ANENIINOI: [
+        "Anenii Noi Franchise"
+    ],
+    
+    VARNITA: [
+        "Varnita Franchise"
+    ],
+
     REZINA: [
         "Rezina Franchise"
     ],

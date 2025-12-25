@@ -28,4 +28,7 @@ export const groupTitleOptions = [
     { value: "FRANCHISECLUJ", label: "Cluj Franchise RO" },
     { value: "TIMISOARA", label: "Timisoara Franchise RO" },
     { value: "BRICENI", label: "Briceni Franchise MD" },
+    { value: "SOROCA", label: "Soroca Franchise MD" },
+    { value: "ANENIINOI", label: "Anenii Noi Franchise MD" },
+    { value: "VARNITA", label: "Varnita Franchise MD" },
 ];
