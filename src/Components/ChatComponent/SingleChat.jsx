@@ -1,12 +1,12 @@
 import { FaArrowLeft, FaLock } from "react-icons/fa";
 import React, { useEffect, useState, useRef, useContext, useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
 import { Flex, ActionIcon, Box, Text, Center, Stack } from "@mantine/core";
 import ChatExtraInfo from "./ChatExtraInfo";
 import { ChatMessages } from "./components";
 import { useClientContacts, useMessagesContext } from "@hooks";
 import { useTickets } from "../../contexts/TicketsContext";
-import { useTicketSync, SYNC_EVENTS } from "../../contexts/TicketSyncContext";
+import { useTicketSync, SYNC_EVENTS, useOnTicketsMerged } from "../../contexts/TicketSyncContext";
 import { UserContext } from "../../contexts/UserContext";
 import { Spin } from "@components";
 import Can from "@components/CanComponent/Can";
@@ -16,6 +16,8 @@ const SingleChat = ({ technicians, ticketId, onClose }) => {
   const { getTicketById, fetchSingleTicket, tickets } = useTickets();
   const { messages, clearAll: clearMessages } = useMessagesContext();
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const location = useLocation();
   const {
     accessibleGroupTitles,
     groupTitleForApi,
@@ -167,6 +169,27 @@ const SingleChat = ({ technicians, ticketId, onClose }) => {
 
     return unsubscribe;
   }, [subscribe]);
+
+  // Обработка объединения тикетов — если текущий тикет был удалён при merge
+  useOnTicketsMerged(({ deletedTicketIds, targetTicketId }) => {
+    const currentId = Number(ticketIdRef.current);
+    
+    // Проверяем, был ли наш тикет удалён при merge
+    if (deletedTicketIds.includes(currentId)) {
+      // Показываем alert с информацией
+      alert(`${getLanguageByKey("ticketMergedAlert")} ${targetTicketId}`);
+      
+      // Определяем базовый путь (leads, chat, tasks)
+      // и перенаправляем на целевой тикет
+      const basePath = location.pathname.split('/')[1]; // leads, chat, tasks
+      const queryString = searchParams.toString();
+      const newPath = queryString 
+        ? `/${basePath}/${targetTicketId}?${queryString}` 
+        : `/${basePath}/${targetTicketId}`;
+      
+      navigate(newPath, { replace: true });
+    }
+  });
 
   // Переключаем группу если тикет из другой группы И есть доступ
   // ВАЖНО: также обновляем URL, чтобы избежать конфликта с syncGroupTitleFromUrl в Leads

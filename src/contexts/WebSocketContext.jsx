@@ -16,6 +16,7 @@ import { createContext, useContext, useCallback, useEffect, useRef, useMemo } fr
 import { useSocket } from "@hooks";
 import { TYPE_SOCKET_EVENTS, MEDIA_TYPE } from "@app-constants";
 import { useTicketSync } from "./TicketSyncContext";
+import { useSnackbar } from "notistack";
 import { useTickets } from "./TicketsContext";
 import { UserContext } from "./UserContext";
 
@@ -26,7 +27,7 @@ const MAX_PROCESSED_MESSAGES = 500;
 
 export const WebSocketProvider = ({ children }) => {
   const { onEvent } = useSocket();
-  const { notifyMessageReceived, notifyMessagesSeen, notifyMessageDeleted } = useTicketSync();
+  const { notifyMessageReceived, notifyMessagesSeen, notifyMessageDeleted, notifyTicketsMerged } = useTicketSync();
   const { 
     ticketsMap, 
     getTicketById, 
@@ -217,6 +218,47 @@ export const WebSocketProvider = ({ children }) => {
     }
   }, [workflowOptions, groupTitleForApi, fetchSingleTicket, removeTicket, ticketsMap]);
 
+  /**
+   * Обработка объединения тикетов
+   * 
+   * Формат события:
+   * { type: 'ticket_merge', data: { deleted: [sourceTicketId], new: [targetTicketId] } }
+   * 
+   * Логика:
+   * 1. Удаляем тикеты из deleted[] из state
+   * 2. Загружаем тикеты из new[] (с проверкой прав)
+   * 3. Оповещаем через TicketSync — компоненты перенаправят пользователя
+   */
+  const handleTicketMerge = useCallback((message) => {
+    const { deleted = [], new: newTickets = [] } = message.data || {};
+
+    // Преобразуем в числа и фильтруем
+    const deletedIds = deleted
+      .map((v) => Number(v))
+      .filter((v) => Number.isFinite(v));
+    
+    const newIds = newTickets
+      .map((v) => Number(v))
+      .filter((v) => Number.isFinite(v));
+
+    // 1. Удаляем тикеты из deleted[]
+    deletedIds.forEach((id) => {
+      removeTicket(id);
+    });
+
+    // 2. Загружаем тикеты из new[] (fetchSingleTicket проверит права)
+    newIds.forEach((id) => {
+      try {
+        fetchSingleTicket(id);
+      } catch { /* ignore */ }
+    });
+
+    // 3. Оповещаем об объединении — компоненты (SingleChat, Chat) перенаправят пользователя
+    if (deletedIds.length > 0 && newIds.length > 0) {
+      notifyTicketsMerged(deletedIds, newIds[0]);
+    }
+  }, [removeTicket, fetchSingleTicket, notifyTicketsMerged]);
+
   // === Подписка на события через onEvent ===
   // Это эффективнее чем слушать sendedValue — не вызывает ре-рендер компонента
 
@@ -244,6 +286,11 @@ export const WebSocketProvider = ({ children }) => {
     const unsubTicketUpdate = onEvent(TYPE_SOCKET_EVENTS.TICKET_UPDATE, handleTicketUpdate);
     return unsubTicketUpdate;
   }, [onEvent, handleTicketUpdate]);
+
+  useEffect(() => {
+    const unsubTicketMerge = onEvent(TYPE_SOCKET_EVENTS.TICKET_MERGE, handleTicketMerge);
+    return unsubTicketMerge;
+  }, [onEvent, handleTicketMerge]);
 
   const value = useMemo(() => ({
     // Можно добавить методы для отправки сообщений через WebSocket

@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useCallback, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { Flex, ActionIcon, Box } from "@mantine/core";
 import { useClientContacts, useMessagesContext, useChatFilters } from "@hooks";
@@ -11,7 +11,8 @@ import ChatExtraInfo from "../Components/ChatComponent/ChatExtraInfo";
 import ChatList from "../Components/ChatComponent/ChatList";
 import { ChatMessages } from "../Components/ChatComponent/components/ChatMessages";
 import Can from "@components/CanComponent/Can";
-import { useTicketSync, SYNC_EVENTS } from "../contexts/TicketSyncContext";
+import { useTicketSync, SYNC_EVENTS, useOnTicketsMerged } from "../contexts/TicketSyncContext";
+import { getLanguageByKey } from "../Components/utils";
 
 export const Chat = () => {
   const { getTicketByIdWithFilters } = useTickets();
@@ -27,6 +28,8 @@ export const Chat = () => {
   
   const { messages } = useMessagesContext();
   const { ticketId: ticketIdParam } = useParams();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const ticketId = useMemo(() => {
     const parsed = Number(ticketIdParam);
     return Number.isNaN(parsed) ? undefined : parsed;
@@ -116,6 +119,23 @@ export const Chat = () => {
 
     return unsubscribe;
   }, [subscribe, ticketId, loadTicketDirectly]);
+
+  // Обработка объединения тикетов — если текущий тикет был удалён при merge
+  useOnTicketsMerged(({ deletedTicketIds, targetTicketId }) => {
+    // Проверяем, был ли наш тикет удалён при merge
+    if (ticketId && deletedTicketIds.includes(ticketId)) {
+      // Показываем alert с информацией
+      alert(`${getLanguageByKey("ticketMergedAlert")} ${targetTicketId}`);
+      
+      // Перенаправляем на целевой тикет, сохраняя query params
+      const queryString = searchParams.toString();
+      const newPath = queryString 
+        ? `/chat/${targetTicketId}?${queryString}` 
+        : `/chat/${targetTicketId}`;
+      
+      navigate(newPath, { replace: true });
+    }
+  });
 
   // Получаем последнее сообщение по времени для автоматического выбора платформы и контакта
   // Используем reduce O(n) вместо sort O(n log n) для производительности

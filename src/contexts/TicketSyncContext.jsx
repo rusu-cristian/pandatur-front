@@ -19,6 +19,7 @@ export const SYNC_EVENTS = {
   MESSAGE_RECEIVED: "messageReceived",
   MESSAGES_SEEN: "messagesSeen",
   MESSAGE_DELETED: "messageDeleted",
+  TICKETS_MERGED: "ticketsMerged",
 };
 
 const TicketSyncContext = createContext(null);
@@ -102,6 +103,16 @@ export const TicketSyncProvider = ({ children }) => {
     emit(SYNC_EVENTS.MESSAGE_DELETED, { messageId });
   }, [emit]);
 
+  /**
+   * Оповестить об объединении тикетов
+   * 
+   * @param {number[]} deletedTicketIds - ID удалённых тикетов
+   * @param {number} targetTicketId - ID целевого тикета (куда объединили)
+   */
+  const notifyTicketsMerged = useCallback((deletedTicketIds, targetTicketId) => {
+    emit(SYNC_EVENTS.TICKETS_MERGED, { deletedTicketIds, targetTicketId });
+  }, [emit]);
+
   const value = useMemo(() => ({
     // Низкоуровневый API
     subscribe,
@@ -112,10 +123,11 @@ export const TicketSyncProvider = ({ children }) => {
     notifyMessageReceived,
     notifyMessagesSeen,
     notifyMessageDeleted,
+    notifyTicketsMerged,
     
     // Константы
     SYNC_EVENTS,
-  }), [subscribe, emit, notifyTicketUpdated, notifyMessageReceived, notifyMessagesSeen, notifyMessageDeleted]);
+  }), [subscribe, emit, notifyTicketUpdated, notifyMessageReceived, notifyMessagesSeen, notifyMessageDeleted, notifyTicketsMerged]);
 
   return (
     <TicketSyncContext.Provider value={value}>
@@ -205,6 +217,24 @@ export const useOnMessageDeleted = (callback) => {
   
   useEffect(() => {
     const unsubscribe = subscribe(SYNC_EVENTS.MESSAGE_DELETED, (payload) => {
+      callbackRef.current(payload);
+    });
+    return unsubscribe;
+  }, [subscribe]);
+};
+
+/**
+ * Хук для подписки на объединение тикетов
+ * 
+ * @param {Function} callback - Обработчик { deletedTicketIds: number[], targetTicketId: number }
+ */
+export const useOnTicketsMerged = (callback) => {
+  const { subscribe } = useTicketSync();
+  const callbackRef = useRef(callback);
+  callbackRef.current = callback;
+  
+  useEffect(() => {
+    const unsubscribe = subscribe(SYNC_EVENTS.TICKETS_MERGED, (payload) => {
       callbackRef.current(payload);
     });
     return unsubscribe;

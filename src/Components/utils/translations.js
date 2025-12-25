@@ -5996,5 +5996,10 @@ export const translations = {
     RO: "Nu aveți acces la acest lead",
     RU: "У вас нету доступа на просмотр этого лида",
     EN: "You do not have access to this lead"
+  },
+  "ticketMergedAlert":{
+    RO: "Acest tichet a fost combinat. Veți fi redirecționat către tichetul cu ID:",
+    RU: "Этот тикет был объединён. Вы будете перенаправлены к тикету с ID:",
+    EN: "This ticket has been merged. You will be redirected to the ticket with ID:"
   }
 };
