@@ -71,7 +71,7 @@ export const groupTitleToUserGroups = {
     ],
 
     INDIVIDUALGROUPS: [
-        "Corporate Sales"
+        "Corporate sales"
     ],
 
     AGENCY: [
