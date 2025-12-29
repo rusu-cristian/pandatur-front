@@ -36,6 +36,15 @@ const WORKFLOWS_WITH_PROCESS = [
   "Realizat cu succes",
 ];
 
+// Этапы где требуется наличие телефона у клиента
+const WORKFLOWS_WITH_PHONE_REQUIRED = [
+  "Aprobat cu client",
+  "Contract semnat",
+  "Plată primită",
+  "Contract încheiat",
+  "Realizat cu succes",
+];
+
 const WORKFLOWS_WITH_CONTRACT = [
   "Contract semnat",
   "Plată primită",
@@ -55,10 +64,11 @@ const WORKFLOWS_REALIZAT_ONLY = ["Realizat cu succes"];
 
 const WORKFLOWS_REFUSED_ONLY = ["Închis și nerealizat"];
 
-export const useFormTicket = ({ groupTitle } = {}) => {
+export const useFormTicket = ({ groupTitle, hasClientPhone = true } = {}) => {
   const [hasErrorsTicketInfoForm, setHasErrorsTicketInfoForm] = useState();
   const [hasErrorsContractForm, setHasErrorsContractForm] = useState();
   const [hasErrorQualityControl, setHasErrorQualityControl] = useState();
+  const [hasErrorClientPhone, setHasErrorClientPhone] = useState(false);
 
   const skipRealizatValidation = !!groupTitle && SKIP_REALIZAT_VALIDATION_GROUP_TITLES.includes(groupTitle);
 
@@ -218,6 +228,12 @@ export const useFormTicket = ({ groupTitle } = {}) => {
           return getLanguageByKey("workflow_change_field_required");
         }
       },
+      // Виртуальное поле для валидации наличия телефона клиента
+      _client_phone_check: (_, values) => {
+        if (shouldValidateForWorkflow(values.workflow, WORKFLOWS_WITH_PHONE_REQUIRED) && !hasClientPhone) {
+          return getLanguageByKey("client_phone_required") || "Adăugați cel puțin un număr de telefon pentru client";
+        }
+      },
     },
 
     transformValues: ({
@@ -286,9 +302,17 @@ export const useFormTicket = ({ groupTitle } = {}) => {
       contract_trimis,
       contract_semnat,
       achitare_efectuata,
+      _client_phone_check,
     } = form.errors;
 
     // console.log('useFormTicket - форма errors:', form.errors);
+
+    // Ошибка отсутствия телефона клиента
+    if (_client_phone_check) {
+      setHasErrorClientPhone(true);
+    } else {
+      setHasErrorClientPhone(false);
+    }
 
     if (motivul_refuzului || control) {
       setHasErrorQualityControl(true);
@@ -343,5 +367,6 @@ export const useFormTicket = ({ groupTitle } = {}) => {
     hasErrorsTicketInfoForm,
     hasErrorsContractForm,
     hasErrorQualityControl,
+    hasErrorClientPhone,
   };
 };
