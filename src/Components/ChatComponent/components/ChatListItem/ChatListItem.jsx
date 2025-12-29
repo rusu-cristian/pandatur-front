@@ -276,7 +276,7 @@ export const ChatListItem = ({ chat, style, selectTicketId }) => {
                       leftSection={<IoCheckmarkDone size={16} />}
                       onClick={handleMarkAsRead}
                     >
-                      {getLanguageByKey("ReadChat")}
+                      {getLanguageByKey("closedChat")}
                     </Menu.Item>
                     <Menu.Item
                       leftSection={<MdPendingActions size={16} />}
