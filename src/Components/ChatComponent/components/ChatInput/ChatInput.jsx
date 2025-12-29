@@ -11,7 +11,7 @@ import {
 } from "@mantine/core";
 import { AttachmentsPreview } from "../AttachmentsPreview";
 import { useDisclosure } from "@mantine/hooks";
-import { FaTasks, FaEnvelope } from "react-icons/fa";
+import { FaTasks, FaEnvelope, FaCheckCircle } from "react-icons/fa";
 import { useState, useRef, useMemo, useEffect, memo, useCallback } from "react";
 import { LuSmile, LuStickyNote } from "react-icons/lu";
 import { RiAttachment2 } from "react-icons/ri";
@@ -608,22 +608,23 @@ export const ChatInput = memo(({
                 </Button>
 
                 <Can permission={{ module: "CHAT", action: "EDIT" }} context={{ responsibleId }}>
-                  <Flex gap="xs">
-                    {unseenCount === 0 && !actionNeeded ? (
+                  <Flex gap="xs" align="center">
+                    {unseenCount === 0 ? (
                       <Badge
-                        variant="filled"
+                        // variant="dot"
+                        color="var(--crm-ui-kit-palette-link-primary)"
                         size="lg"
-                        radius="sm"
                         styles={{
                           root: {
-                            padding: '16px 16px',
-                            fontSize: '14px',
-                            fontWeight: 500,
                             cursor: 'default',
+                            textTransform: 'none',
+                            paddingLeft: '12px',
                           }
                         }}
                       >
-                        {getLanguageByKey("closedChat")}
+                        <Flex align="center" gap={6}>
+                          {getLanguageByKey("closedChat")}
+                        </Flex>
                       </Badge>
                     ) : (
                       <Button
@@ -650,53 +651,52 @@ export const ChatInput = memo(({
                           : getLanguageByKey("closedChat")}
                       </Button>
                     )}
-                  </Flex>
 
-                  {unseenCount === 0 && !actionNeeded ? (
-                    <Badge
-                      variant="filled"
-                      bg="gray"
-                      size="lg"
-                      radius="sm"
-                      styles={{
-                        root: {
-                          padding: '16px 16px',
-                          fontSize: '14px',
-                          fontWeight: 500,
-                          cursor: 'default',
-                        }
-                      }}
-                    >
-                      {getLanguageByKey("Nu acțiune necesară")}
-                    </Badge>
-                  ) : (
-                    <Button
-                      onClick={handleMarkActionResolved}
-                      variant="filled"
-                      styles={{
-                        root: actionNeeded ? {
-                          backgroundColor: 'var(--mantine-color-orange-6) !important',
-                          color: 'white !important',
-                          '&:hover': {
-                            backgroundColor: 'var(--mantine-color-orange-7) !important',
+                    {!actionNeeded ? (
+                      <Badge
+                        // variant="dot"
+                        color="var(--crm-ui-kit-palette-link-primary)"
+                        size="lg"
+                        styles={{
+                          root: {
+                            cursor: 'default',
+                            textTransform: 'none',
+                            paddingLeft: '12px',
                           }
-                        } : {
-                          backgroundColor: 'var(--crm-ui-kit-palette-link-primary) !important',
-                          color: 'white !important',
-                          '&:hover': {
-                            backgroundColor: 'var(--crm-ui-kit-palette-link-hover-primary) !important',
+                        }}
+                      >
+                        <Flex align="center" gap={6}>
+                          {getLanguageByKey("Nu acțiune necesară")}
+                        </Flex>
+                      </Badge>
+                    ) : (
+                      <Button
+                        onClick={handleMarkActionResolved}
+                        variant="filled"
+                        styles={{
+                          root: actionNeeded ? {
+                            backgroundColor: 'var(--mantine-color-orange-6) !important',
+                            color: 'white !important',
+                            '&:hover': {
+                              backgroundColor: 'var(--mantine-color-orange-7) !important',
+                            }
+                          } : {
+                            backgroundColor: 'var(--crm-ui-kit-palette-link-primary) !important',
+                            color: 'white !important',
+                            '&:hover': {
+                              backgroundColor: 'var(--crm-ui-kit-palette-link-hover-primary) !important',
+                            }
                           }
-                        }
-                      }}
-                    >
-                      {getLanguageByKey(
-                        actionNeeded ? "Acțiune necesară" : "Nu acțiune necesară"
-                      )}
-                    </Button>
-                  )}
+                        }}
+                      >
+                        {getLanguageByKey(
+                          actionNeeded ? "Acțiune necesară" : "Nu acțiune necesară"
+                        )}
+                      </Button>
+                    )}
+                  </Flex>
                 </Can>
               </Flex>
-
 
               <Flex gap="xs">
                 <Can permission={{ module: "CHAT", action: "CREATE" }} context={{ responsibleId }}>
