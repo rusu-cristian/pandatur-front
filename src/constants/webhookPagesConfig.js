@@ -197,6 +197,36 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_name: "Catalan travel Odesa",
       type: "facebook",
       group_title: ["CATALAN"]
+    },
+    {
+      page_id: "1818211991820544",
+      page_name: "Orhei 2",
+      type: "facebook",
+      group_title: ["ORHEI"]
+    },
+    {
+      page_id: "100132642667133",
+      page_name: "Pelerinaje",
+      type: "facebook",
+      group_title: ["MD", "HR", "MARKETING", "INDIVIDUALGROUPS", "FRANCHISE", "AGENCY"]
+    },
+    {
+      page_id: "963368826841184",
+      page_name: "Soroca",
+      type: "facebook",
+      group_title: ["SOROCA"]
+    },
+    {
+      page_id: "947485048439108",
+      page_name: "Varnita",
+      type: "facebook",
+      group_title: ["VARNITA"]
+    },
+    {
+      page_id: "930861530106479",
+      page_name: "Aneni Noi",
+      type: "facebook",
+      group_title: ["ANENIINOI"]
     }
   ],
   instagrams: [
@@ -366,7 +396,49 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_id: "17841474848946740",
       page_name: "Nisporeni",
       type: "instagram",
-      group_title: ["NISPORENI",]
+      group_title: ["NISPORENI"]
+    },
+    {
+      page_id: "17841410616631693",
+      page_name: "Orhei 2",
+      type: "instagram",
+      group_title: ["ORHEI"]
+    },
+    {
+      page_id: "17841476327737230",
+      page_name: "Stauceni",
+      type: "instagram",
+      group_title: ["STAUCENI"]
+    },
+    {
+      page_id: "17841477082751853",
+      page_name: "Hancesti",
+      type: "instagram",
+      group_title: ["HANCESTI"]
+    },
+    {
+      page_id: "17841476757016315",
+      page_name: "Pelerinaje",
+      type: "instagram",
+      group_title: ["MD", "HR", "MARKETING", "INDIVIDUALGROUPS", "FRANCHISE", "AGENCY"]
+    },
+    {
+      page_id: "17841478507227982",
+      page_name: "Soroca",
+      type: "instagram",
+      group_title: ["SOROCA"]
+    },
+    {
+      page_id: "17841478936480299",
+      page_name: "Varnita",
+      type: "instagram",
+      group_title: ["VARNITA"]
+    },
+    {
+      page_id: "17841478712821246",
+      page_name: "Aneni Noi",
+      type: "instagram",
+      group_title: ["ANENIINOI"]
     }
   ],
   whatsapps: [
