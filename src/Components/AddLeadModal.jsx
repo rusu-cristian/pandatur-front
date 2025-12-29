@@ -40,10 +40,6 @@ export const AddLeadModal = ({
         errors.workflow = getLanguageByKey("fileIsMandatory");
       }
 
-      if (!values.phone?.toString().trim()) {
-        errors.phone = getLanguageByKey("fileIsMandatory");
-      }
-
       if (isContract) {
         if (!values.name || values.name.length < 3) {
           errors.name = getLanguageByKey("mustBeAtLeast3Characters");
@@ -115,7 +111,6 @@ export const AddLeadModal = ({
           {...form.getInputProps("email")}
         />
         <NumberInput
-          withAsterisk
           hideControls
           w="100%"
           label={getLanguageByKey("Telefon")}
