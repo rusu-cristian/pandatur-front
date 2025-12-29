@@ -5,13 +5,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import App from "./App"
 
-// Safari detection - Safari doesn't support CSS zoom properly
-// so we need to use transform: scale() instead
-const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-if (isSafari) {
-  document.documentElement.classList.add('is-safari');
-}
-
 // QueryClient БЕЗ кэширования — данные всегда свежие с API
 const queryClient = new QueryClient({
   defaultOptions: {

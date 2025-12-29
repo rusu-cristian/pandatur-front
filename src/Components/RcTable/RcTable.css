@@ -70,7 +70,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 667px; /* Компенсируем zoom: 0.75 (500 * 1.3333) */
+  height: 500px;
 }
 
 .table-container-custom {
