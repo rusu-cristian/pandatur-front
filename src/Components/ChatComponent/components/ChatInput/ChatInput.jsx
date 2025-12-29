@@ -7,6 +7,7 @@ import {
   Select,
   Loader,
   FileButton,
+  Badge,
 } from "@mantine/core";
 import { AttachmentsPreview } from "../AttachmentsPreview";
 import { useDisclosure } from "@mantine/hooks";
@@ -102,12 +103,12 @@ export const ChatInput = memo(({
   // Никакой условной логики - компонент просто отображает данные
   const platformOptions = platformOptionsProp || [];
   const selectedPlatform = selectedPlatformProp;
-  const changePlatform = changePlatformProp || (() => {});
+  const changePlatform = changePlatformProp || (() => { });
   const contactOptions = contactOptionsProp || [];
-  const changeContact = changeContactProp || (() => {});
+  const changeContact = changeContactProp || (() => { });
   const currentClient = selectedClientProp;
   const selectedPageId = selectedPageIdProp;
-  const changePageId = changePageIdProp || (() => {});
+  const changePageId = changePageIdProp || (() => { });
   const loading = loadingProp || false;
 
   // Валидация props в dev режиме
@@ -190,8 +191,8 @@ export const ChatInput = memo(({
   const currentTicketFromContext = getTicketById(ticketId);
   const actionNeeded = personalInfo?.action_needed !== undefined
     ? Boolean(personalInfo.action_needed)
-    : currentTicketFromContext 
-      ? Boolean(currentTicketFromContext.action_needed) 
+    : currentTicketFromContext
+      ? Boolean(currentTicketFromContext.action_needed)
       : false;
 
   const uploadAndAddFiles = useCallback(async (files) => {
@@ -365,7 +366,7 @@ export const ChatInput = memo(({
     );
     if (!isClientValid) {
       enqueueSnackbar(
-        getLanguageByKey("Contact is not available for this ticket") || 
+        getLanguageByKey("Contact is not available for this ticket") ||
         "Contact is not available for this ticket",
         { variant: "error" }
       );
@@ -608,15 +609,76 @@ export const ChatInput = memo(({
 
                 <Can permission={{ module: "CHAT", action: "EDIT" }} context={{ responsibleId }}>
                   <Flex gap="xs">
+                    {unseenCount === 0 && !actionNeeded ? (
+                      <Badge
+                        variant="filled"
+                        size="lg"
+                        radius="sm"
+                        styles={{
+                          root: {
+                            padding: '16px 16px',
+                            fontSize: '14px',
+                            fontWeight: 500,
+                            cursor: 'default',
+                          }
+                        }}
+                      >
+                        {getLanguageByKey("closedChat")}
+                      </Badge>
+                    ) : (
+                      <Button
+                        onClick={handleMarkAsRead}
+                        variant="filled"
+                        styles={{
+                          root: unseenCount > 0 ? {
+                            backgroundColor: 'var(--mantine-color-red-6) !important',
+                            color: 'white !important',
+                            '&:hover': {
+                              backgroundColor: 'var(--mantine-color-red-7) !important',
+                            }
+                          } : {
+                            backgroundColor: 'var(--crm-ui-kit-palette-link-primary) !important',
+                            color: 'white !important',
+                            '&:hover': {
+                              backgroundColor: 'var(--crm-ui-kit-palette-link-hover-primary) !important',
+                            }
+                          }
+                        }}
+                      >
+                        {unseenCount > 0
+                          ? getLanguageByKey("openedChat")
+                          : getLanguageByKey("closedChat")}
+                      </Button>
+                    )}
+                  </Flex>
+
+                  {unseenCount === 0 && !actionNeeded ? (
+                    <Badge
+                      variant="filled"
+                      bg="gray"
+                      size="lg"
+                      radius="sm"
+                      styles={{
+                        root: {
+                          padding: '16px 16px',
+                          fontSize: '14px',
+                          fontWeight: 500,
+                          cursor: 'default',
+                        }
+                      }}
+                    >
+                      {getLanguageByKey("Nu acțiune necesară")}
+                    </Badge>
+                  ) : (
                     <Button
-                      onClick={handleMarkAsRead}
+                      onClick={handleMarkActionResolved}
                       variant="filled"
                       styles={{
-                        root: unseenCount > 0 ? {
-                          backgroundColor: 'var(--mantine-color-red-6) !important',
+                        root: actionNeeded ? {
+                          backgroundColor: 'var(--mantine-color-orange-6) !important',
                           color: 'white !important',
                           '&:hover': {
-                            backgroundColor: 'var(--mantine-color-red-7) !important',
+                            backgroundColor: 'var(--mantine-color-orange-7) !important',
                           }
                         } : {
                           backgroundColor: 'var(--crm-ui-kit-palette-link-primary) !important',
@@ -627,35 +689,11 @@ export const ChatInput = memo(({
                         }
                       }}
                     >
-                      {unseenCount > 0
-                        ? getLanguageByKey("ReadChat")
-                        : getLanguageByKey("ChatRead")}
+                      {getLanguageByKey(
+                        actionNeeded ? "Acțiune necesară" : "Nu acțiune necesară"
+                      )}
                     </Button>
-                  </Flex>
-
-                  <Button
-                    onClick={handleMarkActionResolved}
-                    variant="filled"
-                    styles={{
-                      root: actionNeeded ? {
-                        backgroundColor: 'var(--mantine-color-orange-6) !important',
-                        color: 'white !important',
-                        '&:hover': {
-                          backgroundColor: 'var(--mantine-color-orange-7) !important',
-                        }
-                      } : {
-                        backgroundColor: 'var(--crm-ui-kit-palette-link-primary) !important',
-                        color: 'white !important',
-                        '&:hover': {
-                          backgroundColor: 'var(--crm-ui-kit-palette-link-hover-primary) !important',
-                        }
-                      }
-                    }}
-                  >
-                    {getLanguageByKey(
-                      actionNeeded ? "Acțiune necesară" : "Nu acțiune necesară"
-                    )}
-                  </Button>
+                  )}
                 </Can>
               </Flex>
 

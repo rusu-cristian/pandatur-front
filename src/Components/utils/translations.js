@@ -4458,12 +4458,12 @@ export const translations = {
     "RU": "Дополнительная информация",
     "EN": "Additional Information"
   },
-  "ChatRead": {
+  "closedChat": {
     "RO": "Conversație inchisă",
     "RU": "Беседа закрыта",
     "EN": "Conversation closed"
   },
-  "ReadChat": {
+  "openedChat": {
     RO: "Conversație deschisă",
     RU: "Беседа открыта",
     EN: "Conversation opened"
@@ -4474,9 +4474,9 @@ export const translations = {
     "EN": "Needs answer"
   },
   "NoNeedAnswer": {
-    "RO": "Nu necesită răspuns",
-    "RU": "Не требует ответа",
-    "EN": "No answer needed"
+    "RO": "Solicitare prelucrată",
+    "RU": "Запрос обработан",
+    "EN": "Request processed"
   },
   "Acțiune necesară": {
     "RO": "Necesită răspuns",
@@ -4484,9 +4484,9 @@ export const translations = {
     "EN": "Needs answer"
   },
   "Nu acțiune necesară": {
-    "RO": "Nu necesită răspuns",
-    "RU": "Не требует ответа",
-    "EN": "No answer needed"
+    "RO": "Solicitare prelucrată",
+    "RU": "Запрос обработан",
+    "EN": "Request processed"
   },
   "Mesaje necitite": {
     RO: "Mesaje necitite",
