@@ -263,7 +263,7 @@ const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
             sipuni_id,
             name,
             surname,
-            allow_lead_without_contact: form.allow_lead_without_contact,
+            allow_lead_without_contact: form.allow_lead_without_contact.toString(),
           })
         ]);
 
