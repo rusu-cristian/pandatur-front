@@ -360,7 +360,7 @@ const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
   };
 
   const formContent = (
-    <Stack spacing="md">
+    <Stack spacing="sm">
       <Switch
         label={getLanguageByKey("Activ")}
         checked={form.status}
@@ -369,6 +369,7 @@ const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
           setForm({ ...form, status: e.currentTarget.checked })
         }
         required
+        size="sm"
       />
 
       <Switch
@@ -378,6 +379,7 @@ const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
         onChange={(e) =>
           setForm({ ...form, allow_lead_without_contact: e.currentTarget.checked })
         }
+        size="sm"
       />
 
       <TextInput
@@ -386,6 +388,7 @@ const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
         value={form.name}
         onChange={(e) => setForm({ ...form, name: e.target.value })}
         required
+        size="sm"
       />
 
       <TextInput
@@ -394,6 +397,7 @@ const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
         value={form.surname}
         onChange={(e) => setForm({ ...form, surname: e.target.value })}
         required
+        size="sm"
       />
 
       {!initialUser && (
@@ -403,6 +407,7 @@ const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
           value={form.username}
           onChange={(e) => setForm({ ...form, username: e.target.value })}
           required
+          size="sm"
         />
       )}
 
@@ -414,6 +419,7 @@ const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
         onChange={(e) => setForm({ ...form, email: e.target.value })}
         autoComplete="off"
         required
+        size="sm"
       />
 
       <PasswordInput
@@ -424,6 +430,7 @@ const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
         required={!initialUser}
         autoComplete="new-password"
         name="new-password-field"
+        size="sm"
       />
 
       <Select
@@ -436,6 +443,7 @@ const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
         rightSection={groupsLoading ? <Loader size="xs" /> : null}
         searchable
         disabled={groupsLoading || groupsList.length === 0}
+        size="sm"
         styles={{
           dropdown: {
             zIndex: 10009
@@ -449,6 +457,7 @@ const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
         value={form.job_title}
         onChange={(e) => setForm({ ...form, job_title: e.target.value })}
         required
+        size="sm"
       />
 
       <TextInput
@@ -456,6 +465,7 @@ const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
         placeholder={getLanguageByKey("Departament") || "Departament"}
         value={form.department}
         onChange={(e) => setForm({ ...form, department: e.target.value })}
+        size="sm"
       />
 
       <TextInput
@@ -464,6 +474,7 @@ const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
         value={form.sipuni_id}
         onChange={(e) => setForm({ ...form, sipuni_id: e.target.value })}
         required
+        size="sm"
       />
 
       {initialUser && (
@@ -478,6 +489,7 @@ const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
           value={form.permissionGroupId}
           onChange={handlePermissionGroupChange}
           rightSection={groupsLoading ? <Loader size="xs" /> : null}
+          size="sm"
           styles={{
             dropdown: {
               zIndex: 10009
@@ -498,7 +510,7 @@ const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
 
   // Кнопка сохранения, зафиксированная вверху
   const saveButton = (
-    <Button fullWidth onClick={handleCreate} loading={isSubmitting}>
+    <Button fullWidth onClick={handleCreate} loading={isSubmitting} size="sm">
       {initialUser
         ? getLanguageByKey("Salvează")
         : getLanguageByKey("Creează")}
@@ -587,7 +599,7 @@ const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
     >
       {/* Фиксированная кнопка сохранения вверху */}
       <div style={{
-        padding: '16px 20px',
+        padding: '12px 16px',
         borderBottom: '1px solid var(--crm-ui-kit-palette-border-primary)',
         backgroundColor: 'var(--crm-ui-kit-palette-background-primary)',
         flexShrink: 0,
@@ -605,10 +617,8 @@ const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
         scrollbarSize={8}
         scrollHideDelay={0}
       >
-        <div style={{ padding: '16px', paddingBottom: '20px' }}>
-          <Stack spacing="md">
-            {formContent}
-          </Stack>
+        <div style={{ padding: '12px', paddingBottom: '16px' }}>
+          {formContent}
         </div>
       </ScrollArea>
     </Modal>
@@ -622,8 +632,8 @@ const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
           ? getLanguageByKey("Modificați utilizator")
           : getLanguageByKey("Adaugă utilizator")
       }
-      padding="lg"
-      size="lg"
+      padding="md"
+      size="md"
       styles={{
         body: {
           display: 'flex',
@@ -642,7 +652,7 @@ const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
     >
       {/* Фиксированная кнопка сохранения вверху */}
       <div style={{
-        padding: '0px 24px 16px 24px',
+        padding: '0px 16px 12px 16px',
         borderBottom: '1px solid var(--crm-ui-kit-palette-border-primary)',
         backgroundColor: 'var(--crm-ui-kit-palette-background-primary)',
         flexShrink: 0,
@@ -660,10 +670,8 @@ const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
         scrollbarSize={8}
         scrollHideDelay={0}
       >
-        <div style={{ padding: '24px' }}>
-          <Stack spacing="md">
-            {formContent}
-          </Stack>
+        <div style={{ padding: '16px' }}>
+          {formContent}
         </div>
       </ScrollArea>
     </Drawer>

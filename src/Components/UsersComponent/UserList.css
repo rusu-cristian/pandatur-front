@@ -1,6 +1,6 @@
 /* Users Table Styles */
 .users-table-wrapper {
-  height: calc(100vh - 120px);
+  height: calc(100vh - 100px);
   width: 100%;
 }
 
