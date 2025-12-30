@@ -68,7 +68,52 @@
 }
 
 @media (max-width: 768px) {
+  .users-toolbar {
+    margin-bottom: 0.75rem;
+  }
+
   .users-toolbar-desktop {
-    padding: 0.75rem;
+    padding: 0.5rem;
+    min-height: 38px;
+    gap: 0.5rem;
+  }
+
+  .users-toolbar-mobile {
+    gap: 0.75rem;
+  }
+
+  .users-search-desktop {
+    min-width: 160px;
+    max-width: 200px;
+  }
+
+  .users-actions-group {
+    gap: 0.375rem;
+  }
+
+  .users-search-group {
+    gap: 0.375rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .users-toolbar {
+    margin-bottom: 0.5rem;
+  }
+
+  .users-toolbar-desktop {
+    padding: 0.375rem;
+    min-height: 34px;
+    gap: 0.375rem;
+  }
+
+  .users-search-desktop {
+    min-width: 120px;
+    max-width: 160px;
+  }
+
+  .users-actions-group,
+  .users-search-group {
+    gap: 0.25rem;
   }
 }

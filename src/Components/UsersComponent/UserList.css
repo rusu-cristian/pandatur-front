@@ -91,3 +91,73 @@
   padding: 8px !important;
   margin: 0 !important;
 }
+
+/* Скрываем пустую колонку справа */
+.users-table-compact .MuiDataGrid-columnHeader:last-child:not([data-field]),
+.users-table-compact .MuiDataGrid-cell:last-child:not([data-field]) {
+  display: none !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .users-table-wrapper {
+    height: 100%;
+    width: 100%;
+  }
+
+  .users-table-compact .MuiDataGrid-root {
+    font-size: 0.7rem;
+  }
+
+  .users-table-compact .MuiDataGrid-cell {
+    padding: 6px 8px;
+    font-size: 0.7rem;
+  }
+
+  .users-table-compact .MuiDataGrid-columnHeader {
+    padding: 6px 8px;
+    font-size: 0.7rem;
+  }
+
+  .users-table-compact .MuiDataGrid-columnHeaderTitle {
+    font-size: 0.7rem;
+  }
+
+  .users-table-compact .MuiIconButton-root {
+    padding: 1px;
+  }
+}
+
+@media (max-width: 480px) {
+  .users-table-compact .MuiDataGrid-root {
+    font-size: 0.65rem;
+  }
+
+  .users-table-compact .MuiDataGrid-cell {
+    padding: 4px 6px;
+    font-size: 0.65rem;
+  }
+
+  .users-table-compact .MuiDataGrid-columnHeader {
+    padding: 4px 6px;
+    font-size: 0.65rem;
+  }
+
+  .users-table-compact .MuiDataGrid-columnHeaderTitle {
+    font-size: 0.65rem;
+  }
+
+  .users-table-compact .MuiCheckbox-root {
+    padding: 4px !important;
+  }
+
+  .user-status-dot {
+    width: 4px;
+    height: 4px;
+  }
+}

@@ -36,15 +36,20 @@
     flex-direction: column;
   }
 
-  .page-content {
-    width: 100%;
-    height: calc(100vh - 60px);
+  .page-content,
+  .page-content.sidebar-collapsed {
+    width: 100% !important;
+    margin-left: 0 !important;
+    height: calc(100vh - 48px) !important;
+    margin-top: 48px !important;
   }
 }
 
-@media (max-width: 576px) {
+@media (max-width: 480px) {
   /* xs breakpoint - mobile */
-  .page-content {
-    height: calc(100vh - 50px);
+  .page-content,
+  .page-content.sidebar-collapsed {
+    height: calc(100vh - 44px) !important;
+    margin-top: 44px !important;
   }
 }

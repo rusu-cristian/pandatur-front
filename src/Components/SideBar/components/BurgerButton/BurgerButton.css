@@ -1,7 +1,7 @@
 /* Burger Button */
 .burger-btn {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -9,7 +9,7 @@
   border: none;
   color: var(--crm-ui-kit-palette-sidebar-text);
   cursor: pointer;
-  border-radius: 0.375rem;
+  border-radius: 4px;
   transition: all 0.2s ease;
 }
 
@@ -19,4 +19,12 @@
 
 .burger-btn:active {
   background-color: var(--crm-ui-kit-palette-surface-hover-background-color);
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .burger-btn {
+    width: 28px;
+    height: 28px;
+  }
 }

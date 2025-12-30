@@ -82,3 +82,52 @@
 :root[data-theme="light"] .lang-dropdown {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .lang-flag {
+    width: 16px;
+    height: 11px;
+  }
+
+  .lang-flag-collapsed {
+    width: 18px;
+    height: 12px;
+  }
+
+  .lang-label {
+    font-size: 12px;
+  }
+
+  .lang-option {
+    padding: 6px 8px;
+    font-size: 12px;
+    gap: 6px;
+  }
+
+  .lang-dropdown {
+    border-radius: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .lang-flag {
+    width: 14px;
+    height: 10px;
+  }
+
+  .lang-flag-collapsed {
+    width: 16px;
+    height: 11px;
+  }
+
+  .lang-label {
+    font-size: 11px;
+  }
+
+  .lang-option {
+    padding: 5px 6px;
+    font-size: 11px;
+    gap: 4px;
+  }
+}

@@ -116,7 +116,7 @@ export const SideBar = () => {
                   onClick={toggleTheme}
                 >
                   <span className="menu-icon">
-                    {isDark ? <MdLightMode size={14} /> : <MdDarkMode size={14} />}
+                    {isDark ? <MdLightMode size={16} /> : <MdDarkMode size={16} />}
                   </span>
                   <span className="menu-label">{isDark ? "Light" : "Dark"}</span>
                 </button>
@@ -197,7 +197,7 @@ export const SideBar = () => {
                 onClick={logout}
               >
                 <span className="menu-icon">
-                  <FaSignOutAlt size={14} />
+                  <FaSignOutAlt size={16} />
                 </span>
                 <span className="menu-label">{getLanguageByKey("Log Out")}</span>
               </button>

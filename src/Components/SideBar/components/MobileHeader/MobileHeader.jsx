@@ -49,7 +49,7 @@ export const MobileHeader = ({
           className="mobile-logout-btn"
           title={getLanguageByKey("Log Out")}
         >
-          <FaSignOutAlt size={14} />
+          <FaSignOutAlt size={12} />
         </button>
 
         <BurgerButton isOpen={mobileMenuOpen} onClick={onToggleMobileMenu} />

@@ -5,17 +5,37 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .users-content {
   flex: 1;
   overflow: auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Mobile */
+/* Mobile responsive */
 @media (max-width: 768px) {
   .users-page {
-    padding: 1rem;
-    padding-top: 5rem; /* Space for mobile header */
+    padding: 0.75rem;
+    height: 100%;
+    min-height: 100%;
+  }
+
+  .users-content {
+    flex: 1;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .users-page {
+    padding: 0.5rem;
   }
 }

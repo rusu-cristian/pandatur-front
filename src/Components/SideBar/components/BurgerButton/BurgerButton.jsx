@@ -7,6 +7,6 @@ import "./BurgerButton.css";
  */
 export const BurgerButton = ({ isOpen, onClick }) => (
   <button className="burger-btn" onClick={onClick} aria-label="Toggle menu">
-    {isOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
+    {isOpen ? <FaTimes size={16} /> : <FaBars size={16} />}
   </button>
 );

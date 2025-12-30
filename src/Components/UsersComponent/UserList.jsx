@@ -468,8 +468,13 @@ const UserList = ({
         type: "actions",
         headerName: getLanguageByKey("Acțiune"),
         width: 60,
+        minWidth: 60,
+        maxWidth: 60,
         align: "center",
         headerAlign: "center",
+        resizable: false,
+        sortable: false,
+        disableColumnMenu: true,
         getActions: (params) => {
           if (!params?.row) return [];
           const row = params.row;
@@ -684,6 +689,7 @@ const UserList = ({
               }
             }}
             disableCellSelection
+            disableExtendRowFullWidth
             paginationMode="client"
             pageSizeOptions={[25, 50, 100]}
             rowHeight={42}
