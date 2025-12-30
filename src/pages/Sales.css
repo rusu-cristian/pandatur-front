@@ -3,8 +3,13 @@
   overflow: auto;
 }
 
-.sales-filters {
-  background-color: var(--crm-ui-kit-palette-background-primary);
+/* Header filters - match DateRangePicker to Mantine sm size */
+.sales-container .DateRangePicker .react-datepicker__input-container input {
+  height: 36px;
+  padding: 0 12px;
+  font-size: 14px;
+  width: 220px;
+  box-sizing: border-box;
 }
 
 .sales-tables {
@@ -59,7 +64,7 @@
   vertical-align: middle;
   position: sticky;
   left: 0;
-  z-index: 4;
+  z-index: 6;
 }
 
 .sales-header-group-row .header-excursii {
@@ -209,22 +214,23 @@
 }
 
 /* Name column - uniform width across all tables */
+/* Primary layer - appears on top of header row when scrolling */
 .col-name {
   background-color: transparent !important;
   position: sticky;
   left: 0;
-  z-index: 2;
+  z-index: 4;
   width: 220px;
   min-width: 220px;
   max-width: 220px;
 }
 
-/* Ensure header name cells have higher z-index for proper stacking */
+/* Header name cells - highest z-index since they're at the intersection of both sticky axes */
 .sales-header-row .col-name {
   background-color: #252d3d;
   position: sticky;
   left: 0;
-  z-index: 4;
+  z-index: 6;
 }
 
 /* ===== DATA ROW STYLES ===== */
@@ -432,10 +438,23 @@
 }
 
 /* Sticky header for scrollable table */
+/* Secondary layer - appears below the first column when scrolling */
 .sales-table-container .MuiTableHead-root {
   position: sticky;
   top: 0;
-  z-index: 3;
+  z-index: 2;
+}
+
+/* Header cells go under the sticky first column */
+.sales-table-container .MuiTableHead-root .MuiTableCell-root {
+  position: relative;
+  z-index: 1;
+}
+
+/* But header name cells stay on top (corner intersection) */
+.sales-table-container .MuiTableHead-root .col-name,
+.sales-table-container .MuiTableHead-root .header-name {
+  z-index: 6 !important;
 }
 
 /* First column (Name) styling - already defined in .col-name above */

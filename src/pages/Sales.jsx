@@ -7,7 +7,6 @@ import {
   Group,
   MultiSelect,
   Button,
-  Paper,
   Text,
   Flex,
 } from "@mantine/core";
@@ -20,6 +19,7 @@ import {
   TableRow,
   Collapse,
   IconButton,
+  Paper,
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -544,64 +544,54 @@ export const Sales = () => {
   const showDestinationsTable = selectedTypes.includes("1") && destinationsData;
   const showUsersAltTable = selectedTypes.includes("2") && usersAltData;
 
+  const filtersContent = (
+    <Group gap="md" align="flex-end" wrap="wrap">
+      <MultiSelect
+        data={groupTitleOptions}
+        value={selectedGroupTitles}
+        onChange={setSelectedGroupTitles}
+        placeholder={getLanguageByKey("Select group titles") || "Select group titles"}
+        searchable
+        clearable={false}
+        maxDropdownHeight={260}
+        nothingFoundMessage={getLanguageByKey("Nimic găsit") || "Nothing found"}
+        size="sm"
+        style={{ minWidth: 200 }}
+      />
+
+      <DateRangePicker
+        value={dateRange}
+        onChange={setDateRange}
+        placeholder={getLanguageByKey("Select date range") || "Select date range"}
+        dateFormat="yyyy-MM-dd"
+        size="sm"
+      />
+
+      <MultiSelect
+        data={TYPE_OPTIONS}
+        value={selectedTypes}
+        onChange={(val) => setSelectedTypes(val.length > 0 ? val : selectedTypes)}
+        placeholder={getLanguageByKey("Select view types") || "Select view types"}
+        clearable={false}
+        maxDropdownHeight={200}
+        size="sm"
+        style={{ minWidth: 180 }}
+      />
+
+      <Button onClick={fetchSalesData} loading={isLoading} size="sm">
+        {getLanguageByKey("Apply") || "Apply"}
+      </Button>
+    </Group>
+  );
+
   return (
     <Stack gap={12} p="12" className="sales-container">
       <PageHeader
         title={getLanguageByKey("Sales") || "Sales"}
         badgeColor="blue"
-        withDivider={true}
+        withDivider={false}
+        extraInfo={filtersContent}
       />
-
-      {/* Filters */}
-      <Paper p="md" radius="md" withBorder className="sales-filters">
-        <Group gap="md" align="flex-end" wrap="wrap">
-          <Box style={{ minWidth: 250 }}>
-            <Text size="sm" fw={500} mb={4}>
-              {getLanguageByKey("Group Title") || "Group Title"}
-            </Text>
-            <MultiSelect
-              data={groupTitleOptions}
-              value={selectedGroupTitles}
-              onChange={setSelectedGroupTitles}
-              placeholder={getLanguageByKey("Select group titles") || "Select group titles"}
-              searchable
-              clearable={false}
-              maxDropdownHeight={260}
-              nothingFoundMessage={getLanguageByKey("Nimic găsit") || "Nothing found"}
-            />
-          </Box>
-
-          <Box>
-            <Text size="sm" fw={500} mb={4}>
-              {getLanguageByKey("Date Range") || "Date Range"}
-            </Text>
-            <DateRangePicker
-              value={dateRange}
-              onChange={setDateRange}
-              placeholder={getLanguageByKey("Select date range") || "Select date range"}
-              dateFormat="yyyy-MM-dd"
-            />
-          </Box>
-
-          <Box style={{ minWidth: 200 }}>
-            <Text size="sm" fw={500} mb={4}>
-              {getLanguageByKey("View Type") || "View Type"}
-            </Text>
-            <MultiSelect
-              data={TYPE_OPTIONS}
-              value={selectedTypes}
-              onChange={(val) => setSelectedTypes(val.length > 0 ? val : selectedTypes)}
-              placeholder={getLanguageByKey("Select view types") || "Select view types"}
-              clearable={false}
-              maxDropdownHeight={200}
-            />
-          </Box>
-
-          <Button onClick={fetchSalesData} loading={isLoading}>
-            {getLanguageByKey("Apply") || "Apply"}
-          </Button>
-        </Group>
-      </Paper>
 
       {/* Data Display */}
       {isLoading ? (
