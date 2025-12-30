@@ -1,0 +1,21 @@
+/* Users Page */
+.users-page {
+  height: 100%;
+  padding: 1.25rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.users-content {
+  flex: 1;
+  overflow: auto;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .users-page {
+    padding: 1rem;
+    padding-top: 5rem; /* Space for mobile header */
+  }
+}

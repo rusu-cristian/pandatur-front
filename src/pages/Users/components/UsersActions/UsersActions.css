@@ -1,0 +1,18 @@
+/* Users Actions */
+.users-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .users-actions {
+    width: 100%;
+  }
+
+  .users-actions .ui-button {
+    flex: 1;
+  }
+}
