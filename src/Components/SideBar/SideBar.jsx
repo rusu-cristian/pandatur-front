@@ -83,10 +83,12 @@ export const SideBar = () => {
           <div className="sidebar-top">
             {/* Logo & Toggle */}
             {!isMobile && (
-              <div className="sidebar-logo-section">
+              <div
+                className="sidebar-logo-section"
+                onClick={() => setIsCollapsed((prev) => !prev)}
+              >
                 <button
                   className="sidebar-toggle-btn"
-                  onClick={() => setIsCollapsed((prev) => !prev)}
                   aria-label="Toggle sidebar"
                 >
                   <FaBars size={14} />

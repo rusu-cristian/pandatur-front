@@ -4,7 +4,7 @@ import "./ChatModal.css";
 
 export const ChatModal = ({ opened, onClose, children }) => {
   const { isCollapsed } = useUI();
-  const sidebarWidth = isCollapsed ? 79 : 249;
+  const sidebarWidth = isCollapsed ? 64 : 240;
 
   // Блокируем скролл body при открытии модалки
   useEffect(() => {

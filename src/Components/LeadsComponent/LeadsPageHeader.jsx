@@ -92,8 +92,7 @@ export const LeadsPageHeader = memo(forwardRef(({
   return (
     <Flex
       ref={ref}
-      style={{ "--side-bar-width": isCollapsed ? "79px" : "249px" }}
-      className="leads-header-container"
+      className={`leads-header-container ${isCollapsed ? "sidebar-collapsed" : ""}`}
       bg="var(--crm-ui-kit-palette-background-primary)"
     >
       <PageHeader

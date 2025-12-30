@@ -27,4 +27,5 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 0.75rem;
+  transition: opacity 0.2s ease;
 }

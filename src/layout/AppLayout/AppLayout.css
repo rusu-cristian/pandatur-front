@@ -8,8 +8,17 @@
 .page-content {
   height: 100vh;
   min-height: 100vh;
-  width: calc(100vw - var(--side-bar-width));
+  margin-left: var(--sidebar-width-expanded);
+  width: calc(100vw - var(--sidebar-width-expanded));
   overflow: hidden;
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Когда sidebar collapsed */
+.page-content.sidebar-collapsed {
+  margin-left: var(--sidebar-width-collapsed);
+  width: calc(100vw - var(--sidebar-width-collapsed));
 }
 
 /* Responsive breakpoints */

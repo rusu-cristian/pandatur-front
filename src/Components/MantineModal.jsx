@@ -10,7 +10,7 @@ export const MantineModal = ({
   ...props
 }) => {
   const { isCollapsed } = useUI();
-  const sidebarWidth = isCollapsed ? 80 : 250;
+  const sidebarWidth = isCollapsed ? 64 : 240;
   const { style, ...rest } = props;
 
   return (

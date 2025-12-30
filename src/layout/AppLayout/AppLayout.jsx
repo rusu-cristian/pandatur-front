@@ -8,10 +8,7 @@ export const AppLayout = ({ children }) => {
   return (
     <div className="app-container">
       <SideBar />
-      <div
-        style={{ "--side-bar-width": isCollapsed ? "79px" : "249px" }}
-        className="page-content"
-      >
+      <div className={`page-content ${isCollapsed ? "sidebar-collapsed" : ""}`}>
         {children}
       </div>
     </div>
