@@ -36,6 +36,7 @@ const initialFormState = {
   permissionGroupId: null,
   roleMatrix: {},
   sipuni_id: "",
+  allow_lead_without_contact: false,
 };
 
 const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
@@ -124,6 +125,7 @@ const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
         department: initialUser.department || "",
         sipuni_id: initialUser.sipuni_id || "",
         status: Boolean(initialUser.status),
+        allow_lead_without_contact: Boolean(initialUser.allow_lead_without_contact),
         groups:
           typeof initialUser.groups?.[0] === "string"
             ? initialUser.groups[0]
@@ -261,6 +263,7 @@ const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
             sipuni_id,
             name,
             surname,
+            allow_lead_without_contact: form.allow_lead_without_contact.toString(),
           })
         ]);
 
@@ -322,6 +325,7 @@ const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
             department,
             name,      // Перемещаем name в technician
             surname,   // Перемещаем surname в technician
+            allow_lead_without_contact: form.allow_lead_without_contact,
           },
           groups: [groups],
         };
@@ -365,6 +369,15 @@ const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
           setForm({ ...form, status: e.currentTarget.checked })
         }
         required
+      />
+
+      <Switch
+        label={getLanguageByKey("Permite lead fără contact") || "Permite lead fără contact"}
+        checked={form.allow_lead_without_contact}
+        color="var(--crm-ui-kit-palette-link-primary)"
+        onChange={(e) =>
+          setForm({ ...form, allow_lead_without_contact: e.currentTarget.checked })
+        }
       />
 
       <TextInput

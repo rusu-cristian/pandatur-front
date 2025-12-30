@@ -3189,9 +3189,9 @@ export const translations = {
     EN: "This field is required to change the workflow"
   },
   "please_complete_required_fields_for_workflow_change": {
-    RO: "Vă rugăm să completați câmpurile obligatorii pentru a schimba fluxul de lucru",
-    RU: "Пожалуйста, заполните обязательные поля, чтобы изменить рабочий процесс",
-    EN: "Please complete required fields to change workflow"
+    RO: "Completați câmpurile obligatorii si numar de telefon pentru client",
+    RU: "Заполните обязательные поля и номер телефона для клиента",
+    EN: "Please complete required fields and phone number for the client"
   },
   "edit": {
     RO: "Editează",
@@ -6001,5 +6001,10 @@ export const translations = {
     RO: "Acest lead a fost combinat. Veți fi redirecționat către lead-ul nou cu ID:",
     RU: "Этот тикет был объединён. Вы будете перенаправлены к тикету с ID:",
     EN: "This ticket has been merged. You will be redirected to the ticket with ID:"
+  },
+  "client_phone_required": {
+    RO: "Adăugați cel puțin un număr de telefon pentru client",
+    RU: "Добавьте хотя бы один телефон для клиента",
+    EN: "Add at least one phone number for the client"
   }
 };

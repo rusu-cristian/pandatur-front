@@ -77,6 +77,7 @@ export const Users = () => {
           import_success: item.import_success,
           imported: item.imported,
           email_confirmed: user.email_confirmed,
+          allow_lead_without_contact: item.allow_lead_without_contact,
         };
       });
 

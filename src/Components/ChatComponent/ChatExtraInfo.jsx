@@ -49,13 +49,24 @@ const ChatExtraInfo = ({
   const { isAdmin } = useContext(UserContext);
   const { getUserMessages, mediaFiles } = useMessagesContext();
 
+  // Проверяем наличие хотя бы одного телефона у клиентов
+  const hasClientPhone = useMemo(() => {
+    if (!clientsData?.clients?.length) return false;
+    
+    return clientsData.clients.some((client) =>
+      client.contacts?.some((contact) => contact.contact_type === "phone")
+    );
+  }, [clientsData]);
+
   const {
     form,
     hasErrorsTicketInfoForm,
     hasErrorsContractForm,
     hasErrorQualityControl,
+    hasErrorClientPhone,
   } = useFormTicket({
     groupTitle: updatedTicket?.group_title ?? extraInfo?.group_title,
+    hasClientPhone,
   });
 
   // Отладка: проверяем, обновляются ли ошибки
@@ -345,7 +356,11 @@ const ChatExtraInfo = ({
         >
           <Tabs.List>
             <Tabs.Tab value="general">
-              <Text fw={900} size="sm">
+              <Text
+                fw={900}
+                size="sm"
+                data-error={hasErrorClientPhone ? "true" : undefined}
+              >
                 {getLanguageByKey("General")}
               </Text>
             </Tabs.Tab>

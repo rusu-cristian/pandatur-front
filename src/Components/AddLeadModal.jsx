@@ -34,23 +34,14 @@ export const AddLeadModal = ({
     mode: "uncontrolled",
     validate: (values) => {
       const errors = {};
-      const isContract = values.workflow === "Contract încheiat";
 
       if (!values.workflow) {
         errors.workflow = getLanguageByKey("fileIsMandatory");
       }
 
-      if (!values.phone?.toString().trim()) {
-        errors.phone = getLanguageByKey("fileIsMandatory");
-      }
-
-      if (isContract) {
-        if (!values.name || values.name.length < 3) {
-          errors.name = getLanguageByKey("mustBeAtLeast3Characters");
-        }
-        if (!values.surname || values.surname.length < 3) {
-          errors.surname = getLanguageByKey("mustBeAtLeast3Characters");
-        }
+      // Имя обязательно всегда (минимум 3 символа)
+      if (!values.name || values.name.length < 3) {
+        errors.name = getLanguageByKey("mustBeAtLeast3Characters");
       }
 
       return errors;
@@ -90,6 +81,7 @@ export const AddLeadModal = ({
     <form onSubmit={form.onSubmit(createTicket)}>
       <Flex gap="md">
         <TextInput
+          withAsterisk
           w="100%"
           label={getLanguageByKey("Nume")}
           placeholder={getLanguageByKey("Nume")}
@@ -115,7 +107,6 @@ export const AddLeadModal = ({
           {...form.getInputProps("email")}
         />
         <NumberInput
-          withAsterisk
           hideControls
           w="100%"
           label={getLanguageByKey("Telefon")}
