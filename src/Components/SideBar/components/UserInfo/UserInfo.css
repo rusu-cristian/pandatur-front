@@ -1,0 +1,30 @@
+/* User Info */
+.user-info-item {
+  cursor: default;
+}
+
+.user-info-item:hover {
+  background-color: transparent;
+}
+
+.user-info-collapsed {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.user-info-expanded {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  width: 100%;
+}
+
+.user-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.75rem;
+}

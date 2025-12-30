@@ -1,0 +1,102 @@
+/* Mobile Header */
+.sidebar-mobile-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 12px;
+  background-color: var(--crm-ui-kit-palette-background-primary);
+  border-bottom: 1px solid var(--crm-ui-kit-palette-divider);
+  z-index: 1000;
+  gap: 12px;
+}
+
+.mobile-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.mobile-logo {
+  height: 32px;
+  width: auto;
+  flex-shrink: 0;
+}
+
+.mobile-user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+}
+
+.mobile-user-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--crm-ui-kit-palette-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.mobile-logout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  color: var(--crm-ui-kit-palette-text-secondary);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.mobile-logout-btn:hover {
+  background-color: var(--crm-ui-kit-palette-action-hover);
+  color: var(--crm-ui-kit-palette-text-primary);
+}
+
+.mobile-logout-btn:active {
+  background-color: var(--crm-ui-kit-palette-action-selected);
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .sidebar-mobile-header {
+    padding: 0 8px;
+    gap: 8px;
+  }
+
+  .mobile-header-left {
+    gap: 8px;
+  }
+
+  .mobile-logo {
+    height: 28px;
+  }
+
+  .mobile-user-name {
+    font-size: 12px;
+  }
+
+  .mobile-header-right {
+    gap: 6px;
+  }
+}
