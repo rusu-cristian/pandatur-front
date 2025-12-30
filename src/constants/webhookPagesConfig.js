@@ -446,7 +446,7 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_id: "37360991919",
       page_name: "Chisinau - 37360991919",
       type: "phone",
-      group_title: ["MD", "HR", "MARKETING", "INDIVIDUALGROUPS", "FRANCHISE", "AGENCY"]
+      group_title: ["MD", "HR", "MARKETING", "FRANCHISE", "AGENCY"]
     },
     {
       page_id: "40799533533",
@@ -458,7 +458,13 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_id: "37369440400",
       page_name: "Chisinau - 37369440400",
       type: "phone",
-      group_title: ["MD", "HR", "MARKETING", "INDIVIDUALGROUPS", "FRANCHISE", "AGENCY"]
+      group_title: ["MD", "HR", "MARKETING", "FRANCHISE", "AGENCY"]
+    },
+    {
+      page_id: "37361281919",
+      page_name: "Individual Groups - 37361281919",
+      type: "phone",
+      group_title: ["INDIVIDUALGROUPS"]
     },
     {
       page_id: "37361161919",
@@ -580,7 +586,13 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_id: "37360991919",
       page_name: "Chisinau - 37360991919",
       type: "phone",
-      group_title: ["MD", "HR", "MARKETING", "INDIVIDUALGROUPS", "FRANCHISE", "AGENCY"]
+      group_title: ["MD", "HR", "MARKETING", "FRANCHISE", "AGENCY"]
+    },
+    {
+      page_id: "37361281919",
+      page_name: "Individual Groups - 37361281919",
+      type: "phone",
+      group_title: ["INDIVIDUALGROUPS"]
     },
     {
       page_id: "37361161919",
@@ -642,7 +654,7 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_id: "viber-bot-pandatur",
       page_name: "Chisinau - viber-bot-pandatur",
       type: "viber-bot",
-      group_title: ["MD", "HR", "MARKETING", "INDIVIDUALGROUPS", "FRANCHISE", "AGENCY"]
+      group_title: ["MD", "HR", "MARKETING", "FRANCHISE", "AGENCY"]
     }
   ],
   telegrams: [
@@ -650,7 +662,13 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_id: "37360991919",
       page_name: "Chisinau - 37360991919",
       type: "telegram",
-      group_title: ["MD", "HR", "MARKETING", "INDIVIDUALGROUPS", "FRANCHISE", "AGENCY"]
+      group_title: ["MD", "HR", "MARKETING", "FRANCHISE", "AGENCY"]
+    },
+    {
+      page_id: "37361281919",
+      page_name: "Individual Groups - 37361281919",
+      type: "telegram",
+      group_title: ["INDIVIDUALGROUPS"]
     },
     // {
     //   page_id: "37360361919",
