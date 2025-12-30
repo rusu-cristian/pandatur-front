@@ -22,6 +22,7 @@ import { useConfirmPopup } from "../../hooks";
 import PermissionGroupAssignModal from "./Roles/PermissionGroupAssignModal";
 import { useUser } from "../../hooks";
 import { hasStrictPermission } from "../utils/permissions";
+import "./UserList.css";
 
 const language = localStorage.getItem("language") || "RO";
 
@@ -33,7 +34,7 @@ const extractId = (u) =>
   u?.user_id ??
   null;
 
-// Базовая тема Material UI
+// Компактная тема Material UI
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
@@ -50,43 +51,60 @@ const darkTheme = createTheme({
     },
     divider: "#596683",
   },
+  typography: {
+    fontSize: 12,
+    body2: {
+      fontSize: "0.75rem", // 12px
+    },
+  },
   components: {
     MuiDataGrid: {
       styleOverrides: {
         root: ({ theme }) => ({
+          fontSize: "0.75rem",
           "& .MuiDataGrid-cell": {
+            padding: "6px 12px",
             borderRight: `1px solid ${theme.palette.divider}`,
             borderBottom: `1px solid ${theme.palette.divider}`,
+            fontSize: "0.75rem",
+            lineHeight: "1.3",
             "&:focus": {
               outline: "none",
-              border: `2px solid ${theme.palette.primary.main} !important`,
-              zIndex: 1,
-              position: "relative",
             },
             "&:focus-within": {
               outline: "none",
-              border: `2px solid ${theme.palette.primary.main} !important`,
-              zIndex: 1,
-              position: "relative",
             },
           },
           "& .MuiDataGrid-columnHeader": {
+            padding: "8px 12px",
             borderRight: `1px solid ${theme.palette.divider}`,
             borderBottom: `1px solid ${theme.palette.divider}`,
+            fontSize: "0.75rem",
+            fontWeight: 500,
             "&:focus": {
               outline: "none",
-              border: `2px solid ${theme.palette.primary.main} !important`,
-              zIndex: 1,
-              position: "relative",
             },
             "&:focus-within": {
               outline: "none",
-              border: `2px solid ${theme.palette.primary.main} !important`,
-              zIndex: 1,
-              position: "relative",
+            },
+          },
+          "& .MuiDataGrid-columnHeaderTitle": {
+            fontSize: "0.75rem",
+            fontWeight: 500,
+          },
+          "& .MuiDataGrid-row": {
+            "&:hover": {
+              backgroundColor: "rgba(255, 255, 255, 0.03)",
             },
           },
         }),
+      },
+    },
+    MuiIconButton: {
+      styleOverrides: {
+        root: {
+          padding: "2px",
+        },
       },
     },
   },
@@ -269,30 +287,29 @@ const UserList = ({
       {
         field: "id",
         headerName: getLanguageByKey("ID"),
-        width: 110,
+        width: 90,
         align: "center",
         headerAlign: "center",
-        // MUI DataGrid автоматически использует row.id (служебное поле)
-        // Оно совпадает с нашим user.id, поэтому значение отображается автоматически
       },
       {
         field: "name",
         headerName: getLanguageByKey("Nume"),
-        width: 200,
+        width: 150,
         align: "center",
         headerAlign: "center",
       },
       {
         field: "surname",
         headerName: getLanguageByKey("Prenume"),
-        width: 200,
+        width: 150,
         align: "center",
         headerAlign: "center",
       },
       {
         field: "email",
         headerName: getLanguageByKey("Email"),
-        width: 297,
+        flex: 1,
+        minWidth: 220,
         align: "center",
         headerAlign: "center",
         renderCell: (params) => {
@@ -303,6 +320,7 @@ const UserList = ({
                 wordBreak: "break-word",
                 width: "100%",
                 textAlign: "center",
+                fontSize: "0.75rem",
               }}
             >
               {params.value || "—"}
@@ -313,7 +331,7 @@ const UserList = ({
       {
         field: "groupsDisplay",
         headerName: getLanguageByKey("Grup utilizator"),
-        width: 250,
+        width: 160,
         align: "center",
         headerAlign: "center",
         renderCell: (params) => (
@@ -326,7 +344,7 @@ const UserList = ({
               alignItems: "center",
             }}
           >
-            <Typography variant="body2" sx={{ color: "text.primary" }}>
+            <Typography variant="body2" sx={{ color: "text.primary", fontSize: "0.75rem" }}>
               {params.value}
             </Typography>
           </Box>
@@ -335,7 +353,7 @@ const UserList = ({
       {
         field: "permissionsDisplay",
         headerName: getLanguageByKey("Grup permisiuni"),
-        width: 250,
+        width: 160,
         align: "center",
         headerAlign: "center",
         renderCell: (params) => (
@@ -348,7 +366,7 @@ const UserList = ({
               alignItems: "center",
             }}
           >
-            <Typography variant="body2" sx={{ color: "text.primary" }}>
+            <Typography variant="body2" sx={{ color: "text.primary", fontSize: "0.75rem" }}>
               {params.value}
             </Typography>
           </Box>
@@ -357,7 +375,8 @@ const UserList = ({
       {
         field: "jobTitleDisplay",
         headerName: getLanguageByKey("Funcție"),
-        width: 350,
+        flex: 1,
+        minWidth: 200,
         align: "center",
         headerAlign: "center",
         renderCell: (params) => (
@@ -370,7 +389,7 @@ const UserList = ({
               alignItems: "center",
             }}
           >
-            <Typography variant="body2" sx={{ color: "text.primary" }}>
+            <Typography variant="body2" sx={{ color: "text.primary", fontSize: "0.75rem" }}>
               {params.value}
             </Typography>
           </Box>
@@ -380,7 +399,8 @@ const UserList = ({
         field: "departmentDisplay",
         headerName:
           translations["Departament"]?.[language] || "Departament",
-        width: 250,
+        flex: 1,
+        minWidth: 160,
         align: "center",
         headerAlign: "center",
         renderCell: (params) => (
@@ -393,7 +413,7 @@ const UserList = ({
               alignItems: "center",
             }}
           >
-            <Typography variant="body2" sx={{ color: "text.primary" }}>
+            <Typography variant="body2" sx={{ color: "text.primary", fontSize: "0.75rem" }}>
               {params.value}
             </Typography>
           </Box>
@@ -407,34 +427,24 @@ const UserList = ({
         headerAlign: "center",
         renderCell: (params) => {
           if (!params) return "—";
+          const isActive = params.value;
           return (
-            <Badge
-              color={params.value ? "success" : "error"}
-              variant="dot"
-              sx={{
-                "& .MuiBadge-badge": {
-                  position: "static",
-                  transform: "none",
-                  bgcolor: params.value ? "primary.main" : "error.main",
-                },
-              }}
-            >
-              <Typography variant="body2" sx={{ color: "text.primary" }}>
-                {params.value
-                  ? getLanguageByKey("Activ")
-                  : getLanguageByKey("Inactiv")}
+            <div className="user-status-badge">
+              <Typography variant="body2" sx={{ color: "text.primary", fontSize: "0.75rem" }}>
+                {isActive ? getLanguageByKey("Activ") : getLanguageByKey("Inactiv")}
               </Typography>
-            </Badge>
+              <div className={`user-status-dot ${isActive ? "active" : "inactive"}`} />
+            </div>
           );
         },
       },
       {
         field: "sipuni_id",
         headerName: "Sipuni ID",
-        width: 100,
+        width: 90,
         align: "center",
         headerAlign: "center",
-        renderCell: (params) => {
+        renderCell: (params) => (
           <Box
             sx={{
               width: "100%",
@@ -444,11 +454,11 @@ const UserList = ({
               alignItems: "center",
             }}
           >
-            <Typography variant="body2" sx={{ color: "text.primary" }}>
+            <Typography variant="body2" sx={{ color: "text.primary", fontSize: "0.75rem" }}>
               {params.value || "—"}
             </Typography>
           </Box>
-        },
+        ),
       },
     ];
 
@@ -457,7 +467,7 @@ const UserList = ({
         field: "actions",
         type: "actions",
         headerName: getLanguageByKey("Acțiune"),
-        width: 100,
+        width: 60,
         align: "center",
         headerAlign: "center",
         getActions: (params) => {
@@ -619,7 +629,7 @@ const UserList = ({
       />
 
       <ThemeProvider theme={darkTheme}>
-        <div style={{ height: "calc(120vh)", width: "100%" }}>
+        <div className="users-table-wrapper users-table-compact">
           <DataGrid
             sx={{
               "& .MuiDataGrid-footerContainer": {
@@ -676,6 +686,9 @@ const UserList = ({
             disableCellSelection
             paginationMode="client"
             pageSizeOptions={[25, 50, 100]}
+            rowHeight={42}
+            columnHeaderHeight={42}
+            density="compact"
             initialState={{
               pagination: {
                 paginationModel: {
