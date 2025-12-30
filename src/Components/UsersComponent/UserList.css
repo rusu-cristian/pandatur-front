@@ -31,6 +31,9 @@
   border-bottom: 1px solid #596683;
   font-size: 0.75rem;
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .users-table-compact .MuiDataGrid-columnHeader:focus,
@@ -71,4 +74,19 @@
 
 .user-status-dot.inactive {
   background-color: #ef4444;
+}
+
+/* Checkbox alignment */
+.users-table-compact .MuiDataGrid-columnHeaderCheckbox,
+.users-table-compact .MuiDataGrid-cellCheckbox {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+}
+
+.users-table-compact .MuiDataGrid-columnHeaderCheckbox .MuiCheckbox-root,
+.users-table-compact .MuiDataGrid-cellCheckbox .MuiCheckbox-root {
+  padding: 8px !important;
+  margin: 0 !important;
 }
