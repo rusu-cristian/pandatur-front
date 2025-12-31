@@ -1,0 +1,64 @@
+/* ChatList Styles */
+
+.chat-list {
+  display: flex;
+  flex-direction: column;
+  width: 20%;
+  min-width: 280px;
+  max-width: 360px;
+  height: 100%;
+  border-right: 1px solid var(--crm-ui-kit-palette-border-primary);
+  background-color: var(--crm-ui-kit-palette-background-primary);
+}
+
+.chat-list__header {
+  padding: 8px 12px;
+  flex-shrink: 0;
+}
+
+.chat-list__content {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+  height: calc(100% - 110px);
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .chat-list {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    border-right: none;
+  }
+
+  .chat-list__header {
+    padding: 12px;
+  }
+
+  /* Larger touch targets */
+  .chat-list .mantine-TextInput-input {
+    height: 40px;
+    font-size: 16px; /* Prevent iOS zoom on focus */
+  }
+
+  .chat-list .mantine-ActionIcon-root {
+    width: 40px;
+    height: 40px;
+  }
+
+  .chat-list__content {
+    height: calc(100% - 100px);
+  }
+}
+
+@media (max-width: 480px) {
+  .chat-list__header {
+    padding: 10px;
+  }
+
+  .chat-list .mantine-Title-root {
+    font-size: 18px;
+  }
+}

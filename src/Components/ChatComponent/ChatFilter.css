@@ -1,0 +1,84 @@
+/* ChatFilter Styles */
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  /* Tabs */
+  .leads-modal-filter-tabs .mantine-Tabs-list {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .leads-modal-filter-tabs .mantine-Tabs-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .leads-modal-filter-tabs .mantine-Tabs-tab {
+    flex-shrink: 0;
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  /* Form inputs - bigger touch targets */
+  .leads-modal-filter-tabs .mantine-TextInput-input,
+  .leads-modal-filter-tabs .mantine-Select-input,
+  .leads-modal-filter-tabs .mantine-MultiSelect-input,
+  .leads-modal-filter-tabs .mantine-DatePickerInput-input {
+    font-size: 16px !important; /* Prevent iOS zoom */
+    min-height: 44px !important;
+    padding: 10px 12px !important;
+  }
+
+  /* Checkboxes and switches */
+  .leads-modal-filter-tabs .mantine-Checkbox-root,
+  .leads-modal-filter-tabs .mantine-Switch-root {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  .leads-modal-filter-tabs .mantine-Checkbox-body,
+  .leads-modal-filter-tabs .mantine-Switch-body {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  /* Labels */
+  .leads-modal-filter-tabs .mantine-InputWrapper-label {
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+
+  /* Stack form groups */
+  .leads-modal-filter-tabs .mantine-SimpleGrid-root {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  /* Footer buttons */
+  .leads-modal-filter-tabs + .mantine-Flex-root {
+    flex-direction: column;
+    gap: 8px !important;
+    padding: 12px !important;
+  }
+
+  .leads-modal-filter-tabs + .mantine-Flex-root .mantine-Button-root {
+    width: 100%;
+    min-height: 44px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .leads-modal-filter-tabs .mantine-Tabs-tab {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .leads-modal-filter-tabs .mantine-InputWrapper-label {
+    font-size: 12px;
+  }
+}

@@ -1,0 +1,72 @@
+/* ChatExtraInfo Styles */
+
+.chat-extra-info-scroll-area {
+  border-left: 1px solid var(--crm-ui-kit-palette-border-primary);
+  background-color: var(--crm-ui-kit-palette-background-primary);
+}
+
+/* Mobile Styles - Used in Drawer */
+@media (max-width: 768px) {
+  .chat-extra-info-scroll-area {
+    max-width: 100% !important;
+    width: 100% !important;
+    border-left: none;
+    height: 100% !important;
+  }
+
+  /* Drawer handle indicator */
+  .chat-extra-info-scroll-area::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 4px;
+    background-color: var(--crm-ui-kit-palette-border-primary);
+    border-radius: 2px;
+    margin: 8px auto 4px;
+  }
+
+  /* Compact tabs on mobile */
+  .chat-extra-info-scroll-area .mantine-Tabs-list {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .chat-extra-info-scroll-area .mantine-Tabs-tab {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  /* Sticky header */
+  .chat-extra-info-scroll-area .mantine-Box-root[style*="sticky"] {
+    padding: 12px !important;
+  }
+
+  /* Form inputs */
+  .chat-extra-info-scroll-area .mantine-TextInput-input,
+  .chat-extra-info-scroll-area .mantine-Select-input,
+  .chat-extra-info-scroll-area .mantine-Textarea-input {
+    font-size: 16px !important; /* Prevent iOS zoom */
+    min-height: 44px;
+  }
+
+  /* Form buttons */
+  .chat-extra-info-scroll-area .mantine-Button-root {
+    min-height: 44px;
+  }
+
+  /* Tab panels padding */
+  .chat-extra-info-scroll-area .mantine-Tabs-panel .mantine-Box-root {
+    padding: 12px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .chat-extra-info-scroll-area .mantine-Tabs-tab {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+
+  .chat-extra-info-scroll-area .mantine-Box-root[style*="sticky"] {
+    padding: 8px !important;
+  }
+}

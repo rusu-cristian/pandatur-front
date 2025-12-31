@@ -11,14 +11,16 @@ import {
   ActionIcon,
   Badge,
   Modal,
+  Drawer,
   Text,
   Loader
 } from "@mantine/core";
 import { getLanguageByKey } from "../utils";
-import { useDOMElementHeight, useChatFilters, useUser, useChatTicketsQuery } from "../../hooks";
+import { useDOMElementHeight, useChatFilters, useUser, useChatTicketsQuery, useMobile } from "../../hooks";
 import { ChatListItem } from "./components";
 import { ChatFilter } from "./ChatFilter";
 import { prepareFiltersForUrl } from "../utils/parseFiltersFromUrl";
+import "./ChatList.css";
 
 const CHAT_ITEM_HEIGHT = 94;
 
@@ -26,6 +28,7 @@ const ChatList = ({ ticketId }) => {
   const navigate = useNavigate();
   const { ticketId: ticketIdFromUrl } = useParams();
   const { userId } = useUser();
+  const isMobile = useMobile();
   
   // React Query хук для тикетов (заменяет fetchChatFilteredTickets из AppContext)
   const { 
@@ -96,8 +99,8 @@ const ChatList = ({ ticketId }) => {
 
   return (
     <>
-      <Box direction="column" w="20%">
-        <Flex direction="column" gap="xs" my="xs" pl="xs" pr="xs">
+      <Box direction="column" className="chat-list">
+        <Flex direction="column" gap="xs" className="chat-list__header">
           <Flex align="center" justify="space-between">
             <Flex align="center" gap={8}>
               <Title order={3}>{getLanguageByKey("Chat")}</Title>
@@ -127,7 +130,7 @@ const ChatList = ({ ticketId }) => {
 
         <Divider color="var(--crm-ui-kit-palette-border-default)" />
 
-        <Box style={{ height: "calc(100% - 110px)", position: "relative" }} ref={wrapperChatItemRef}>
+        <Box className="chat-list__content" ref={wrapperChatItemRef}>
           {isLoading ? (
             <Flex h="100%" align="center" justify="center">
               <Loader size="xl" color="green" />
@@ -156,36 +159,74 @@ const ChatList = ({ ticketId }) => {
         </Box>
       </Box>
 
-      {/* Модал фильтра */}
-      <Modal
-        opened={openFilter}
-        onClose={() => setOpenFilter(false)}
-        title={getLanguageByKey("Filtrează tichete")}
-        withCloseButton
-        centered
-        size="lg"
-        styles={{
-          content: {
-            height: "700px",
-            display: "flex",
-            flexDirection: "column",
-          },
-          body: {
-            flex: 1,
-            overflowY: "auto",
-            padding: "1rem"
-          },
-          title: {
-            color: "var(--crm-ui-kit-palette-text-primary)"
-          }
-        }}
-      >
-        <ChatFilter
-          initialData={filters}
-          loading={isFetching}
+      {/* Модал/Drawer фильтра */}
+      {isMobile ? (
+        <Drawer
+          opened={openFilter}
           onClose={() => setOpenFilter(false)}
-        />
-      </Modal>
+          title={getLanguageByKey("Filtrează tichete")}
+          position="bottom"
+          size="95%"
+          styles={{
+            content: {
+              borderTopLeftRadius: 16,
+              borderTopRightRadius: 16,
+              display: "flex",
+              flexDirection: "column",
+            },
+            header: {
+              padding: "12px 16px",
+              borderBottom: "1px solid var(--crm-ui-kit-palette-border-primary)",
+            },
+            title: {
+              color: "var(--crm-ui-kit-palette-text-primary)",
+              fontWeight: 600,
+              fontSize: 16,
+            },
+            body: {
+              flex: 1,
+              padding: "12px",
+              overflow: "auto",
+            },
+          }}
+        >
+          <ChatFilter
+            initialData={filters}
+            loading={isFetching}
+            onClose={() => setOpenFilter(false)}
+          />
+        </Drawer>
+      ) : (
+        <Modal
+          opened={openFilter}
+          onClose={() => setOpenFilter(false)}
+          title={getLanguageByKey("Filtrează tichete")}
+          withCloseButton
+          centered
+          size="lg"
+          styles={{
+            content: {
+              height: "700px",
+              display: "flex",
+              flexDirection: "column",
+            },
+            body: {
+              flex: 1,
+              overflowY: "auto",
+              padding: "1rem"
+            },
+            title: {
+              color: "var(--crm-ui-kit-palette-text-primary)"
+            }
+          }}
+        >
+          <ChatFilter
+            initialData={filters}
+            loading={isFetching}
+            onClose={() => setOpenFilter(false)}
+          />
+        </Modal>
+      )}
     </>
   );
 };

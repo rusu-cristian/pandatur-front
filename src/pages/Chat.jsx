@@ -1,8 +1,10 @@
 import { useState, useMemo, useEffect, useCallback, useContext } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import { Flex, ActionIcon, Box } from "@mantine/core";
-import { useClientContacts, useMessagesContext, useChatFilters } from "@hooks";
+import { LuInfo } from "react-icons/lu";
+import { Flex, ActionIcon, Box, Drawer } from "@mantine/core";
+import { useClientContacts, useMessagesContext, useChatFilters, useMobile } from "@hooks";
+import "./Chat.css";
 import { useGetTechniciansList } from "../hooks";
 import { useTickets } from "../contexts/TicketsContext";
 import { UserContext } from "../contexts/UserContext";
@@ -22,10 +24,10 @@ export const Chat = () => {
     customGroupTitle,
     setCustomGroupTitle,
   } = useContext(UserContext);
-  
+
   // URL — единственный источник правды для фильтров
   const { isFiltered } = useChatFilters();
-  
+
   const { messages } = useMessagesContext();
   const { ticketId: ticketIdParam } = useParams();
   const navigate = useNavigate();
@@ -36,7 +38,12 @@ export const Chat = () => {
   }, [ticketIdParam]);
 
   const { technicians } = useGetTechniciansList();
+  const isMobile = useMobile();
   const [isChatListVisible, setIsChatListVisible] = useState(true);
+
+  // Mobile panel navigation: 'list' | 'messages' | 'info'
+  const [activePanel, setActivePanel] = useState("list");
+  const [infoDrawerOpened, setInfoDrawerOpened] = useState(false);
 
   // Локальный state для хранения данных тикета напрямую
   // Нужен когда тикет открыт по прямой ссылке с фильтрами,
@@ -175,13 +182,130 @@ export const Chat = () => {
 
   const responsibleId = currentTicket?.technician_id?.toString() ?? null;
 
+  // Mobile: auto-switch to messages panel when ticket is selected
+  useEffect(() => {
+    if (isMobile && ticketId) {
+      setActivePanel("messages");
+    }
+  }, [isMobile, ticketId]);
+
+  // Mobile navigation handlers
+  const handleBackToList = useCallback(() => {
+    setActivePanel("list");
+    navigate("/chat");
+  }, [navigate]);
+
+  const handleOpenInfo = useCallback(() => {
+    setInfoDrawerOpened(true);
+  }, []);
+
+  const handleCloseInfo = useCallback(() => {
+    setInfoDrawerOpened(false);
+  }, []);
+
+  // Mobile Layout
+  if (isMobile) {
+    return (
+      <Flex h="100%" className="chat-wrapper">
+        {/* ChatList Panel */}
+        <div className={`chat-panel ${activePanel === "list" ? "chat-panel--active" : "chat-panel--hidden"}`}>
+          <div className="chat-list-panel">
+            <ChatList ticketId={ticketId} />
+          </div>
+        </div>
+
+        {/* ChatMessages Panel */}
+        <div className={`chat-panel ${activePanel === "messages" ? "chat-panel--active" : "chat-panel--hidden"}`}>
+          <div className="chat-messages-panel">
+            {/* Mobile Header with Back Button */}
+            <div className="chat-mobile-header">
+              <button
+                className="chat-mobile-header__back"
+                onClick={handleBackToList}
+                type="button"
+              >
+                <FaArrowLeft size={16} />
+              </button>
+              <span className="chat-mobile-header__title">
+                {currentTicket?.client_name || `#${ticketId}`}
+              </span>
+              <div className="chat-mobile-header__actions">
+                {ticketId && (
+                  <ActionIcon
+                    variant="default"
+                    size="md"
+                    onClick={handleOpenInfo}
+                    className="chat-info-btn"
+                  >
+                    <LuInfo size={18} />
+                  </ActionIcon>
+                )}
+              </div>
+            </div>
+
+            {/* Messages Content */}
+            <div className="chat-messages-content">
+              <Can permission={{ module: "chat", action: "view" }}>
+                <ChatMessages
+                  ticketId={ticketId}
+                  personalInfo={currentTicket}
+                  technicians={technicians}
+                  unseenCount={currentTicket?.unseen_count || 0}
+                  platformOptions={platformOptions}
+                  selectedPlatform={selectedPlatform}
+                  changePlatform={changePlatform}
+                  contactOptions={contactOptions}
+                  changeContact={changeContact}
+                  selectedClient={selectedClient}
+                  selectedPageId={selectedPageId}
+                  changePageId={changePageId}
+                  clientContactsLoading={clientContactsLoading}
+                />
+              </Can>
+            </div>
+          </div>
+        </div>
+
+        {/* ChatExtraInfo as Bottom Drawer */}
+        <Drawer
+          opened={infoDrawerOpened}
+          onClose={handleCloseInfo}
+          position="bottom"
+          size="85%"
+          withCloseButton={false}
+          styles={{
+            content: {
+              borderTopLeftRadius: 16,
+              borderTopRightRadius: 16,
+            },
+            body: {
+              padding: 0,
+              height: "100%",
+            },
+          }}
+        >
+          {ticketId && (
+            <ChatExtraInfo
+              selectedClient={selectedClient}
+              ticketId={ticketId}
+              updatedTicket={currentTicket}
+              onUpdateClientData={updateClientData}
+              clientsData={ticketData}
+            />
+          )}
+        </Drawer>
+      </Flex>
+    );
+  }
+
+  // Desktop Layout
   return (
     <Flex h="100%" className="chat-wrapper">
       <Flex w="100%" h="100%" className="chat-container">
         {isChatListVisible && <ChatList ticketId={ticketId} />}
 
         <Flex pos="relative" style={{ flex: "1 1 0" }}>
-          <Box pos="absolute" left="10px" top="16px" style={{ zIndex: 1 }}>
+          <Box pos="absolute" left="10px" top="16px" style={{ zIndex: 1 }} className="chat-toggle-list-btn">
             <ActionIcon
               variant="default"
               onClick={() => setIsChatListVisible((prev) => !prev)}

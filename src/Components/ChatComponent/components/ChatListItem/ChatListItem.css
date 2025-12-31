@@ -26,3 +26,43 @@
 .chat-item .right-count {
   transition: opacity 0.3s ease;
 }
+
+/* Mobile */
+@media (max-width: 768px) {
+  .chat-item {
+    padding: 12px !important;
+  }
+
+  /* Larger touch targets */
+  .chat-item .mantine-Image-root {
+    width: 48px !important;
+    height: 48px !important;
+  }
+
+  /* Better text readability */
+  .chat-item .mantine-Text-root {
+    font-size: 14px;
+  }
+
+  /* Position menu button better for touch */
+  .chat-item .mantine-ActionIcon-root {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* Wider last message area */
+  .chat-item .last-message-wrapper {
+    width: 70%;
+  }
+}
+
+@media (max-width: 480px) {
+  .chat-item {
+    padding: 10px !important;
+  }
+
+  .chat-item .mantine-Image-root {
+    width: 44px !important;
+    height: 44px !important;
+  }
+}

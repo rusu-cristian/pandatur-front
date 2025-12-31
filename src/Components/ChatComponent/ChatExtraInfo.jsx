@@ -11,6 +11,7 @@ import {
   Loader,
 } from "@mantine/core";
 import { getLanguageByKey, showServerError } from "@utils";
+import "./ChatExtraInfo.css";
 import { api } from "../../api";
 import {
   useFormTicket,

@@ -1,7 +1,7 @@
 .chat-area {
   border-left: 1px solid var(--crm-ui-kit-palette-border-default);
   border-right: 1px solid var(--crm-ui-kit-palette-border-default);
-  height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -11,4 +11,32 @@
   overflow-y: auto;
   min-height: 0;
   /* scroll-behavior: smooth; */
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .chat-area {
+    border-left: none;
+    border-right: none;
+    height: 100%;
+  }
+
+  .chat-messages {
+    padding: 12px;
+  }
+
+  /* TicketParticipants on mobile */
+  .chat-area .mantine-Paper-root {
+    margin: 8px 12px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .chat-messages {
+    padding: 8px;
+  }
+
+  .chat-area .mantine-Paper-root {
+    margin: 6px 8px !important;
+  }
 }

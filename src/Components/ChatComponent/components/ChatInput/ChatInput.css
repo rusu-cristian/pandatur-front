@@ -11,3 +11,88 @@
   flex-shrink: 0;
   background: var(--crm-ui-kit-palette-background-primary);
 }
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .chat-input {
+    padding: 12px !important;
+  }
+
+  /* Stack selects vertically on mobile */
+  .chat-input .mantine-Flex-root {
+    flex-wrap: wrap;
+  }
+
+  /* Make selects full width */
+  .chat-input .w-full {
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+
+  /* Reduce gap between select rows */
+  .chat-input .mantine-Select-root {
+    margin-bottom: 4px;
+  }
+
+  /* Bigger touch targets for selects */
+  .chat-input .mantine-Select-input {
+    font-size: 16px !important;
+    min-height: 44px !important;
+    padding: 10px 12px !important;
+  }
+
+  /* Reduce textarea rows on mobile */
+  .chat-input .mantine-Textarea-input {
+    min-height: 80px !important;
+    font-size: 16px !important;
+  }
+
+  /* Action buttons - bigger touch targets */
+  .chat-input .mantine-ActionIcon-root {
+    width: 44px !important;
+    height: 44px !important;
+  }
+
+  /* Main buttons - full width on mobile */
+  .chat-input .mantine-Button-root {
+    min-height: 44px;
+    font-size: 14px;
+  }
+
+  /* Stack action buttons */
+  .chat-input > .mantine-Flex-root:last-child {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .chat-input > .mantine-Flex-root:last-child > .mantine-Flex-root {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  /* Hide labels on mobile to save space */
+  .chat-input .mantine-InputWrapper-label {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .chat-input {
+    padding: 8px !important;
+  }
+
+  .chat-input .mantine-Textarea-input {
+    min-height: 60px !important;
+  }
+
+  /* Smaller action icons on very small screens */
+  .chat-input .mantine-ActionIcon-root {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .chat-input .mantine-Button-root {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+}

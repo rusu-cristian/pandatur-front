@@ -4,6 +4,7 @@ import { getLanguageByKey } from "../utils";
 import { TicketFormTabs } from "../TicketFormTabs";
 import { MessageFilterForm } from "../LeadsComponent/MessageFilterForm";
 import { useChatFilters } from "@hooks";
+import "./ChatFilter.css";
 
 /**
  * Проверяет есть ли реальные фильтры

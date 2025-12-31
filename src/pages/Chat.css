@@ -1,0 +1,147 @@
+/* Chat Page Styles */
+
+/* Desktop Layout */
+.chat-wrapper {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.chat-container {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Mobile Layout */
+@media (max-width: 768px) {
+  .chat-wrapper {
+    position: relative;
+  }
+
+  .chat-container {
+    flex-direction: column;
+  }
+
+  /* Mobile Panel System - Full Screen Panels */
+  .chat-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--crm-ui-kit-palette-background-primary);
+    z-index: 1;
+  }
+
+  .chat-panel--hidden {
+    display: none;
+  }
+
+  .chat-panel--active {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Mobile Header for navigation */
+  .chat-mobile-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background-color: var(--crm-ui-kit-palette-background-primary);
+    border-bottom: 1px solid var(--crm-ui-kit-palette-border-primary);
+    flex-shrink: 0;
+    min-height: 48px;
+  }
+
+  .chat-mobile-header__back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--crm-ui-kit-palette-text-primary);
+  }
+
+  .chat-mobile-header__back:active {
+    background-color: var(--crm-ui-kit-palette-background-secondary);
+  }
+
+  .chat-mobile-header__title {
+    flex: 1;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--crm-ui-kit-palette-text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .chat-mobile-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ChatList Panel Mobile */
+  .chat-list-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .chat-list-panel .chat-list-container {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* ChatMessages Panel Mobile */
+  .chat-messages-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .chat-messages-panel .chat-messages-content {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Hide desktop toggle button on mobile */
+  .chat-toggle-list-btn {
+    display: none !important;
+  }
+
+  /* Info button for mobile */
+  .chat-info-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* Desktop - show toggle, hide mobile elements */
+@media (min-width: 769px) {
+  .chat-mobile-header {
+    display: none;
+  }
+
+  .chat-info-btn--mobile {
+    display: none !important;
+  }
+
+  .chat-panel {
+    position: static;
+  }
+}
