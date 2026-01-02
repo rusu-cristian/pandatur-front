@@ -71,6 +71,7 @@ export const workflowOptionsIndividualGroups = [
 export const workflowOptionsFranchiseRascani = [
     "Interesat",
     "Apel de intrare",
+    "Work Group",
     "De prelucrat",
     "Luat în lucru",
     "Ofertă trimisă",
@@ -194,6 +195,7 @@ export const workflowOptionsLimitedFiliale = [
     "Închis și nerealizat"
 ];
 export const workflowOptionsLimitedFranchiseRascani = [
+    "Work Group",
     "De prelucrat",
     "Luat în lucru",
     "Ofertă trimisă",

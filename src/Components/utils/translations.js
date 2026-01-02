@@ -6006,5 +6006,10 @@ export const translations = {
     RO: "Adăugați cel puțin un număr de telefon pentru client",
     RU: "Добавьте хотя бы один телефон для клиента",
     EN: "Add at least one phone number for the client"
+  },
+  "Work Group": {
+    RO: "Work Group",
+    RU: "Work Group",
+    EN: "Work Group"
   }
 };
