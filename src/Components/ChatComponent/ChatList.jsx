@@ -15,7 +15,7 @@ import {
   Loader
 } from "@mantine/core";
 import { getLanguageByKey } from "../utils";
-import { useDOMElementHeight, useChatFilters, useUser, useChatTicketsQuery } from "../../hooks";
+import { useDOMElementHeight, useChatFilters, useUser, useChatTicketsQuery, useMobile } from "../../hooks";
 import { ChatListItem } from "./components";
 import { ChatFilter } from "./ChatFilter";
 import { prepareFiltersForUrl } from "../utils/parseFiltersFromUrl";
@@ -26,9 +26,10 @@ const ChatList = ({ ticketId }) => {
   const navigate = useNavigate();
   const { ticketId: ticketIdFromUrl } = useParams();
   const { userId } = useUser();
-  
+  const isMobile = useMobile();
+
   // React Query хук для тикетов (заменяет fetchChatFilteredTickets из AppContext)
-  const { 
+  const {
     tickets: displayedTickets,
     isLoading,
     isFetching,
@@ -37,7 +38,7 @@ const ChatList = ({ ticketId }) => {
     groupTitleForApi,
     filters,
   } = useChatTicketsQuery();
-  
+
   // Хук для управления фильтрами (URL — источник правды)
   const { defaultFilters, workflowOptions } = useChatFilters();
   
@@ -94,21 +95,51 @@ const ChatList = ({ ticketId }) => {
     [displayedTickets, ticketId]
   );
 
+  // Calculate list height based on mobile/desktop header
+  const listHeightOffset = isMobile ? 60 : 110;
+
   return (
     <>
-      <Box direction="column" w="20%">
-        <Flex direction="column" gap="xs" my="xs" pl="xs" pr="xs">
-          <Flex align="center" justify="space-between">
-            <Flex align="center" gap={8}>
-              <Title order={3}>{getLanguageByKey("Chat")}</Title>
-              <Badge
-                variant="filled"
-                style={{ backgroundColor: "var(--crm-ui-kit-palette-link-primary)" }}
+      <Box direction="column" w={isMobile ? "100%" : "20%"} h="100%">
+        {/* Header - hidden on mobile (MobileChatHeader handles it) */}
+        {!isMobile && (
+          <Flex direction="column" gap="xs" my="xs" pl="xs" pr="xs">
+            <Flex align="center" justify="space-between">
+              <Flex align="center" gap={8}>
+                <Title order={3}>{getLanguageByKey("Chat")}</Title>
+                <Badge
+                  variant="filled"
+                  style={{ backgroundColor: "var(--crm-ui-kit-palette-link-primary)" }}
+                >
+                  {displayedTickets.length}
+                </Badge>
+              </Flex>
+              <ActionIcon
+                variant={hasFilters ? "filled" : "default"}
+                size="36"
+                onMouseDown={() => startTransition(() => setOpenFilter(true))}
               >
-                {displayedTickets.length}
-              </Badge>
+                <LuFilter size={16} />
+              </ActionIcon>
             </Flex>
-            {/* Кнопка фильтра — onMouseDown для мгновенного отклика */}
+
+            <TextInput
+              placeholder={getLanguageByKey("Cauta dupa ID, Nume client, Telefon sau Email")}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </Flex>
+        )}
+
+        {/* Mobile header - search and filter */}
+        {isMobile && (
+          <Flex gap="xs" p="xs" align="center">
+            <TextInput
+              style={{ flex: 1 }}
+              placeholder={getLanguageByKey("Cauta dupa ID, Nume client, Telefon sau Email")}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
             <ActionIcon
               variant={hasFilters ? "filled" : "default"}
               size="36"
@@ -117,17 +148,11 @@ const ChatList = ({ ticketId }) => {
               <LuFilter size={16} />
             </ActionIcon>
           </Flex>
-
-          <TextInput
-            placeholder={getLanguageByKey("Cauta dupa ID, Nume client, Telefon sau Email")}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </Flex>
+        )}
 
         <Divider color="var(--crm-ui-kit-palette-border-default)" />
 
-        <Box style={{ height: "calc(100% - 110px)", position: "relative" }} ref={wrapperChatItemRef}>
+        <Box style={{ height: `calc(100% - ${listHeightOffset}px)`, position: "relative" }} ref={wrapperChatItemRef}>
           {isLoading ? (
             <Flex h="100%" align="center" justify="center">
               <Loader size="xl" color="green" />
@@ -162,11 +187,12 @@ const ChatList = ({ ticketId }) => {
         onClose={() => setOpenFilter(false)}
         title={getLanguageByKey("Filtrează tichete")}
         withCloseButton
-        centered
-        size="lg"
+        centered={!isMobile}
+        fullScreen={isMobile}
+        size={isMobile ? "100%" : "lg"}
         styles={{
           content: {
-            height: "700px",
+            height: isMobile ? "100%" : "700px",
             display: "flex",
             flexDirection: "column",
           },

@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect, useCallback, useContext } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { Flex, ActionIcon, Box } from "@mantine/core";
-import { useClientContacts, useMessagesContext, useChatFilters } from "@hooks";
+import { useClientContacts, useMessagesContext, useChatFilters, useMobile, useChatTicketsQuery } from "@hooks";
 import { useGetTechniciansList } from "../hooks";
 import { useTickets } from "../contexts/TicketsContext";
 import { UserContext } from "../contexts/UserContext";
@@ -10,6 +10,8 @@ import { api } from "../api";
 import ChatExtraInfo from "../Components/ChatComponent/ChatExtraInfo";
 import ChatList from "../Components/ChatComponent/ChatList";
 import { ChatMessages } from "../Components/ChatComponent/components/ChatMessages";
+import { MobileChatLayout } from "../Components/ChatComponent/components/MobileChatLayout";
+import { useChatMobileNavigation } from "../Components/ChatComponent/hooks/useChatMobileNavigation";
 import Can from "@components/CanComponent/Can";
 import { useTicketSync, SYNC_EVENTS, useOnTicketsMerged } from "../contexts/TicketSyncContext";
 import { getLanguageByKey } from "../Components/utils";
@@ -22,10 +24,10 @@ export const Chat = () => {
     customGroupTitle,
     setCustomGroupTitle,
   } = useContext(UserContext);
-  
+
   // URL — единственный источник правды для фильтров
   const { isFiltered } = useChatFilters();
-  
+
   const { messages } = useMessagesContext();
   const { ticketId: ticketIdParam } = useParams();
   const navigate = useNavigate();
@@ -37,6 +39,17 @@ export const Chat = () => {
 
   const { technicians } = useGetTechniciansList();
   const [isChatListVisible, setIsChatListVisible] = useState(true);
+
+  // Mobile support
+  const isMobile = useMobile();
+  const { tickets: chatTickets } = useChatTicketsQuery();
+  const {
+    mobileView,
+    goToList,
+    goToMessages,
+    goToInfo,
+    goBack,
+  } = useChatMobileNavigation(ticketId);
 
   // Локальный state для хранения данных тикета напрямую
   // Нужен когда тикет открыт по прямой ссылке с фильтрами,
@@ -175,6 +188,75 @@ export const Chat = () => {
 
   const responsibleId = currentTicket?.technician_id?.toString() ?? null;
 
+  // Render functions for mobile layout
+  const renderChatList = useCallback(() => (
+    <Box className="mobile-chat-list-wrapper" h="100%">
+      <ChatList ticketId={ticketId} />
+    </Box>
+  ), [ticketId]);
+
+  const renderChatMessages = useCallback(() => (
+    <Can permission={{ module: "chat", action: "view" }}>
+      <ChatMessages
+        ticketId={ticketId}
+        personalInfo={currentTicket}
+        technicians={technicians}
+        unseenCount={currentTicket?.unseen_count || 0}
+        platformOptions={platformOptions}
+        selectedPlatform={selectedPlatform}
+        changePlatform={changePlatform}
+        contactOptions={contactOptions}
+        changeContact={changeContact}
+        selectedClient={selectedClient}
+        selectedPageId={selectedPageId}
+        changePageId={changePageId}
+        clientContactsLoading={clientContactsLoading}
+      />
+    </Can>
+  ), [
+    ticketId,
+    currentTicket,
+    technicians,
+    platformOptions,
+    selectedPlatform,
+    changePlatform,
+    contactOptions,
+    changeContact,
+    selectedClient,
+    selectedPageId,
+    changePageId,
+    clientContactsLoading,
+  ]);
+
+  const renderChatExtraInfo = useCallback(() => (
+    <ChatExtraInfo
+      selectedClient={selectedClient}
+      ticketId={ticketId}
+      updatedTicket={currentTicket}
+      onUpdateClientData={updateClientData}
+      clientsData={ticketData}
+    />
+  ), [selectedClient, ticketId, currentTicket, updateClientData, ticketData]);
+
+  // Mobile layout
+  if (isMobile) {
+    return (
+      <MobileChatLayout
+        mobileView={mobileView}
+        onBack={goBack}
+        onInfoClick={goToInfo}
+        onSelectTicket={goToMessages}
+        ticketId={ticketId}
+        currentTicket={currentTicket}
+        ticketsCount={chatTickets?.length || 0}
+        renderChatList={renderChatList}
+        renderChatMessages={renderChatMessages}
+        renderChatExtraInfo={renderChatExtraInfo}
+      />
+    );
+  }
+
+  // Desktop layout
   return (
     <Flex h="100%" className="chat-wrapper">
       <Flex w="100%" h="100%" className="chat-container">
@@ -199,7 +281,6 @@ export const Chat = () => {
               personalInfo={currentTicket}
               technicians={technicians}
               unseenCount={currentTicket?.unseen_count || 0}
-              // Передаем данные из useClientContacts чтобы избежать повторного вызова хука
               platformOptions={platformOptions}
               selectedPlatform={selectedPlatform}
               changePlatform={changePlatform}
@@ -219,7 +300,7 @@ export const Chat = () => {
             ticketId={ticketId}
             updatedTicket={currentTicket}
             onUpdateClientData={updateClientData}
-            clientsData={ticketData} // Передаем данные из useClientContacts
+            clientsData={ticketData}
           />
         )}
       </Flex>

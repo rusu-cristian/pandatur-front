@@ -11,3 +11,19 @@
   flex-shrink: 0;
   background: var(--crm-ui-kit-palette-background-primary);
 }
+
+/* Toggle button for selects */
+.chat-input-selects-toggle {
+  padding: 8px 4px;
+  border-radius: 4px;
+  transition: background-color 0.15s ease;
+  user-select: none;
+}
+
+.chat-input-selects-toggle:hover {
+  background-color: var(--crm-ui-kit-palette-button-classic-hover-background);
+}
+
+.chat-input-selects-toggle .mantine-ActionIcon-root {
+  color: var(--crm-ui-kit-palette-text-secondary-light);
+}

@@ -9,3 +9,5 @@ export * from "./ChatMessages";
 export * from "./Message";
 export * from "./InvoiceTab";
 export * from "./EmailMessage";
+export * from "./MobileChatHeader";
+export * from "./MobileChatLayout";

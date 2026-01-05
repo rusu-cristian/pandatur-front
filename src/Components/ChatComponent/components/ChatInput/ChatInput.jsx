@@ -8,10 +8,12 @@ import {
   Loader,
   FileButton,
   Badge,
+  Collapse,
 } from "@mantine/core";
 import { AttachmentsPreview } from "../AttachmentsPreview";
 import { useDisclosure } from "@mantine/hooks";
-import { FaTasks, FaEnvelope, FaCheckCircle } from "react-icons/fa";
+import { FaTasks, FaEnvelope } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
 import { useState, useRef, useMemo, useEffect, memo, useCallback } from "react";
 import { LuSmile, LuStickyNote } from "react-icons/lu";
 import { RiAttachment2 } from "react-icons/ri";
@@ -21,7 +23,7 @@ import { getEmailsByGroupTitle } from "../../../utils/emailUtils";
 import { templateOptions, templateGroupsByKey, TEMPLATE_GROUP_BY_TITLE } from "../../../../FormOptions";
 import { useUploadMediaFile, filterPagesByGroupTitle } from "../../../../hooks";
 import { getMediaType } from "../../renderContent";
-import { useSocket, useUser } from "@hooks";
+import { useSocket, useUser, useMobile } from "@hooks";
 import { useTickets } from "../../../../contexts/TicketsContext";
 import Can from "../../../CanComponent/Can";
 import { TYPE_SOCKET_EVENTS } from "@app-constants";
@@ -79,6 +81,7 @@ export const ChatInput = memo(({
   const [isDragOver, setIsDragOver] = useState(false);
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showSelects, setShowSelects] = useState(false);
 
   const [attachments, setAttachments] = useState([]);
   const textAreaRef = useRef(null);
@@ -89,6 +92,7 @@ export const ChatInput = memo(({
   const { socketRef } = useSocket();
   const { markMessagesAsRead, getTicketById } = useTickets();
   const { enqueueSnackbar } = useSnackbar();
+  const isMobile = useMobile();
 
   // Получаем данные о воронке и email адресах
   const groupTitle = personalInfo?.group_title || "";
@@ -441,111 +445,141 @@ export const ChatInput = memo(({
       <Box className="chat-input" p="16">
         {!showEmailForm ? (
           <>
-            <Flex w="100%" gap="xs" mb="xs" align="center">
-              {loading ? (
-                <Loader size="xs" />
-              ) : (
-                <Flex direction="column" gap="xs" w="100%">
-                  {/* Первый ряд: Platform + Template */}
-                  <Flex gap="md" w="100%">
-                    {/* 1. Platform select */}
-                    <Select
-                      onChange={changePlatform}
-                      className="w-full"
-                      placeholder={getLanguageByKey("Selectează platforma")}
-                      value={selectedPlatform}
-                      data={platformOptions}
-                      searchable
-                      clearable
-                      label={getLanguageByKey("Platforma")}
-                      renderOption={renderPlatformOption}
-                      rightSection={selectedPlatform && socialMediaIcons[selectedPlatform] ? (
-                        <Flex>{socialMediaIcons[selectedPlatform]}</Flex>
-                      ) : null}
-                      styles={{
-                        input: {
-                          fontSize: '16px',
-                          minHeight: '48px',
-                          padding: '12px 16px'
-                        }
-                      }}
-                    />
-
-                    {/* 2. Template select */}
-                    <Select
-                      searchable
-                      label={getLanguageByKey("Șablon")}
-                      className="w-full"
-                      onChange={(value) => {
-                        setMessage(value ? templateOptions[value] : "");
-                        setTemplate(value || undefined);
-                      }}
-                      value={template || null}
-                      placeholder={getLanguageByKey("select_message_template")}
-                      data={templateSelectOptions}
-                      disabled={templateSelectOptions.length === 0}
-                      styles={{
-                        input: {
-                          fontSize: '16px',
-                          minHeight: '48px',
-                          padding: '12px 16px'
-                        }
-                      }}
-                    />
-                  </Flex>
-
-                  {/* Второй ряд: User pick number + Void select */}
-                  <Flex gap="md" w="100%">
-                    {/* 3. User pick number (contact) */}
-                    <Select
-                      onChange={changeContact}
-                      placeholder={getLanguageByKey("Selectează contact")}
-                      value={currentClient?.value}
-                      data={contactOptions}
-                      label={getLanguageByKey("Contact")}
-                      className="w-full"
-                      searchable
-                      clearable
-                      disabled={!selectedPlatform}
-                      styles={{
-                        input: {
-                          fontSize: '16px',
-                          minHeight: '48px',
-                          padding: '12px 16px'
-                        }
-                      }}
-                    />
-
-                    {/* 4. Page ID select */}
-                    <Select
-                      searchable
-                      label={getLanguageByKey("Pagina Panda")}
-                      placeholder={getLanguageByKey("Selectează pagina")}
-                      value={selectedPageId}
-                      onChange={changePageId}
-                      data={pageIdOptions}
-                      className="w-full"
-                      disabled={!selectedPlatform}
-                      styles={{
-                        input: {
-                          fontSize: '16px',
-                          minHeight: '48px',
-                          padding: '12px 16px',
-                        }
-                      }}
-                    />
-                  </Flex>
+            {/* Toggle button for selects */}
+            <Flex
+              align="center"
+              gap="xs"
+              mb="xs"
+              onClick={() => setShowSelects(prev => !prev)}
+              style={{ cursor: 'pointer' }}
+              className="chat-input-selects-toggle"
+            >
+              <ActionIcon variant="subtle" size="sm">
+                {showSelects ? <FaChevronUp size={12} /> : <FaChevronDown size={12} />}
+              </ActionIcon>
+              <Box component="span" fz="sm" c="dimmed">
+                {showSelects
+                  ? getLanguageByKey("hide_options")
+                  : getLanguageByKey("show_options")}
+              </Box>
+              {/* Show selected platform indicator when collapsed */}
+              {!showSelects && selectedPlatform && (
+                <Flex align="center" gap="xs" ml="auto">
+                  {socialMediaIcons[selectedPlatform]}
+                  <Box component="span" fz="sm" fw={500}>
+                    {selectedPlatform}
+                  </Box>
                 </Flex>
               )}
             </Flex>
+
+            <Collapse in={showSelects}>
+              <Flex w="100%" gap="xs" mb="xs" align="center">
+                {loading ? (
+                  <Loader size="xs" />
+                ) : (
+                  <Flex direction="column" gap="xs" w="100%">
+                    {/* Первый ряд: Platform + Template */}
+                    <Flex gap="md" w="100%">
+                      {/* 1. Platform select */}
+                      <Select
+                        onChange={changePlatform}
+                        className="w-full"
+                        placeholder={getLanguageByKey("Selectează platforma")}
+                        value={selectedPlatform}
+                        data={platformOptions}
+                        searchable
+                        clearable
+                        label={getLanguageByKey("Platforma")}
+                        renderOption={renderPlatformOption}
+                        rightSection={selectedPlatform && socialMediaIcons[selectedPlatform] ? (
+                          <Flex>{socialMediaIcons[selectedPlatform]}</Flex>
+                        ) : null}
+                        styles={{
+                          input: {
+                            fontSize: '16px',
+                            minHeight: '48px',
+                            padding: '12px 16px'
+                          }
+                        }}
+                      />
+
+                      {/* 2. Template select */}
+                      <Select
+                        searchable
+                        label={getLanguageByKey("Șablon")}
+                        className="w-full"
+                        onChange={(value) => {
+                          setMessage(value ? templateOptions[value] : "");
+                          setTemplate(value || undefined);
+                        }}
+                        value={template || null}
+                        placeholder={getLanguageByKey("select_message_template")}
+                        data={templateSelectOptions}
+                        disabled={templateSelectOptions.length === 0}
+                        styles={{
+                          input: {
+                            fontSize: '16px',
+                            minHeight: '48px',
+                            padding: '12px 16px'
+                          }
+                        }}
+                      />
+                    </Flex>
+
+                    {/* Второй ряд: User pick number + Void select */}
+                    <Flex gap="md" w="100%">
+                      {/* 3. User pick number (contact) */}
+                      <Select
+                        onChange={changeContact}
+                        placeholder={getLanguageByKey("Selectează contact")}
+                        value={currentClient?.value}
+                        data={contactOptions}
+                        label={getLanguageByKey("Contact")}
+                        className="w-full"
+                        searchable
+                        clearable
+                        disabled={!selectedPlatform}
+                        styles={{
+                          input: {
+                            fontSize: '16px',
+                            minHeight: '48px',
+                            padding: '12px 16px'
+                          }
+                        }}
+                      />
+
+                      {/* 4. Page ID select */}
+                      <Select
+                        searchable
+                        label={getLanguageByKey("Pagina Panda")}
+                        placeholder={getLanguageByKey("Selectează pagina")}
+                        value={selectedPageId}
+                        onChange={changePageId}
+                        data={pageIdOptions}
+                        className="w-full"
+                        disabled={!selectedPlatform}
+                        styles={{
+                          input: {
+                            fontSize: '16px',
+                            minHeight: '48px',
+                            padding: '12px 16px',
+                          }
+                        }}
+                      />
+                    </Flex>
+                  </Flex>
+                )}
+              </Flex>
+            </Collapse>
 
             <AttachmentsPreview attachments={attachments} onRemove={removeAttachment} />
 
             <Textarea
               ref={textAreaRef}
               autosize
-              minRows={6}
-              maxRows={8}
+              minRows={isMobile ? 3 : 6}
+              maxRows={isMobile ? 5 : 8}
               w="100%"
               mb="xs"
               value={message}
@@ -570,195 +604,207 @@ export const ChatInput = memo(({
               }}
             />
 
-            <Flex align="center" justify="space-between">
-              <Flex gap="xs">
-                <Can permission={{ module: "CHAT", action: "CREATE" }} context={{ responsibleId }}>
-                  <Button
-                    disabled={
-                      (!message.trim() && attachments.length === 0) ||
-                      !selectedPlatform ||
-                      !currentClient?.payload ||
-                      !isPageIdValid || // ✅ Проверяем что pageId валиден для текущей воронки
-                      currentClient.payload.platform === "sipuni" ||
-                      (isLengthLimited && message.length > MESSAGE_LENGTH_LIMIT)
-                    }
-                    variant="filled"
-                    onClick={sendMessage}
-                    loading={opened}
-                  >
-                    {getLanguageByKey("Trimite")}
-                  </Button>
-                </Can>
-
-                <Button
-                  onClick={clearState}
-                  variant="default"
-                  color="gray"
-                  styles={{
-                    root: {
-                      backgroundColor: 'var(--mantine-color-gray-2) !important',
-                      color: 'var(--mantine-color-gray-7) !important',
-                      '&:hover': {
-                        backgroundColor: 'var(--mantine-color-gray-3) !important',
+            {/* Actions section - responsive layout */}
+            <Flex direction="column" gap="xs">
+              {/* Row 1: Main buttons + Action icons */}
+              <Flex align="center" justify="space-between" wrap={isMobile ? "wrap" : "nowrap"} gap="xs">
+                <Flex gap="xs" align="center">
+                  <Can permission={{ module: "CHAT", action: "CREATE" }} context={{ responsibleId }}>
+                    <Button
+                      disabled={
+                        (!message.trim() && attachments.length === 0) ||
+                        !selectedPlatform ||
+                        !currentClient?.payload ||
+                        !isPageIdValid ||
+                        currentClient.payload.platform === "sipuni" ||
+                        (isLengthLimited && message.length > MESSAGE_LENGTH_LIMIT)
                       }
-                    }
-                  }}
-                >
-                  {getLanguageByKey("Anulează")}
-                </Button>
-
-                <Can permission={{ module: "CHAT", action: "EDIT" }} context={{ responsibleId }}>
-                  <Flex gap="xs" align="center">
-                    {unseenCount === 0 ? (
-                      <Badge
-                        // variant="dot"
-                        color="var(--crm-ui-kit-palette-link-primary)"
-                        size="lg"
-                        styles={{
-                          root: {
-                            cursor: 'default',
-                            textTransform: 'none',
-                            paddingLeft: '12px',
-                          }
-                        }}
-                      >
-                        <Flex align="center" gap={6}>
-                          {getLanguageByKey("closedChat")}
-                        </Flex>
-                      </Badge>
-                    ) : (
-                      <Button
-                        onClick={handleMarkAsRead}
-                        variant="filled"
-                        styles={{
-                          root: unseenCount > 0 ? {
-                            backgroundColor: 'var(--mantine-color-red-6) !important',
-                            color: 'white !important',
-                            '&:hover': {
-                              backgroundColor: 'var(--mantine-color-red-7) !important',
-                            }
-                          } : {
-                            backgroundColor: 'var(--crm-ui-kit-palette-link-primary) !important',
-                            color: 'white !important',
-                            '&:hover': {
-                              backgroundColor: 'var(--crm-ui-kit-palette-link-hover-primary) !important',
-                            }
-                          }
-                        }}
-                      >
-                        {unseenCount > 0
-                          ? getLanguageByKey("openedChat")
-                          : getLanguageByKey("closedChat")}
-                      </Button>
-                    )}
-
-                    {!actionNeeded ? (
-                      <Badge
-                        // variant="dot"
-                        color="var(--crm-ui-kit-palette-link-primary)"
-                        size="lg"
-                        styles={{
-                          root: {
-                            cursor: 'default',
-                            textTransform: 'none',
-                            paddingLeft: '12px',
-                          }
-                        }}
-                      >
-                        <Flex align="center" gap={6}>
-                          {getLanguageByKey("Nu acțiune necesară")}
-                        </Flex>
-                      </Badge>
-                    ) : (
-                      <Button
-                        onClick={handleMarkActionResolved}
-                        variant="filled"
-                        styles={{
-                          root: actionNeeded ? {
-                            backgroundColor: 'var(--mantine-color-orange-6) !important',
-                            color: 'white !important',
-                            '&:hover': {
-                              backgroundColor: 'var(--mantine-color-orange-7) !important',
-                            }
-                          } : {
-                            backgroundColor: 'var(--crm-ui-kit-palette-link-primary) !important',
-                            color: 'white !important',
-                            '&:hover': {
-                              backgroundColor: 'var(--crm-ui-kit-palette-link-hover-primary) !important',
-                            }
-                          }
-                        }}
-                      >
-                        {getLanguageByKey(
-                          actionNeeded ? "Acțiune necesară" : "Nu acțiune necesară"
-                        )}
-                      </Button>
-                    )}
-                  </Flex>
-                </Can>
-              </Flex>
-
-              <Flex gap="xs">
-                <Can permission={{ module: "CHAT", action: "CREATE" }} context={{ responsibleId }}>
-                  <ActionIcon
-                    onClick={() => setShowEmailForm(true)}
-                    variant="default"
-                    title="Trimite Email"
-                  >
-                    <FaEnvelope size={20} />
-                  </ActionIcon>
-
-                  <FileButton
-                    onChange={handleFileButton}
-                    accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.ppt,.pptx"
-                    multiple
-                    title={getLanguageByKey("attachFiles")}
-                  >
-                    {(props) => (
-                      <ActionIcon {...props} variant="default" title={getLanguageByKey("attachFiles")}>
-                        <RiAttachment2 size={20} />
-                      </ActionIcon>
-                    )}
-                  </FileButton>
-
-                  <Box style={{ position: 'relative' }}>
-                    <ActionIcon
-                      onClick={() => setShowEmojiPicker(prev => !prev)}
-                      variant="default"
-                      title="Emoji"
+                      variant="filled"
+                      onClick={sendMessage}
+                      loading={opened}
+                      size={isMobile ? "sm" : "md"}
                     >
-                      <LuSmile size={20} />
+                      {getLanguageByKey("Trimite")}
+                    </Button>
+                  </Can>
+
+                  <Button
+                    onClick={clearState}
+                    variant="default"
+                    color="gray"
+                    size={isMobile ? "sm" : "md"}
+                    styles={{
+                      root: {
+                        backgroundColor: 'var(--mantine-color-gray-2) !important',
+                        color: 'var(--mantine-color-gray-7) !important',
+                        '&:hover': {
+                          backgroundColor: 'var(--mantine-color-gray-3) !important',
+                        }
+                      }
+                    }}
+                  >
+                    {getLanguageByKey("Anulează")}
+                  </Button>
+                </Flex>
+
+                {/* Action icons */}
+                <Flex gap="xs" align="center">
+                  <Can permission={{ module: "CHAT", action: "CREATE" }} context={{ responsibleId }}>
+                    <ActionIcon
+                      onClick={() => setShowEmailForm(true)}
+                      variant="default"
+                      title="Trimite Email"
+                      size={isMobile ? "md" : "lg"}
+                    >
+                      <FaEnvelope size={isMobile ? 16 : 20} />
                     </ActionIcon>
-                    {showEmojiPicker && (
-                      <SimpleEmojiPicker
-                        onSelect={(emoji) => {
-                          setMessage(prev => prev + emoji);
-                          textAreaRef.current?.focus();
-                        }}
-                        onClose={() => setShowEmojiPicker(false)}
-                      />
-                    )}
-                  </Box>
 
-                  <ActionIcon
-                    onClick={onToggleNoteComposer}
-                    variant="default"
-                    title={getLanguageByKey("Заметка")}
-                  >
-                    <LuStickyNote size={20} />
-                  </ActionIcon>
-                </Can>
+                    <FileButton
+                      onChange={handleFileButton}
+                      accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.ppt,.pptx"
+                      multiple
+                      title={getLanguageByKey("attachFiles")}
+                    >
+                      {(props) => (
+                        <ActionIcon {...props} variant="default" title={getLanguageByKey("attachFiles")} size={isMobile ? "md" : "lg"}>
+                          <RiAttachment2 size={isMobile ? 16 : 20} />
+                        </ActionIcon>
+                      )}
+                    </FileButton>
 
-                <Can permission={{ module: "TASK", action: "CREATE" }} context={{ responsibleId }}>
-                  <ActionIcon
-                    onClick={onCreateTask}
-                    variant="default"
-                    title={getLanguageByKey("New Task")}
-                  >
-                    <FaTasks size={20} />
-                  </ActionIcon>
-                </Can>
+                    <Box style={{ position: 'relative' }}>
+                      <ActionIcon
+                        onClick={() => setShowEmojiPicker(prev => !prev)}
+                        variant="default"
+                        title="Emoji"
+                        size={isMobile ? "md" : "lg"}
+                      >
+                        <LuSmile size={isMobile ? 16 : 20} />
+                      </ActionIcon>
+                      {showEmojiPicker && (
+                        <SimpleEmojiPicker
+                          onSelect={(emoji) => {
+                            setMessage(prev => prev + emoji);
+                            textAreaRef.current?.focus();
+                          }}
+                          onClose={() => setShowEmojiPicker(false)}
+                        />
+                      )}
+                    </Box>
+
+                    <ActionIcon
+                      onClick={onToggleNoteComposer}
+                      variant="default"
+                      title={getLanguageByKey("Заметка")}
+                      size={isMobile ? "md" : "lg"}
+                    >
+                      <LuStickyNote size={isMobile ? 16 : 20} />
+                    </ActionIcon>
+                  </Can>
+
+                  <Can permission={{ module: "TASK", action: "CREATE" }} context={{ responsibleId }}>
+                    <ActionIcon
+                      onClick={onCreateTask}
+                      variant="default"
+                      title={getLanguageByKey("New Task")}
+                      size={isMobile ? "md" : "lg"}
+                    >
+                      <FaTasks size={isMobile ? 16 : 20} />
+                    </ActionIcon>
+                  </Can>
+                </Flex>
               </Flex>
+
+              {/* Row 2: Status buttons (on mobile - separate row, on desktop - inline with row 1) */}
+              <Can permission={{ module: "CHAT", action: "EDIT" }} context={{ responsibleId }}>
+                <Flex gap="xs" align="center" wrap="wrap">
+                  {unseenCount === 0 ? (
+                    <Badge
+                      color="var(--crm-ui-kit-palette-link-primary)"
+                      size={isMobile ? "md" : "lg"}
+                      styles={{
+                        root: {
+                          cursor: 'default',
+                          textTransform: 'none',
+                          paddingLeft: '12px',
+                        }
+                      }}
+                    >
+                      <Flex align="center" gap={6}>
+                        {getLanguageByKey("closedChat")}
+                      </Flex>
+                    </Badge>
+                  ) : (
+                    <Button
+                      onClick={handleMarkAsRead}
+                      variant="filled"
+                      size={isMobile ? "xs" : "sm"}
+                      styles={{
+                        root: unseenCount > 0 ? {
+                          backgroundColor: 'var(--mantine-color-red-6) !important',
+                          color: 'white !important',
+                          '&:hover': {
+                            backgroundColor: 'var(--mantine-color-red-7) !important',
+                          }
+                        } : {
+                          backgroundColor: 'var(--crm-ui-kit-palette-link-primary) !important',
+                          color: 'white !important',
+                          '&:hover': {
+                            backgroundColor: 'var(--crm-ui-kit-palette-link-hover-primary) !important',
+                          }
+                        }
+                      }}
+                    >
+                      {unseenCount > 0
+                        ? `${getLanguageByKey("openedChat")} (${unseenCount})`
+                        : getLanguageByKey("closedChat")}
+                    </Button>
+                  )}
+
+                  {!actionNeeded ? (
+                    <Badge
+                      color="var(--crm-ui-kit-palette-link-primary)"
+                      size={isMobile ? "md" : "lg"}
+                      styles={{
+                        root: {
+                          cursor: 'default',
+                          textTransform: 'none',
+                          paddingLeft: '12px',
+                        }
+                      }}
+                    >
+                      <Flex align="center" gap={6}>
+                        {getLanguageByKey("Nu acțiune necesară")}
+                      </Flex>
+                    </Badge>
+                  ) : (
+                    <Button
+                      onClick={handleMarkActionResolved}
+                      variant="filled"
+                      size={isMobile ? "xs" : "sm"}
+                      styles={{
+                        root: actionNeeded ? {
+                          backgroundColor: 'var(--mantine-color-orange-6) !important',
+                          color: 'white !important',
+                          '&:hover': {
+                            backgroundColor: 'var(--mantine-color-orange-7) !important',
+                          }
+                        } : {
+                          backgroundColor: 'var(--crm-ui-kit-palette-link-primary) !important',
+                          color: 'white !important',
+                          '&:hover': {
+                            backgroundColor: 'var(--crm-ui-kit-palette-link-hover-primary) !important',
+                          }
+                        }
+                      }}
+                    >
+                      {getLanguageByKey(
+                        actionNeeded ? "Acțiune necesară" : "Nu acțiune necesară"
+                      )}
+                    </Button>
+                  )}
+                </Flex>
+              </Can>
             </Flex>
           </>
         ) : (

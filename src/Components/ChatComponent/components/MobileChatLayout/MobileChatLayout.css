@@ -1,0 +1,56 @@
+.mobile-chat-layout {
+  background-color: var(--crm-ui-kit-palette-background-default);
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.mobile-chat-content {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.mobile-view {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* List View */
+.mobile-view-list {
+  background-color: var(--crm-ui-kit-palette-background-default);
+}
+
+/* Messages View */
+.mobile-view-messages {
+  background-color: var(--crm-ui-kit-palette-background-default);
+}
+
+/* Info View */
+.mobile-view-info {
+  background-color: var(--crm-ui-kit-palette-background-primary);
+  overflow-y: auto;
+}
+
+/* Mobile ChatList overrides */
+.mobile-chat-layout .mobile-chat-list-wrapper {
+  width: 100% !important;
+  height: 100%;
+}
+
+/* Mobile ChatMessages overrides */
+.mobile-chat-layout .chat-area {
+  height: 100%;
+}
+
+/* Mobile ChatExtraInfo overrides */
+.mobile-chat-layout .chat-extra-info-scroll-area {
+  max-width: 100% !important;
+  width: 100% !important;
+}

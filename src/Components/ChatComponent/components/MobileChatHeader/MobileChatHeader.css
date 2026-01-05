@@ -1,0 +1,16 @@
+.mobile-chat-header {
+  background-color: var(--crm-ui-kit-palette-background-primary);
+  border-bottom: 1px solid var(--crm-ui-kit-palette-border-default);
+  min-height: 56px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.mobile-chat-header .mantine-ActionIcon-root {
+  color: var(--crm-ui-kit-palette-text-primary);
+}
+
+.mobile-chat-header .mantine-ActionIcon-root:hover {
+  background-color: var(--crm-ui-kit-palette-button-classic-hover-background);
+}
