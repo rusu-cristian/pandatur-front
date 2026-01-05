@@ -92,7 +92,11 @@ export const LeadsPageHeader = memo(forwardRef(({
   return (
     <Flex
       ref={ref}
-      style={{ "--side-bar-width": isCollapsed ? "79px" : "249px" }}
+      style={{
+        "--side-bar-width": isCollapsed
+          ? "var(--sidebar-width-collapsed)"
+          : "var(--sidebar-width-expanded)",
+      }}
       className="leads-header-container"
       bg="var(--crm-ui-kit-palette-background-primary)"
     >
@@ -212,4 +216,3 @@ export const LeadsPageHeader = memo(forwardRef(({
 }));
 
 LeadsPageHeader.displayName = "LeadsPageHeader";
-

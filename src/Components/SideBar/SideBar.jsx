@@ -204,6 +204,8 @@ export const SideBar = () => {
 
       <BaseSideBar
         collapsed={isMobile ? false : isCollapsed}
+        width="var(--sidebar-width-expanded)"
+        collapsedWidth="var(--sidebar-width-collapsed)"
         className={isMobile && mobileMenuOpen ? 'mobile-open' : ''}
       >
         <Menu>

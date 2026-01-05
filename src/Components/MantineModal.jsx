@@ -10,7 +10,9 @@ export const MantineModal = ({
   ...props
 }) => {
   const { isCollapsed } = useUI();
-  const sidebarWidth = isCollapsed ? 80 : 250;
+  const sidebarWidth = isCollapsed
+    ? "var(--sidebar-width-collapsed)"
+    : "var(--sidebar-width-expanded)";
   const { style, ...rest } = props;
 
   return (
@@ -29,9 +31,9 @@ export const MantineModal = ({
       styles={{
         content: {
           position: "absolute",
-          left: `${sidebarWidth}px`,
-          width: `calc(100% - ${sidebarWidth}px)`,
-          height,
+          left: sidebarWidth,
+          width: `calc(100% - ${sidebarWidth})`,
+          height: height === "100vh" ? "var(--app-vh, 100vh)" : height,
           zIndex: 1001,
           pointerEvents: "auto",
           ...style,

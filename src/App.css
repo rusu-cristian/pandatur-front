@@ -1,3 +1,32 @@
+:root {
+  --sidebar-width-expanded: 249px;
+  --sidebar-width-collapsed: 79px;
+  --page-padding: 20px;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --sidebar-width-expanded: 187px;
+    --sidebar-width-collapsed: 59px;
+    --page-padding: 15px;
+    --mantine-font-size-xs: 9px;
+    --mantine-font-size-sm: 10.5px;
+    --mantine-font-size-md: 12px;
+    --mantine-font-size-lg: 13.5px;
+    --mantine-font-size-xl: 15px;
+    --mantine-spacing-xs: 8px;
+    --mantine-spacing-sm: 9px;
+    --mantine-spacing-md: 12px;
+    --mantine-spacing-lg: 15px;
+    --mantine-spacing-xl: 24px;
+    --mantine-radius-xs: 2px;
+    --mantine-radius-sm: 3px;
+    --mantine-radius-md: 6px;
+    --mantine-radius-lg: 12px;
+    --mantine-radius-xl: 24px;
+  }
+}
+
 html,
 body {
   height: 100%;
@@ -139,7 +168,7 @@ a {
 .dashboard-container-wrapper {
   width: 100%;
   height: 100%;
-  padding: 20px;
+  padding: var(--page-padding);
 }
 
 .dashboard-layout>div {

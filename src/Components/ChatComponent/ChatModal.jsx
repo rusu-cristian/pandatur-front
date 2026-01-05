@@ -4,7 +4,9 @@ import "./ChatModal.css";
 
 export const ChatModal = ({ opened, onClose, children }) => {
   const { isCollapsed } = useUI();
-  const sidebarWidth = isCollapsed ? 79 : 249;
+  const sidebarWidth = isCollapsed
+    ? "var(--sidebar-width-collapsed)"
+    : "var(--sidebar-width-expanded)";
 
   // Блокируем скролл body при открытии модалки
   useEffect(() => {
@@ -25,8 +27,8 @@ export const ChatModal = ({ opened, onClose, children }) => {
       className="chat-modal"
       style={{
         position: "fixed",
-        left: `${sidebarWidth}px`,
-        width: `calc(100vw - ${sidebarWidth}px)`,
+        left: sidebarWidth,
+        width: `calc(100vw - ${sidebarWidth})`,
         height: "var(--app-vh, 100vh)",
         top: 0,
         backgroundColor: "var(--crm-ui-kit-palette-background-primary)",
