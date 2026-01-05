@@ -33,7 +33,7 @@ aside[class*="css-"] {
 }
 
 .ps-sidebar-container .ps-menu {
-  margin-top: 20px;
+  margin-top: var(--sidebar-menu-margin-top);
 }
 
 .ps-sidebar-root.css-1wvake5 {

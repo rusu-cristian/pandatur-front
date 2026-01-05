@@ -34,7 +34,7 @@ import { SocketContext } from "../../contexts/SocketContext";
 
 const LOGO = "/logo.svg";
 
-const ConnectionIndicator = ({ isConnected }) => {
+const ConnectionIndicator = ({ isConnected, iconSize = 24 }) => {
   const handleReload = () => {
     window.location.reload();
   };
@@ -51,7 +51,7 @@ const ConnectionIndicator = ({ isConnected }) => {
           className="reconnect-button"
           title="Перезагрузить страницу"
         >
-          <FaSync size={30} />
+          <FaSync size={iconSize} />
         </button>
       )}
     </div>
@@ -72,6 +72,7 @@ export const SideBar = () => {
   const isMobile = useMobile();
   const { setLanguage, selectedLanguage, LANGUAGE_OPTIONS, LANGUAGES } = useLanguageToggle();
   const { toggleTheme, isDark } = useTheme();
+  const menuIconSize = isMobile ? 24 : 18;
 
   // Данные пользователя и сокет
   const { customGroupTitle, groupTitleForApi } = useContext(UserContext);
@@ -132,7 +133,7 @@ export const SideBar = () => {
               <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {surname} {name}
               </span>
-              <ConnectionIndicator isConnected={isConnected} />
+              <ConnectionIndicator isConnected={isConnected} iconSize={menuIconSize} />
             </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -217,14 +218,14 @@ export const SideBar = () => {
                   <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {surname} {name} ({userId})
                   </span>
-                  <ConnectionIndicator isConnected={isConnected} />
+                  <ConnectionIndicator isConnected={isConnected} iconSize={menuIconSize} />
                 </div>
               </MenuItem>
               <Divider />
 
               {/* Переключатель темы для мобильных */}
               <MenuItem
-                icon={isDark ? <MdLightMode /> : <MdDarkMode />}
+                icon={isDark ? <MdLightMode size={menuIconSize} /> : <MdDarkMode size={menuIconSize} />}
                 onClick={toggleTheme}
               >
                 {isDark ? "Light" : "Dark"}
@@ -235,14 +236,18 @@ export const SideBar = () => {
 
           {!isMobile && (
             <MenuItem
-              suffix={<FaBars />}
+              suffix={<FaBars size={menuIconSize} />}
               onClick={() => setIsCollapsed((prev) => !prev)}
               className="logo-menu"
-              icon={isCollapsed && <FaBars />}
+              icon={isCollapsed && <FaBars size={menuIconSize} />}
             >
               {!isCollapsed && (
                 <Flex ml="8px">
-                  <img width="80px" height="100%" src={LOGO} alt="PANDATUR CRM" />
+                  <img
+                    style={{ width: "var(--sidebar-logo-width)", height: "100%" }}
+                    src={LOGO}
+                    alt="PANDATUR CRM"
+                  />
                 </Flex>
               )}
             </MenuItem>
@@ -251,7 +256,7 @@ export const SideBar = () => {
           {hasStrictPermission(userRoles, "USERS", "VIEW") && (
             <MenuItem
               active={isActive("users")}
-              icon={<FaUsers size={24} />}
+              icon={<FaUsers size={menuIconSize} />}
               component={<Link to="/users" onClick={handleMenuClick} />}
             >
               {getLanguageByKey("Users")}
@@ -261,7 +266,7 @@ export const SideBar = () => {
           {hasStrictPermission(userRoles, "DASHBOARD", "VIEW") && (
             <MenuItem
               active={isActive("dashboard")}
-              icon={<FaChartPie size={24} />}
+              icon={<FaChartPie size={menuIconSize} />}
               component={<Link to="/dashboard" onClick={handleMenuClick} />}
             >
               {getLanguageByKey("Dashboard")}
@@ -271,7 +276,7 @@ export const SideBar = () => {
           <Can permission={{ module: "leads", action: "view" }} skipContextCheck>
             <MenuItem
               active={isActive("leads")}
-              icon={<FaClipboardList size={24} />}
+              icon={<FaClipboardList size={menuIconSize} />}
               component={<Link to="/leads" onClick={handleMenuClick} />}
             >
               {getLanguageByKey("Leads")} {currentGroupTitleLabel && `(${currentGroupTitleLabel})`}
@@ -282,7 +287,7 @@ export const SideBar = () => {
             <MenuItem
               suffix={unreadCount > 0 && <Badge bg="red">{unreadCount}</Badge>}
               active={isActive("chat")}
-              icon={<FaComments size={24} />}
+              icon={<FaComments size={menuIconSize} />}
               component={<Link to="/chat" onClick={handleMenuClick} />}
             >
               {getLanguageByKey("Chat")}
@@ -292,7 +297,7 @@ export const SideBar = () => {
           {hasRouteAccess(convertRolesToMatrix(safeParseJson(userRoles)), "TASK", "VIEW") && (
             <MenuItem
               active={isActive("tasks")}
-              icon={<FaTasks />}
+              icon={<FaTasks size={menuIconSize} />}
               component={<Link to="/tasks" onClick={handleMenuClick} />}
             >
               {getLanguageByKey("Taskuri")}
@@ -302,7 +307,7 @@ export const SideBar = () => {
           {hasStrictPermission(userRoles, "SCHEDULES", "VIEW") && (
             <MenuItem
               active={isActive("schedules")}
-              icon={<FaCalendar size={24} />}
+              icon={<FaCalendar size={menuIconSize} />}
               component={<Link to="/schedules" onClick={handleMenuClick} />}
             >
               {getLanguageByKey("schedules")}
@@ -312,7 +317,7 @@ export const SideBar = () => {
           {hasStrictPermission(userRoles, "ANALYTICS", "VIEW") && (
             <MenuItem
               active={isActive("analytics")}
-              icon={<FaChartBar size={24} />}
+              icon={<FaChartBar size={menuIconSize} />}
               component={<Link to="/analytics" onClick={handleMenuClick} />}
             >
               {getLanguageByKey("Analytics")}
@@ -322,7 +327,7 @@ export const SideBar = () => {
           {hasStrictPermission(userRoles, "SALES", "VIEW") && (
             <MenuItem
               active={isActive("sales")}
-              icon={<FaMoneyBillWave size={24} />}
+              icon={<FaMoneyBillWave size={menuIconSize} />}
               component={<Link to="/sales" onClick={handleMenuClick} />}
             >
               {getLanguageByKey("Sales")}
@@ -332,7 +337,7 @@ export const SideBar = () => {
           {hasStrictPermission(userRoles, "LOGS", "VIEW") && (
             <MenuItem
               active={isActive("logs")}
-              icon={<FaHistory size={24} />}
+              icon={<FaHistory size={menuIconSize} />}
               component={<Link to="/logs" onClick={handleMenuClick} />}
             >
               {getLanguageByKey("logs")}
@@ -343,7 +348,7 @@ export const SideBar = () => {
             <>
               {/* Переключатель темы */}
               <MenuItem
-                icon={isDark ? <MdLightMode size={24} /> : <MdDarkMode size={24} />}
+                icon={isDark ? <MdLightMode size={menuIconSize} /> : <MdDarkMode size={menuIconSize} />}
                 onClick={toggleTheme}
               >
                 {isDark ? "Light" : "Dark"}
@@ -408,19 +413,19 @@ export const SideBar = () => {
               <MenuItem>
                 {isCollapsed ? (
                   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <ConnectionIndicator isConnected={isConnected} />
+                    <ConnectionIndicator isConnected={isConnected} iconSize={menuIconSize} />
                   </div>
                 ) : (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
                     <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       ({userId}) {surname} {name}
                     </span>
-                    <ConnectionIndicator isConnected={isConnected} />
+                    <ConnectionIndicator isConnected={isConnected} iconSize={menuIconSize} />
                   </div>
                 )}
               </MenuItem>
               <Divider />
-              <MenuItem icon={<FaSignOutAlt />} onClick={logout}>
+              <MenuItem icon={<FaSignOutAlt size={menuIconSize} />} onClick={logout}>
                 {getLanguageByKey("Log Out")}
               </MenuItem>
             </>
@@ -428,7 +433,7 @@ export const SideBar = () => {
 
           {/* Кнопка logout в мобильном меню */}
           {isMobile && (
-            <MenuItem icon={<FaSignOutAlt />} onClick={logout}>
+            <MenuItem icon={<FaSignOutAlt size={menuIconSize} />} onClick={logout}>
               {getLanguageByKey("Log Out")}
             </MenuItem>
           )}

@@ -187,7 +187,7 @@ const TaskComponent = ({
     : false;
 
   return (
-    <Box h="100%" p="20px" style={{ display: 'flex', flexDirection: 'column' }}>
+    <Box h="100%" style={{ display: 'flex', flexDirection: 'column', padding: 'var(--page-padding)' }}>
       <PageHeader
         title={translations["Tasks"][language]}
         count={currentTasks.length}

@@ -6,18 +6,25 @@
 
 .analytics-tabs-panel {
   background: var(--crm-ui-kit-palette-background-primary);
-  min-height: 74px;
+  min-height: var(--page-panel-min-height);
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: var(--crm-ui-kit-palette-content-block-box-shadow);
   border-color: var(--crm-ui-kit-palette-border-default);
+  margin: var(--page-panel-margin-y) var(--page-panel-margin-x);
+  border-radius: var(--page-panel-radius);
+}
+
+.analytics-tabs-group {
+  gap: var(--page-section-gap);
+  padding: var(--page-panel-padding);
 }
 
 /* Более специфичный селектор для переопределения глобальных стилей */
 .analytics-tabs-panel .mantine-Button-root.analytics-tab-button {
   font-weight: 700;
-  font-size: 18px;
+  font-size: var(--page-tab-font-size);
   transition: all 0.18s;
 }
 
@@ -42,4 +49,3 @@
   flex: 1;
   min-width: 0;
 }
-

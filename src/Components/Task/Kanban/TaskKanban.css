@@ -2,9 +2,9 @@
 
 .task-columns-container {
   display: flex;
-  gap: 20px;
+  gap: var(--page-section-gap);
   height: 120vh;
-  padding: 20px;
+  padding: var(--page-padding);
   background: var(--crm-ui-kit-palette-background-default);
   border-radius: 12px;
 }
@@ -58,7 +58,7 @@
   flex: 1;
   overflow: hidden;
   padding: 8px;
-  max-height: calc(133vh - 200px);
+  max-height: calc(var(--app-vh, 100vh) - 200px);
   min-height: 0;
 }
 

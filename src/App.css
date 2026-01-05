@@ -2,6 +2,17 @@
   --sidebar-width-expanded: 249px;
   --sidebar-width-collapsed: 79px;
   --page-padding: 20px;
+  --page-header-padding: 12px;
+  --leads-header-offset: 60px;
+  --sidebar-logo-width: 80px;
+  --sidebar-menu-margin-top: 20px;
+  --page-section-gap: 20px;
+  --page-panel-padding: 12px;
+  --page-panel-margin-x: 32px;
+  --page-panel-margin-y: 28px;
+  --page-panel-radius: 24px;
+  --page-panel-min-height: 74px;
+  --page-tab-font-size: 18px;
 }
 
 @media (min-width: 1024px) {
@@ -9,6 +20,17 @@
     --sidebar-width-expanded: 187px;
     --sidebar-width-collapsed: 59px;
     --page-padding: 15px;
+    --page-header-padding: 9px;
+    --leads-header-offset: 45px;
+    --sidebar-logo-width: 60px;
+    --sidebar-menu-margin-top: 15px;
+    --page-section-gap: 15px;
+    --page-panel-padding: 9px;
+    --page-panel-margin-x: 24px;
+    --page-panel-margin-y: 21px;
+    --page-panel-radius: 18px;
+    --page-panel-min-height: 56px;
+    --page-tab-font-size: 13.5px;
     --mantine-font-size-xs: 9px;
     --mantine-font-size-sm: 10.5px;
     --mantine-font-size-md: 12px;
@@ -114,7 +136,7 @@ a {
 /* Leads Page */
 
 .leads-container {
-  margin-top: 60px;
+  margin-top: var(--leads-header-offset);
   height: 100%;
   /* padding-top: 10px; */
 }

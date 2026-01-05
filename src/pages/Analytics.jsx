@@ -26,14 +26,11 @@ export const Analytics = () => {
     return (
         <Box p={0} h="100%" className="analytics-container">
             <Paper
-                radius={24}
                 p={0}
-                my={28}
-                mx={32}
                 withBorder
                 className="analytics-tabs-panel"
             >
-                <Group gap={20} p={12}>
+                <Group className="analytics-tabs-group">
                     <Button
                         variant="outline"
                         size="lg"

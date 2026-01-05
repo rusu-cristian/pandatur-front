@@ -15,7 +15,7 @@ export const Schedules = () => {
   const [inGroupView, setInGroupView] = useState(false);
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div style={{ padding: "var(--page-padding)" }}>
       {!inGroupView && (
         <PageHeader
           title={translations["Orar"][language]}

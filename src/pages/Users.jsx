@@ -169,8 +169,8 @@ export const Users = () => {
       size="xxl" 
       style={{ 
         height: "100%",
-        padding: "20px",
-        paddingTop: isMobile ? "80px" : "20px"
+        padding: "var(--page-padding)",
+        paddingTop: isMobile ? "80px" : "var(--page-padding)"
       }}
     >
       {isMobile ? (

@@ -12,10 +12,10 @@ export const PageHeader = ({ title, count, extraInfo, withDivider = true, badgeC
           color: 'var(--crm-ui-kit-palette-text-primary)',
           border: '1px solid var(--crm-ui-kit-palette-border-primary)',
           borderRadius: 12,
-          padding: 12,
+          padding: 'var(--page-header-padding)',
         }}>
           <Flex align="center" justify="space-between" w="100%">
-            <Flex align="center" gap="8">
+            <Flex align="center" gap="xs">
               <Text fw={700} size="lg" c="var(--crm-ui-kit-palette-text-primary)">
                 {title}
               </Text>
@@ -38,9 +38,9 @@ export const PageHeader = ({ title, count, extraInfo, withDivider = true, badgeC
           backgroundColor: 'var(--crm-ui-kit-palette-background-primary)',
           color: 'var(--crm-ui-kit-palette-text-primary)',
           border: '1px solid var(--crm-ui-kit-palette-border-primary)',
-          padding: 12,
+          padding: 'var(--page-header-padding)',
         }}>
-          <Flex align="center" gap="8">
+          <Flex align="center" gap="xs">
             <Text fw={700} size="xl" c="var(--crm-ui-kit-palette-text-primary)">
               {title}
             </Text>
