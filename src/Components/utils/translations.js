@@ -5992,12 +5992,12 @@ export const translations = {
     RU: "Удалено",
     EN: "Deleted"
   },
-  "noAccesTicket":{
+  "noAccesTicket": {
     RO: "Nu aveți acces la acest lead",
     RU: "У вас нету доступа на просмотр этого лида",
     EN: "You do not have access to this lead"
   },
-  "ticketMergedAlert":{
+  "ticketMergedAlert": {
     RO: "Acest lead a fost combinat. Veți fi redirecționat către lead-ul nou cu ID:",
     RU: "Этот тикет был объединён. Вы будете перенаправлены к тикету с ID:",
     EN: "This ticket has been merged. You will be redirected to the ticket with ID:"
@@ -6011,5 +6011,15 @@ export const translations = {
     RO: "Work Group",
     RU: "Work Group",
     EN: "Work Group"
+  },
+  "Ascunde": {
+    RO: "Ascunde",
+    RU: "Скрыть",
+    EN: "Hide"
+  },
+  "Arată": {
+    RO: "Arată",
+    RU: "Показать",
+    EN: "Show"
   }
 };

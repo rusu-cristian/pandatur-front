@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect, useCallback, useContext } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { Flex, ActionIcon, Box } from "@mantine/core";
-import { useClientContacts, useMessagesContext, useChatFilters } from "@hooks";
+import { useClientContacts, useMessagesContext, useChatFilters, useMobile } from "@hooks";
 import { useGetTechniciansList } from "../hooks";
 import { useTickets } from "../contexts/TicketsContext";
 import { UserContext } from "../contexts/UserContext";
@@ -10,6 +10,7 @@ import { api } from "../api";
 import ChatExtraInfo from "../Components/ChatComponent/ChatExtraInfo";
 import ChatList from "../Components/ChatComponent/ChatList";
 import { ChatMessages } from "../Components/ChatComponent/components/ChatMessages";
+import { MobileChatView } from "../Components/ChatComponent/components/MobileChatView";
 import Can from "@components/CanComponent/Can";
 import { useTicketSync, SYNC_EVENTS, useOnTicketsMerged } from "../contexts/TicketSyncContext";
 import { getLanguageByKey } from "../Components/utils";
@@ -22,6 +23,9 @@ export const Chat = () => {
     customGroupTitle,
     setCustomGroupTitle,
   } = useContext(UserContext);
+  
+  // Определяем мобильное устройство (breakpoint 768px)
+  const isMobile = useMobile(768);
   
   // URL — единственный источник правды для фильтров
   const { isFiltered } = useChatFilters();
@@ -175,6 +179,32 @@ export const Chat = () => {
 
   const responsibleId = currentTicket?.technician_id?.toString() ?? null;
 
+  // Мобильная версия — отдельный компонент с bottom navigation
+  if (isMobile) {
+    return (
+      <Flex h="100%" className="chat-wrapper">
+        <MobileChatView
+          ticketId={ticketId}
+          currentTicket={currentTicket}
+          technicians={technicians}
+          // Props из useClientContacts
+          platformOptions={platformOptions}
+          selectedPlatform={selectedPlatform}
+          changePlatform={changePlatform}
+          contactOptions={contactOptions}
+          changeContact={changeContact}
+          selectedClient={selectedClient}
+          selectedPageId={selectedPageId}
+          changePageId={changePageId}
+          clientContactsLoading={clientContactsLoading}
+          updateClientData={updateClientData}
+          ticketData={ticketData}
+        />
+      </Flex>
+    );
+  }
+
+  // Десктопная версия — трёхколоночный layout
   return (
     <Flex h="100%" className="chat-wrapper">
       <Flex w="100%" h="100%" className="chat-container">

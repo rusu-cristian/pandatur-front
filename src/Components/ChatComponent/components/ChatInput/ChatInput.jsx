@@ -8,10 +8,12 @@ import {
   Loader,
   FileButton,
   Badge,
+  Collapse,
 } from "@mantine/core";
 import { AttachmentsPreview } from "../AttachmentsPreview";
 import { useDisclosure } from "@mantine/hooks";
 import { FaTasks, FaEnvelope, FaCheckCircle } from "react-icons/fa";
+import { FaChevronUp, FaChevronDown } from "react-icons/fa6";
 import { useState, useRef, useMemo, useEffect, memo, useCallback } from "react";
 import { LuSmile, LuStickyNote } from "react-icons/lu";
 import { RiAttachment2 } from "react-icons/ri";
@@ -72,6 +74,7 @@ export const ChatInput = memo(({
   selectedPageId: selectedPageIdProp,
   changePageId: changePageIdProp,
   clientContactsLoading: loadingProp,
+  isMobile = false,
 }) => {
   const [opened, handlers] = useDisclosure(false);
   const [message, setMessage] = useState("");
@@ -79,6 +82,8 @@ export const ChatInput = memo(({
   const [isDragOver, setIsDragOver] = useState(false);
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  // Состояние для показа/скрытия селектов на мобильных
+  const [showSelects, setShowSelects] = useState(false);
 
   const [attachments, setAttachments] = useState([]);
   const textAreaRef = useRef(null);
@@ -446,95 +451,128 @@ export const ChatInput = memo(({
                 <Loader size="xs" />
               ) : (
                 <Flex direction="column" gap="xs" w="100%">
-                  {/* Первый ряд: Platform + Template */}
-                  <Flex gap="md" w="100%">
-                    {/* 1. Platform select */}
-                    <Select
-                      onChange={changePlatform}
-                      className="w-full"
-                      placeholder={getLanguageByKey("Selectează platforma")}
-                      value={selectedPlatform}
-                      data={platformOptions}
-                      searchable
-                      clearable
-                      label={getLanguageByKey("Platforma")}
-                      renderOption={renderPlatformOption}
-                      rightSection={selectedPlatform && socialMediaIcons[selectedPlatform] ? (
-                        <Flex>{socialMediaIcons[selectedPlatform]}</Flex>
-                      ) : null}
-                      styles={{
-                        input: {
-                          fontSize: '16px',
-                          minHeight: '48px',
-                          padding: '12px 16px'
+                  {/* Кнопка для показа/скрытия селектов на мобильных */}
+                  {isMobile && (
+                    <Flex justify="space-between" align="center" mb="xs">
+                      <Button
+                        variant="subtle"
+                        size="xs"
+                        onClick={() => setShowSelects((prev) => !prev)}
+                        rightSection={showSelects ? <FaChevronUp size={12} /> : <FaChevronDown size={12} />}
+                        styles={{
+                          root: {
+                            color: 'var(--crm-ui-kit-palette-text-primary)',
+                            paddingLeft: '8px',
+                            paddingRight: '8px',
+                          }
+                        }}
+                      >
+                        {showSelects
+                          ? getLanguageByKey("Ascunde")
+                          : getLanguageByKey("Arată")
                         }
-                      }}
-                    />
+                      </Button>
+                      {selectedPlatform && (
+                        <Badge size="sm" variant="light">
+                          {selectedPlatform}
+                        </Badge>
+                      )}
+                    </Flex>
+                  )}
 
-                    {/* 2. Template select */}
-                    <Select
-                      searchable
-                      label={getLanguageByKey("Șablon")}
-                      className="w-full"
-                      onChange={(value) => {
-                        setMessage(value ? templateOptions[value] : "");
-                        setTemplate(value || undefined);
-                      }}
-                      value={template || null}
-                      placeholder={getLanguageByKey("select_message_template")}
-                      data={templateSelectOptions}
-                      disabled={templateSelectOptions.length === 0}
-                      styles={{
-                        input: {
-                          fontSize: '16px',
-                          minHeight: '48px',
-                          padding: '12px 16px'
-                        }
-                      }}
-                    />
-                  </Flex>
+                  {/* Селекты скрыты на мобильных, если showSelects = false */}
+                  <Collapse in={!isMobile || showSelects}>
+                    <Flex gap="md" w="100%" direction={isMobile ? "column" : "row"}>
+                      
+                      {/* 1. Platform select */}
+                      <Select
+                        onChange={changePlatform}
+                        className="w-full"
+                        placeholder={getLanguageByKey("Selectează platforma")}
+                        value={selectedPlatform}
+                        data={platformOptions}
+                        searchable
+                        clearable
+                        label={getLanguageByKey("Platforma")}
+                        renderOption={renderPlatformOption}
+                        rightSection={selectedPlatform && socialMediaIcons[selectedPlatform] ? (
+                          <Flex>{socialMediaIcons[selectedPlatform]}</Flex>
+                        ) : null}
+                        styles={{
+                          input: {
+                            fontSize: '16px',
+                            minHeight: '48px',
+                            padding: '12px 16px'
+                          }
+                        }}
+                      />
 
-                  {/* Второй ряд: User pick number + Void select */}
-                  <Flex gap="md" w="100%">
-                    {/* 3. User pick number (contact) */}
-                    <Select
-                      onChange={changeContact}
-                      placeholder={getLanguageByKey("Selectează contact")}
-                      value={currentClient?.value}
-                      data={contactOptions}
-                      label={getLanguageByKey("Contact")}
-                      className="w-full"
-                      searchable
-                      clearable
-                      disabled={!selectedPlatform}
-                      styles={{
-                        input: {
-                          fontSize: '16px',
-                          minHeight: '48px',
-                          padding: '12px 16px'
-                        }
-                      }}
-                    />
+                      {/* 2. Contact select */}
+                      <Select
+                        onChange={changeContact}
+                        placeholder={getLanguageByKey("Selectează contact")}
+                        value={currentClient?.value}
+                        data={contactOptions}
+                        label={getLanguageByKey("Contact")}
+                        className="w-full"
+                        searchable
+                        clearable
+                        disabled={!selectedPlatform}
+                        styles={{
+                          input: {
+                            fontSize: '16px',
+                            minHeight: '48px',
+                            padding: '12px 16px'
+                          }
+                        }}
+                      />
+                    </Flex>
 
-                    {/* 4. Page ID select */}
-                    <Select
-                      searchable
-                      label={getLanguageByKey("Pagina Panda")}
-                      placeholder={getLanguageByKey("Selectează pagina")}
-                      value={selectedPageId}
-                      onChange={changePageId}
-                      data={pageIdOptions}
-                      className="w-full"
-                      disabled={!selectedPlatform}
-                      styles={{
-                        input: {
-                          fontSize: '16px',
-                          minHeight: '48px',
-                          padding: '12px 16px',
-                        }
-                      }}
-                    />
-                  </Flex>
+                    {/* Второй ряд: User pick number + Void select */}
+                    <Flex gap="md" w="100%" direction={isMobile ? "column" : "row"}>
+
+                      {/* 3. Page ID select */}
+                      <Select
+                        searchable
+                        label={getLanguageByKey("Pagina Panda")}
+                        placeholder={getLanguageByKey("Selectează pagina")}
+                        value={selectedPageId}
+                        onChange={changePageId}
+                        data={pageIdOptions}
+                        className="w-full"
+                        disabled={!selectedPlatform}
+                        styles={{
+                          input: {
+                            fontSize: '16px',
+                            minHeight: '48px',
+                            padding: '12px 16px',
+                          }
+                        }}
+                      />
+
+                      {/* 4. Template select */}
+                      <Select
+                        searchable
+                        label={getLanguageByKey("Șablon")}
+                        className="w-full"
+                        onChange={(value) => {
+                          setMessage(value ? templateOptions[value] : "");
+                          setTemplate(value || undefined);
+                        }}
+                        value={template || null}
+                        placeholder={getLanguageByKey("select_message_template")}
+                        data={templateSelectOptions}
+                        disabled={templateSelectOptions.length === 0}
+                        styles={{
+                          input: {
+                            fontSize: '16px',
+                            minHeight: '48px',
+                            padding: '12px 16px'
+                          }
+                        }}
+                      />
+                    </Flex>
+                  </Collapse>
                 </Flex>
               )}
             </Flex>

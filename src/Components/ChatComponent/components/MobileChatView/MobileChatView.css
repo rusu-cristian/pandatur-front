@@ -1,0 +1,242 @@
+/* ========================================
+   MOBILE CHAT VIEW
+   Адаптивная версия чата для мобильных устройств
+   ======================================== */
+
+/* Основной контейнер */
+.mobile-chat-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--crm-ui-kit-palette-background-primary);
+  overflow: hidden;
+}
+
+/* Область контента (всё кроме bottom nav) */
+.mobile-chat-content {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Экран (вкладка) */
+.mobile-chat-screen {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Заголовок экрана */
+.mobile-chat-header {
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--crm-ui-kit-palette-border-default);
+  background-color: var(--crm-ui-kit-palette-background-primary);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* Кнопка назад */
+.mobile-back-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  color: var(--crm-ui-kit-palette-text-primary);
+  transition: background-color 0.2s ease;
+}
+
+.mobile-back-button:hover {
+  background-color: var(--crm-ui-kit-palette-button-classic-hover-background);
+}
+
+.mobile-back-button:active {
+  background-color: var(--crm-ui-kit-palette-background-primary-disabled);
+}
+
+/* Область сообщений */
+.mobile-messages-area {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Убираем бордеры у ChatMessages в мобильной версии */
+.mobile-messages-area .chat-area {
+  border-left: none;
+  border-right: none;
+}
+
+/* Область информации */
+.mobile-info-area {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* Стили для ChatExtraInfo в мобильной версии */
+.mobile-info-area .chat-extra-info-scroll-area {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+/* ========================================
+   BOTTOM NAVIGATION
+   ======================================== */
+
+.mobile-bottom-nav {
+  flex-shrink: 0;
+  border-top: 1px solid var(--crm-ui-kit-palette-border-default);
+  background-color: var(--crm-ui-kit-palette-background-primary);
+  padding: 8px 0;
+  /* Safe area для iPhone X+ */
+  padding-bottom: max(8px, env(safe-area-inset-bottom));
+}
+
+.mobile-bottom-nav > div {
+  display: flex;
+  justify-content: space-around;
+}
+
+/* Вкладка навигации */
+.mobile-nav-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 4px;
+  border-radius: 8px;
+  color: var(--crm-ui-kit-palette-text-secondary);
+  transition: all 0.2s ease;
+  min-height: 56px;
+}
+
+.mobile-nav-tab:hover:not(.disabled) {
+  background-color: var(--crm-ui-kit-palette-button-classic-hover-background);
+}
+
+.mobile-nav-tab:active:not(.disabled) {
+  transform: scale(0.95);
+}
+
+/* Активная вкладка */
+.mobile-nav-tab.active {
+  color: var(--crm-ui-kit-palette-link-primary);
+}
+
+.mobile-nav-tab.active::after {
+  content: "";
+  position: absolute;
+  bottom: 4px;
+  width: 24px;
+  height: 3px;
+  background-color: var(--crm-ui-kit-palette-link-primary);
+  border-radius: 2px;
+}
+
+/* Заблокированная вкладка */
+.mobile-nav-tab.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ========================================
+   АДАПТАЦИЯ CHATLIST ДЛЯ МОБИЛЬНОЙ ВЕРСИИ
+   ======================================== */
+
+/* Мобильный ChatList wrapper */
+.mobile-chat-list-wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ========================================
+   АНИМАЦИИ ПЕРЕХОДОВ
+   ======================================== */
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Можно добавить анимации при переходе между экранами */
+.mobile-chat-screen {
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ========================================
+   МЕЛКИЕ ЭКРАНЫ (< 480px)
+   ======================================== */
+
+@media (max-width: 480px) {
+  .mobile-chat-header {
+    padding: 8px 12px;
+  }
+
+  .mobile-nav-tab {
+    min-height: 50px;
+    padding: 6px 4px;
+  }
+
+  .mobile-back-button {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* ========================================
+   LANDSCAPE ORIENTATION
+   ======================================== */
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .mobile-bottom-nav {
+    padding: 4px 0;
+  }
+
+  .mobile-nav-tab {
+    min-height: 44px;
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .mobile-nav-tab > span {
+    margin-top: 0;
+  }
+}
+

@@ -26,3 +26,24 @@
 .chat-item .right-count {
   transition: opacity 0.3s ease;
 }
+
+/* ========================================
+   MOBILE STYLES FOR CHAT LIST ITEM
+   ======================================== */
+
+@media (max-width: 768px) {
+  .chat-item {
+    padding: 12px 16px;
+  }
+
+  /* Увеличиваем область клика на мобильных */
+  .chat-item:active {
+    background-color: var(--crm-ui-kit-palette-surface-active-background-color);
+  }
+}
+
+@media (max-width: 480px) {
+  .chat-item {
+    padding: 10px 12px;
+  }
+}

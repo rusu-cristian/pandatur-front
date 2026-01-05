@@ -60,6 +60,7 @@ export const ChatMessages = ({
   selectedPageId,
   changePageId,
   clientContactsLoading,
+  isMobile = false,
 }) => {
   const { userId } = useUser();
 
@@ -316,6 +317,7 @@ export const ChatMessages = ({
               selectedPageId={selectedPageId}
               changePageId={changePageId}
               clientContactsLoading={clientContactsLoading}
+              isMobile={isMobile}
             />
           </div>
         </>

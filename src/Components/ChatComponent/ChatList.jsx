@@ -22,7 +22,7 @@ import { prepareFiltersForUrl } from "../utils/parseFiltersFromUrl";
 
 const CHAT_ITEM_HEIGHT = 94;
 
-const ChatList = ({ ticketId }) => {
+const ChatList = ({ ticketId, isMobile = false }) => {
   const navigate = useNavigate();
   const { ticketId: ticketIdFromUrl } = useParams();
   const { userId } = useUser();
@@ -96,8 +96,13 @@ const ChatList = ({ ticketId }) => {
 
   return (
     <>
-      <Box direction="column" w="20%">
-        <Flex direction="column" gap="xs" my="xs" pl="xs" pr="xs">
+      <Box 
+        direction="column" 
+        w={isMobile ? "100%" : "20%"}
+        style={isMobile ? { height: "100%", display: "flex", flexDirection: "column" } : {}}
+        className={isMobile ? "mobile-chat-list-wrapper" : ""}
+      >
+        <Flex direction="column" gap="xs" my="xs" pl="xs" pr="xs" style={isMobile ? { flexShrink: 0 } : {}}>
           <Flex align="center" justify="space-between">
             <Flex align="center" gap={8}>
               <Title order={3}>{getLanguageByKey("Chat")}</Title>
@@ -125,9 +130,15 @@ const ChatList = ({ ticketId }) => {
           />
         </Flex>
 
-        <Divider color="var(--crm-ui-kit-palette-border-default)" />
+        <Divider color="var(--crm-ui-kit-palette-border-default)" style={isMobile ? { flexShrink: 0 } : {}} />
 
-        <Box style={{ height: "calc(100% - 110px)", position: "relative" }} ref={wrapperChatItemRef}>
+        <Box 
+          style={isMobile 
+            ? { flex: 1, minHeight: 0, position: "relative" } 
+            : { height: "calc(100% - 110px)", position: "relative" }
+          } 
+          ref={wrapperChatItemRef}
+        >
           {isLoading ? (
             <Flex h="100%" align="center" justify="center">
               <Loader size="xl" color="green" />
