@@ -6011,25 +6011,5 @@ export const translations = {
     RO: "Work Group",
     RU: "Work Group",
     EN: "Work Group"
-  },
-  "ticket_info": {
-    RO: "Informații lead",
-    RU: "Информация о тикете",
-    EN: "Ticket info"
-  },
-  "back": {
-    RO: "Înapoi",
-    RU: "Назад",
-    EN: "Back"
-  },
-  "show_options": {
-    RO: "Arată opțiuni",
-    RU: "Показать опции",
-    EN: "Show options"
-  },
-  "hide_options": {
-    RO: "Ascunde opțiuni",
-    RU: "Скрыть опции",
-    EN: "Hide options"
   }
 };

@@ -1,1 +1,0 @@
-export { MobileChatHeader } from './MobileChatHeader';

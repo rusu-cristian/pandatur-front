@@ -1,1 +1,0 @@
-export { MobileChatLayout } from './MobileChatLayout';
