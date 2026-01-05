@@ -6,6 +6,11 @@
   --leads-header-offset: 60px;
   --sidebar-logo-width: 80px;
   --sidebar-menu-margin-top: 20px;
+  --sidebar-item-height: 50px;
+  --sidebar-item-padding-x: 20px;
+  --sidebar-item-font-size: 14px;
+  --sidebar-item-icon-size: 24px;
+  --sidebar-item-icon-gap: 10px;
   --page-section-gap: 20px;
   --page-panel-padding: 12px;
   --page-panel-margin-x: 32px;
@@ -24,6 +29,11 @@
     --leads-header-offset: 45px;
     --sidebar-logo-width: 60px;
     --sidebar-menu-margin-top: 15px;
+    --sidebar-item-height: 38px;
+    --sidebar-item-padding-x: 15px;
+    --sidebar-item-font-size: 12px;
+    --sidebar-item-icon-size: 18px;
+    --sidebar-item-icon-gap: 7.5px;
     --page-section-gap: 15px;
     --page-panel-padding: 9px;
     --page-panel-margin-x: 24px;

@@ -15,6 +15,9 @@ aside[class*="css-"] {
 
 .ps-sidebar-container .ps-menuitem-root .ps-menu-button {
   transition: 0.3s ease;
+  height: var(--sidebar-item-height);
+  padding: 0 var(--sidebar-item-padding-x);
+  font-size: var(--sidebar-item-font-size);
 }
 
 .ps-sidebar-container .ps-menuitem-root .ps-menu-button:hover {
@@ -34,6 +37,23 @@ aside[class*="css-"] {
 
 .ps-sidebar-container .ps-menu {
   margin-top: var(--sidebar-menu-margin-top);
+}
+
+.ps-sidebar-container .ps-menuitem-root .ps-menu-button .ps-menu-icon {
+  width: var(--sidebar-item-icon-size);
+  min-width: var(--sidebar-item-icon-size);
+  height: var(--sidebar-item-icon-size);
+  margin-right: var(--sidebar-item-icon-gap);
+}
+
+.ps-sidebar-root.ps-collapsed .ps-menuitem-root .ps-menu-button {
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.ps-sidebar-root.ps-collapsed .ps-menuitem-root .ps-menu-button .ps-menu-icon {
+  margin-right: 0;
 }
 
 .ps-sidebar-root.css-1wvake5 {
