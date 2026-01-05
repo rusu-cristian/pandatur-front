@@ -3,7 +3,6 @@ import { Responsive, WidthProvider } from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import { Box } from "@mantine/core";
-import { useZoomScale } from "@hooks";
 import { TotalCard } from "./TotalCard";
 import { TopUsersCard } from "./TopUsersCard";
 import { TicketStateCard } from "./TicketStateCard";
@@ -91,9 +90,6 @@ const buildLayoutsAllBps = (widgets = []) => {
 };
 
 const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
-    // Определяем текущий zoom из CSS для компенсации позиционирования
-    const transformScale = useZoomScale(1);
-
     const COLS = useMemo(
         () => ({ lg: COLS_MAX, md: COLS_MAX, sm: COLS_MAX, xs: COLS_MAX, xxs: COLS_MAX }),
         []
@@ -138,7 +134,6 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                 isDraggable={true}
                 onLayoutChange={handleLayoutChange}
                 draggableCancel=".mantine-Badge,.mantine-Progress,.mantine-Button,.mantine-Input,a,.dashboard-link,[role='link']"
-                transformScale={transformScale}
                 useCSSTransforms={true}
             >
                 {visibleWidgets.map((w) => {

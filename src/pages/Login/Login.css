@@ -1,19 +1,13 @@
 .body-login {
   margin: 0;
   padding: 0;
-  height: 133.33vh; /* Компенсируем zoom: 0.75 */
-  width: 133.33vw; /* Компенсируем zoom: 0.75 */
+  height: 100vh;
+  width: 100vw;
   overflow: hidden;
   display: flex;
   justify-content: flex-end;
   align-items: stretch;
   position: relative;
-}
-
-/* Safari fallback - works with transform: scale() on #root */
-html.is-safari .body-login {
-  height: 133.33vh;
-  width: 133.33vw;
 }
 
 .login-background {
@@ -46,7 +40,7 @@ html.is-safari .body-login {
 
 .body-login-form {
   position: relative;
-  /* display: flex; */
+  display: flex;
   justify-content: flex-end;
   align-items: center;
   width: 100%;

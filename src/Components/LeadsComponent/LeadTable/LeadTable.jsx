@@ -420,7 +420,7 @@ export const LeadTable = ({
           </Paper>
         )}
 
-        <div style={{ height: "calc(133.33vh - 148px)" }}>
+        <div style={{ height: "calc(var(--app-vh, 100vh) - 148px)" }}>
           <RcTable
             rowKey="id"
             columns={rcColumn}

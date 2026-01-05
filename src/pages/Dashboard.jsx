@@ -252,8 +252,7 @@ export const Dashboard = () => {
   const recalcSizes = useCallback(() => {
     const headerH = headerRowRef.current?.offsetHeight || 0;
     const margins = 24;
-    // Учитываем zoom: 0.75 и компенсацию 133.33vh
-    const viewportH = (window.innerHeight || 800) * 1.3333; // Компенсируем zoom
+    const viewportH = window.visualViewport?.height || window.innerHeight || 800;
     setScrollHeight(Math.max(240, viewportH - headerH - margins));
   }, []);
 

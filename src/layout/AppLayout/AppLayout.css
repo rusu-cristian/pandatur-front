@@ -1,14 +1,15 @@
 .app-container {
   display: flex;
-  height: 133.33vh; /* Компенсируем уменьшение высоты от zoom */
-  min-height: 133.33vh;
-  width: 133.33vw; /* Компенсируем уменьшение ширины от zoom */
+  height: var(--app-vh, 100vh);
+  min-height: var(--app-vh, 100vh);
+  width: 100%;
 }
 
 .page-content {
-  height: 133.33vh; /* Компенсируем уменьшение высоты от zoom */
-  min-height: 133.33vh;
-  width: calc(133.33vw - var(--side-bar-width)); /* Компенсируем уменьшение ширины от zoom */
+  flex: 1 1 auto;
+  min-width: 0;
+  height: var(--app-vh, 100vh);
+  min-height: var(--app-vh, 100vh);
   overflow: hidden;
 }
 
@@ -20,12 +21,12 @@
   
   .page-content {
     width: 100%;
-    height: calc(100vh - 60px); /* Высота минус высота мобильного меню */
+    height: calc(var(--app-vh, 100vh) - 60px); /* Высота минус высота мобильного меню */
   }
 }
 
 @media (max-width: 480px) {
   .page-content {
-    height: calc(100vh - 50px);
+    height: calc(var(--app-vh, 100vh) - 50px);
   }
 }
