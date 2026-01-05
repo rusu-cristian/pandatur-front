@@ -236,7 +236,7 @@ export const SideBar = () => {
 
           {!isMobile && (
             <MenuItem
-              suffix={<FaBars size={menuIconSize} />}
+              suffix={!isCollapsed && <FaBars size={menuIconSize} />}
               onClick={() => setIsCollapsed((prev) => !prev)}
               className="logo-menu"
               icon={isCollapsed && <FaBars size={menuIconSize} />}
@@ -285,7 +285,7 @@ export const SideBar = () => {
 
           <Can permission={{ module: "chat", action: "view" }} skipContextCheck>
             <MenuItem
-              suffix={unreadCount > 0 && <Badge bg="red">{unreadCount}</Badge>}
+              suffix={!isCollapsed && unreadCount > 0 && <Badge bg="red">{unreadCount}</Badge>}
               active={isActive("chat")}
               icon={<FaComments size={menuIconSize} />}
               component={<Link to="/chat" onClick={handleMenuClick} />}
@@ -410,12 +410,14 @@ export const SideBar = () => {
           {/* Информация о пользователе на десктопе */}
           {!isMobile && (
             <>
-              <MenuItem>
-                {isCollapsed ? (
-                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <MenuItem
+                icon={
+                  isCollapsed ? (
                     <ConnectionIndicator isConnected={isConnected} iconSize={menuIconSize} />
-                  </div>
-                ) : (
+                  ) : undefined
+                }
+              >
+                {!isCollapsed && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
                     <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       ({userId}) {surname} {name}

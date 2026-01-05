@@ -56,6 +56,10 @@ aside[class*="css-"] {
   margin-right: 0;
 }
 
+.ps-sidebar-root.ps-collapsed .ps-menuitem-root .ps-menu-button .ps-menu-label {
+  display: none;
+}
+
 .ps-sidebar-root.css-1wvake5 {
   border-right: 1px solid var(--crm-ui-kit-palette-border-primary);
 }
