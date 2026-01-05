@@ -103,31 +103,41 @@ const ChatList = ({ ticketId, isMobile = false }) => {
         className={isMobile ? "mobile-chat-list-wrapper" : ""}
       >
         <Flex direction="column" gap="xs" my="xs" pl="xs" pr="xs" style={isMobile ? { flexShrink: 0 } : {}}>
-          <Flex align="center" justify="space-between">
-            <Flex align="center" gap={8}>
-              <Title order={3}>{getLanguageByKey("Chat")}</Title>
-              <Badge
-                variant="filled"
-                style={{ backgroundColor: "var(--crm-ui-kit-palette-link-primary)" }}
-              >
-                {displayedTickets.length}
-              </Badge>
-            </Flex>
+          <Flex align="center" gap={8} pt={isMobile ? 15 : 0}>
+            <Title order={isMobile ? 4 : 3}>{getLanguageByKey("Chat")}</Title>
+            <Badge
+              variant="filled"
+              size={isMobile ? "md" : "lg"}
+              style={{ backgroundColor: "var(--crm-ui-kit-palette-link-primary)" }}
+            >
+              {displayedTickets.length}
+            </Badge>
+          </Flex>
+
+          {/* Поле поиска и кнопка фильтра в одном ряду */}
+          <Flex gap="xs" align="center">
+            <TextInput
+              style={{ flex: 1 }}
+              placeholder={getLanguageByKey("Cauta dupa ID, Nume client, Telefon sau Email")}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
             {/* Кнопка фильтра — onMouseDown для мгновенного отклика */}
             <ActionIcon
               variant={hasFilters ? "filled" : "default"}
-              size="36"
+              size={isMobile ? "lg" : "36"}
               onMouseDown={() => startTransition(() => setOpenFilter(true))}
+              style={isMobile ? {
+                minWidth: '44px',
+                minHeight: '44px',
+                width: '44px',
+                height: '44px',
+                flexShrink: 0
+              } : { flexShrink: 0 }}
             >
-              <LuFilter size={16} />
+              <LuFilter size={isMobile ? 20 : 16} />
             </ActionIcon>
           </Flex>
-
-          <TextInput
-            placeholder={getLanguageByKey("Cauta dupa ID, Nume client, Telefon sau Email")}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
         </Flex>
 
         <Divider color="var(--crm-ui-kit-palette-border-default)" style={isMobile ? { flexShrink: 0 } : {}} />
@@ -173,21 +183,27 @@ const ChatList = ({ ticketId, isMobile = false }) => {
         onClose={() => setOpenFilter(false)}
         title={getLanguageByKey("Filtrează tichete")}
         withCloseButton
-        centered
-        size="lg"
+        centered={!isMobile}
+        fullScreen={isMobile}
+        size={isMobile ? "full" : "lg"}
         styles={{
           content: {
-            height: "700px",
+            height: isMobile ? "100vh" : "700px",
             display: "flex",
             flexDirection: "column",
           },
           body: {
             flex: 1,
             overflowY: "auto",
-            padding: "1rem"
+            padding: isMobile ? "0.5rem" : "1rem"
           },
           title: {
-            color: "var(--crm-ui-kit-palette-text-primary)"
+            color: "var(--crm-ui-kit-palette-text-primary)",
+            fontSize: isMobile ? "16px" : "18px"
+          },
+          header: {
+            padding: isMobile ? "12px 16px" : "16px 20px",
+            borderBottom: "1px solid var(--crm-ui-kit-palette-border-default)"
           }
         }}
       >

@@ -3,7 +3,8 @@ import { useRef, useState } from "react";
 import { getLanguageByKey } from "../utils";
 import { TicketFormTabs } from "../TicketFormTabs";
 import { MessageFilterForm } from "../LeadsComponent/MessageFilterForm";
-import { useChatFilters } from "@hooks";
+import { useChatFilters, useMobile } from "@hooks";
+import "./ChatFilter.css";
 
 /**
  * Проверяет есть ли реальные фильтры
@@ -35,6 +36,7 @@ export const ChatFilter = ({
   const messageFormRef = useRef();
 
   const { setFilters, resetFilters, updateGroupTitle } = useChatFilters();
+  const isMobile = useMobile(768);
 
   // При смене группы в форме — сбрасываем фильтры (как в LeadsFilter — модал НЕ закрываем)
   const handleGroupTitleChange = (newGroupTitle) => {
@@ -80,24 +82,69 @@ export const ChatFilter = ({
   };
 
   return (
-    <Flex direction="column" h="100%" style={{ overflow: "hidden" }}>
+    <Flex 
+      direction="column" 
+      h="100%" 
+      style={{ overflow: "hidden" }}
+      className={isMobile ? "chat-filter-mobile" : "chat-filter-desktop"}
+    >
       <Tabs
-        style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}
+        style={{ 
+          flex: 1, 
+          display: "flex", 
+          flexDirection: "column", 
+          minHeight: 0 
+        }}
         className="leads-modal-filter-tabs"
         defaultValue="filter_ticket"
         value={activeTab}
         onChange={setActiveTab}
       >
-        <Tabs.List style={{ flexShrink: 0 }}>
-          <Tabs.Tab value="filter_ticket">
-            {getLanguageByKey("Filtru pentru Lead")}
+        <Tabs.List 
+          style={{ 
+            flexShrink: 0,
+            ...(isMobile && { 
+              padding: '8px 4px',
+              gap: '4px' 
+            })
+          }}
+        >
+          <Tabs.Tab 
+            value="filter_ticket"
+            style={isMobile ? { 
+              fontSize: '14px',
+              padding: '8px 12px'
+            } : {}}
+          >
+            {isMobile 
+              ? getLanguageByKey("Lead") 
+              : getLanguageByKey("Filtru pentru Lead")
+            }
           </Tabs.Tab>
-          <Tabs.Tab value="filter_message">
-            {getLanguageByKey("Filtru dupǎ mesaje")}
+          <Tabs.Tab 
+            value="filter_message"
+            style={isMobile ? { 
+              fontSize: '14px',
+              padding: '8px 12px'
+            } : {}}
+          >
+            {isMobile 
+              ? getLanguageByKey("Mesaje") 
+              : getLanguageByKey("Filtru dupǎ mesaje")
+            }
           </Tabs.Tab>
         </Tabs.List>
 
-        <Tabs.Panel value="filter_ticket" pt="xs" style={{ flex: 1, overflowY: "auto", minHeight: 0 }}>
+        <Tabs.Panel 
+          value="filter_ticket" 
+          pt={isMobile ? "xs" : "xs"} 
+          style={{ 
+            flex: 1, 
+            overflowY: "auto", 
+            minHeight: 0,
+            ...(isMobile && { padding: '8px' })
+          }}
+        >
           <TicketFormTabs
             ref={ticketFormRef}
             initialData={initialData}
@@ -106,7 +153,16 @@ export const ChatFilter = ({
           />
         </Tabs.Panel>
 
-        <Tabs.Panel value="filter_message" pt="xs" style={{ flex: 1, overflowY: "auto", minHeight: 0 }}>
+        <Tabs.Panel 
+          value="filter_message" 
+          pt={isMobile ? "xs" : "xs"} 
+          style={{ 
+            flex: 1, 
+            overflowY: "auto", 
+            minHeight: 0,
+            ...(isMobile && { padding: '8px' })
+          }}
+        >
           <MessageFilterForm
             ref={messageFormRef}
             initialData={initialData}
@@ -117,23 +173,44 @@ export const ChatFilter = ({
 
       {/* Футер закреплён внизу */}
       <Flex
-        justify="end"
-        gap="md"
-        pt={16}
-        pb={8}
-        pr="md"
+        justify={isMobile ? "center" : "end"}
+        gap={isMobile ? "xs" : "md"}
+        direction={isMobile ? "column" : "row"}
+        pt={isMobile ? 12 : 16}
+        pb={isMobile ? 12 : 8}
+        px={isMobile ? "md" : "md"}
         style={{
           borderTop: "1px solid var(--mantine-color-gray-3)",
-          flexShrink: 0
+          flexShrink: 0,
+          ...(isMobile && {
+            // Safe area для iPhone X+
+            paddingBottom: `max(12px, env(safe-area-inset-bottom))`
+          })
         }}
       >
-        <Button variant="outline" onClick={handleReset}>
+        <Button 
+          variant="outline" 
+          onClick={handleReset}
+          fullWidth={isMobile}
+          size={isMobile ? "md" : "sm"}
+        >
           {getLanguageByKey("Reset filter")}
         </Button>
-        <Button variant="outline" onClick={onClose}>
+        <Button 
+          variant="outline" 
+          onClick={onClose}
+          fullWidth={isMobile}
+          size={isMobile ? "md" : "sm"}
+        >
           {getLanguageByKey("Închide")}
         </Button>
-        <Button variant="filled" loading={loading} onClick={handleSubmit}>
+        <Button 
+          variant="filled" 
+          loading={loading} 
+          onClick={handleSubmit}
+          fullWidth={isMobile}
+          size={isMobile ? "md" : "sm"}
+        >
           {getLanguageByKey("Aplică")}
         </Button>
       </Flex>

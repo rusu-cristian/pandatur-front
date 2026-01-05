@@ -160,6 +160,41 @@
   overflow: hidden;
 }
 
+/* Кнопка фильтра на мобильных — увеличиваем для лучшего UX */
+@media (max-width: 768px) {
+  .mobile-chat-list-wrapper .mantine-ActionIcon-root {
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+
+  /* Заголовок чата на мобильных */
+  .mobile-chat-list-wrapper .mantine-Title-root {
+    font-size: 18px;
+  }
+
+  /* Badge на мобильных */
+  .mobile-chat-list-wrapper .mantine-Badge-root {
+    font-size: 13px;
+  }
+
+  /* Поле поиска на мобильных */
+  .mobile-chat-list-wrapper .mantine-TextInput-input {
+    font-size: 16px; /* Предотвращает zoom на iOS */
+    min-height: 44px;
+    padding: 8px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .mobile-chat-list-wrapper .mantine-Title-root {
+    font-size: 16px;
+  }
+
+  .mobile-chat-list-wrapper .mantine-TextInput-input {
+    min-height: 40px;
+  }
+}
+
 /* ========================================
    АНИМАЦИИ ПЕРЕХОДОВ
    ======================================== */

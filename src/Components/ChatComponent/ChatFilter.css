@@ -1,0 +1,102 @@
+/* ========================================
+   CHAT FILTER STYLES
+   ======================================== */
+
+.chat-filter-desktop {
+  /* Десктопные стили (по умолчанию) */
+}
+
+.chat-filter-mobile {
+  /* Мобильные стили */
+}
+
+/* ========================================
+   MOBILE ADAPTATIONS
+   ======================================== */
+
+@media (max-width: 768px) {
+  /* Tabs адаптация */
+  .chat-filter-mobile .mantine-Tabs-list {
+    gap: 4px;
+  }
+
+  .chat-filter-mobile .mantine-Tabs-tab {
+    flex: 1;
+    padding: 8px 12px !important;
+    font-size: 14px;
+  }
+
+  /* Уменьшаем отступы в формах фильтров */
+  .chat-filter-mobile .mantine-Select-root,
+  .chat-filter-mobile .mantine-TextInput-root,
+  .chat-filter-mobile .mantine-DateInput-root {
+    margin-bottom: 12px;
+  }
+
+  .chat-filter-mobile .mantine-Select-label,
+  .chat-filter-mobile .mantine-TextInput-label,
+  .chat-filter-mobile .mantine-DateInput-label {
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+
+  /* Увеличиваем высоту input для лучшего UX на мобильных */
+  .chat-filter-mobile .mantine-Select-input,
+  .chat-filter-mobile .mantine-TextInput-input,
+  .chat-filter-mobile .mantine-DateInput-input {
+    min-height: 44px;
+    font-size: 16px; /* Предотвращает zoom на iOS */
+    padding: 8px 12px;
+  }
+
+  /* Кнопки на всю ширину на мобильных */
+  .chat-filter-mobile .mantine-Button-root {
+    width: 100%;
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  /* Убираем лишние отступы */
+  .chat-filter-mobile .mantine-Stack-root {
+    gap: 12px;
+  }
+
+  .chat-filter-mobile .mantine-Tabs-panel {
+    padding: 8px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Ещё меньше отступы для маленьких экранов */
+  .chat-filter-mobile .mantine-Tabs-tab {
+    padding: 6px 8px !important;
+    font-size: 13px;
+  }
+
+  .chat-filter-mobile .mantine-Select-root,
+  .chat-filter-mobile .mantine-TextInput-root,
+  .chat-filter-mobile .mantine-DateInput-root {
+    margin-bottom: 10px;
+  }
+
+  .chat-filter-mobile .mantine-Tabs-panel {
+    padding: 6px !important;
+  }
+}
+
+/* ========================================
+   LANDSCAPE ORIENTATION
+   ======================================== */
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .chat-filter-mobile .mantine-Button-root {
+    min-height: 40px;
+  }
+
+  .chat-filter-mobile .mantine-Select-input,
+  .chat-filter-mobile .mantine-TextInput-input,
+  .chat-filter-mobile .mantine-DateInput-input {
+    min-height: 40px;
+  }
+}
+
