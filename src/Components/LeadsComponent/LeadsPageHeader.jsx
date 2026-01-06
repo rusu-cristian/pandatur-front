@@ -1,6 +1,7 @@
 import { memo, forwardRef, useCallback } from "react";
 import { Button, ActionIcon, Input, SegmentedControl, Flex, Select, Loader } from "@mantine/core";
 import { PageHeader } from "@components";
+import { useMobile } from "@hooks";
 import Can from "../CanComponent/Can";
 import { getLanguageByKey } from "../utils";
 import { VIEW_MODE } from "./constants";
@@ -89,6 +90,14 @@ export const LeadsPageHeader = memo(forwardRef(({
   onEdit,
   onCreate,
 }, ref) => {
+  const isMobile = useMobile();
+  const desktopControlSize = isMobile ? undefined : "xs";
+  const actionIconSize = isMobile ? 36 : 27;
+  const controlIconSize = isMobile ? 16 : 12;
+  const controlMinWidthStyle = isMobile ? undefined : { minWidth: 225 };
+  const searchRightMargin = isMobile ? "20px" : "15px";
+  const searchActionSize = isMobile ? "sm" : "xs";
+
   return (
     <Flex
       ref={ref}
@@ -109,12 +118,22 @@ export const LeadsPageHeader = memo(forwardRef(({
             {selectedTickets.length > 0 && (
               <>
                 <Can permission={{ module: "leads", action: "delete" }} context={{ responsibleId }}>
-                  <Button variant="danger" leftSection={<FaTrash size={16} />} onClick={onDelete}>
+                  <Button
+                    variant="danger"
+                    size={desktopControlSize}
+                    leftSection={<FaTrash size={controlIconSize} />}
+                    onClick={onDelete}
+                  >
                     {getLanguageByKey("Ștergere")} ({selectedTickets.length})
                   </Button>
                 </Can>
                 <Can permission={{ module: "leads", action: "edit" }} context={{ responsibleId }}>
-                  <Button variant="warning" leftSection={<FaEdit size={16} />} onClick={onEdit}>
+                  <Button
+                    variant="warning"
+                    size={desktopControlSize}
+                    leftSection={<FaEdit size={controlIconSize} />}
+                    onClick={onEdit}
+                  >
                     {getLanguageByKey("Editare")} ({selectedTickets.length})
                   </Button>
                 </Can>
@@ -124,10 +143,10 @@ export const LeadsPageHeader = memo(forwardRef(({
             {/* Кнопка фильтра — onMouseDown для мгновенного отклика */}
             <ActionIcon
               variant={hasFilters ? "filled" : "default"}
-              size="36"
+              size={actionIconSize}
               onMouseDown={onFilterOpen}
             >
-              <LuFilter size={16} />
+              <LuFilter size={controlIconSize} />
             </ActionIcon>
 
             {/* Поиск */}
@@ -137,9 +156,11 @@ export const LeadsPageHeader = memo(forwardRef(({
               onKeyPress={onSearchKeyPress}
               placeholder={getLanguageByKey("Cauta dupa Lead, Client sau Tag")}
               className="min-w-300"
+              size={desktopControlSize}
+              style={controlMinWidthStyle}
               rightSectionPointerEvents="all"
               rightSection={
-                <Flex gap="xs" align="center" mr="20px">
+                <Flex gap="xs" align="center" mr={searchRightMargin}>
                   {isLoading ? (
                     <Loader size="xs" />
                   ) : (
@@ -147,14 +168,14 @@ export const LeadsPageHeader = memo(forwardRef(({
                       variant="subtle"
                       onClick={onSearch}
                       disabled={!hasSearchValue}
-                      size="sm"
+                      size={searchActionSize}
                     >
-                      <SearchIcon fontSize="small" />
+                      <SearchIcon style={{ fontSize: controlIconSize }} />
                     </ActionIcon>
                   )}
                   {hasSearchValue && (
-                    <ActionIcon variant="subtle" onClick={onSearchClear} size="sm">
-                      <IoMdClose size={16} />
+                    <ActionIcon variant="subtle" onClick={onSearchClear} size={searchActionSize}>
+                      <IoMdClose size={controlIconSize} />
                     </ActionIcon>
                   )}
                 </Flex>
@@ -167,6 +188,8 @@ export const LeadsPageHeader = memo(forwardRef(({
               value={groupTitleValue}
               data={groupTitleSelectData}
               className="min-w-300"
+              size={desktopControlSize}
+              style={controlMinWidthStyle}
               onChange={onGroupTitleChange}
             />
 
@@ -174,6 +197,7 @@ export const LeadsPageHeader = memo(forwardRef(({
             <SegmentedControl
               onChange={onViewModeChange}
               value={viewMode}
+              size={desktopControlSize}
               data={[
                 {
                   value: VIEW_MODE.KANBAN,
@@ -183,7 +207,10 @@ export const LeadsPageHeader = memo(forwardRef(({
                       onClick={() => onViewModeChange(VIEW_MODE.KANBAN)}
                       isActive={viewMode === VIEW_MODE.KANBAN}
                     >
-                      <TbLayoutKanbanFilled color="var(--crm-ui-kit-palette-text-primary)" />
+                      <TbLayoutKanbanFilled
+                        size={controlIconSize}
+                        color="var(--crm-ui-kit-palette-text-primary)"
+                      />
                     </ViewModeLink>
                   )
                 },
@@ -195,7 +222,7 @@ export const LeadsPageHeader = memo(forwardRef(({
                       onClick={() => onViewModeChange(VIEW_MODE.LIST)}
                       isActive={viewMode === VIEW_MODE.LIST}
                     >
-                      <FaList color="var(--crm-ui-kit-palette-text-primary)" />
+                      <FaList size={controlIconSize} color="var(--crm-ui-kit-palette-text-primary)" />
                     </ViewModeLink>
                   )
                 },
@@ -204,7 +231,7 @@ export const LeadsPageHeader = memo(forwardRef(({
 
             {/* Кнопка создания */}
             <Can permission={{ module: "leads", action: "create" }}>
-              <Button onClick={onCreate} leftSection={<IoMdAdd size={16} />}>
+              <Button size={desktopControlSize} onClick={onCreate} leftSection={<IoMdAdd size={controlIconSize} />}>
                 {getLanguageByKey("Adaugă lead")}
               </Button>
             </Can>
