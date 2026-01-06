@@ -9,7 +9,6 @@
  */
 
 import React, { createContext, useState, useEffect, useCallback, useRef, useMemo } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import Cookies from "js-cookie";
 import { api } from "../api";
@@ -41,9 +40,6 @@ export const AUTH_EVENTS = {
 export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
   const [userId, setUserId] = useState(() => {
@@ -72,8 +68,8 @@ export const AuthProvider = ({ children }) => {
   const logout = useCallback(() => {
     clearAuthData();
     authEvents.emit(AUTH_EVENTS.LOGOUT);
-    navigate("/auth", { replace: true });
-  }, [clearAuthData, navigate]);
+    window.location.href = "/auth";
+  }, [clearAuthData]);
 
   /**
    * Login — сохраняет токен, оповещает подписчиков, делает редирект
@@ -95,8 +91,8 @@ export const AuthProvider = ({ children }) => {
     authEvents.emit(AUTH_EVENTS.LOGIN);
     
     // Редирект на /leads после логина
-    navigate("/leads", { replace: true });
-  }, [navigate]);
+    window.location.href = "/leads";
+  }, []);
 
   /**
    * Проверка авторизации при загрузке
@@ -119,8 +115,8 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(true);
 
       // Если на странице авторизации — редиректим на /leads
-      if (location.pathname === "/auth") {
-        navigate("/leads", { replace: true });
+      if (window.location.pathname === "/auth") {
+        window.location.href = "/leads";
       }
     } catch (error) {
       enqueueSnackbar(showServerError(error), { variant: "error" });
@@ -128,7 +124,7 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setAuthLoading(false);
     }
-  }, [clearAuthData, navigate, location.pathname]);
+  }, [clearAuthData]);
 
   // Проверяем авторизацию один раз при монтировании
   useEffect(() => {
@@ -140,12 +136,12 @@ export const AuthProvider = ({ children }) => {
       checkAuth();
     } else {
       // Нет токена — редирект на /auth (если не на /auth)
-      if (location.pathname !== "/auth") {
-        navigate("/auth", { replace: true });
+      if (window.location.pathname !== "/auth") {
+        window.location.href = "/auth";
       }
       setAuthLoading(false);
     }
-  }, [checkAuth, location.pathname, navigate]);
+  }, [checkAuth]);
 
   // Синхронизация между вкладками через storage event
   useEffect(() => {
@@ -153,13 +149,13 @@ export const AuthProvider = ({ children }) => {
       if (e.key === "user_id" && !e.newValue) {
         // Logout в другой вкладке
         clearAuthData();
-        navigate("/auth", { replace: true });
+        window.location.href = "/auth";
       }
     };
     
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
-  }, [clearAuthData, navigate]);
+  }, [clearAuthData]);
 
   // Проверка токена — защита от удаления токена извне (API interceptor, истечение)
   useEffect(() => {
@@ -172,7 +168,7 @@ export const AuthProvider = ({ children }) => {
         // Токен удалён — делаем logout
         clearAuthData();
         authEvents.emit(AUTH_EVENTS.LOGOUT);
-        navigate("/auth", { replace: true });
+        window.location.href = "/auth";
       }
     };
 
@@ -192,7 +188,7 @@ export const AuthProvider = ({ children }) => {
       clearInterval(interval);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [isAuthenticated, authLoading, clearAuthData, navigate]);
+  }, [isAuthenticated, authLoading, clearAuthData]);
 
   const value = useMemo(() => ({
     isAuthenticated,

@@ -311,7 +311,7 @@ export const BasicGeneralFormFilter = forwardRef(
           onChange={handleGroupTitleChange}
         />
 
-        <div style={{ marginTop: "1rem" }}>
+        <div style={{ marginTop: "6px" }}>
           <WorkflowMultiSelect
             label={getLanguageByKey("Workflow")}
             placeholder={getLanguageByKey("Selectează flux de lucru")}
