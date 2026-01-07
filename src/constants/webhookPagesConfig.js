@@ -567,7 +567,13 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_name: "Briceni - 37360362200",
       type: "phone",
       group_title: ["BRICENI"]
-    }
+    },
+    {
+      page_id: "37360021919",
+      page_name: "Causeni - 37360021919",
+      type: "phone",
+      group_title: ["CAUSENI"]
+    }, 
   ],
   vibers: [
     {
@@ -647,7 +653,13 @@ export const WEBHOOK_PAGES_CONFIG = {
       page_name: "Orhei - 37362161919",
       type: "phone",
       group_title: ["ORHEI"]
-    }
+    },
+    {
+      page_id: "37360021919",
+      page_name: "Causeni - 37360021919",
+      type: "phone",
+      group_title: ["CAUSENI"]
+    },    
   ],
   "viber-bots": [
     {
