@@ -25,17 +25,17 @@ export const CallStatsChartCard = ({ user, fullName }) => {
     return (
         <Paper
             withBorder
-            radius="lg"
-            p="lg"
+            radius="md"
+            p="sm"
             mb="xs"
             style={{
                 background: "--crm-ui-kit-palette-background-default",
-                minWidth: 340,
+                minWidth: 280,
             }}
         >
-            <Flex justify="space-between" align="flex-start" gap={24} wrap="wrap">
+            <Flex justify="space-between" align="flex-start" gap={16} wrap="wrap">
                 <Box>
-                    <Text fw={700} size="lg" c={COLORS.textDark} mb={2}>
+                    <Text fw={700} size="sm" c={COLORS.textDark} mb={2}>
                         {fullName || `${getLanguageByKey("User")} ${user.user_id}`}
                     </Text>
                     <Text size="xs" c="#8793a7">
@@ -44,26 +44,26 @@ export const CallStatsChartCard = ({ user, fullName }) => {
                 </Box>
                 <Badge
                     color="yellow"
-                    size="lg"
+                    size="sm"
                     variant="light"
-                    radius="md"
+                    radius="sm"
                     style={{
                         background: COLORS.total,
                         color: "#fff",
                         fontWeight: 600,
-                        fontSize: 16,
-                        minWidth: 150,
+                        fontSize: 11,
+                        minWidth: 120,
                         textAlign: "center",
                     }}
                 >
                     {getLanguageByKey("TotalCalls")}: {totalCalls}
                 </Badge>
             </Flex>
-            <Group mt="xl" gap="xl" align="center">
-                <Group gap={8}>
+            <Group mt="sm" gap="md" align="center">
+                <Group gap={6}>
                     <Box
-                        w={32}
-                        h={32}
+                        w={24}
+                        h={24}
                         style={{
                             background: COLORS.to,
                             borderRadius: "50%",
@@ -73,18 +73,18 @@ export const CallStatsChartCard = ({ user, fullName }) => {
                             boxShadow: "0 2px 8px 0 rgba(80,180,120,0.13)",
                         }}
                     >
-                        <HiArrowDownLeft color="white" size={18} />
+                        <HiArrowDownLeft color="white" size={12} />
                     </Box>
-                    <Text fw={500} c={COLORS.textDark} size="md">{getLanguageByKey("Incoming")}</Text>
-                    <Text fw={700} c={COLORS.to} size="lg">{user.calls_from || 0}</Text>
-                    <Text size="md" c="#757575" ml="xs">
+                    <Text fw={500} c={COLORS.textDark} size="xs">{getLanguageByKey("Incoming")}</Text>
+                    <Text fw={700} c={COLORS.to} size="sm">{user.calls_from || 0}</Text>
+                    <Text size="xs" c="#757575" ml="xs">
                         {formatDuration(user.duration_from || 0)}
                     </Text>
                 </Group>
-                <Group gap={8}>
+                <Group gap={6}>
                     <Box
-                        w={32}
-                        h={32}
+                        w={24}
+                        h={24}
                         style={{
                             background: COLORS.from,
                             borderRadius: "50%",
@@ -94,28 +94,28 @@ export const CallStatsChartCard = ({ user, fullName }) => {
                             boxShadow: "0 2px 8px 0 rgba(44,159,199,0.13)",
                         }}
                     >
-                        <HiArrowUpRight color="white" size={18} />
+                        <HiArrowUpRight color="white" size={12} />
                     </Box>
-                    <Text fw={500} c={COLORS.textDark} size="md">{getLanguageByKey("Outgoing")}</Text>
-                    <Text fw={700} c={COLORS.from} size="lg">{user.calls_to || 0}</Text>
-                    <Text size="md" c="#757575" ml="xs">
+                    <Text fw={500} c={COLORS.textDark} size="xs">{getLanguageByKey("Outgoing")}</Text>
+                    <Text fw={700} c={COLORS.from} size="sm">{user.calls_to || 0}</Text>
+                    <Text size="xs" c="#757575" ml="xs">
                         {formatDuration(user.duration_to || 0)}
                     </Text>
                 </Group>
-                <Group gap={8}>
+                <Group gap={6}>
                     <Badge
                         color="blue"
-                        size="lg"
+                        size="sm"
                         variant="light"
-                        radius="md"
+                        radius="sm"
                         style={{
                             background: "#f2f2f2",
                             color: COLORS.textDark,
                             fontWeight: 700,
-                            fontSize: 16,
-                            minWidth: 180,
+                            fontSize: 11,
+                            minWidth: 140,
                             textAlign: "center",
-                            marginLeft: 8,
+                            marginLeft: 6,
                         }}
                     >
                         {getLanguageByKey("TotalDuration")}: {formatDuration(totalDuration)}

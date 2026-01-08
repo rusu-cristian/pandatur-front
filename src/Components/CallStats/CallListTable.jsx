@@ -5,7 +5,7 @@ import {
 import { RcTable } from "../RcTable";
 import { getLanguageByKey } from "@utils";
 import { format } from "date-fns";
-import { FaDownload, FaPlay, FaPause, FaFingerprint } from "react-icons/fa";
+import { FaDownload, FaPlay, FaPause } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const formatDate = (ts) => {
@@ -65,25 +65,25 @@ export const CallListTable = ({
         {
             title: getLanguageByKey("DateTime"),
             dataIndex: "timestamp",
-            width: 180,
-            render: (ts) => <span style={{ fontFamily: "monospace" }}>{formatDate(ts)}</span>,
+            width: 130,
+            render: (ts) => <span style={{ fontFamily: "monospace", fontSize: 11 }}>{formatDate(ts)}</span>,
         },
         {
             title: getLanguageByKey("Users"),
             dataIndex: "user_id",
-            width: 200,
+            width: 140,
             render: (userId) => techniciansMap.get(String(userId)) || userId,
         },
         {
             title: getLanguageByKey("Client"),
             dataIndex: "client_fullname",
-            width: 160,
+            width: 120,
             render: (val) => val || "-",
         },
         {
             title: getLanguageByKey("Ticket"),
             dataIndex: "ticket_id",
-            width: 140,
+            width: 100,
             align: "center",
             render: (id) =>
                 id ? (
@@ -92,12 +92,12 @@ export const CallListTable = ({
                         style={{
                             textDecoration: 'underline',
                             color: '#007bff',
-                            fontWeight: 'bold'
+                            fontWeight: 'bold',
+                            fontSize: 11
                         }}
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <Flex justify="center" gap="8" align="center">
-                            <FaFingerprint />
+                        <Flex justify="center" gap="4" align="center">
                             {id}
                         </Flex>
                     </Link>
@@ -106,40 +106,42 @@ export const CallListTable = ({
         {
             title: getLanguageByKey("WhoCalled"),
             dataIndex: "who_called",
-            width: 120,
+            width: 90,
             render: (v) =>
-                v === "user" ? <Badge color="blue">{getLanguageByKey("User")}</Badge>
-                    : v === "client" ? <Badge color="green">{getLanguageByKey("Client")}</Badge>
+                v === "user" ? <Badge size="xs" color="blue">{getLanguageByKey("User")}</Badge>
+                    : v === "client" ? <Badge size="xs" color="green">{getLanguageByKey("Client")}</Badge>
                         : v,
         },
         {
             title: getLanguageByKey("Status"),
             dataIndex: "status",
-            width: 110,
+            width: 80,
             render: (v) =>
-                v === "ANSWER" ? <Badge color="teal">{getLanguageByKey("Answer")}</Badge>
-                    : v === "NOANSWER" ? <Badge color="red">{getLanguageByKey("NoAnswer")}</Badge>
+                v === "ANSWER" ? <Badge size="xs" color="teal">{getLanguageByKey("Answer")}</Badge>
+                    : v === "NOANSWER" ? <Badge size="xs" color="red">{getLanguageByKey("NoAnswer")}</Badge>
                         : v,
         },
         {
             title: getLanguageByKey("Record"),
             key: "record",
-            width: 90,
+            width: 80,
             render: (_, record) =>
                 record.call_url ? (
-                    <Flex align="center" gap={8}>
+                    <Flex align="center" gap={4}>
                         <Tooltip label={playingUrl === record.call_url ? getLanguageByKey("Pause") : getLanguageByKey("Play")}>
                             <ActionIcon
+                                size="xs"
                                 color={playingUrl === record.call_url ? "teal" : "blue"}
                                 variant="light"
                                 onClick={(e) => { e.stopPropagation(); togglePlay(record.call_url); }}
                             >
-                                {playingUrl === record.call_url ? <FaPause size={14} /> : <FaPlay size={14} />}
+                                {playingUrl === record.call_url ? <FaPause size={10} /> : <FaPlay size={10} />}
                             </ActionIcon>
                         </Tooltip>
 
                         <Tooltip label={getLanguageByKey("DownloadListen")}>
                             <ActionIcon
+                                size="xs"
                                 component="a"
                                 href={record.call_url}
                                 target="_blank"
@@ -147,12 +149,12 @@ export const CallListTable = ({
                                 variant="light"
                                 onClick={(e) => e.stopPropagation()}
                             >
-                                <FaDownload size={16} />
+                                <FaDownload size={10} />
                             </ActionIcon>
                         </Tooltip>
 
                         {record.duration != null && (
-                            <Text size="sm" c="dimmed">{formatDuration(record.duration)}</Text>
+                            <Text size="xs" c="dimmed">{formatDuration(record.duration)}</Text>
                         )}
                     </Flex>
                 ) : <span style={{ color: "#888" }}>—</span>,
@@ -174,19 +176,19 @@ export const CallListTable = ({
                     zIndex={10}
                     overlayProps={{ blur: 1, backgroundOpacity: 0.35 }}
                 />
-                <div style={{ height: "calc(100vh)" }}>
+                <div style={{ height: "calc(85vh - 70px)" }}>
                     <RcTable
                         columns={columns}
                         data={data}
                         bordered
                         loading={false}
                         rowKey={(_, index) => `row_${index}`}
-                        style={{ opacity: overlayVisible ? 0.7 : 1, transition: "opacity .15s ease" }}
+                        style={{ opacity: overlayVisible ? 0.7 : 1, height: "100%" }}
                     />
                 </div>
                 <Flex
-                    pt={24}
-                    pb={24}
+                    pt={12}
+                    pb={12}
                     justify="center"
                     style={{
                         borderTop: "1px solid var(--crm-ui-kit-palette-border-primary)",
@@ -194,6 +196,7 @@ export const CallListTable = ({
                     }}
                 >
                     <Pagination
+                        size="xs"
                         total={pagination?.total_pages || 1}
                         value={pagination?.page || 1}
                         onChange={handlePaginate}

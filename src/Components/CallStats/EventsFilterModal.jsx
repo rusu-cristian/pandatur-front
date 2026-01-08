@@ -102,6 +102,7 @@ export const EventsFilterModal = ({
                         onChange={handleEventChange}
                         searchable
                         clearable
+                        size="xs"
                     />
                     <UserGroupMultiSelect
                         label={getLanguageByKey("Users")}
@@ -110,25 +111,28 @@ export const EventsFilterModal = ({
                         onChange={handleUsersChange}
                         placeholder={getLanguageByKey("SelectTechnicians")}
                         mode="multi"
+                        size="xs"
                     />
                     <TextInput
                         label={getLanguageByKey("IP Address")}
                         value={ip}
                         onChange={e => setIp(e.target.value)}
                         placeholder={getLanguageByKey("IP Address")}
+                        size="xs"
                     />
                     <TextInput
                         label={getLanguageByKey("Object ID")}
                         value={objectId}
                         onChange={e => setObjectId(e.target.value)}
                         placeholder={getLanguageByKey("Object ID")}
+                        size="xs"
                     />
                 </Flex>
                 <Group pt={16} pb={8} justify="flex-end" style={{ borderTop: "1px solid var(--mantine-color-gray-3)" }}>
-                    <Button variant="outline" onClick={handleReset}>
+                    <Button size="xs" variant="outline" onClick={handleReset}>
                         {getLanguageByKey("Reset")}
                     </Button>
-                    <Button onClick={handleApply}>
+                    <Button size="xs" onClick={handleApply}>
                         {getLanguageByKey("Apply")}
                     </Button>
                 </Group>

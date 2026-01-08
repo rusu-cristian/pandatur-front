@@ -117,6 +117,7 @@ export const CallStatsFilterModal = ({
                                     clearable
                                     searchable={false}
                                     placeholder={getLanguageByKey("SelectStatus")}
+                                    size="xs"
                                 />
                             </>
                         )}
@@ -128,6 +129,7 @@ export const CallStatsFilterModal = ({
                                 onChange={setDateFrom}
                                 placeholder="DD.MM.YYYY"
                                 style={{ flex: 1 }}
+                                size="xs"
                             />
                             <DatePickerInput
                                 label={getLanguageByKey("DateTo")}
@@ -135,15 +137,16 @@ export const CallStatsFilterModal = ({
                                 onChange={setDateTo}
                                 placeholder="DD.MM.YYYY"
                                 style={{ flex: 1 }}
+                                size="xs"
                             />
                         </Flex>
                     </Flex>
                 )}
                 <Group pt={16} pb={8} justify="flex-end" style={{ borderTop: "1px solid var(--mantine-color-gray-3)" }}>
-                    <Button variant="outline" onClick={handleReset}>
+                    <Button size="xs" variant="outline" onClick={handleReset}>
                         {getLanguageByKey("Reset")}
                     </Button>
-                    <Button onClick={handleApply}>
+                    <Button size="xs" onClick={handleApply}>
                         {getLanguageByKey("Apply")}
                     </Button>
                 </Group>

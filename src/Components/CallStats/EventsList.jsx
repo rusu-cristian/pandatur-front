@@ -66,45 +66,45 @@ export const EventsList = () => {
         {
             title: getLanguageByKey("ID"),
             dataIndex: "id",
-            width: 70,
+            width: 50,
             align: "center",
         },
         {
             title: getLanguageByKey("User"),
             dataIndex: "user_identifier",
-            width: 180,
+            width: 130,
         },
         {
             title: getLanguageByKey("IP Address"),
             dataIndex: "ip_address",
-            width: 150,
+            width: 110,
         },
         {
             title: getLanguageByKey("DateTime"),
             dataIndex: "timestamp",
-            width: 170,
+            width: 130,
         },
         {
             title: getLanguageByKey("Event"),
             dataIndex: "event",
-            width: 100,
+            width: 70,
             align: "center"
         },
         {
             title: getLanguageByKey("Object Type"),
             dataIndex: ["object", "type"],
             render: (_, row) => row.object?.type || "-",
-            width: 180,
+            width: 120,
         },
         {
             title: getLanguageByKey("Object ID"),
             dataIndex: ["object", "id"],
             render: (_, row) => row.object?.id || "-",
-            width: 100,
+            width: 70,
             align: "center",
         },
         {
-            width: 500,
+            width: 350,
             key: "changes",
             title: getLanguageByKey("Detalii"),
             dataIndex: "data",
@@ -118,12 +118,12 @@ export const EventsList = () => {
                     return (
                         <Box>
                             {hasObjInfo && (
-                                <Text size="md" mb={4}>
+                                <Text size="xs" mb={2}>
                                     <b>{getLanguageByKey("Tip:")}</b> {obj.type ? obj.type : "-"}{" "}
                                     <b>{getLanguageByKey("ID obiect:")}</b> {objectIdLabel}{" "}
                                 </Text>
                             )}
-                            <Text size="md">{getLanguageByKey("Fără modificări")}</Text>
+                            <Text size="xs">{getLanguageByKey("Fără modificări")}</Text>
                         </Box>
                     );
                 }
@@ -132,31 +132,31 @@ export const EventsList = () => {
                     return (
                         <Box>
                             {hasObjInfo && (
-                                <Text size="md" mb={4}>
+                                <Text size="xs" mb={2}>
                                     <b>{getLanguageByKey("Tip:")}</b> {obj.type ? obj.type : "-"}{" "}
                                     <b>{getLanguageByKey("ID obiect:")}</b> {objectIdLabel}{" "}
                                 </Text>
                             )}
-                            <Text size="md">{getLanguageByKey("Fără modificări")}</Text>
+                            <Text size="xs">{getLanguageByKey("Fără modificări")}</Text>
                         </Box>
                     );
                 }
                 return (
                     <Box>
                         {hasObjInfo && (
-                            <Text size="md" mb={4}>
+                            <Text size="xs" mb={2}>
                                 <b>{getLanguageByKey("Tip:")}</b> {obj.type ? obj.type : "-"}{" "}
                                 <b>{getLanguageByKey("ID obiect:")}</b> {objectIdLabel}{" "}
                             </Text>
                         )}
                         {changes.map((ch, i) =>
-                            <Text size="md" key={i}>
+                            <Text size="xs" key={i}>
                                 <b>{ch.field}:</b>{" "}
                                 <span style={{ color: "#ef4444" }}>{String(ch.from)}</span>
                                 <span style={{
                                     fontWeight: 700,
                                     color: "var(--crm-ui-kit-palette-text-secondary-light)",
-                                    margin: "0 6px"
+                                    margin: "0 4px"
                                 }}>→</span>
                                 <span style={{ color: "#22c55e" }}>{String(ch.to)}</span>
                             </Text>
@@ -173,14 +173,14 @@ export const EventsList = () => {
 
     return (
         <Box
-            h="120vh"
+            h="90vh"
             style={{
                 background: COLORS.bgMain,
                 display: "flex",
                 flexDirection: "column",
             }}
         >
-            <Box px={32} py={24} style={{ flexShrink: 0 }}>
+            <Box px={16} py={12} style={{ flexShrink: 0 }}>
                 <PageHeader
                     title={getLanguageByKey("Events")}
                     count={pagination.total}
@@ -189,11 +189,11 @@ export const EventsList = () => {
                     extraInfo={
                         <ActionIcon
                             variant={filters.event?.length > 0 ? "filled" : "default"}
-                            size="36"
+                            size="md"
                             onClick={() => setFilterModalOpen(true)}
                             title={getLanguageByKey("Filter")}
                         >
-                            <LuFilter size={16} />
+                            <LuFilter size={14} />
                         </ActionIcon>
                     }
                 />
@@ -206,14 +206,12 @@ export const EventsList = () => {
                         data={data}
                         loading={loading}
                         rowKey="id"
-                        style={{ minWidth: 920, height: "100%" }}
-                        scroll={{ y: "100%" }}
                     />
                 </div>
 
                 <Flex
-                    pt={24}
-                    pb={24}
+                    pt={12}
+                    pb={12}
                     justify="center"
                     style={{
                         flexShrink: 0,
@@ -228,7 +226,7 @@ export const EventsList = () => {
                             setPagination(prev => ({ ...prev, page }));
                             fetchData(page, filters);
                         }}
-                        size="md"
+                        size="xs"
                     />
                 </Flex>
             </Box>

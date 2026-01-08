@@ -33,9 +33,9 @@ export const Analytics = () => {
                 <Group className="analytics-tabs-group">
                     <Button
                         variant="outline"
-                        size="lg"
-                        radius="lg"
-                        leftSection={<FaChartBar size={20} />}
+                        size="xs"
+                        radius="md"
+                        leftSection={<FaChartBar size={12} />}
                         className={`analytics-tab-button ${tab === "calls" ? "active" : "inactive"}`}
                         onClick={() => handleTabChange("calls")}
                     >
@@ -43,9 +43,9 @@ export const Analytics = () => {
                     </Button>
                     <Button
                         variant="outline"
-                        size="lg"
-                        radius="lg"
-                        leftSection={<FaRegCalendarCheck size={20} />}
+                        size="xs"
+                        radius="md"
+                        leftSection={<FaRegCalendarCheck size={12} />}
                         className={`analytics-tab-button ${tab === "events" ? "active" : "inactive"}`}
                         onClick={() => handleTabChange("events")}
                     >

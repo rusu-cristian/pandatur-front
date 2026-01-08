@@ -23,22 +23,21 @@
 
 /* Более специфичный селектор для переопределения глобальных стилей */
 .analytics-tabs-panel .mantine-Button-root.analytics-tab-button {
-  font-weight: 700;
-  font-size: var(--page-tab-font-size);
+  font-weight: 600;
+  font-size: 11px;
   transition: all 0.18s;
 }
 
 .analytics-tabs-panel .mantine-Button-root.analytics-tab-button.active {
   background-color: var(--crm-ui-kit-palette-link-primary) !important;
   color: white;
-  border: 2px solid var(--crm-ui-kit-palette-link-primary);
-  /* box-shadow: 0 2px 8px 0 rgba(16, 185, 129, 0.3); */
+  border: 1px solid var(--crm-ui-kit-palette-link-primary);
 }
 
 .analytics-tabs-panel .mantine-Button-root.analytics-tab-button.inactive {
   background-color: transparent;
   color: var(--crm-ui-kit-palette-text-secondary-light);
-  border: 2px solid var(--crm-ui-kit-palette-border-default);
+  border: 1px solid var(--crm-ui-kit-palette-border-default);
 }
 
 .analytics-tabs-panel .mantine-Button-root.analytics-tab-button.inactive:hover {

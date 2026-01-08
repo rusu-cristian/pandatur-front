@@ -170,7 +170,7 @@ export const CallStatsPage = () => {
         minHeight: "120vh",
       }}
     >
-      <Box px={32} mb={32}>
+      <Box px={16} mb={16}>
         <PageHeader
           title={
             mode === "stats"
@@ -184,25 +184,26 @@ export const CallStatsPage = () => {
             <>
               <ActionIcon
                 variant={isFilterActive(filters) ? "filled" : "default"}
-                size="36"
+                size="md"
                 onClick={() => setFilterModalOpen(true)}
                 title={getLanguageByKey("Filter")}
               >
-                <LuFilter size={16} />
+                <LuFilter size={14} />
               </ActionIcon>
 
               {mode === "stats" && (
                 <TextInput
-                  w={320}
+                  size="sm"
+                  w={220}
                   placeholder={getLanguageByKey("SearchTechnician")}
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  style={{ minWidth: 220 }}
-                  className="min-w-300"
+                  style={{ minWidth: 160 }}
                 />
               )}
 
               <SegmentedControl
+                size="xs"
                 value={mode}
                 onChange={(value) => {
                   setMode(value);
@@ -219,59 +220,59 @@ export const CallStatsPage = () => {
       </Box>
 
       {mode === "stats" && (
-        <Box px={32} mb={32}>
+        <Box px={16} mb={16}>
           <Paper
             withBorder
-            radius="lg"
-            p="xl"
-            mb="xl"
+            radius="md"
+            p="sm"
+            mb="sm"
             style={{
               background: "var(--crm-ui-kit-palette-background-primary)",
               boxShadow: "var(--crm-ui-kit-palette-content-block-box-shadow)",
             }}
           >
-            <Flex align="center" gap={40} wrap="wrap">
-              <Group>
-                <Text fw={700} c={COLORS.textMain} size="xl">
+            <Flex align="center" gap={24} wrap="wrap">
+              <Group gap="xs">
+                <Text fw={700} c={COLORS.textMain} size="sm">
                   {getLanguageByKey("TotalCalls")}
                 </Text>
-                <Text fw={700} c={COLORS.total} size="xl">
+                <Text fw={700} c={COLORS.total} size="sm">
                   {statsSummary.total_all_users}
                 </Text>
               </Group>
-              <Group>
-                <Text c={COLORS.to} fw={600} size="lg">
+              <Group gap="xs">
+                <Text c={COLORS.to} fw={600} size="xs">
                   {getLanguageByKey("Incoming")}
                 </Text>
-                <Text fw={700} c={COLORS.to} size="xl">
+                <Text fw={700} c={COLORS.to} size="sm">
                   {statsSummary.total_calls_from}
                 </Text>
-                <Text c={COLORS.from} fw={600} ml="xl" size="lg">
+                <Text c={COLORS.from} fw={600} ml="sm" size="xs">
                   {getLanguageByKey("Outgoing")}
                 </Text>
-                <Text fw={700} c={COLORS.from} size="xl">
+                <Text fw={700} c={COLORS.from} size="sm">
                   {statsSummary.total_calls_to}
                 </Text>
               </Group>
-              <Group>
-                <Text c={COLORS.textMain} fw={600} size="lg">
+              <Group gap="xs">
+                <Text c={COLORS.textMain} fw={600} size="xs">
                   {getLanguageByKey("TotalDuration")}
                 </Text>
-                <Text fw={700} c={COLORS.total} size="xl">
+                <Text fw={700} c={COLORS.total} size="sm">
                   {formatDuration(statsSummary.total_duration)}
                 </Text>
               </Group>
-              <Group>
-                <Text c={COLORS.to} fw={600} size="lg">
+              <Group gap="xs">
+                <Text c={COLORS.to} fw={600} size="xs">
                   {getLanguageByKey("IncomingDuration")}
                 </Text>
-                <Text fw={700} c={COLORS.to} size="xl">
+                <Text fw={700} c={COLORS.to} size="sm">
                   {formatDuration(statsSummary.total_duration_from)}
                 </Text>
-                <Text c={COLORS.from} fw={600} ml="xl" size="lg">
+                <Text c={COLORS.from} fw={600} ml="sm" size="xs">
                   {getLanguageByKey("OutgoingDuration")}
                 </Text>
-                <Text fw={700} c={COLORS.from} size="xl">
+                <Text fw={700} c={COLORS.from} size="sm">
                   {formatDuration(statsSummary.total_duration_to)}
                 </Text>
               </Group>
@@ -280,7 +281,7 @@ export const CallStatsPage = () => {
         </Box>
       )}
 
-      <Box px={32}>
+      <Box px={16}>
         {mode === "stats" &&
           (loading ? (
             <Flex align="center" justify="center" mt={48}>
