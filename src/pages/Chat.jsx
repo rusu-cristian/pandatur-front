@@ -181,15 +181,16 @@ export const Chat = () => {
         {isChatListVisible && <ChatList ticketId={ticketId} />}
 
         <Flex pos="relative" style={{ flex: "1 1 0" }}>
-          <Box pos="absolute" left="10px" top="16px" style={{ zIndex: 1 }}>
+          <Box pos="absolute" left="8px" top="12px" style={{ zIndex: 1 }}>
             <ActionIcon
               variant="default"
+              size="sm"
               onClick={() => setIsChatListVisible((prev) => !prev)}
             >
               {isChatListVisible ? (
-                <FaArrowLeft size="12" />
+                <FaArrowLeft size="10" />
               ) : (
-                <FaArrowRight size="12" />
+                <FaArrowRight size="10" />
               )}
             </ActionIcon>
           </Box>

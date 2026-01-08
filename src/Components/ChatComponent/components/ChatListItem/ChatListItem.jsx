@@ -46,57 +46,57 @@ const ChatLink = ({ to, children, className, style }) => {
 
 const MESSAGE_INDICATOR = {
   [MEDIA_TYPE.IMAGE]: (
-    <Flex c="dimmed" align="center" gap="8">
-      <TbPhoto />
-      <Text h="20px" size="sm">
+    <Flex c="dimmed" align="center" gap="4">
+      <TbPhoto size={12} />
+      <Text h="16px" size="xs">
         {getLanguageByKey("photo")}
       </Text>
     </Flex>
   ),
   [MEDIA_TYPE.VIDEO]: (
-    <Flex c="dimmed" align="center" gap="8">
-      <IoIosVideocam />
-      <Text h="20px" size="sm">
+    <Flex c="dimmed" align="center" gap="4">
+      <IoIosVideocam size={12} />
+      <Text h="16px" size="xs">
         {getLanguageByKey("video")}
       </Text>
     </Flex>
   ),
   [MEDIA_TYPE.AUDIO]: (
-    <Flex c="dimmed" align="center" gap="8">
-      <HiSpeakerWave />
-      <Text h="20px" size="sm">
+    <Flex c="dimmed" align="center" gap="4">
+      <HiSpeakerWave size={12} />
+      <Text h="16px" size="xs">
         {getLanguageByKey("audio")}
       </Text>
     </Flex>
   ),
   [MEDIA_TYPE.FILE]: (
-    <Flex c="dimmed" align="center" gap="8">
-      <GrAttachment />
-      <Text h="20px" size="sm">
+    <Flex c="dimmed" align="center" gap="4">
+      <GrAttachment size={12} />
+      <Text h="16px" size="xs">
         {getLanguageByKey("file")}
       </Text>
     </Flex>
   ),
   [MEDIA_TYPE.URL]: (
-    <Flex c="dimmed" align="center" gap="8">
-      <FiLink2 />
-      <Text h="20px" size="sm">
+    <Flex c="dimmed" align="center" gap="4">
+      <FiLink2 size={12} />
+      <Text h="16px" size="xs">
         {getLanguageByKey("link")}
       </Text>
     </Flex>
   ),
   [MEDIA_TYPE.CALL]: (
-    <Flex c="dimmed" align="center" gap="8">
-      <IoCall />
-      <Text h="20px" size="sm" c="white" fw={900}>
+    <Flex c="dimmed" align="center" gap="4">
+      <IoCall size={12} />
+      <Text h="16px" size="xs" c="white" fw={900}>
         {getLanguageByKey("call")}
       </Text>
     </Flex>
   ),
   [MEDIA_TYPE.EMAIL]: (
-    <Flex c="dimmed" align="center" gap="8">
-      <FaEnvelope />
-      <Text h="20px" size="sm" c="white" fw={900}>
+    <Flex c="dimmed" align="center" gap="4">
+      <FaEnvelope size={12} />
+      <Text h="16px" size="xs" c="white" fw={900}>
         {getLanguageByKey("email")}
       </Text>
     </Flex>
@@ -223,8 +223,8 @@ export const ChatListItem = ({ chat, style, selectTicketId }) => {
       <ChatLink to={chatUrl} style={{ textDecoration: 'none', color: 'inherit' }}>
         <Box
           py="9px"
-          pr="10px"
-          pl="10px"
+          pr="8px"
+          pl="8px"
           key={chat.id}
           className={`chat-item ${lastMessageAuthorClass} ${
             chat.id === selectTicketId ? "active" : ""
@@ -235,17 +235,17 @@ export const ChatListItem = ({ chat, style, selectTicketId }) => {
         >
           {/* Индикатор непрочитанных сообщений */}
           {chat.unseen_count > 0 && (
-            <Box pos="absolute" right="6px" className="right">
-              <Badge size="md" bg="red" circle className="right-count">
+            <Box pos="absolute" right="4px" className="right">
+              <Badge size="xs" bg="red" circle className="right-count">
                 {chat.unseen_count}
               </Badge>
             </Box>
           )}
 
-          <Flex gap="12" align="center" w="100%">
+          <Flex gap="8" align="center" w="100%">
             <Image
-              w={46}
-              h={46}
+              w={32}
+              h={32}
               radius="50%"
               src={userPhoto}
               fallbackSrc={DEFAULT_PHOTO}
@@ -253,7 +253,7 @@ export const ChatListItem = ({ chat, style, selectTicketId }) => {
 
             <Box w="75%">
               <Flex align="center" gap="4">
-                <Text truncate>{chat.contact || "-"}</Text>
+                <Text size="xs" truncate>{chat.contact || "-"}</Text>
 
                 {/* Меню с тремя точками рядом с именем */}
                 <Menu position="bottom-start" withinPortal>
@@ -267,19 +267,19 @@ export const ChatListItem = ({ chat, style, selectTicketId }) => {
                         e.stopPropagation();
                       }}
                     >
-                      <BsThreeDots size={14} />
+                      <BsThreeDots size={12} />
                     </ActionIcon>
                   </Menu.Target>
 
                   <Menu.Dropdown>
                     <Menu.Item
-                      leftSection={<IoCheckmarkDone size={16} />}
+                      leftSection={<IoCheckmarkDone size={14} />}
                       onClick={handleMarkAsRead}
                     >
                       {getLanguageByKey("closedChat")}
                     </Menu.Item>
                     <Menu.Item
-                      leftSection={<MdPendingActions size={16} />}
+                      leftSection={<MdPendingActions size={14} />}
                       onClick={handleToggleActionNeeded}
                       color={actionNeeded ? "orange" : "gray"}
                     >
@@ -289,24 +289,21 @@ export const ChatListItem = ({ chat, style, selectTicketId }) => {
                 </Menu>
               </Flex>
 
-              <Flex gap="12">
-                <Flex align="center" gap="4">
-                  <FaFingerprint />
-                  <Text>{chat.id || "-"}</Text>
+              <Flex gap="8">
+                <Flex align="center" gap="2">
+                  <FaFingerprint size={10} />
+                  <Text size="xs">{chat.id || "-"}</Text>
                 </Flex>
-
-                {/* <Divider orientation="vertical" />
-              <Tag type={priorityTagColors[chat.priority]}>{chat.priority}</Tag> */}
               </Flex>
             </Box>
           </Flex>
 
-          <Flex justify="space-between" gap="6" align="center">
-            <Box mt="4px" w="60%">
+          <Flex justify="space-between" gap="4" align="center">
+            <Box mt="2px" w="60%">
               {MESSAGE_INDICATOR[chat.last_message_type] || (
                 <Text
-                  h="20px"
-                  size="sm"
+                  h="16px"
+                  size="xs"
                   truncate
                   fw={isClientLastMessage ? 900 : 400}
                   c={
@@ -319,11 +316,11 @@ export const ChatListItem = ({ chat, style, selectTicketId }) => {
                 </Text>
               )}
             </Box>
-            <Text size="sm" c="dimmed">
+            <Text size="xs" c="dimmed">
               {formatDate ? formatDate.format("DD.MM.YYYY")
                 : null}
             </Text>
-            <Text size="sm" c="dimmed">
+            <Text size="xs" c="dimmed">
               {formatDate ? formatDate.format(HH_mm)
                 : null}
             </Text>

@@ -20,7 +20,7 @@ import { ChatListItem } from "./components";
 import { ChatFilter } from "./ChatFilter";
 import { prepareFiltersForUrl } from "../utils/parseFiltersFromUrl";
 
-const CHAT_ITEM_HEIGHT = 94;
+const CHAT_ITEM_HEIGHT = 72;
 
 const ChatList = ({ ticketId }) => {
   const navigate = useNavigate();
@@ -97,11 +97,12 @@ const ChatList = ({ ticketId }) => {
   return (
     <>
       <Box direction="column" w="20%">
-        <Flex direction="column" gap="xs" my="xs" pl="xs" pr="xs">
+        <Flex direction="column" gap={4} my={6} pl="xs" pr="xs">
           <Flex align="center" justify="space-between">
-            <Flex align="center" gap={8}>
-              <Title order={3}>{getLanguageByKey("Chat")}</Title>
+            <Flex align="center" gap={6}>
+              <Title order={5}>{getLanguageByKey("Chat")}</Title>
               <Badge
+                size="xs"
                 variant="filled"
                 style={{ backgroundColor: "var(--crm-ui-kit-palette-link-primary)" }}
               >
@@ -111,14 +112,15 @@ const ChatList = ({ ticketId }) => {
             {/* Кнопка фильтра — onMouseDown для мгновенного отклика */}
             <ActionIcon
               variant={hasFilters ? "filled" : "default"}
-              size="36"
+              size="sm"
               onMouseDown={() => startTransition(() => setOpenFilter(true))}
             >
-              <LuFilter size={16} />
+              <LuFilter size={14} />
             </ActionIcon>
           </Flex>
 
           <TextInput
+            size="xs"
             placeholder={getLanguageByKey("Cauta dupa ID, Nume client, Telefon sau Email")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -127,14 +129,14 @@ const ChatList = ({ ticketId }) => {
 
         <Divider color="var(--crm-ui-kit-palette-border-default)" />
 
-        <Box style={{ height: "calc(100% - 110px)", position: "relative" }} ref={wrapperChatItemRef}>
+        <Box style={{ height: "calc(100% - 80px)", position: "relative" }} ref={wrapperChatItemRef}>
           {isLoading ? (
             <Flex h="100%" align="center" justify="center">
-              <Loader size="xl" color="green" />
+              <Loader size="md" color="green" />
             </Flex>
           ) : displayedTickets.length === 0 ? (
-            <Flex h="100%" align="center" justify="center" px="md">
-              <Text c="dimmed">{getLanguageByKey("Nici un lead")}</Text>
+            <Flex h="100%" align="center" justify="center" px="xs">
+              <Text size="xs" c="dimmed">{getLanguageByKey("Nici un lead")}</Text>
             </Flex>
           ) : (
             <FixedSizeList
