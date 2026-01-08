@@ -78,7 +78,7 @@ export const WorkflowColumns = ({
       ref={wrapperRef}
       className="workflow-columns"
     >
-      <Flex gap="xs" w="fit-content" h="100%" pt="12px">
+      <Flex gap="6" w="fit-content" h="100%" pt="8px">
         {visibleWorkflows.map((workflow) => (
           <WorkflowColumn
             key={workflow}

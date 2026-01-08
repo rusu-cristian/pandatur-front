@@ -9,8 +9,8 @@ import { showServerError, getLanguageByKey } from "../../utils";
 import { api } from "../../../api";
 
 
-const DEFAULT_TICKET_CARD_HEIGHT = 190;
-const SPACE_BETWEEN_CARDS = 12;
+const DEFAULT_TICKET_CARD_HEIGHT = 140;
+const SPACE_BETWEEN_CARDS = 8;
 
 const priorityOrder = {
   joasă: 1,
@@ -148,10 +148,8 @@ export const WorkflowColumn = memo(({
       direction="column"
       bg="var(--crm-ui-kit-palette-background-primary)"
       style={{
-        // borderRadius: 32,
-        flex: "0 0 400px",
+        flex: "0 0 300px",
         color: "var(--crm-ui-kit-palette-text-primary)",
-        // border: "1px solid var(--crm-ui-kit-palette-border-primary)",
       }}
     >
       <WorkflowColumnHeader

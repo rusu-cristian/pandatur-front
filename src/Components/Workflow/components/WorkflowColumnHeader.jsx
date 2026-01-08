@@ -7,7 +7,7 @@ export const WorkflowColumnHeader = ({ workflow, filteredTickets }) => {
     <Box
       pos="relative"
       w="100%"
-      h="60px"
+      h="44px"
       style={{
         display: "flex",
         alignItems: "center",
@@ -20,10 +20,10 @@ export const WorkflowColumnHeader = ({ workflow, filteredTickets }) => {
         bottom={0}
         left={0}
         right={0}
-        h="4px"
+        h="3px"
         style={{
           backgroundColor: getBrightByWorkflowType(workflow, ""),
-          borderRadius: "2px",
+          borderRadius: "1px",
         }}
       />
 
@@ -31,8 +31,8 @@ export const WorkflowColumnHeader = ({ workflow, filteredTickets }) => {
       <Flex
         direction="column"
         align="center"
-        p="12px"
-        gap="4px"
+        p="6px"
+        gap="2px"
         style={{
           zIndex: 1,
           position: "relative",
@@ -41,7 +41,7 @@ export const WorkflowColumnHeader = ({ workflow, filteredTickets }) => {
         <Text
           fw="bold"
           c="var(--crm-ui-kit-palette-text-primary)"
-          size="xl"
+          size="sm"
           ta="center"
         >
           {getLanguageByKey(workflow)}
@@ -50,9 +50,9 @@ export const WorkflowColumnHeader = ({ workflow, filteredTickets }) => {
         <Text
           fw="bold"
           c="var(--crm-ui-kit-palette-text-secondary-light)"
-          size="md"
+          size="xs"
           ta="center"
-          pb={"6px"}
+          pb={"2px"}
         >
           {filteredTickets.length} leads
         </Text>

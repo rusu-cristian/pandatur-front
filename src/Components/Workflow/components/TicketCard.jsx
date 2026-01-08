@@ -139,9 +139,9 @@ export const TicketCard = memo(({
     <a href={ticketUrl} onClick={handleCardClick} style={{ textDecoration: 'none' }}>
       <Card
         withBorder
-        radius="md"
+        radius="sm"
         pos="relative"
-        p="8px"
+        p="12px"
         className={isMyTicket ? "ticket-card-my-ticket" : ""}
         style={{
           color: "var(--crm-ui-kit-palette-text-primary)",
@@ -167,8 +167,8 @@ export const TicketCard = memo(({
                   <div
                     style={{
                       position: "absolute",
-                      right: "16px",
-                      top: "16px",
+                      right: "6px",
+                      top: "6px",
                       zIndex: 10,
                       pointerEvents: "auto"
                     }}
@@ -181,7 +181,7 @@ export const TicketCard = memo(({
                       e.stopPropagation();
                     }}
                   >
-                    <Menu shadow="md">
+                    <Menu>
                       <Menu.Target>
                         <ActionIcon
                           variant="default"
@@ -236,10 +236,10 @@ export const TicketCard = memo(({
           )}
         </Can>
 
-        <Box p={4} pos="relative">
+        <Box p={2} pos="relative">
           {/* Фото и основная информация */}
-          <Flex align="flex-start" gap="xs" >
-            <Box w="48" h="48" style={{ flexShrink: 0, borderRadius: '50%', overflow: 'hidden' }}>
+          <Flex align="flex-start" gap="6">
+            <Box w="32" h="32" style={{ flexShrink: 0, borderRadius: '50%', overflow: 'hidden' }}>
               <Image
                 src={photoUrl}
                 fallbackSrc={DEFAULT_PHOTO}
@@ -254,11 +254,12 @@ export const TicketCard = memo(({
                   <Text
                     fw="600"
                     c="var(--crm-ui-kit-palette-text-primary)"
-                    size="sm"
+                    size="xs"
                     style={{
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap'
+                      whiteSpace: 'nowrap',
+                      fontSize: '12px'
                     }}
                   >
                     {ticket.contact}
@@ -268,7 +269,7 @@ export const TicketCard = memo(({
                   size="xs"
                   c="var(--crm-ui-kit-palette-text-secondary-light)"
                   style={{
-                    fontSize: '12px',
+                    fontSize: '10px',
                     flexShrink: 0
                   }}
                 >
@@ -280,20 +281,20 @@ export const TicketCard = memo(({
               <Text
                 size="xs"
                 c="var(--crm-ui-kit-palette-text-secondary-dark)"
-                style={{ fontSize: '14px', marginTop: '2px' }}
+                style={{ fontSize: '11px', marginTop: '1px' }}
               >
                 {parseServerDate(ticket.creation_date)?.format(YYYY_MM_DD)}
               </Text>
 
               {/* Информация о контракте */}
               {(ticket.contract_date || ticket.contract_number) && (
-                <Flex align="center" gap="8" style={{ marginTop: '4px' }}>
+                <Flex align="center" gap="6" style={{ marginTop: '2px' }}>
                   {ticket.contract_number && (
                     <Text
                       size="xs"
                       c="var(--crm-ui-kit-palette-text-primary)"
                       fw={500}
-                      style={{ fontSize: '12px' }}
+                      style={{ fontSize: '10px' }}
                     >
                       {getLanguageByKey("Contract") || "Contract"}: {ticket.contract_number}
                     </Text>
@@ -302,7 +303,7 @@ export const TicketCard = memo(({
                     <Text
                       size="xs"
                       c="var(--crm-ui-kit-palette-text-secondary-dark)"
-                      style={{ fontSize: '12px' }}
+                      style={{ fontSize: '10px' }}
                     >
                       {parseServerDate(ticket.contract_date)?.format(YYYY_MM_DD)}
                     </Text>
@@ -315,7 +316,7 @@ export const TicketCard = memo(({
           {/* Last messages */}
           {ticket.last_message && (
             <Text
-              pt="4px"
+              pt="2px"
               size="xs"
               c={
                 isClientLastMessage
@@ -328,10 +329,10 @@ export const TicketCard = memo(({
                 display: '-webkit-box',
                 WebkitLineClamp: 2,
                 WebkitBoxOrient: 'vertical',
-                lineHeight: '1.4',
-                fontSize: '14px',
+                lineHeight: '1.3',
+                fontSize: '11px',
                 fontWeight: isClientLastMessage ? '700' : '300',
-                letterSpacing: "0.5px",
+                letterSpacing: "0.3px",
                 textAlign: isClientLastMessage ? 'left' : 'right',
               }}
             >
@@ -339,9 +340,8 @@ export const TicketCard = memo(({
                 <span
                   style={{
                     color: '#2e7d32',
-                    // color:"ff0000",
                     fontWeight: 700,
-                    marginRight: '4px'
+                    marginRight: '3px'
                   }}
                 >
                   {clientLabel}:
@@ -353,7 +353,7 @@ export const TicketCard = memo(({
 
           {/* Tags */}
           {ticket.tags && (
-            <Flex gap="4" wrap="wrap" style={{ marginTop: '4px' }}>
+            <Flex gap="3" wrap="wrap" style={{ marginTop: '2px' }}>
               {renderedTags}
             </Flex>
           )}
@@ -362,17 +362,17 @@ export const TicketCard = memo(({
           <Flex justify="space-between" align="center">
             {/* Ответственный (Responsabil lead) */}
             {technician?.label ? (
-              <Flex align="center" gap="4">
-                <FaHeadphones size={12} color="var(--crm-ui-kit-palette-text-secondary-light)" />
+              <Flex align="center" gap="3">
+                <FaHeadphones size={10} color="var(--crm-ui-kit-palette-text-secondary-light)" />
                 <Text
-                  size="sm"
+                  size="xs"
                   c="var(--crm-ui-kit-palette-text-primary)"
                   fw={600}
                   style={{
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
-                    fontSize: '12px'
+                    fontSize: '10px'
                   }}
                 >
                   {technician.label}
@@ -408,12 +408,12 @@ export const TicketCard = memo(({
               return (
                 <text
                   style={{
-                    fontSize: '16px',
-                    fontWeight: '700',
+                    fontSize: '11px',
+                    fontWeight: '600',
                     color: taskColor,
                     backgroundColor: 'transparent',
-                    padding: hasTasks ? '2px 6px' : '0',
-                    borderRadius: hasTasks ? '4px' : '0'
+                    padding: hasTasks ? '1px 4px' : '0',
+                    borderRadius: hasTasks ? '3px' : '0'
                   }}
                 >
                   {hasTasks ? `${taskCount} tasks` : 'No tasks'}
