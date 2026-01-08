@@ -73,30 +73,30 @@ export const Logs = () => {
 
   const rcColumn = [
     {
-      width: 70,
+      width: 50,
       key: "id",
       title: "ID",
       dataIndex: "id",
       align: "center",
     },
     {
-      width: 160,
+      width: 120,
       key: "timestamp",
       title: getLanguageByKey("Data și ora log-ului"),
       dataIndex: "timestamp",
       align: "center",
       render: (timestamp) =>
-        <DateCell gap="8" direction="row" date={timestamp} justify="center" />,
+        <DateCell gap="4" direction="row" date={timestamp} justify="center" />,
     },
     {
-      width: 220,
+      width: 150,
       key: "user_identifier",
       title: getLanguageByKey("Identificator utilizator"),
       dataIndex: "user_identifier",
       align: "center",
     },
     {
-      width: 180,
+      width: 120,
       key: "event",
       title: getLanguageByKey("LogEvent"),
       dataIndex: "object",
@@ -107,7 +107,7 @@ export const Logs = () => {
           : record.event || cleanValue(),
     },
     {
-      width: 500,
+      width: 350,
       key: "changes",
       title: getLanguageByKey("Detalii"),
       dataIndex: "data",
@@ -122,12 +122,12 @@ export const Logs = () => {
           return (
             <Box>
               {hasObjInfo && (
-                <Text size="md" mb={4}>
+                <Text size="xs" mb={2}>
                   <b>{getLanguageByKey("Tip:")}</b> {obj.type ? obj.type : "-"}<b> </b>
                   <b>{getLanguageByKey("ID obiect:")}</b> {objectIdLabel}{" "}
                 </Text>
               )}
-              <Text size="md">{getLanguageByKey("Fără modificări")}</Text>
+              <Text size="xs">{getLanguageByKey("Fără modificări")}</Text>
             </Box>
           );
         }
@@ -136,31 +136,31 @@ export const Logs = () => {
           return (
             <Box>
               {hasObjInfo && (
-                <Text size="md" mb={4}>
+                <Text size="xs" mb={2}>
                   <b>{getLanguageByKey("Tip:")}</b> {obj.type ? obj.type : "-"}<b> </b>
                   <b>{getLanguageByKey("ID obiect:")}</b> {objectIdLabel}{" "}
                 </Text>
               )}
-              <Text size="md">{getLanguageByKey("Fără modificări")}</Text>
+              <Text size="xs">{getLanguageByKey("Fără modificări")}</Text>
             </Box>
           );
         }
         return (
           <Box>
             {hasObjInfo && (
-              <Text size="md" mb={4}>
+              <Text size="xs" mb={2}>
                 <b>{getLanguageByKey("Tip:")}</b> {obj.type ? obj.type : "-"}<b> </b>
                 <b>{getLanguageByKey("ID obiect:")}</b> {objectIdLabel}{" "}
               </Text>
             )}
             {changes.map((ch, i) =>
-              <Text size="md" key={i}>
+              <Text size="xs" key={i}>
                 <b>{ch.field}:</b>{" "}
                 <span style={{ color: "#ef4444" }}>{String(ch.from)}</span>
                 <span style={{
                   fontWeight: 700,
                   color: "var(--crm-ui-kit-palette-text-secondary-light)",
-                  margin: "0 6px"
+                  margin: "0 4px"
                 }}>→</span>
                 <span style={{ color: "#22c55e" }}>{String(ch.to)}</span>
               </Text>
@@ -172,7 +172,7 @@ export const Logs = () => {
   ];
 
   return (
-    <Box h="100%" style={{ display: 'flex', flexDirection: 'column', padding: 'var(--page-padding)' }}>
+    <Box h="100%" style={{ display: 'flex', flexDirection: 'column', padding: '15px 15px 0 15px' }}>
       <PageHeader
         title={getLanguageByKey("logs")}
         count={totalItems}
@@ -180,18 +180,18 @@ export const Logs = () => {
           <>
             <ActionIcon
               variant={isFilterActive(filters) ? "filled" : "default"}
-              size="36"
+              size="md"
               onClick={() => setFilterModalOpen(true)}
               title={getLanguageByKey("Filter")}
             >
-              <LuFilter size={16} />
+              <LuFilter size={14} />
             </ActionIcon>
             <TextInput
-              w={350}
+              size="xs"
+              w={220}
               placeholder={getLanguageByKey("Search text")}
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="min-w-300"
             />
           </>
         }
@@ -210,17 +210,19 @@ export const Logs = () => {
         </Flex>
       ) : (
         <Box style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
-          <Box style={{ flex: 1, overflow: 'auto' }}>
+          <Box style={{ flex: 1, overflow: 'auto', height: 'calc(45vh - 50px)' }}>
             <RcTable
               bordered
+              style={{ height: '100%' }}
               rowKey="id"
               columns={rcColumn}
               data={logList}
+              scroll={{ y: '100%' }}
             />
           </Box>
           <Flex
-            pt="16"
-            pb="16"
+            pt={12}
+            pb={12}
             justify="center"
             style={{
               borderTop: "1px solid var(--crm-ui-kit-palette-border-primary)",
@@ -228,6 +230,7 @@ export const Logs = () => {
             }}
           >
             <Pagination
+              size="xs"
               total={pagination.totalPages}
               value={pagination.currentPage}
               onChange={(page) =>

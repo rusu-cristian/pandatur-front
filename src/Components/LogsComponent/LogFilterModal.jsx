@@ -137,6 +137,7 @@ export const LogFilterModal = ({ opened, onClose, filters = {}, onApply }) => {
                         techniciansData={formattedTechnicians}
                         mode="multi"
                         disabled={loadingTechnicians}
+                        size="xs"
                     />
                     <MultiSelect
                         data={translatedEventOptions}
@@ -145,6 +146,7 @@ export const LogFilterModal = ({ opened, onClose, filters = {}, onApply }) => {
                         {...form.getInputProps("event")}
                         searchable
                         clearable
+                        size="xs"
                     />
                     <MultiSelect
                         data={translatedTypeOptions}
@@ -153,6 +155,7 @@ export const LogFilterModal = ({ opened, onClose, filters = {}, onApply }) => {
                         {...form.getInputProps("type")}
                         searchable
                         clearable
+                        size="xs"
                     />
                     <Flex gap={8} direction="row">
                         <DatePickerInput
@@ -162,6 +165,7 @@ export const LogFilterModal = ({ opened, onClose, filters = {}, onApply }) => {
                             valueFormat="DD-MM-YYYY"
                             style={{ flex: 1 }}
                             clearable
+                            size="xs"
                         />
                         <DatePickerInput
                             label={getLanguageByKey("Date to")}
@@ -170,6 +174,7 @@ export const LogFilterModal = ({ opened, onClose, filters = {}, onApply }) => {
                             valueFormat="DD-MM-YYYY"
                             style={{ flex: 1 }}
                             clearable
+                            size="xs"
                         />
                     </Flex>
                     <Flex gap={8}>
@@ -178,18 +183,21 @@ export const LogFilterModal = ({ opened, onClose, filters = {}, onApply }) => {
                             placeholder={getLanguageByKey("Field name (example: status)") || "Field name (example: status)"}
                             {...form.getInputProps("data_changes_key")}
                             style={{ flex: 1 }}
+                            size="xs"
                         />
                         <TextInput
                             label={getLanguageByKey("Before value") || "Before value"}
                             placeholder={getLanguageByKey("Old value (optional)") || "Old value (optional)"}
                             {...form.getInputProps("data_changes_before")}
                             style={{ flex: 1 }}
+                            size="xs"
                         />
                         <TextInput
                             label={getLanguageByKey("After value") || "After value"}
                             placeholder={getLanguageByKey("New value (optional)") || "New value (optional)"}
                             {...form.getInputProps("data_changes_after")}
                             style={{ flex: 1 }}
+                            size="xs"
                         />
                     </Flex>
                 </Flex>
@@ -203,10 +211,10 @@ export const LogFilterModal = ({ opened, onClose, filters = {}, onApply }) => {
                         borderTop: "1px solid var(--mantine-color-gray-3)",
                     }}
                 >
-                    <Button variant="outline" onClick={handleReset}>
+                    <Button size="xs" variant="outline" onClick={handleReset}>
                         {getLanguageByKey("Reset")}
                     </Button>
-                    <Button type="submit">
+                    <Button size="xs" type="submit">
                         {getLanguageByKey("Apply")}
                     </Button>
                 </Flex>
