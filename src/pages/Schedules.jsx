@@ -22,7 +22,8 @@ export const Schedules = () => {
           extraInfo={
             <Can permission={{ module: "schedules", action: "create" }} skipContextCheck>
               <Button
-                leftSection={<IoMdAdd size={16} />}
+                size="xs"
+                leftSection={<IoMdAdd size={14} />}
                 ml="auto"
                 onClick={() => setOpened(true)}
               >

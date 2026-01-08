@@ -112,7 +112,7 @@ const ModalGroup = ({
       }
       position="right"
       padding="md"
-      size="md"
+      size="xs"
     >
       <TextInput
         label={translations["Nume grup"][language]}
@@ -120,6 +120,7 @@ const ModalGroup = ({
         value={groupName}
         onChange={(e) => setGroupName(e.target.value)}
         mb="md"
+        size="xs"
       />
       <UserGroupMultiSelect
         label={translations["Team Lead"][language]}
@@ -130,6 +131,7 @@ const ModalGroup = ({
         mode="single"
         disabled={loading}
         mb="md"
+        size="xs"
       />
       <UserGroupMultiSelect
         label={translations["Utilizatori"][language]}
@@ -139,9 +141,10 @@ const ModalGroup = ({
         techniciansData={formattedTechnicians}
         mode="multi"
         disabled={loading}
+        size="xs"
       />
       <Group mt="md" position="right">
-        <Button onClick={handleSubmit}>
+        <Button onClick={handleSubmit} size="xs">
           {isEditMode
             ? translations["Salvează"][language]
             : translations["Creează"][language]}

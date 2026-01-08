@@ -1,26 +1,27 @@
 .schedule-container {
   height: 100%;
-  padding: 20px;
+  padding: 12px;
   background-color: var(--crm-ui-kit-palette-background-default);
   color: var(--crm-ui-kit-palette-text-primary);
 }
 
 .week-navigation {
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   color: var(--crm-ui-kit-palette-text-primary);
+  font-size: 12px;
 }
 
 .week-navigation button {
   background-color: var(--crm-ui-kit-palette-link-primary);
   color: white;
   border: none;
-  padding: 10px 15px;
-  border-radius: 5px;
+  padding: 6px 10px;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 11px;
   transition: background-color 0.3s ease;
 }
 
@@ -40,7 +41,7 @@
 
 .schedule-table {
   border-collapse: collapse;
-  margin-top: 20px;
+  margin-top: 12px;
   table-layout: fixed;
   width: 100%;
   min-width: fit-content;
@@ -50,11 +51,11 @@
 .schedule-table th,
 .schedule-table td {
   border: 1px solid var(--crm-ui-kit-palette-border-default);
-  padding: 10px;
+  padding: 6px;
   text-align: center;
-  font-size: 14px;
-  height: 50px;
-  min-width: 140px;
+  font-size: 11px;
+  height: 36px;
+  min-width: 100px;
   word-break: break-word;
   color: var(--crm-ui-kit-palette-text-primary);
 }
@@ -62,7 +63,7 @@
 .schedule-table th {
   background-color: var(--crm-ui-kit-palette-link-primary);
   color: white;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .userGroup-input-container {
@@ -105,27 +106,27 @@
 
 .time-inputs label {
   display: block;
-  font-size: 16px;
+  font-size: 12px;
   color: #ffffff;
 }
 
 .time-inputs input {
-  margin-left: 10px;
-  padding: 8px 16px;
+  margin-left: 8px;
+  padding: 6px 12px;
   border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 16px;
+  border-radius: 4px;
+  font-size: 12px;
 }
 
 .shift-editor button {
   background-color: #28a745;
   color: white;
   border: none;
-  padding: 10px 15px;
-  border-radius: 5px;
+  padding: 6px 10px;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
-  margin-right: 10px;
+  font-size: 11px;
+  margin-right: 8px;
   transition: background-color 0.3s ease;
 }
 
@@ -211,7 +212,7 @@
 
 .header-component {
   display: flex;
-  font-size: 36px;
+  font-size: 20px;
   align-items: center;
   text-align: center;
   justify-content: center;

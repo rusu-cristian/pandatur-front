@@ -148,8 +148,8 @@ const ScheduleView = ({ groupUsers, groupName, groupId, onGroupUpdate }) => {
           style={{
             textAlign: "center",
             fontWeight: 500,
-            fontSize: 18,
-            marginTop: 4,
+            fontSize: 14,
+            marginTop: 2,
           }}
         >
           {groupName}
@@ -179,10 +179,11 @@ const ScheduleView = ({ groupUsers, groupName, groupId, onGroupUpdate }) => {
         context={{ responsibleId: supervisorId }}
       >
         <Button
+          size="xs"
           fullWidth
           variant="outline"
           color="blue"
-          style={{ marginTop: 20 }}
+          style={{ marginTop: 12 }}
           onClick={openGroupModal}
         >
           {translations["Modifică grupul"][language]}
@@ -193,8 +194,9 @@ const ScheduleView = ({ groupUsers, groupName, groupId, onGroupUpdate }) => {
         <table className="schedule-table">
           <thead>
             <tr>
-              <th style={{ width: 40 }}>
+              <th style={{ width: 32 }}>
                 <Checkbox
+                  size="xs"
                   color="var(--crm-ui-kit-palette-link-primary)"
                   checked={
                     selectedTechnicians.length === schedule.length &&
@@ -228,6 +230,7 @@ const ScheduleView = ({ groupUsers, groupName, groupId, onGroupUpdate }) => {
               <tr key={ei}>
                 <td>
                   <Checkbox
+                    size="xs"
                     checked={selectedTechnicians.includes(employee.id)}
                     onChange={() => toggleTechnician(employee.id)}
                     color="var(--crm-ui-kit-palette-link-primary)"

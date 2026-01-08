@@ -144,7 +144,7 @@ const SchedulesGroupList = ({ reload, setInGroupView }) => {
   if (selectedGroup) {
     return (
       <div>
-        <Button onClick={handleBack} mb="md">
+        <Button size="xs" onClick={handleBack} mb="sm">
           ← {translations["Înapoi la grupuri"][language]}
         </Button>
         <ScheduleView
@@ -171,15 +171,16 @@ const SchedulesGroupList = ({ reload, setInGroupView }) => {
       ) : (
         <>
           <TextInput
+            size="xs"
             placeholder={translations["Căutare grup"][language] || "Căutare grup"}
-            leftSection={<IoSearch size={16} />}
+            leftSection={<IoSearch size={14} />}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            mb="md"
-            style={{ maxWidth: 300 }}
+            mb="sm"
+            style={{ maxWidth: 250 }}
           />
-          <ScrollArea h="calc(130vh - 150px)" type="auto">
-            <Stack spacing="md">
+          <ScrollArea h="calc(85vh)" type="auto">
+            <Stack spacing="xs">
               {filteredGroups.map((group) => {
               const groupUsers = technicians.filter((u) =>
                 group.user_ids.includes(u.id)
@@ -189,8 +190,8 @@ const SchedulesGroupList = ({ reload, setInGroupView }) => {
                 <Card
                   key={group.id}
                   shadow="xs"
-                  padding="lg"
-                  radius="md"
+                  padding="sm"
+                  radius="sm"
                   withBorder
                   className="group-card"
                 >
@@ -199,17 +200,17 @@ const SchedulesGroupList = ({ reload, setInGroupView }) => {
                       style={{ flex: 1, cursor: "pointer" }}
                       onClick={() => handleGroupClick(group)}
                     >
-                      <Group spacing="xs" mb={10}>
-                        <Text size="md" fw={600}>
+                      <Group spacing="xs" mb={6}>
+                        <Text size="sm" fw={600}>
                           {group.name}
                         </Text>
-                        <Badge color="blue" variant="light">
+                        <Badge size="xs" color="blue" variant="light">
                           {translations["Pentru o săptămână"][language]}
                         </Badge>
                       </Group>
 
                       <Tooltip.Group openDelay={300} closeDelay={100}>
-                        <Avatar.Group spacing="sm">
+                        <Avatar.Group spacing="xs">
                           {groupUsers.slice(0, 5).map((u) => (
                             <Tooltip
                               label={
@@ -220,7 +221,7 @@ const SchedulesGroupList = ({ reload, setInGroupView }) => {
                               key={u.id}
                             >
                               <Avatar
-                                size="md"
+                                size="sm"
                                 radius="xl"
                                 src={u.photo || undefined}
                                 color="blue"
@@ -242,7 +243,7 @@ const SchedulesGroupList = ({ reload, setInGroupView }) => {
                                 </>
                               }
                             >
-                              <Avatar size="md" radius="xl" color="blue">
+                              <Avatar size="sm" radius="xl" color="blue">
                                 +{groupUsers.length - 5}
                               </Avatar>
                             </Tooltip>
@@ -251,17 +252,18 @@ const SchedulesGroupList = ({ reload, setInGroupView }) => {
                       </Tooltip.Group>
                     </div>
 
-                    <Group>
+                    <Group gap="xs">
                       <Can
                         permission={{ module: "schedules", action: "edit" }}
                         context={{ responsibleId: group.supervisor_id }}
                       >
                         <ActionIcon
+                          size="sm"
                           color="blue"
                           variant="light"
                           onClick={() => handleEdit(group)}
                         >
-                          <FaEdit />
+                          <FaEdit size={12} />
                         </ActionIcon>
                       </Can>
 
@@ -270,11 +272,12 @@ const SchedulesGroupList = ({ reload, setInGroupView }) => {
                         context={{ responsibleId: group.supervisor_id }}
                       >
                         <ActionIcon
+                          size="sm"
                           color="red"
                           variant="light"
                           onClick={() => handleClickDelete(group)}
                         >
-                          <FaTrash />
+                          <FaTrash size={12} />
                         </ActionIcon>
                       </Can>
                     </Group>
