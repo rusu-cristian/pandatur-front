@@ -174,23 +174,23 @@ export const Users = () => {
       }}
     >
       {isMobile ? (
-        <Stack gap="md" mb="md">
+        <Stack gap="xs" mb="xs">
           {/* Первый ряд: Заголовок, счетчик, три точки, фильтр */}
           <Flex align="center" justify="space-between" w="100%">
-            <Flex align="center" gap="8">
-              <Text fw={700} size="lg">
+            <Flex align="center" gap="6">
+              <Text fw={700} size="sm">
                 {getLanguageByKey("Utilizatori")}
               </Text>
-              <Badge size="md" bg="#0f824c">
+              <Badge size="xs" bg="#0f824c">
                 {filtered.length}
               </Badge>
             </Flex>
-            <Flex align="center" gap="sm">
+            <Flex align="center" gap="xs">
               {canEdit && (
-                <Menu shadow="md" width={200}>
+                <Menu shadow="md" width={160}>
                   <Menu.Target>
                     <ActionIcon size="md" variant="default">
-                      <BsThreeDots />
+                      <BsThreeDots size={14} />
                     </ActionIcon>
                   </Menu.Target>
                   <Menu.Dropdown>
@@ -209,13 +209,14 @@ export const Users = () => {
                 color={hasActiveFilters ? "custom" : "gray"}
                 size="md"
               >
-                <LuFilter size={16} />
+                <LuFilter size={14} />
               </ActionIcon>
             </Flex>
           </Flex>
 
           {/* Второй ряд: Поиск */}
           <TextInput
+            size="sm"
             placeholder={getLanguageByKey("Căutare utilizator")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -226,7 +227,8 @@ export const Users = () => {
           {/* Третий ряд: Кнопка добавления */}
           {canCreateUser && (
             <Button
-              leftSection={<IoMdAdd size={16} />}
+              size="sm"
+              leftSection={<IoMdAdd size={12} />}
               onClick={() => {
                 setEditUser(null);
                 setModals((m) => ({ ...m, user: true }));
@@ -244,10 +246,10 @@ export const Users = () => {
           extraInfo={
             <>
               {canEdit && (
-                <Menu shadow="md" width={200}>
+                <Menu shadow="md" width={160}>
                   <Menu.Target>
-                    <ActionIcon size="lg" variant="default">
-                      <BsThreeDots />
+                    <ActionIcon size="md" variant="default">
+                      <BsThreeDots size={12} />
                     </ActionIcon>
                   </Menu.Target>
                   <Menu.Dropdown>
@@ -264,22 +266,24 @@ export const Users = () => {
                 onClick={() => setModals((m) => ({ ...m, filter: true }))}
                 variant={hasActiveFilters ? "filled" : "default"}
                 color={hasActiveFilters ? "custom" : "gray"}
-                size="36"
+                size="md"
               >
-                <LuFilter size={16} />
+                <LuFilter size={14} />
               </ActionIcon>
 
               <TextInput
+                size="xs"
+                w={200}
                 placeholder={getLanguageByKey("Căutare utilizator")}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="min-w-300"
                 autoComplete="off"
               />
 
               {canCreateUser && (
                 <Button
-                  leftSection={<IoMdAdd size={16} />}
+                  size="xs"
+                  leftSection={<IoMdAdd size={12} />}
                   onClick={() => {
                     setEditUser(null);
                     setModals((m) => ({ ...m, user: true }));

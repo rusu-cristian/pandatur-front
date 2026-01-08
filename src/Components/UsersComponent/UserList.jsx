@@ -269,30 +269,28 @@ const UserList = ({
       {
         field: "id",
         headerName: getLanguageByKey("ID"),
-        width: 110,
+        width: 70,
         align: "center",
         headerAlign: "center",
-        // MUI DataGrid автоматически использует row.id (служебное поле)
-        // Оно совпадает с нашим user.id, поэтому значение отображается автоматически
       },
       {
         field: "name",
         headerName: getLanguageByKey("Nume"),
-        width: 200,
+        width: 130,
         align: "center",
         headerAlign: "center",
       },
       {
         field: "surname",
         headerName: getLanguageByKey("Prenume"),
-        width: 200,
+        width: 130,
         align: "center",
         headerAlign: "center",
       },
       {
         field: "email",
         headerName: getLanguageByKey("Email"),
-        width: 297,
+        width: 200,
         align: "center",
         headerAlign: "center",
         renderCell: (params) => {
@@ -303,6 +301,7 @@ const UserList = ({
                 wordBreak: "break-word",
                 width: "100%",
                 textAlign: "center",
+                fontSize: 12,
               }}
             >
               {params.value || "—"}
@@ -313,7 +312,7 @@ const UserList = ({
       {
         field: "groupsDisplay",
         headerName: getLanguageByKey("Grup utilizator"),
-        width: 250,
+        width: 160,
         align: "center",
         headerAlign: "center",
         renderCell: (params) => (
@@ -326,7 +325,7 @@ const UserList = ({
               alignItems: "center",
             }}
           >
-            <Typography variant="body2" sx={{ color: "text.primary" }}>
+            <Typography variant="caption" sx={{ color: "text.primary" }}>
               {params.value}
             </Typography>
           </Box>
@@ -335,7 +334,7 @@ const UserList = ({
       {
         field: "permissionsDisplay",
         headerName: getLanguageByKey("Grup permisiuni"),
-        width: 250,
+        width: 160,
         align: "center",
         headerAlign: "center",
         renderCell: (params) => (
@@ -348,7 +347,7 @@ const UserList = ({
               alignItems: "center",
             }}
           >
-            <Typography variant="body2" sx={{ color: "text.primary" }}>
+            <Typography variant="caption" sx={{ color: "text.primary" }}>
               {params.value}
             </Typography>
           </Box>
@@ -357,7 +356,7 @@ const UserList = ({
       {
         field: "jobTitleDisplay",
         headerName: getLanguageByKey("Funcție"),
-        width: 350,
+        width: 200,
         align: "center",
         headerAlign: "center",
         renderCell: (params) => (
@@ -370,7 +369,7 @@ const UserList = ({
               alignItems: "center",
             }}
           >
-            <Typography variant="body2" sx={{ color: "text.primary" }}>
+            <Typography variant="caption" sx={{ color: "text.primary" }}>
               {params.value}
             </Typography>
           </Box>
@@ -380,7 +379,7 @@ const UserList = ({
         field: "departmentDisplay",
         headerName:
           translations["Departament"]?.[language] || "Departament",
-        width: 250,
+        width: 150,
         align: "center",
         headerAlign: "center",
         renderCell: (params) => (
@@ -393,7 +392,7 @@ const UserList = ({
               alignItems: "center",
             }}
           >
-            <Typography variant="body2" sx={{ color: "text.primary" }}>
+            <Typography variant="caption" sx={{ color: "text.primary" }}>
               {params.value}
             </Typography>
           </Box>
@@ -402,7 +401,7 @@ const UserList = ({
       {
         field: "status",
         headerName: getLanguageByKey("Status"),
-        width: 110,
+        width: 80,
         align: "center",
         headerAlign: "center",
         renderCell: (params) => {
@@ -419,7 +418,7 @@ const UserList = ({
                 },
               }}
             >
-              <Typography variant="body2" sx={{ color: "text.primary" }}>
+              <Typography variant="caption" sx={{ color: "text.primary" }}>
                 {params.value
                   ? getLanguageByKey("Activ")
                   : getLanguageByKey("Inactiv")}
@@ -431,7 +430,7 @@ const UserList = ({
       {
         field: "sipuni_id",
         headerName: "Sipuni ID",
-        width: 100,
+        width: 70,
         align: "center",
         headerAlign: "center",
         renderCell: (params) => {
@@ -444,7 +443,7 @@ const UserList = ({
               alignItems: "center",
             }}
           >
-            <Typography variant="body2" sx={{ color: "text.primary" }}>
+            <Typography variant="caption" sx={{ color: "text.primary" }}>
               {params.value || "—"}
             </Typography>
           </Box>
@@ -457,7 +456,7 @@ const UserList = ({
         field: "actions",
         type: "actions",
         headerName: getLanguageByKey("Acțiune"),
-        width: 100,
+        width: 70,
         align: "center",
         headerAlign: "center",
         getActions: (params) => {
@@ -525,9 +524,9 @@ const UserList = ({
       {selectedIds.length > 0 && (
         <Box
           sx={{
-            mb: 2,
+            mb: 1,
             display: "flex",
-            gap: 1,
+            gap: 0.5,
             flexWrap: "wrap",
           }}
         >
@@ -535,8 +534,9 @@ const UserList = ({
             <Button
               variant="outlined"
               onClick={handleToggleStatusSelected}
-              size="medium"
+              size="small"
               sx={{
+                fontSize: 11,
                 borderColor: "var(--crm-ui-kit-palette-link-primary)",
                 color: "var(--crm-ui-kit-palette-link-primary)",
                 "&:hover": {
@@ -555,8 +555,9 @@ const UserList = ({
             <Button
               variant="contained"
               onClick={() => setGroupModalOpen(true)}
-              size="medium"
+              size="small"
               sx={{
+                fontSize: 11,
                 backgroundColor: "var(--crm-ui-kit-palette-link-primary)",
                 color: "#fff",
                 "&:hover": {
@@ -573,8 +574,9 @@ const UserList = ({
             <Button
               variant="contained"
               onClick={() => setPermissionModalOpen(true)}
-              size="medium"
+              size="small"
               sx={{
+                fontSize: 11,
                 backgroundColor: "var(--crm-ui-kit-palette-link-primary)",
                 color: "#fff",
                 "&:hover": {
@@ -591,8 +593,9 @@ const UserList = ({
             <Button
               variant="contained"
               onClick={() => handleDeleteUsersWithConfirm(selectedIds)}
-              size="medium"
+              size="small"
               sx={{
+                fontSize: 11,
                 backgroundColor: "#ef4444",
                 color: "#fff",
                 "&:hover": {
@@ -619,9 +622,14 @@ const UserList = ({
       />
 
       <ThemeProvider theme={darkTheme}>
-        <div style={{ height: "calc(120vh)", width: "100%" }}>
+        <div style={{ height: "calc(100vh - 90px)", width: "100%" }}>
           <DataGrid
+            density="compact"
             sx={{
+              fontSize: 11,
+              "& .MuiDataGrid-columnHeaderTitle": {
+                fontSize: 11,
+              },
               "& .MuiDataGrid-footerContainer": {
                 display: "flex",
                 justifyContent: "center",

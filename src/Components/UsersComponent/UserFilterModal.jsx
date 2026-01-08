@@ -110,6 +110,7 @@ const UserFilterModal = ({ opened, onClose, onApply, users }) => {
                         onChange={(val) => updateFilter("group", val)}
                         clearable
                         searchable
+                        size="xs"
                     />
 
                     <MultiSelect
@@ -120,6 +121,7 @@ const UserFilterModal = ({ opened, onClose, onApply, users }) => {
                         onChange={(val) => updateFilter("role", val)}
                         clearable
                         searchable
+                        size="xs"
                     />
 
                     <Select
@@ -130,6 +132,7 @@ const UserFilterModal = ({ opened, onClose, onApply, users }) => {
                         onChange={(val) => updateFilter("status", val)}
                         clearable
                         searchable
+                        size="xs"
                     />
 
                     <Select
@@ -140,14 +143,15 @@ const UserFilterModal = ({ opened, onClose, onApply, users }) => {
                         onChange={(val) => updateFilter("functie", val)}
                         clearable
                         searchable
+                        size="xs"
                     />
                 </Flex>
 
                 <Group pt={16} pb={8} justify="flex-end" style={{ borderTop: "1px solid var(--mantine-color-gray-3)", padding: "1rem 0.5rem 0.5rem" }}>
-                    <Button variant="outline" onClick={resetFilters}>
+                    <Button size="xs" variant="outline" onClick={resetFilters}>
                         {translations["Reset filtru"][language]}
                     </Button>
-                    <Button onClick={applyFilters}>
+                    <Button size="xs" onClick={applyFilters}>
                         {translations["Aplică"][language]}
                     </Button>
                 </Group>

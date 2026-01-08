@@ -498,7 +498,7 @@ const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
 
   // Кнопка сохранения, зафиксированная вверху
   const saveButton = (
-    <Button fullWidth onClick={handleCreate} loading={isSubmitting}>
+    <Button fullWidth onClick={handleCreate} loading={isSubmitting} size="xs">
       {initialUser
         ? getLanguageByKey("Salvează")
         : getLanguageByKey("Creează")}
@@ -623,7 +623,7 @@ const UserModal = ({ opened, onClose, onUserCreated, initialUser = null }) => {
           : getLanguageByKey("Adaugă utilizator")
       }
       padding="lg"
-      size="lg"
+      size="md"
       styles={{
         body: {
           display: 'flex',
