@@ -8,7 +8,7 @@
     padding: 8px 12px;
     border-radius: 4px;
     font-size: 14px;
-    width: 599px;
+    width: 100%;
 }
 
 .DateRangePicker .react-datepicker__input-container input::placeholder {
