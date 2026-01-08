@@ -327,6 +327,7 @@ const TaskFilterModal = ({ opened, onClose, filters, onApply }) => {
             clearable={false}
             searchable
             disabled={accessibleGroupTitles.length === 1}
+            size="xs"
           />
 
           <WorkflowMultiSelect
@@ -337,6 +338,7 @@ const TaskFilterModal = ({ opened, onClose, filters, onApply }) => {
             onChange={(val) => handleChange("workflows", val)}
             selectAllLabel={translations["selectAll"]?.[language] || "Selectează tot"}
             clearable
+            size="xs"
           />
 
           <MultiSelect
@@ -349,6 +351,7 @@ const TaskFilterModal = ({ opened, onClose, filters, onApply }) => {
             searchable
             nothingFoundMessage={translations["noResult"][language]}
             disabled={loadingTechnicians}
+            size="xs"
           />
 
           <UserGroupMultiSelect
@@ -381,6 +384,7 @@ const TaskFilterModal = ({ opened, onClose, filters, onApply }) => {
             placeholder={translations["Tipul Taskului"][language]}
             clearable
             searchable
+            size="xs"
           />
 
           <MultiSelect
@@ -392,6 +396,7 @@ const TaskFilterModal = ({ opened, onClose, filters, onApply }) => {
             clearable
             searchable
             nothingFoundMessage={translations["noResult"][language]}
+            size="xs"
           />
 
           <Select
@@ -413,14 +418,15 @@ const TaskFilterModal = ({ opened, onClose, filters, onApply }) => {
               )
             }
             clearable
+            size="xs"
           />
         </Flex>
 
         <Group pt={16} pb={8} justify="flex-end" style={{ borderTop: "1px solid var(--mantine-color-gray-3)" }}>
-          <Button variant="outline" onClick={handleClear}>
+          <Button size="xs" variant="outline" onClick={handleClear}>
             {translations["Reset filtru"][language]}
           </Button>
-          <Button onClick={handleApply}>
+          <Button size="xs" onClick={handleApply}>
             {translations["Aplică"][language]}
           </Button>
         </Group>

@@ -1,6 +1,5 @@
 import { useState, useMemo } from "react";
 import { RcTable } from "../../RcTable";
-import { FaFingerprint } from "react-icons/fa6";
 import { translations } from "../../utils/translations";
 import { TypeTask } from "../OptionsTaskType";
 import { useSnackbar } from "notistack";
@@ -124,10 +123,10 @@ const TaskList = ({
   const ActionMenu = ({ row }) => {
     const isSameTeam = useSameTeamChecker(String(row.created_for));
     return (
-      <Menu shadow="md" width={200} position="bottom-end">
+      <Menu shadow="md" width={160} position="bottom-end">
         <Menu.Target>
-          <Button variant="default" className="action-button-task" size="xs" p="xs">
-            <IoEllipsisHorizontal size={18} />
+          <Button variant="default" className="action-button-task" size="xs" p="4">
+            <IoEllipsisHorizontal size={14} />
           </Button>
         </Menu.Target>
         <Menu.Dropdown>
@@ -136,7 +135,7 @@ const TaskList = ({
             context={{ responsibleId: String(row.created_for), currentUserId, isSameTeam }}
           >
             <Menu.Item
-              leftSection={<IoCheckmarkCircle size={16} />}
+              leftSection={<IoCheckmarkCircle size={14} />}
               onClick={() => !row.status && handleMarkTaskAsComplete(row.id)}
               disabled={row.status}
               style={row.status ? { opacity: 0.5, cursor: "not-allowed" } : {}}
@@ -145,7 +144,7 @@ const TaskList = ({
             </Menu.Item>
 
             <Menu.Item
-              leftSection={<IoPencil size={16} />}
+              leftSection={<IoPencil size={14} />}
               onClick={() => openEditTask(row)}
             >
               {translations["Modificați"][language]}
@@ -157,7 +156,7 @@ const TaskList = ({
             context={{ responsibleId: String(row.created_for), currentUserId, isSameTeam }}
           >
             <Menu.Item
-              leftSection={<IoTrash size={16} />}
+              leftSection={<IoTrash size={14} />}
               onClick={() => handleDeleteTask(row.id)}
               color="red"
             >
@@ -174,19 +173,21 @@ const TaskList = ({
   const columns = useMemo(
     () => [
       {
-        width: 50,
+        width: 40,
         key: "checkbox",
         align: "center",
         title: (
           <Checkbox
+            size="xs"
             checked={allSelected}
             indeterminate={selectedRow.length > 0 && selectedRow.length < tasks.length ? true : undefined}
             onChange={() => { setSelectedRow(allSelected ? [] : tasks.map((t) => t.id)); }}
             color="var(--crm-ui-kit-palette-link-primary)"
-            />
+          />
         ),
         render: (row) => (
           <Checkbox
+            size="xs"
             checked={selectedRow.includes(row.id)}
             color="var(--crm-ui-kit-palette-link-primary)"
             onChange={() => {
@@ -203,10 +204,10 @@ const TaskList = ({
         title: translations["ID"][language],
         dataIndex: "id",
         key: "id",
-        width: 80,
+        width: 60,
         align: "center",
         render: (id) => (
-          <Text size="sm" fw={600} c="blue">
+          <Text size="xs" fw={600} c="blue">
             #{id}
           </Text>
         ),
@@ -215,7 +216,7 @@ const TaskList = ({
         title: translations["Deadline"][language],
         dataIndex: "scheduled_time",
         key: "scheduled_time",
-        width: 180,
+        width: 130,
         align: "center",
         render: (value) => {
           const d = toDate(value);
@@ -228,7 +229,7 @@ const TaskList = ({
           const color = isPast ? "#ef4444" : isToday ? "#22c55e" : "var(--crm-ui-kit-palette-text-primary)";
 
           return (
-            <span style={{ color, fontWeight: 500 }}>
+            <span style={{ color, fontWeight: 500, fontSize: '11px' }}>
               {parsed.format("DD.MM.YYYY HH:mm")}
             </span>
           );
@@ -238,7 +239,7 @@ const TaskList = ({
         title: translations["Autor"][language],
         dataIndex: "creator_by_full_name",
         key: "creator_by_full_name",
-        width: 150,
+        width: 110,
         align: "center",
         render: (_, row) => row.creator_by_full_name || `ID: ${row.created_by}`,
       },
@@ -246,7 +247,7 @@ const TaskList = ({
         title: translations["Responsabil"][language],
         dataIndex: "created_for_full_name",
         key: "created_for_full_name",
-        width: 150,
+        width: 110,
         align: "center",
         render: (_, row) => row.created_for_full_name || `ID: ${row.created_for}`,
       },
@@ -254,7 +255,7 @@ const TaskList = ({
         title: translations["Lead ID"][language],
         dataIndex: "ticket_id",
         key: "ticket_id",
-        width: 120,
+        width: 80,
         align: "center",
         render: (ticketId) => (
           <Link
@@ -262,11 +263,11 @@ const TaskList = ({
             style={{
               textDecoration: 'underline',
               color: '#007bff',
-              fontWeight: 'bold'
+              fontWeight: 600,
+              fontSize: '11px'
             }}
           >
-            <Flex justify="center" gap="8" align="center">
-              <FaFingerprint />
+            <Flex justify="center" gap="4" align="center">
               {ticketId}
             </Flex>
           </Link>
@@ -276,7 +277,7 @@ const TaskList = ({
         title: translations["Workflow"][language],
         dataIndex: "workflow",
         key: "workflow",
-        width: 160,
+        width: 120,
         align: "center",
         render: (value) => <WorkflowTag type={value} />,
       },
@@ -284,7 +285,7 @@ const TaskList = ({
         title: translations["groupTitle"][language],
         dataIndex: "group_title",
         key: "group_title",
-        width: 120,
+        width: 90,
         align: "center",
         render: (value) => <Tag type="default">{value}</Tag>,
       },
@@ -292,12 +293,12 @@ const TaskList = ({
         title: translations["Tipul Taskului"][language],
         dataIndex: "task_type",
         key: "task_type",
-        width: 180,
+        width: 140,
         align: "center",
         render: (taskType) => {
           const taskObj = TypeTask.find((task) => task.name === taskType);
           return (
-            <Tag type="processing" fontSize={16}>
+            <Tag type="processing">
               {taskObj?.icon || "❓"} {taskType}
             </Tag>
           );
@@ -307,14 +308,14 @@ const TaskList = ({
         title: translations["Descriere"][language],
         dataIndex: "description",
         key: "description",
-        width: 200,
+        width: 150,
         align: "center",
       },
       {
         title: translations["Status"][language],
         dataIndex: "status",
         key: "status",
-        width: 120,
+        width: 80,
         align: "center",
         render: (status) => (
           <Tag type={status ? "success" : "danger"}>
@@ -326,7 +327,7 @@ const TaskList = ({
         title: translations["Acțiune"][language],
         dataIndex: "action",
         key: "action",
-        width: 100,
+        width: 70,
         align: "center",
         render: (_, row) => <ActionMenu row={row} />,
       },

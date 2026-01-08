@@ -41,15 +41,15 @@ const TaskComponent = ({
   // Отдельные фильтры для kanban и list
   const [kanbanFilters, setKanbanFilters] = useState(null);
   const [listFilters, setListFilters] = useState(null);
-  
+
   // Отдельные массивы задач
   const [kanbanTasks, setKanbanTasks] = useState([]);
   const [listTasks, setListTasks] = useState([]);
-  
+
   // Пагинация только для list
   const [listCurrentPage, setListCurrentPage] = useState(1);
   const [listTotalPages, setListTotalPages] = useState(1);
-  
+
   const [searchInput, setSearchInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState("columns");
@@ -129,7 +129,7 @@ const TaskComponent = ({
       workflows: workflowOptions,
       status: false,
     };
-    
+
     if (!kanbanFilters) {
       setKanbanFilters(defaultFilters);
     }
@@ -168,19 +168,19 @@ const TaskComponent = ({
         const filterCreatedFor = Array.isArray(value) ? value : [];
         return JSON.stringify(filterCreatedFor.sort()) !== JSON.stringify(defaultCreatedFor.sort());
       }
-      
+
       // Проверка для массивов
       if (Array.isArray(value)) {
         return value.length > 0;
       }
-      
+
       // Проверка для булевых значений (status)
       if (typeof value === "boolean") {
         // status: false - это значение по умолчанию, не считается активным фильтром
         // status: true - это активный фильтр
         return value === true;
       }
-      
+
       // Проверка для других значений
       return value !== null && value !== undefined && value !== "";
     })
@@ -192,16 +192,17 @@ const TaskComponent = ({
         title={translations["Tasks"][language]}
         count={currentTasks.length}
         extraInfo={
-          <Group gap="sm">
+          <Group gap="md">
             <ActionIcon
-              size="36"
+              size="md"
               variant={hasActiveFilters ? "filled" : "default"}
               onClick={() => setFilterModalOpen(true)}
             >
-              <LuFilter size={16} />
+              <LuFilter size={14} />
             </ActionIcon>
 
             <SegmentedControl
+              size="xs"
               value={viewMode}
               onChange={setViewMode}
               data={[
@@ -210,7 +211,7 @@ const TaskComponent = ({
                   label: (
                     <Tooltip label={translations["columnView"][language]}>
                       <span>
-                        <TbLayoutKanbanFilled size={16} />
+                        <TbLayoutKanbanFilled size={14} />
                       </span>
                     </Tooltip>
                   ),
@@ -220,7 +221,7 @@ const TaskComponent = ({
                   label: (
                     <Tooltip label={translations["listView"][language]}>
                       <span>
-                        <FaList size={16} />
+                        <FaList size={14} />
                       </span>
                     </Tooltip>
                   ),
@@ -228,14 +229,15 @@ const TaskComponent = ({
               ]}
             />
             <TextInput
+              size="xs"
               placeholder={translations["searchTasksPlaceholder"][language]}
               value={searchInput}
               onChange={(e) => setSearchInput(e.currentTarget.value)}
-              w={350}
+              w={280}
               rightSection={
                 searchInput ? (
                   <IoMdClose
-                    size={16}
+                    size={14}
                     className="pointer"
                     onClick={() => setSearchInput("")}
                   />
@@ -261,8 +263,8 @@ const TaskComponent = ({
 
       {viewMode === "list" && listTotalPages > 1 && (
         <Flex
-          pt={24}
-          pb={24}
+          pt={12}
+          pb={12}
           justify="center"
           className="leads-table-pagination"
           style={{
@@ -271,6 +273,7 @@ const TaskComponent = ({
           }}
         >
           <Pagination
+            size="xs"
             total={listTotalPages}
             value={listCurrentPage}
             onChange={setListCurrentPage}

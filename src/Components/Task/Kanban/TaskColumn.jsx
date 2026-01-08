@@ -17,9 +17,9 @@ const parseTaskDate = (dateString) => {
 const language = localStorage.getItem("language") || "RO";
 
 // Дефолтная высота карточки задачи (включая margin)
-const DEFAULT_TASK_CARD_HEIGHT = 250;
+const DEFAULT_TASK_CARD_HEIGHT = 180;
 // Отступ между карточками
-const CARD_GAP = 12;
+const CARD_GAP = 8;
 
 // Wrapper для внутреннего элемента списка
 const wrapperColumn = forwardRef(({ style, ...rest }, ref) => (
