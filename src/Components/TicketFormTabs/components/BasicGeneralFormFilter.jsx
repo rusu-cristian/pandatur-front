@@ -309,6 +309,7 @@ export const BasicGeneralFormFilter = forwardRef(
           nothingFoundMessage={getLanguageByKey("Nimic găsit")}
           searchable
           onChange={handleGroupTitleChange}
+          size="xs"
         />
 
         <div style={{ marginTop: "6px" }}>
@@ -322,6 +323,7 @@ export const BasicGeneralFormFilter = forwardRef(
             }}
             selectAllLabel={selectAllLabel}
             clearable
+            size="xs"
           />
         </div>
 
@@ -333,6 +335,7 @@ export const BasicGeneralFormFilter = forwardRef(
           onChange={(value) => form.setFieldValue("technician_id", value)}
           techniciansData={filteredTechnicians}
           mode="multi"
+          size="xs"
         />
 
         <MultiSelect
@@ -345,6 +348,7 @@ export const BasicGeneralFormFilter = forwardRef(
           key={form.key("priority")}
           {...form.getInputProps("priority")}
           searchable
+          size="xs"
         />
 
         <TextInput
@@ -354,6 +358,7 @@ export const BasicGeneralFormFilter = forwardRef(
           placeholder={getLanguageByKey("Selectează contact")}
           key={form.key("contact")}
           {...form.getInputProps("contact")}
+          size="xs"
         />
 
         <TagsInput
@@ -363,6 +368,7 @@ export const BasicGeneralFormFilter = forwardRef(
           placeholder={getLanguageByKey("Introdu tag-uri separate prin virgule")}
           key={form.key("tags")}
           {...form.getInputProps("tags")}
+          size="xs"
         />
 
         <div style={{ marginTop: "1rem" }}>
@@ -375,6 +381,7 @@ export const BasicGeneralFormFilter = forwardRef(
             isClearable={true}
             dateFormat="yyyy-MM-dd"
             placeholder={getLanguageByKey("Data creării")}
+            size="xs"
           />
         </div>
 
@@ -388,6 +395,7 @@ export const BasicGeneralFormFilter = forwardRef(
             isClearable={true}
             dateFormat="yyyy-MM-dd"
             placeholder={getLanguageByKey("Ultima modificare")}
+            size="xs"
           />
         </div>
 
@@ -403,6 +411,7 @@ export const BasicGeneralFormFilter = forwardRef(
           clearable
           key={form.key("has_tasks")}
           {...form.getInputProps("has_tasks")}
+          size="xs"
         />
       </form>
     );

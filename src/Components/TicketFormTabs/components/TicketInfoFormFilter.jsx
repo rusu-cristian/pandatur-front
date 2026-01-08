@@ -165,6 +165,7 @@ export const TicketInfoFormFilter = forwardRef(
             leftSection={<MdOutlineEuroSymbol />}
             key={form.key("buget")}
             {...form.getInputProps("buget")}
+            size="xs"
           />
 
           <div style={{ marginTop: "1rem" }}>
@@ -178,6 +179,7 @@ export const TicketInfoFormFilter = forwardRef(
               dateFormat="yyyy-MM-dd"
               placeholder={getLanguageByKey("Selectează data venirii în oficiu")}
               minDate={setMinDate}
+              size="xs"
             />
           </div>
 
@@ -192,6 +194,7 @@ export const TicketInfoFormFilter = forwardRef(
               dateFormat="yyyy-MM-dd"
               placeholder={getLanguageByKey("Data și ora plecării")}
               minDate={setMinDate}
+              size="xs"
             />
           </div>
 
@@ -206,6 +209,7 @@ export const TicketInfoFormFilter = forwardRef(
               dateFormat="yyyy-MM-dd"
               placeholder={getLanguageByKey("Data și ora întoarcerii")}
               minDate={setMinDate}
+              size="xs"
             />
           </div>
 
@@ -220,6 +224,7 @@ export const TicketInfoFormFilter = forwardRef(
               dateFormat="yyyy-MM-dd"
               placeholder={getLanguageByKey("Data cererii de retur")}
               minDate={setMinDate}
+              size="xs"
             />
           </div>
 
@@ -232,6 +237,7 @@ export const TicketInfoFormFilter = forwardRef(
               data={[]}
               clearable
               searchable
+              size="xs"
             />
           )}
 
@@ -244,6 +250,7 @@ export const TicketInfoFormFilter = forwardRef(
             key={form.key("sursa_lead")}
             {...form.getInputProps("sursa_lead")}
             searchable
+            size="xs"
           />
 
           <MultiSelect
@@ -255,6 +262,7 @@ export const TicketInfoFormFilter = forwardRef(
             key={form.key("promo")}
             {...form.getInputProps("promo")}
             searchable
+            size="xs"
           />
 
           <MultiSelect
@@ -266,6 +274,7 @@ export const TicketInfoFormFilter = forwardRef(
             key={form.key("marketing")}
             {...form.getInputProps("marketing")}
             searchable
+            size="xs"
           />
 
           <MultiSelect
@@ -277,6 +286,7 @@ export const TicketInfoFormFilter = forwardRef(
             key={form.key("tipul_serviciului")}
             {...form.getInputProps("tipul_serviciului")}
             searchable
+            size="xs"
           />
 
           <MultiSelect
@@ -288,6 +298,7 @@ export const TicketInfoFormFilter = forwardRef(
             key={form.key("tara")}
             {...form.getInputProps("tara")}
             searchable
+            size="xs"
           />
 
           <MultiSelect
@@ -299,6 +310,7 @@ export const TicketInfoFormFilter = forwardRef(
             key={form.key("tip_de_transport")}
             {...form.getInputProps("tip_de_transport")}
             searchable
+            size="xs"
           />
 
           <MultiSelect
@@ -310,6 +322,7 @@ export const TicketInfoFormFilter = forwardRef(
             key={form.key("denumirea_excursiei_turului")}
             {...form.getInputProps("denumirea_excursiei_turului")}
             searchable
+            size="xs"
           />
 
           <MultiSelect
@@ -321,6 +334,7 @@ export const TicketInfoFormFilter = forwardRef(
             key={form.key("procesarea_achizitionarii")}
             {...form.getInputProps("procesarea_achizitionarii")}
             searchable
+            size="xs"
           />
         </form>
 

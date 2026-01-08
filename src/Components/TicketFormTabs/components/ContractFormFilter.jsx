@@ -183,6 +183,7 @@ export const ContractFormFilter = forwardRef(
             label={getLanguageByKey("Nr de contract")}
             placeholder={getLanguageByKey("Nr de contract")}
             {...form.getInputProps("numar_de_contract")}
+            size="xs"
           />
 
           <div style={{ marginTop: "1rem" }}>
@@ -247,6 +248,7 @@ export const ContractFormFilter = forwardRef(
             placeholder={getLanguageByKey("Operator turistic")}
 
             {...form.getInputProps("tour_operator")}
+            size="xs"
           />
 
           <TextInput
@@ -255,6 +257,7 @@ export const ContractFormFilter = forwardRef(
             placeholder={getLanguageByKey("Nr cererii de la operator")}
 
             {...form.getInputProps("numarul_cererii_de_la_operator")}
+            size="xs"
           />
 
           <LabelSwitch
@@ -262,6 +265,7 @@ export const ContractFormFilter = forwardRef(
             color="var(--crm-ui-kit-palette-link-primary)"
             label={getLanguageByKey("Achitare efectuată")}
             {...form.getInputProps("achitare_efectuata", { type: "checkbox" })}
+            size="xs"
           />
 
           <LabelSwitch
@@ -269,6 +273,7 @@ export const ContractFormFilter = forwardRef(
             color="var(--crm-ui-kit-palette-link-primary)"
             label={getLanguageByKey("Rezervare confirmată")}
             {...form.getInputProps("rezervare_confirmata", { type: "checkbox" })}
+            size="xs"
           />
 
           <LabelSwitch
@@ -276,6 +281,7 @@ export const ContractFormFilter = forwardRef(
             color="var(--crm-ui-kit-palette-link-primary)"
             label={getLanguageByKey("Contract arhivat")}
             {...form.getInputProps("contract_arhivat", { type: "checkbox" })}
+            size="xs"
           />
 
           <Select
@@ -298,6 +304,7 @@ export const ContractFormFilter = forwardRef(
             label={getLanguageByKey("Avans euro")}
             placeholder={getLanguageByKey("Avans euro")}
             {...form.getInputProps("avans_euro")}
+            size="xs"
           />
 
           <NumberInput
@@ -310,6 +317,7 @@ export const ContractFormFilter = forwardRef(
             placeholder={getLanguageByKey("Preț NETTO")}
 
             {...form.getInputProps("pret_netto")}
+            size="xs"
           />
 
           <NumberInput
@@ -321,6 +329,7 @@ export const ContractFormFilter = forwardRef(
             placeholder={getLanguageByKey("Achitat client")}
 
             {...form.getInputProps("achitat_client")}
+            size="xs"
           />
 
           {!hideDisabledInput && (
@@ -331,6 +340,7 @@ export const ContractFormFilter = forwardRef(
               label={getLanguageByKey("Restanță client")}
               placeholder={getLanguageByKey("Restanță client")}
 
+            size="xs"
             />
           )}
 
@@ -340,6 +350,7 @@ export const ContractFormFilter = forwardRef(
               hideControls
               mt="md"
               label={`${getLanguageByKey("Comision companie")} €`}
+              size="xs"
             />
           )}
 
@@ -348,6 +359,7 @@ export const ContractFormFilter = forwardRef(
               disabled
               mt="md"
               label={getLanguageByKey("Statut achitare")}
+              size="xs"
             />
           )}
 
@@ -356,6 +368,7 @@ export const ContractFormFilter = forwardRef(
             color="var(--crm-ui-kit-palette-link-primary)"
             label={getLanguageByKey("Control Admin")}
             {...form.getInputProps("control", { type: "checkbox" })}
+            size="xs"
           />
         </form>
 

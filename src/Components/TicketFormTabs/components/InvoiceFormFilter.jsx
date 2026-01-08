@@ -70,6 +70,7 @@ export const InvoiceFormFilter = ({
           placeholder={getLanguageByKey("F/service")}
           key={form.key("f_serviciu")}
           {...form.getInputProps("f_serviciu")}
+          size="xs"
         />
 
         <TextInput
@@ -78,6 +79,7 @@ export const InvoiceFormFilter = ({
           placeholder={getLanguageByKey("F/factura")}
           key={form.key("f_nr_factura")}
           {...form.getInputProps("f_nr_factura")}
+          size="xs"
         />
 
         <TextInput
@@ -86,6 +88,7 @@ export const InvoiceFormFilter = ({
           placeholder={getLanguageByKey("F/numarul")}
           key={form.key("f_numarul")}
           {...form.getInputProps("f_numarul")}
+          size="xs"
         />
 
         <NumberInput
@@ -97,6 +100,7 @@ export const InvoiceFormFilter = ({
           placeholder={getLanguageByKey("F/preț")}
           key={form.key("f_pret")}
           {...form.getInputProps("f_pret")}
+          size="xs"
         />
 
         <NumberInput
@@ -108,6 +112,7 @@ export const InvoiceFormFilter = ({
           placeholder={getLanguageByKey("F/sumă")}
           key={form.key("f_suma")}
           {...form.getInputProps("f_suma")}
+          size="xs"
         />
 
         <Select
@@ -118,6 +123,7 @@ export const InvoiceFormFilter = ({
           clearable
           key={form.key("f_valuta_contului")}
           {...form.getInputProps("f_valuta_contului")}
+          size="xs"
         />
 
         <Select
@@ -128,6 +134,7 @@ export const InvoiceFormFilter = ({
           clearable
           key={form.key("iban")}
           {...form.getInputProps("iban")}
+          size="xs"
         />
       </form>
 

@@ -62,6 +62,7 @@ export const QualityControlFormFilter = forwardRef(
             data={motivulRefuzuluiOptions}
             key={form.key("motivul_refuzului")}
             {...form.getInputProps("motivul_refuzului")}
+            size="xs"
           />
 
           <MultiSelect
@@ -73,6 +74,7 @@ export const QualityControlFormFilter = forwardRef(
             data={evaluareOdihnaOptions}
             key={form.key("evaluare_de_odihna")}
             {...form.getInputProps("evaluare_de_odihna")}
+            size="xs"
           />
 
           <TextInput
@@ -81,6 +83,7 @@ export const QualityControlFormFilter = forwardRef(
             placeholder={getLanguageByKey("Următoarea vacanță")}
             key={form.key("urmatoarea_vacanta")}
             {...form.getInputProps("urmatoarea_vacanta")}
+            size="xs"
           />
 
           <TextInput
@@ -89,6 +92,7 @@ export const QualityControlFormFilter = forwardRef(
             placeholder={getLanguageByKey("Manager")}
             key={form.key("manager")}
             {...form.getInputProps("manager")}
+            size="xs"
           />
 
           <TextInput
@@ -97,6 +101,7 @@ export const QualityControlFormFilter = forwardRef(
             placeholder={getLanguageByKey("Vacanța")}
             key={form.key("vacanta")}
             {...form.getInputProps("vacanta")}
+            size="xs"
           />
         </form>
 
