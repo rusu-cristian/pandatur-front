@@ -352,13 +352,13 @@ const ChatExtraInfo = ({
             zIndex: 10,
             backgroundColor: "var(--crm-ui-kit-palette-background-primary)",
           }}
-          p="md"
+          p="xs"
         >
           <Tabs.List>
             <Tabs.Tab value="general">
               <Text
-                fw={900}
-                size="sm"
+                fw={700}
+                size="xs"
                 data-error={hasErrorClientPhone ? "true" : undefined}
               >
                 {getLanguageByKey("General")}
@@ -366,8 +366,8 @@ const ChatExtraInfo = ({
             </Tabs.Tab>
             <Tabs.Tab value="lead">
               <Text
-                fw={900}
-                size="sm"
+                fw={700}
+                size="xs"
                 truncate="end"
                 data-error={hasErrorsTicketInfoForm ? "true" : undefined}
               >
@@ -376,27 +376,27 @@ const ChatExtraInfo = ({
             </Tabs.Tab>
             <Tabs.Tab value="contract">
               <Text
-                fw={900}
-                size="sm"
+                fw={700}
+                size="xs"
                 data-error={hasErrorsContractForm ? "true" : undefined}
               >
                 {getLanguageByKey("Contract")}
               </Text>
             </Tabs.Tab>
             <Tabs.Tab value="documents">
-              <Text fw={900} size="sm">
+              <Text fw={700} size="xs">
                 {getLanguageByKey("documents")}
               </Text>
             </Tabs.Tab>
             <Tabs.Tab value="media">
-              <Text fw={900} size="sm">
+              <Text fw={700} size="xs">
                 {getLanguageByKey("Media")}
               </Text>
             </Tabs.Tab>
             <Tabs.Tab value="quality_control">
               <Text
-                fw={900}
-                size="sm"
+                fw={700}
+                size="xs"
                 data-error={hasErrorQualityControl ? "true" : undefined}
               >
                 {getLanguageByKey("quality")}
@@ -406,7 +406,8 @@ const ChatExtraInfo = ({
           <Can permission={{ module: "leads", action: "edit" }} context={{ responsibleId }}>
             <Button
               fullWidth
-              mt="md"
+              size="xs"
+              mt="xs"
               loading={isLoadingGeneral || isLoadingInfoTicket}
               onClick={handleSubmitAllForms}
             >
@@ -416,7 +417,7 @@ const ChatExtraInfo = ({
         </Box>
 
         <Tabs.Panel value="general">
-          <Box p="md">
+          <Box p="xs">
             <GeneralForm
               key={`general-${ticketId}-${JSON.stringify(formData.general)}`}
               data={formData.general}
@@ -424,7 +425,7 @@ const ChatExtraInfo = ({
               onSubmit={handleUpdateTicketDate}
             />
 
-            <Divider my="md" size="md" />
+            <Divider my="xs" size="xs" />
 
             <PersonalData4ClientForm
               key={`personal-${ticketId}`}
@@ -435,9 +436,9 @@ const ChatExtraInfo = ({
 
             {isAdmin && (
               <>
-                <Divider my="md" size="md" />
+                <Divider my="xs" size="xs" />
 
-                <Box mt="md" bg="var(--crm-ui-kit-palette-background-primary-disabled)" p="md" style={{ borderRadius: 8 }}>
+                <Box mt="xs" bg="var(--crm-ui-kit-palette-background-primary-disabled)" p="xs" style={{ borderRadius: 6 }}>
                   <Merge
                     label={getLanguageByKey("combineTickets")}
                     key={`merge-tickets-${ticketId}`}
@@ -451,7 +452,7 @@ const ChatExtraInfo = ({
                   />
                 </Box>
 
-                <Box mt="md" bg="var(--crm-ui-kit-palette-background-primary-disabled)" p="md" style={{ borderRadius: 8 }}>
+                <Box mt="xs" bg="var(--crm-ui-kit-palette-background-primary-disabled)" p="xs" style={{ borderRadius: 6 }}>
                   <Merge
                     label={getLanguageByKey("combineClient")}
                     key={`merge-clients-${selectedClient.payload?.id}`}
@@ -468,7 +469,7 @@ const ChatExtraInfo = ({
         </Tabs.Panel>
 
         <Tabs.Panel value="lead">
-          <Box p="md">
+          <Box p="xs">
             <TicketInfoForm
               key={`lead-${ticketId}-${JSON.stringify(formData.lead)}`}
               formInstance={form}
@@ -479,7 +480,7 @@ const ChatExtraInfo = ({
         </Tabs.Panel>
 
         <Tabs.Panel value="contract">
-          <Box p="md">
+          <Box p="xs">
             <ContractForm
               key={`contract-${ticketId}-${JSON.stringify(formData.contract)}`}
               formInstance={form}
@@ -490,19 +491,19 @@ const ChatExtraInfo = ({
         </Tabs.Panel>
 
         <Tabs.Panel value="documents">
-          <Box p="md">
+          <Box p="xs">
             <InvoiceTab extraInfo={extraInfo} clientInfo={selectedClient.payload} />
           </Box>
         </Tabs.Panel>
 
         <Tabs.Panel value="media" h="100%">
-          <Box pb="md" pr="md" pl="md" h="100%">
+          <Box pb="xs" pr="xs" pl="xs" h="100%">
             <Media messages={mediaFiles} id={ticketId} />
           </Box>
         </Tabs.Panel>
 
         <Tabs.Panel value="quality_control">
-          <Box p="md">
+          <Box p="xs">
             <QualityControlForm
               key={`quality-${ticketId}-${JSON.stringify(formData.quality)}`}
               formInstance={form}

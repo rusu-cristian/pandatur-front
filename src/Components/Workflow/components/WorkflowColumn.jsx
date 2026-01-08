@@ -157,7 +157,7 @@ export const WorkflowColumn = memo(({
         filteredTickets={filteredTickets}
       />
 
-      <Flex direction="column" h="100%" pb="120px" ref={columnRef}>
+      <Flex direction="column" h="100%" pb="100px" ref={columnRef}>
         <VariableSizeList
           ref={listRef}
           height={columnHeight}
