@@ -1,14 +1,14 @@
 .leads-table {
   width: 100%;
-  /* TODO: Replace 67px with dynamic heigh of pagination */
-  height: calc(100% - 67px);
+  height: calc(100% - 48px);
   overflow-y: scroll;
 }
 
 .row-id {
   color: #007bff;
   text-decoration: underline;
-  font-weight: bold;
+  font-weight: 600;
+  font-size: 12px;
 }
 
 .row-id:hover {

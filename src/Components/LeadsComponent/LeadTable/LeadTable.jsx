@@ -10,7 +10,6 @@ import {
   Select,
   Pagination,
 } from "@mantine/core";
-import { FaFingerprint } from "react-icons/fa6";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { MdDelete, MdEdit } from "react-icons/md";
@@ -126,13 +125,14 @@ export const LeadTable = ({
 
   const rcColumn = [
     {
-      width: 100,
+      width: 50,
       key: "checkbox",
       dataIndex: "id",
       align: "center",
       title: (
         <Flex justify="center">
           <Checkbox
+            size="xs"
             color="var(--crm-ui-kit-palette-link-primary)"
             checked={isAllSelected}
             onChange={() => {
@@ -144,7 +144,7 @@ export const LeadTable = ({
       ),
       render: (id) => (
         <Flex justify="center">
-          <Checkbox color="var(--crm-ui-kit-palette-link-primary)" checked={selectTicket.includes(id)} onChange={() => onSelectRow(id)} />
+          <Checkbox size="xs" color="var(--crm-ui-kit-palette-link-primary)" checked={selectTicket.includes(id)} onChange={() => onSelectRow(id)} />
         </Flex>
       ),
     },
@@ -153,15 +153,14 @@ export const LeadTable = ({
       key: "id",
       align: "center",
       dataIndex: "id",
-      width: 100,
+      width: 70,
       render: (ticketId) => (
-        <a 
-          href={getTicketUrl(ticketId)} 
+        <a
+          href={getTicketUrl(ticketId)}
           onClick={(e) => handleTicketClick(e, ticketId)}
           className="row-id"
         >
-          <Flex align="center" gap="8">
-            <FaFingerprint />
+          <Flex align="center" gap="4">
             {ticketId}
           </Flex>
         </a>
@@ -172,42 +171,42 @@ export const LeadTable = ({
       dataIndex: "technician_id",
       key: "technician_id",
       align: "center",
-      width: 200,
+      width: 140,
       render: (technicianId) => technicianMap.get(Number(technicianId)) || cleanValue(),
     },
     {
       title: getLanguageByKey("Workflow"),
       dataIndex: "workflow",
       align: "center",
-      width: 170,
+      width: 130,
       render: (workflow) => <WorkflowTag type={workflow} />,
     },
     {
       title: getLanguageByKey("Prioritate"),
       dataIndex: "priority",
       align: "center",
-      width: 100,
+      width: 80,
       render: (priority) => <Tag type={priorityTagColors[priority]}>{priority}</Tag>,
     },
     {
       title: getLanguageByKey("Data de creare"),
       dataIndex: "creation_date",
       align: "center",
-      width: 200,
-      render: (date) => <DateCell gap={4} direction="row" justify="center" date={date} />,
+      width: 140,
+      render: (date) => <DateCell gap={2} direction="row" justify="center" date={date} />,
     },
     {
       title: getLanguageByKey("Ultima interacțiune"),
       dataIndex: "last_interaction_date",
       align: "center",
-      width: 200,
-      render: (date) => <DateCell gap={4} direction="row" justify="center" date={date} />,
+      width: 140,
+      render: (date) => <DateCell gap={2} direction="row" justify="center" date={date} />,
     },
     {
       title: getLanguageByKey("Telefon"),
       dataIndex: "phone",
       align: "center",
-      width: 150,
+      width: 110,
       render: (phone) => (phone ? phone : cleanValue()),
     },
     {
@@ -215,7 +214,7 @@ export const LeadTable = ({
       key: "email",
       dataIndex: "email",
       align: "center",
-      width: 200,
+      width: 150,
       render: (email) => (email ? <div className="break-word">{email}</div> : cleanValue()),
     },
     {
@@ -223,14 +222,14 @@ export const LeadTable = ({
       key: "surname",
       dataIndex: "surname",
       align: "center",
-      width: 200,
+      width: 120,
       render: (surname) => (surname ? surname : cleanValue()),
     },
     {
       title: getLanguageByKey("Nume"),
       key: "name",
       dataIndex: "name",
-      width: 200,
+      width: 120,
       align: "center",
       render: (name) => (name ? name : cleanValue()),
     },
@@ -238,23 +237,23 @@ export const LeadTable = ({
       title: getLanguageByKey("Contact"),
       dataIndex: "contact",
       align: "center",
-      width: 200,
+      width: 140,
     },
     {
       title: getLanguageByKey("Descriere"),
       dataIndex: "description",
       align: "center",
-      width: 250,
+      width: 180,
       render: (description) =>
-        description ? <TextEllipsis rows={3}>{description}</TextEllipsis> : cleanValue(),
+        description ? <TextEllipsis rows={2}>{description}</TextEllipsis> : cleanValue(),
     },
     {
       title: getLanguageByKey("Tag-uri"),
       dataIndex: "tags",
-      width: 200,
+      width: 140,
       align: "center",
       render: (tags) => (
-        <Flex gap="8" wrap="wrap">
+        <Flex gap="4" wrap="wrap">
           {renderTags(tags)}
         </Flex>
       ),
@@ -264,121 +263,121 @@ export const LeadTable = ({
       dataIndex: "achitat_client",
       align: "center",
       render: (achitat_client) => cleanValue(achitat_client),
-      width: 150,
+      width: 100,
     },
     {
       title: getLanguageByKey("Avans în euro"),
       dataIndex: "avans_euro",
       align: "center",
       render: (avans_euro) => cleanValue(avans_euro),
-      width: 150,
+      width: 100,
     },
     {
       title: getLanguageByKey("Comisionul companiei"),
       dataIndex: "comision_companie",
       align: "center",
       render: (comision_companie) => cleanValue(comision_companie),
-      width: 200,
+      width: 140,
     },
     {
       title: getLanguageByKey("Buget"),
       dataIndex: "buget",
       align: "center",
       render: (buget) => cleanValue(buget),
-      width: 75,
+      width: 70,
     },
     {
       title: getLanguageByKey("Data avansului"),
       dataIndex: "data_avansului",
       align: "center",
-      width: 150,
+      width: 110,
       render: (data_avansului) => (
-        <DateCell gap={4} direction="row" justify="center" date={data_avansului} />
+        <DateCell gap={2} direction="row" justify="center" date={data_avansului} />
       ),
     },
     {
       title: getLanguageByKey("Data cererii de retur"),
       dataIndex: "data_cererii_de_retur",
       align: "center",
-      width: 200,
+      width: 140,
       render: (data_cererii_de_retur) => (
-        <DateCell gap={4} direction="row" justify="center" date={data_cererii_de_retur} />
+        <DateCell gap={2} direction="row" justify="center" date={data_cererii_de_retur} />
       ),
     },
     {
       title: getLanguageByKey("Data contractului"),
       dataIndex: "data_contractului",
       align: "center",
-      width: 200,
+      width: 130,
       render: (data_contractului) => (
-        <DateCell gap={4} direction="row" justify="center" date={data_contractului} />
+        <DateCell gap={2} direction="row" justify="center" date={data_contractului} />
       ),
     },
     {
       title: getLanguageByKey("Data de plată integrală"),
       dataIndex: "data_de_plata_integrala",
       align: "center",
-      width: 200,
+      width: 140,
       render: (data_de_plata_integrala) => (
-        <DateCell gap={4} direction="row" justify="center" date={data_de_plata_integrala} />
+        <DateCell gap={2} direction="row" justify="center" date={data_de_plata_integrala} />
       ),
     },
     {
       title: getLanguageByKey("Data plecării"),
       dataIndex: "data_plecarii",
       align: "center",
-      width: 200,
+      width: 120,
       render: (data_plecarii) => (
-        <DateCell gap={4} direction="row" justify="center" date={data_plecarii} />
+        <DateCell gap={2} direction="row" justify="center" date={data_plecarii} />
       ),
     },
     {
       title: getLanguageByKey("Data întoarcerii"),
       dataIndex: "data_intoarcerii",
       align: "center",
-      width: 200,
+      width: 120,
       render: (data_intoarcerii) => (
-        <DateCell gap={4} direction="row" justify="center" date={data_intoarcerii} />
+        <DateCell gap={2} direction="row" justify="center" date={data_intoarcerii} />
       ),
     },
     {
       title: getLanguageByKey("Tipul de transport"),
       dataIndex: "tip_de_transport",
       align: "center",
-      width: 150,
+      width: 110,
       render: (tip_de_transport) => tip_de_transport ? (getLanguageByKey(tip_de_transport) || tip_de_transport) : cleanValue(),
     },
     {
       title: getLanguageByKey("Vacanță"),
       dataIndex: "vacanta",
       align: "center",
-      width: 200,
+      width: 140,
       render: (vacanta) => cleanValue(vacanta),
     },
     {
       title: getLanguageByKey("Valuta contului"),
       dataIndex: "f_valuta_contului",
       align: "center",
-      width: 150,
+      width: 100,
       render: (valuta_contului) => valuta_contului ? (getLanguageByKey(valuta_contului) || valuta_contului) : cleanValue(),
     },
     {
       title: getLanguageByKey("Acțiune"),
       fixed: "right",
-      width: 85,
+      width: 70,
       render: (_, ticket) => {
         const responsibleId = ticket.technician_id?.toString();
         return (
           <Paper pos="absolute" top="0" right="0" bottom="0" shadow="xs" w="100%">
-            <Flex align="center" justify="center" gap="8" h="100%" p="xs">
+            <Flex align="center" justify="center" gap="4" h="100%" p="4">
               <Can permission={{ module: "leads", action: "delete" }} context={{ responsibleId }}>
-                <ActionIcon variant="danger" onClick={() => handleDeleteLead(ticket.id)}>
-                  <MdDelete />
+                <ActionIcon size="sm" variant="danger" onClick={() => handleDeleteLead(ticket.id)}>
+                  <MdDelete size={14} />
                 </ActionIcon>
               </Can>
               <Can permission={{ module: "leads", action: "edit" }} context={{ responsibleId }}>
-                <ActionIcon variant="outline" onClick={() => setId(ticket.id)}>
-                  <MdEdit color="var(--crm-ui-kit-palette-link-primary)" />
+                <ActionIcon size="sm" variant="outline" onClick={() => setId(ticket.id)}>
+                  <MdEdit size={14} color="var(--crm-ui-kit-palette-link-primary)" />
                 </ActionIcon>
               </Can>
             </Flex>
@@ -392,8 +391,8 @@ export const LeadTable = ({
     <>
       <Box>
         {selectTicket.length > 0 && allResultIds.length > 0 && !isAllResultsSelected && (
-          <Paper p="xs" mb="xs" withBorder>
-            <Text size="sm">
+          <Paper p="6" mb="6" withBorder>
+            <Text size="xs">
               {getLanguageByKey("Selected")} {selectTicket.length}.{" "}
               <Text
                 span
@@ -406,8 +405,8 @@ export const LeadTable = ({
           </Paper>
         )}
         {isAllResultsSelected && (
-          <Paper p="xs" mb="xs" withBorder>
-            <Text size="sm">
+          <Paper p="6" mb="6" withBorder>
+            <Text size="xs">
               {getLanguageByKey("All")} {allResultIds.length} {getLanguageByKey("results selected")}.{" "}
               <Text
                 span
@@ -420,7 +419,7 @@ export const LeadTable = ({
           </Paper>
         )}
 
-        <div style={{ height: "calc(var(--app-vh, 100vh) - 148px)" }}>
+        <div style={{ height: "calc(var(--app-vh, 100vh) - 100px)" }}>
           <RcTable
             rowKey="id"
             columns={rcColumn}
@@ -433,21 +432,21 @@ export const LeadTable = ({
 
         {!!totalLeadsPages && (
           <Flex
-            pt={24}
-            pb={24}
+            pt={12}
+            pb={12}
             justify="space-between"
             align="center"
             className="leads-table-pagination"
             style={{
               borderTop: "1px solid var(--crm-ui-kit-palette-border-primary)",
               backgroundColor: "var(--crm-ui-kit-palette-background-primary)",
-              paddingLeft: "16px",
-              paddingRight: "16px"
+              paddingLeft: "12px",
+              paddingRight: "12px"
             }}
           >
             <Select
-              size="sm"
-              w={80}
+              size="xs"
+              w={65}
               value={String(perPage)}
               onChange={(val) => setPerPage(Number(val))}
               data={[
@@ -457,8 +456,8 @@ export const LeadTable = ({
                 { value: "200", label: "200" },
               ]}
             />
-            <Pagination total={totalLeadsPages} value={currentPage} onChange={onChangePagination} />
-            <Box w={80} />
+            <Pagination size="xs" total={totalLeadsPages} value={currentPage} onChange={onChangePagination} />
+            <Box w={65} />
           </Flex>
         )}
       </Box>

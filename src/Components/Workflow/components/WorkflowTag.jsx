@@ -130,14 +130,14 @@ export const getBrightByWorkflowType = (type) => {
 export const WorkflowTag = ({ type }) => {
   // Получаем переведенное значение workflow, если перевода нет - используем исходное значение
   const translatedType = getLanguageByKey(type) || type;
-  
+
   return (
     <Tag
       style={{
         backgroundColor: getColorByWorkflowType(type),
         borderColor: getBrightByWorkflowType(type),
         color: "#000000",
-        fontSize: "16px",
+        fontSize: "10px",
       }}
     >
       {translatedType}
