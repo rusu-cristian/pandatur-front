@@ -312,7 +312,7 @@ const UserList = ({
       {
         field: "groupsDisplay",
         headerName: getLanguageByKey("Grup utilizator"),
-        width: 160,
+        width: 191,
         align: "center",
         headerAlign: "center",
         renderCell: (params) => (
@@ -356,7 +356,7 @@ const UserList = ({
       {
         field: "jobTitleDisplay",
         headerName: getLanguageByKey("Funcție"),
-        width: 200,
+        width: 250,
         align: "center",
         headerAlign: "center",
         renderCell: (params) => (
@@ -401,7 +401,7 @@ const UserList = ({
       {
         field: "status",
         headerName: getLanguageByKey("Status"),
-        width: 80,
+        width: 150,
         align: "center",
         headerAlign: "center",
         renderCell: (params) => {
@@ -430,7 +430,7 @@ const UserList = ({
       {
         field: "sipuni_id",
         headerName: "Sipuni ID",
-        width: 70,
+        width: 150,
         align: "center",
         headerAlign: "center",
         renderCell: (params) => {
