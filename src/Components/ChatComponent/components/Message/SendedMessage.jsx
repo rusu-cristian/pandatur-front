@@ -215,7 +215,7 @@ export const SendedMessage = memo(({
                         alignItems: "center",
                       }}
                     >
-                      <InfoOutlineRounded sx={{ fontSize: 12, color: "var(--crm-ui-kit-palette-text-secondary-dark)" }} />
+                      <InfoOutlineRounded sx={{ fontSize: 18, color: "var(--crm-ui-kit-palette-text-secondary-dark)" }} />
                     </Box>
                   </Tooltip>
                 )}

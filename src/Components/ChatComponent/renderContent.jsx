@@ -162,7 +162,7 @@ export const renderContent = (msg) => {
       ) : (
         <Box maw="600px" w="100%">
           <Text
-            style={{ whiteSpace: "pre-line", wordWrap: "break-word" }}
+            style={{ whiteSpace: "pre-line", wordWrap: "break-word", fontSize: "14px" }}
           >
             {renderTextWithLinks(displayText)}
           </Text>

@@ -69,10 +69,10 @@ export const ReceivedMessage = memo(({ personalInfo, msg, technicians = [] }) =>
   return (
     <Flex w="100%">
       <Flex w="90%" direction="column" className="chat-message received">
-        <Flex gap="4">
+        <Flex gap="4" py="4">
           <Image
-            w={22}
-            h={22}
+            w={28}
+            h={28}
             radius="50%"
             src={clientPhoto}
             fallbackSrc={DEFAULT_PHOTO}
@@ -127,7 +127,7 @@ export const ReceivedMessage = memo(({ personalInfo, msg, technicians = [] }) =>
                       alignItems: "center",
                     }}
                   >
-                    <InfoOutlineRounded sx={{ fontSize: 12, color: "var(--crm-ui-kit-palette-text-secondary-dark)" }} />
+                    <InfoOutlineRounded sx={{ fontSize: 18, color: "var(--crm-ui-kit-palette-text-secondary-dark)" }} />
                   </Box>
                 </Tooltip>
               )}
