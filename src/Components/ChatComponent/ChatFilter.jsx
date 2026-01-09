@@ -127,13 +127,13 @@ export const ChatFilter = ({
           flexShrink: 0
         }}
       >
-        <Button variant="outline" onClick={handleReset}>
+        <Button size="xs" variant="outline" onClick={handleReset}>
           {getLanguageByKey("Reset filter")}
         </Button>
-        <Button variant="outline" onClick={onClose}>
+        <Button size="xs" variant="outline" onClick={onClose}>
           {getLanguageByKey("Închide")}
         </Button>
-        <Button variant="filled" loading={loading} onClick={handleSubmit}>
+        <Button size="xs" variant="filled" loading={loading} onClick={handleSubmit}>
           {getLanguageByKey("Aplică")}
         </Button>
       </Flex>

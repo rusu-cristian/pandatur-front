@@ -41,7 +41,7 @@ export const WorkflowColumnHeader = ({ workflow, filteredTickets }) => {
         <Text
           fw="bold"
           c="var(--crm-ui-kit-palette-text-primary)"
-          size="sm"
+          size="xl"
           ta="center"
         >
           {getLanguageByKey(workflow)}

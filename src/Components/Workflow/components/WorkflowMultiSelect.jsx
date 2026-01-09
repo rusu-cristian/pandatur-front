@@ -136,7 +136,7 @@ export const WorkflowMultiSelect = ({
                       // border: `1px solid ${borderColor}`,
                     }}
                   >
-                    <span style={{ color: "#000000", fontSize: "14px",fontWeight: "600" }}>
+                    <span style={{ color: "#000000", fontSize: "10px",fontWeight: "600" }}>
                       {getLanguageByKey(option)}
                     </span>
                     {!disabled && (

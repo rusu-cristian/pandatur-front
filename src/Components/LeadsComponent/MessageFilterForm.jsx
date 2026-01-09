@@ -122,6 +122,7 @@ export const MessageFilterForm = forwardRef(({ initialData, loading }, ref) => {
                     placeholder={getLanguageByKey("searchByMessages")}
                     value={message}
                     onChange={(e) => setMessage(e.currentTarget.value)}
+                    size="xs"
                 />
 
                 <Select
@@ -131,6 +132,7 @@ export const MessageFilterForm = forwardRef(({ initialData, loading }, ref) => {
                     value={mtype}
                     onChange={setMtype}
                     clearable
+                    size="xs"
                 />
 
                 <DatePickerInput
@@ -141,6 +143,7 @@ export const MessageFilterForm = forwardRef(({ initialData, loading }, ref) => {
                     onChange={setTimeSent}
                     valueFormat="DD-MM-YYYY"
                     clearable
+                    size="xs"
                 />
 
                 {/* <UserGroupMultiSelect
@@ -159,6 +162,7 @@ export const MessageFilterForm = forwardRef(({ initialData, loading }, ref) => {
                     onChange={setLastMessageAuthor}
                     techniciansData={extendedTechnicians}
                     mode="multi"
+                    size="xs"
                 />
 
                 <Select
@@ -171,6 +175,7 @@ export const MessageFilterForm = forwardRef(({ initialData, loading }, ref) => {
                     value={action_needed}
                     onChange={setActionNeeded}
                     clearable
+                    size="xs"
                 />
 
                 <Select
@@ -183,6 +188,7 @@ export const MessageFilterForm = forwardRef(({ initialData, loading }, ref) => {
                     value={unseen}
                     onChange={setUnseen}
                     clearable
+                    size="xs"
                 />
             </Flex>
         </form>
