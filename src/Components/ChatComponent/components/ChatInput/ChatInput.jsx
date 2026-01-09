@@ -438,7 +438,7 @@ export const ChatInput = memo(({
 
   return (
     <>
-      <Box className="chat-input" p="16">
+      <Box className="chat-input" p="10">
         {!showEmailForm ? (
           <>
             <Flex w="100%" gap="xs" mb="xs" align="center">
@@ -447,7 +447,7 @@ export const ChatInput = memo(({
               ) : (
                 <Flex direction="column" gap="xs" w="100%">
                   {/* Первый ряд: Platform + Template */}
-                  <Flex gap="md" w="100%">
+                  <Flex gap="xs" w="100%">
                     {/* 1. Platform select */}
                     <Select
                       onChange={changePlatform}
@@ -462,11 +462,12 @@ export const ChatInput = memo(({
                       rightSection={selectedPlatform && socialMediaIcons[selectedPlatform] ? (
                         <Flex>{socialMediaIcons[selectedPlatform]}</Flex>
                       ) : null}
+                      size="xs"
                       styles={{
                         input: {
-                          fontSize: '16px',
-                          minHeight: '48px',
-                          padding: '12px 16px'
+                          fontSize: '11px',
+                          minHeight: '28px',
+                          padding: '4px 8px'
                         }
                       }}
                     />
@@ -484,18 +485,19 @@ export const ChatInput = memo(({
                       placeholder={getLanguageByKey("select_message_template")}
                       data={templateSelectOptions}
                       disabled={templateSelectOptions.length === 0}
+                      size="xs"
                       styles={{
                         input: {
-                          fontSize: '16px',
-                          minHeight: '48px',
-                          padding: '12px 16px'
+                          fontSize: '11px',
+                          minHeight: '28px',
+                          padding: '4px 8px'
                         }
                       }}
                     />
                   </Flex>
 
                   {/* Второй ряд: User pick number + Void select */}
-                  <Flex gap="md" w="100%">
+                  <Flex gap="xs" w="100%">
                     {/* 3. User pick number (contact) */}
                     <Select
                       onChange={changeContact}
@@ -507,11 +509,12 @@ export const ChatInput = memo(({
                       searchable
                       clearable
                       disabled={!selectedPlatform}
+                      size="xs"
                       styles={{
                         input: {
-                          fontSize: '16px',
-                          minHeight: '48px',
-                          padding: '12px 16px'
+                          fontSize: '11px',
+                          minHeight: '28px',
+                          padding: '4px 8px'
                         }
                       }}
                     />
@@ -526,11 +529,12 @@ export const ChatInput = memo(({
                       data={pageIdOptions}
                       className="w-full"
                       disabled={!selectedPlatform}
+                      size="xs"
                       styles={{
                         input: {
-                          fontSize: '16px',
-                          minHeight: '48px',
-                          padding: '12px 16px',
+                          fontSize: '11px',
+                          minHeight: '28px',
+                          padding: '4px 8px',
                         }
                       }}
                     />
@@ -544,8 +548,9 @@ export const ChatInput = memo(({
             <Textarea
               ref={textAreaRef}
               autosize
+              size="md"
               minRows={6}
-              maxRows={8}
+              maxRows={15}
               w="100%"
               mb="xs"
               value={message}
@@ -566,6 +571,7 @@ export const ChatInput = memo(({
                 input: {
                   border: isDragOver ? "2px dashed #69db7c" : undefined,
                   backgroundColor: isDragOver ? "#ebfbee" : undefined,
+                  fontSize: '14px',
                 },
               }}
             />
@@ -574,6 +580,7 @@ export const ChatInput = memo(({
               <Flex gap="xs">
                 <Can permission={{ module: "CHAT", action: "CREATE" }} context={{ responsibleId }}>
                   <Button
+                    size="xs"
                     disabled={
                       (!message.trim() && attachments.length === 0) ||
                       !selectedPlatform ||
@@ -591,6 +598,7 @@ export const ChatInput = memo(({
                 </Can>
 
                 <Button
+                  size="xs"
                   onClick={clearState}
                   variant="default"
                   color="gray"
@@ -611,23 +619,23 @@ export const ChatInput = memo(({
                   <Flex gap="xs" align="center">
                     {unseenCount === 0 ? (
                       <Badge
-                        // variant="dot"
                         color="var(--crm-ui-kit-palette-link-primary)"
-                        size="lg"
+                        size="md"
                         styles={{
                           root: {
                             cursor: 'default',
                             textTransform: 'none',
-                            paddingLeft: '12px',
+                            paddingLeft: '8px',
                           }
                         }}
                       >
-                        <Flex align="center" gap={6}>
+                        <Flex align="center" gap={4}>
                           {getLanguageByKey("closedChat")}
                         </Flex>
                       </Badge>
                     ) : (
                       <Button
+                        size="xs"
                         onClick={handleMarkAsRead}
                         variant="filled"
                         styles={{
@@ -654,23 +662,23 @@ export const ChatInput = memo(({
 
                     {!actionNeeded ? (
                       <Badge
-                        // variant="dot"
                         color="var(--crm-ui-kit-palette-link-primary)"
-                        size="lg"
+                        size="md"
                         styles={{
                           root: {
                             cursor: 'default',
                             textTransform: 'none',
-                            paddingLeft: '12px',
+                            paddingLeft: '8px',
                           }
                         }}
                       >
-                        <Flex align="center" gap={6}>
+                        <Flex align="center" gap={4}>
                           {getLanguageByKey("Nu acțiune necesară")}
                         </Flex>
                       </Badge>
                     ) : (
                       <Button
+                        size="xs"
                         onClick={handleMarkActionResolved}
                         variant="filled"
                         styles={{
@@ -701,11 +709,12 @@ export const ChatInput = memo(({
               <Flex gap="xs">
                 <Can permission={{ module: "CHAT", action: "CREATE" }} context={{ responsibleId }}>
                   <ActionIcon
+                    size="sm"
                     onClick={() => setShowEmailForm(true)}
                     variant="default"
                     title="Trimite Email"
                   >
-                    <FaEnvelope size={20} />
+                    <FaEnvelope size={14} />
                   </ActionIcon>
 
                   <FileButton
@@ -715,19 +724,20 @@ export const ChatInput = memo(({
                     title={getLanguageByKey("attachFiles")}
                   >
                     {(props) => (
-                      <ActionIcon {...props} variant="default" title={getLanguageByKey("attachFiles")}>
-                        <RiAttachment2 size={20} />
+                      <ActionIcon {...props} size="sm" variant="default" title={getLanguageByKey("attachFiles")}>
+                        <RiAttachment2 size={14} />
                       </ActionIcon>
                     )}
                   </FileButton>
 
                   <Box style={{ position: 'relative' }}>
                     <ActionIcon
+                      size="sm"
                       onClick={() => setShowEmojiPicker(prev => !prev)}
                       variant="default"
                       title="Emoji"
                     >
-                      <LuSmile size={20} />
+                      <LuSmile size={14} />
                     </ActionIcon>
                     {showEmojiPicker && (
                       <SimpleEmojiPicker
@@ -741,21 +751,23 @@ export const ChatInput = memo(({
                   </Box>
 
                   <ActionIcon
+                    size="sm"
                     onClick={onToggleNoteComposer}
                     variant="default"
                     title={getLanguageByKey("Заметка")}
                   >
-                    <LuStickyNote size={20} />
+                    <LuStickyNote size={14} />
                   </ActionIcon>
                 </Can>
 
                 <Can permission={{ module: "TASK", action: "CREATE" }} context={{ responsibleId }}>
                   <ActionIcon
+                    size="sm"
                     onClick={onCreateTask}
                     variant="default"
                     title={getLanguageByKey("New Task")}
                   >
-                    <FaTasks size={20} />
+                    <FaTasks size={14} />
                   </ActionIcon>
                 </Can>
               </Flex>

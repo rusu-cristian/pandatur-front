@@ -195,7 +195,7 @@ export const ChatMessages = ({
     if (messages.error) {
       return (
         <Flex h="100%" align="center" justify="center">
-          <Text size="lg" c="red">{getLanguageByKey("loadMessagesError")}</Text>
+          <Text size="sm" c="red">{getLanguageByKey("loadMessagesError")}</Text>
         </Flex>
       );
     }
@@ -225,7 +225,7 @@ export const ChatMessages = ({
 
     return (
       <Flex h="100%" align="center" justify="center">
-        <Text size="lg" c="dimmed">{getLanguageByKey("Alege lead")}</Text>
+        <Text size="sm" c="dimmed">{getLanguageByKey("Alege lead")}</Text>
       </Flex>
     );
   };
@@ -264,13 +264,13 @@ export const ChatMessages = ({
   return (
     <Flex w="100%" h="100%" direction="column" className="chat-area">
       {ticketId && (
-        <Paper p="8" style={{ margin: "12px 0px 12px 42px", flexShrink: 0 }}>
+        <Paper p="6" style={{ margin: "8px 0px 8px 36px", flexShrink: 0 }}>
           <TicketParticipants ticketId={ticketId} currentUserId={Number(userId)} />
         </Paper>
       )}
 
       <Flex
-        p="16"
+        p="10"
         direction="column"
         className="chat-messages"
         ref={messageContainerRef}
@@ -282,7 +282,7 @@ export const ChatMessages = ({
       {ticketId && !messagesLoading && (
         <>
           {noteMode && (
-            <div style={{ padding: 16, flexShrink: 0 }}>
+            <div style={{ padding: 10, flexShrink: 0 }}>
               <InlineNoteComposer
                 ticketId={ticketId}
                 technicianId={Number(userId)}
