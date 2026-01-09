@@ -103,7 +103,7 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
     );
 
     const visibleWidgets = useMemo(
-        () => (widgets || []).filter((w) => w.type !== "separator"),
+        () => (widgets || []).filter((w) => w.type !== "separator" && w.type !== "top_users"),
         [widgets]
     );
 
@@ -137,21 +137,21 @@ const DashboardGrid = ({ widgets = [], dateRange, widgetType = "calls" }) => {
                 useCSSTransforms={true}
             >
                 {visibleWidgets.map((w) => {
-
-                    if (w.type === "top_users") {
-                        return renderWidgetWrapper(
-                            <TopUsersCard
-                                title={w.title}
-                                subtitle={w.subtitle}
-                                rows={w.rows}
-                                bg={w.bg}
-                                widgetType={w.widgetType || widgetType}
-                                width={w.w}
-                                height={w.h}
-                            />,
-                            w.id
-                        );
-                    }
+                    // Виджет top_users отключен
+                    // if (w.type === "top_users") {
+                    //     return renderWidgetWrapper(
+                    //         <TopUsersCard
+                    //             title={w.title}
+                    //             subtitle={w.subtitle}
+                    //             rows={w.rows}
+                    //             bg={w.bg}
+                    //             widgetType={w.widgetType || widgetType}
+                    //             width={w.w}
+                    //             height={w.h}
+                    //         />,
+                    //         w.id
+                    //     );
+                    // }
 
                     if (w.type === "ticket_state") {
                         return renderWidgetWrapper(
