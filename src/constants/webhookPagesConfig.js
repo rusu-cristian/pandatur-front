@@ -1,6 +1,7 @@
 // Номера WhatsApp, которые используют WaSender API вместо стандартного
 export const WASENDER_WHATSAPP_PAGE_IDS = [
   "37360991919", // Chisinau
+  "37361001919", // Rascani
   "40721205105", // Brasov
 ];
 
