@@ -8,10 +8,13 @@ import {
   Loader,
   FileButton,
   Badge,
+  Text,
+  Divider,
 } from "@mantine/core";
 import { AttachmentsPreview } from "../AttachmentsPreview";
 import { useDisclosure } from "@mantine/hooks";
 import { FaTasks, FaEnvelope, FaCheckCircle } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
 import { useState, useRef, useMemo, useEffect, memo, useCallback } from "react";
 import { LuSmile, LuStickyNote } from "react-icons/lu";
 import { RiAttachment2 } from "react-icons/ri";
@@ -79,6 +82,7 @@ export const ChatInput = memo(({
   const [isDragOver, setIsDragOver] = useState(false);
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const [attachments, setAttachments] = useState([]);
   const textAreaRef = useRef(null);
@@ -183,6 +187,30 @@ export const ChatInput = memo(({
   // Это защита от случая когда pageId из lastMessage не соответствует текущей воронке
   const isPageIdValid = useMemo(() => {
     return selectedPageId && pageIdOptions.some(opt => opt.value === selectedPageId);
+  }, [selectedPageId, pageIdOptions]);
+
+  // Получаем label для выбранных значений (для отображения в свернутом режиме)
+  const selectedPlatformLabel = useMemo(() => {
+    if (!selectedPlatform) return null;
+    const option = platformOptions.find(opt => opt.value === selectedPlatform);
+    return option?.label || selectedPlatform;
+  }, [selectedPlatform, platformOptions]);
+
+  const selectedContactLabel = useMemo(() => {
+    if (!currentClient?.value) return null;
+    const option = contactOptions.find(opt => opt.value === currentClient.value);
+    return option?.label || currentClient.value;
+  }, [currentClient, contactOptions]);
+
+  const selectedTemplateLabel = useMemo(() => {
+    if (!template) return null;
+    return template;
+  }, [template]);
+
+  const selectedPageLabel = useMemo(() => {
+    if (!selectedPageId) return null;
+    const option = pageIdOptions.find(opt => opt.value === selectedPageId);
+    return option?.label || selectedPageId;
   }, [selectedPageId, pageIdOptions]);
 
   // Получаем actionNeeded из personalInfo (приоритет) или из AppContext (fallback)
@@ -446,98 +474,160 @@ export const ChatInput = memo(({
                 <Loader size="xs" />
               ) : (
                 <Flex direction="column" gap="xs" w="100%">
-                  {/* Первый ряд: Platform + Template */}
-                  <Flex gap="xs" w="100%">
-                    {/* 1. Platform select */}
-                    <Select
-                      onChange={changePlatform}
-                      className="w-full"
-                      placeholder={getLanguageByKey("Selectează platforma")}
-                      value={selectedPlatform}
-                      data={platformOptions}
-                      searchable
-                      clearable
-                      label={getLanguageByKey("Platforma")}
-                      renderOption={renderPlatformOption}
-                      rightSection={selectedPlatform && socialMediaIcons[selectedPlatform] ? (
-                        <Flex>{socialMediaIcons[selectedPlatform]}</Flex>
-                      ) : null}
-                      size="xs"
-                      styles={{
-                        input: {
-                          fontSize: '11px',
-                          minHeight: '28px',
-                          padding: '4px 8px'
-                        }
-                      }}
-                    />
+                  {/* Кнопка развернуть/свернуть */}
+                  <Flex gap="xs" w="100%" align="center">
+                    <ActionIcon
+                      size="sm"
+                      onClick={() => setIsExpanded(prev => !prev)}
+                      variant="default"
+                      title={isExpanded ? getLanguageByKey("Collapse") || "Свернуть" : getLanguageByKey("Expand") || "Развернуть"}
+                    >
+                      {isExpanded ? <FaChevronUp size={12} /> : <FaChevronDown size={12} />}
+                    </ActionIcon>
 
-                    {/* 2. Template select */}
-                    <Select
-                      searchable
-                      label={getLanguageByKey("Șablon")}
-                      className="w-full"
-                      onChange={(value) => {
-                        setMessage(value ? templateOptions[value] : "");
-                        setTemplate(value || undefined);
-                      }}
-                      value={template || null}
-                      placeholder={getLanguageByKey("select_message_template")}
-                      data={templateSelectOptions}
-                      disabled={templateSelectOptions.length === 0}
-                      size="xs"
-                      styles={{
-                        input: {
-                          fontSize: '11px',
-                          minHeight: '28px',
-                          padding: '4px 8px'
-                        }
-                      }}
-                    />
-                  </Flex>
+                    {/* В свернутом режиме показываем только значения */}
+                    {!isExpanded ? (
+                      <Flex gap="md" align="center" wrap="wrap" style={{ flex: 1 }}>
+                        {selectedPlatformLabel && (
+                          <>
+                            <Flex align="center" gap="xs">
+                              <Text size="xs" fw={500} c="dimmed">{getLanguageByKey("Platforma")}:</Text>
+                              <Flex align="center" gap="xs">
+                                {socialMediaIcons[selectedPlatform] && (
+                                  <Flex>{socialMediaIcons[selectedPlatform]}</Flex>
+                                )}
+                                <Text size="xs">{selectedPlatformLabel}</Text>
+                              </Flex>
+                            </Flex>
+                            {(selectedContactLabel || selectedTemplateLabel || selectedPageLabel) && (
+                              <Divider orientation="vertical" h="20px" />
+                            )}
+                          </>
+                        )}
+                        {selectedContactLabel && (
+                          <>
+                            <Flex align="center" gap="xs">
+                              <Text size="xs" fw={500} c="dimmed">{getLanguageByKey("Contact")}:</Text>
+                              <Text size="xs">{selectedContactLabel}</Text>
+                            </Flex>
+                            {(selectedTemplateLabel || selectedPageLabel) && (
+                              <Divider orientation="vertical" h="20px" />
+                            )}
+                          </>
+                        )}
+                        {selectedTemplateLabel && (
+                          <>
+                            <Flex align="center" gap="xs">
+                              <Text size="xs" fw={500} c="dimmed">{getLanguageByKey("Șablon")}:</Text>
+                              <Text size="xs">{selectedTemplateLabel}</Text>
+                            </Flex>
+                            {selectedPageLabel && (
+                              <Divider orientation="vertical" h="20px" />
+                            )}
+                          </>
+                        )}
+                        {selectedPageLabel && (
+                          <Flex align="center" gap="xs">
+                            <Text size="xs" fw={500} c="dimmed">{getLanguageByKey("Pagina Panda")}:</Text>
+                            <Text size="xs">{selectedPageLabel}</Text>
+                          </Flex>
+                        )}
+                      </Flex>
+                    ) : (
+                      <>
+                        {/* В развернутом режиме показываем все селекты */}
+                        <Flex gap="xs" w="100%" justify="space-between">
+                          {/* 1. Platform select */}
+                          <Select
+                            onChange={changePlatform}
+                            placeholder={getLanguageByKey("Selectează platforma")}
+                            value={selectedPlatform}
+                            data={platformOptions}
+                            className="w-full"
+                            searchable
+                            clearable
+                            label={getLanguageByKey("Platforma")}
+                            renderOption={renderPlatformOption}
+                            rightSection={selectedPlatform && socialMediaIcons[selectedPlatform] ? (
+                              <Flex>{socialMediaIcons[selectedPlatform]}</Flex>
+                            ) : null}
+                            size="xs"
+                            styles={{
+                              input: {
+                                fontSize: '11px',
+                                minHeight: '28px',
+                                padding: '4px 8px'
+                              }
+                            }}
+                          />
 
-                  {/* Второй ряд: User pick number + Void select */}
-                  <Flex gap="xs" w="100%">
-                    {/* 3. User pick number (contact) */}
-                    <Select
-                      onChange={changeContact}
-                      placeholder={getLanguageByKey("Selectează contact")}
-                      value={currentClient?.value}
-                      data={contactOptions}
-                      label={getLanguageByKey("Contact")}
-                      className="w-full"
-                      searchable
-                      clearable
-                      disabled={!selectedPlatform}
-                      size="xs"
-                      styles={{
-                        input: {
-                          fontSize: '11px',
-                          minHeight: '28px',
-                          padding: '4px 8px'
-                        }
-                      }}
-                    />
+                          {/* 2. User pick number (contact) */}
+                          <Select
+                            onChange={changeContact}
+                            placeholder={getLanguageByKey("Selectează contact")}
+                            value={currentClient?.value}
+                            data={contactOptions}
+                            className="w-full"
+                            label={getLanguageByKey("Contact")}
+                            searchable
+                            clearable
+                            disabled={!selectedPlatform}
+                            size="xs"
+                            styles={{
+                              input: {
+                                fontSize: '11px',
+                                minHeight: '28px',
+                                padding: '4px 8px'
+                              }
+                            }}
+                          />
 
-                    {/* 4. Page ID select */}
-                    <Select
-                      searchable
-                      label={getLanguageByKey("Pagina Panda")}
-                      placeholder={getLanguageByKey("Selectează pagina")}
-                      value={selectedPageId}
-                      onChange={changePageId}
-                      data={pageIdOptions}
-                      className="w-full"
-                      disabled={!selectedPlatform}
-                      size="xs"
-                      styles={{
-                        input: {
-                          fontSize: '11px',
-                          minHeight: '28px',
-                          padding: '4px 8px',
-                        }
-                      }}
-                    />
+                          {/* 3. Page ID select */}
+                          <Select
+                            searchable
+                            className="w-full"
+                            label={getLanguageByKey("Pagina Panda")}
+                            placeholder={getLanguageByKey("Selectează pagina")}
+                            value={selectedPageId}
+                            onChange={changePageId}
+                            data={pageIdOptions}
+                            disabled={!selectedPlatform}
+                            size="xs"
+                            styles={{
+                              input: {
+                                fontSize: '11px',
+                                minHeight: '28px',
+                                padding: '4px 8px',
+                              }
+                            }}
+                          />
+
+                          {/* 4. Template select */}
+
+                          <Select
+                            searchable
+                            className="w-full"
+                            label={getLanguageByKey("Șablon")}
+                            onChange={(value) => {
+                              setMessage(value ? templateOptions[value] : "");
+                              setTemplate(value || undefined);
+                            }}
+                            value={template || null}
+                            placeholder={getLanguageByKey("select_message_template")}
+                            data={templateSelectOptions}
+                            disabled={templateSelectOptions.length === 0}
+                            size="xs"
+                            styles={{
+                              input: {
+                                fontSize: '11px',
+                                minHeight: '28px',
+                                padding: '4px 8px'
+                              }
+                            }}
+                          />
+                        </Flex>
+                      </>
+                    )}
                   </Flex>
                 </Flex>
               )}
