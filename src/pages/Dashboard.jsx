@@ -12,7 +12,7 @@ import DashboardGrid from "../Components/DashboardComponent/DashboardGrid";
 import { showServerError, getLanguageByKey } from "@utils";
 import { Spin, PageHeader } from "@components";
 import { useGetTechniciansList, useDashboardData, useUserPermissions } from "../hooks";
-import { Filter } from "../Components/DashboardComponent/Filter/Filter";
+import { DashboardFilter } from "../Components/DashboardComponent/Filter/DashboardFilter";
 import { safeArray, pickIds } from "../utils/dashboardHelpers";
 
 const t = (key) => String(getLanguageByKey?.(key) ?? key);
@@ -37,6 +37,7 @@ const WIDGET_TYPE_OPTIONS = [
   { value: "ticket_marketing", label: t("Statistica Marketing") },
   { value: "ticket_source", label: t("Sursă Lead") },
   { value: "ticket_platform_source", label: t("Platformă lead") },
+  { value: "lead_conversion", label: t("Lead Conversion") },
 ];
 
 const WIDGET_API_MAP = {
@@ -59,6 +60,7 @@ const WIDGET_API_MAP = {
   ticket_marketing: api.dashboard.getTicketMarketingWidget,
   ticket_source: api.dashboard.getTicketSourceWidget,
   ticket_platform_source: api.dashboard.getTicketPlatformSourceWidget,
+  lead_conversion: api.dashboard.getTicketConversions,
 };
 
 const MAX_VISIBLE_WIDGET_TAGS = 2;
@@ -136,6 +138,7 @@ export const Dashboard = () => {
   const [selectedUserGroups, setSelectedUserGroups] = useState(storedData?.selectedUserGroups || []);
   const [selectedGroupTitles, setSelectedGroupTitles] = useState(storedData?.selectedGroupTitles || []);
   const [dateRange, setDateRange] = useState(storedData?.dateRange || []);
+  const [selectedSursaLeads, setSelectedSursaLeads] = useState(storedData?.selectedSursaLeads || []);
 
   const [filterOpened, setFilterOpened] = useState(false);
 
@@ -167,6 +170,7 @@ export const Dashboard = () => {
       user_ids: pickIds(selectedTechnicians),
       user_groups: selectedUserGroups?.length ? selectedUserGroups : undefined,
       group_titles: selectedGroupTitles?.length ? selectedGroupTitles : undefined,
+      sursa_leads: selectedSursaLeads?.length ? selectedSursaLeads : undefined,
       attributes:
         start || end
           ? { timestamp: { from: start ? format(start, "yyyy-MM-dd") : undefined, to: end ? format(end, "yyyy-MM-dd") : undefined } }
@@ -175,9 +179,10 @@ export const Dashboard = () => {
     if (!payload.user_ids?.length) delete payload.user_ids;
     if (!payload.user_groups?.length) delete payload.user_groups;
     if (!payload.group_titles?.length) delete payload.group_titles;
+    if (!payload.sursa_leads?.length) delete payload.sursa_leads;
     if (!payload.attributes?.timestamp?.from && !payload.attributes?.timestamp?.to) delete payload.attributes;
     return payload;
-  }, [selectedTechnicians, selectedUserGroups, selectedGroupTitles, dateRange]);
+  }, [selectedTechnicians, selectedUserGroups, selectedGroupTitles, selectedSursaLeads, dateRange]);
 
 
   // запросы по выбранным типам
@@ -275,8 +280,9 @@ export const Dashboard = () => {
       selectedUserGroups,
       selectedGroupTitles,
       dateRange,
+      selectedSursaLeads,
     });
-  }, [widgetTypes, selectedTechnicians, selectedUserGroups, selectedGroupTitles, dateRange]);
+  }, [widgetTypes, selectedTechnicians, selectedUserGroups, selectedGroupTitles, dateRange, selectedSursaLeads]);
 
   // построение списка виджетов
   const widgets = useDashboardData(rawData, userNameById, widgetTypes, getLanguageByKey);
@@ -286,6 +292,7 @@ export const Dashboard = () => {
     setSelectedUserGroups(meta?.selectedUserGroups || []);
     setSelectedGroupTitles(meta?.selectedGroupTitles || []);
     setDateRange(meta?.dateRange || []);
+    setSelectedSursaLeads(meta?.selectedSursaLeads || []);
   }, []);
 
   // Проверяем, активен ли фильтр
@@ -435,7 +442,7 @@ export const Dashboard = () => {
         </Box>
       )}
 
-      <Filter
+      <DashboardFilter
         opened={filterOpened}
         onClose={() => setFilterOpened(false)}
         onApply={handleApplyFilter}
@@ -443,6 +450,7 @@ export const Dashboard = () => {
         initialUserGroups={selectedUserGroups}
         initialGroupTitles={selectedGroupTitles}
         initialDateRange={dateRange}
+        initialSursaLeads={selectedSursaLeads}
         widgetTypes={widgetTypes}
         accessibleGroupTitles={accessibleGroupTitles}
       />

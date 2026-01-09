@@ -6011,5 +6011,10 @@ export const translations = {
     RO: "Work Group",
     RU: "Work Group",
     EN: "Work Group"
-  }
+  },
+  "Lead Conversion": {
+    RO: "Conversii lead",
+    RU: "Конверсии лидов",
+    EN: "Lead Conversion"
+  },
 };

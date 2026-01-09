@@ -109,4 +109,8 @@ export const dashboard = {
     const { data } = await baseAxios.post("/api/dashboard/widget/ticket-platform-source", body);
     return data;
   },
+  getTicketConversions: async (body) => {
+    const { data } = await baseAxios.post("/api/dashboard/widget/lead-conversion", body);
+    return data;
+  },
 };

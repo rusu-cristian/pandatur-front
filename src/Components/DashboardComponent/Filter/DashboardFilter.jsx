@@ -7,7 +7,7 @@ import { useGetTechniciansList } from "../../../hooks";
 import { formatMultiSelectData } from "../../utils/multiSelectUtils";
 import { user } from "../../../api/user";
 import { UserGroupMultiSelect } from "../../ChatComponent/components/UserGroupMultiSelect/UserGroupMultiSelect";
-import { groupTitleOptions } from "../../../FormOptions";
+import { groupTitleOptions, sourceOfLeadOptions } from "../../../FormOptions";
 
 const getStartEndDateRange = (date) => {
   const startOfDay = new Date(date);
@@ -23,7 +23,7 @@ const getYesterdayDate = () => {
   return getStartEndDateRange(d);
 };
 
-export const Filter = ({
+export const DashboardFilter = ({
   opened,
   onClose,
   onApply, // (payload, meta) => void
@@ -31,6 +31,7 @@ export const Filter = ({
   initialUserGroups = [],
   initialGroupTitles = [],
   initialDateRange = [],
+  initialSursaLeads = [],
   widgetTypes = ["calls"], // Типы виджетов для определения доступных фильтров
   accessibleGroupTitles = [], // Доступные воронки для текущего пользователя
 }) => {
@@ -53,6 +54,7 @@ export const Filter = ({
   const [selectedUserGroups, setSelectedUserGroups] = useState(initialUserGroups);
   const [selectedGroupTitles, setSelectedGroupTitles] = useState(initialGroupTitles);
   const [dateRange, setDateRange] = useState(initialDateRange);
+  const [selectedSursaLeads, setSelectedSursaLeads] = useState(initialSursaLeads);
 
   useEffect(() => {
     if (opened) {
@@ -60,6 +62,7 @@ export const Filter = ({
       setSelectedUserGroups(initialUserGroups);
       setSelectedGroupTitles(initialGroupTitles);
       setDateRange(initialDateRange);
+      setSelectedSursaLeads(initialSursaLeads);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [opened]);
@@ -117,9 +120,10 @@ export const Filter = ({
       'workflow_from_de_prelucrat': ['user_ids', 'group_titles', 'user_groups', 'attributes'],
       'workflow_duration': ['user_ids', 'group_titles', 'user_groups', 'attributes'],
       'ticket_destination': ['attributes'],
+      'lead_conversion': ['attributes','user_groups','user_ids','group_titles',"sursa_leads"],
     };
 
-    const defaultOrder = ['user_ids', 'group_titles', 'user_groups', 'attributes'];
+    const defaultOrder = ['user_ids', 'group_titles', 'user_groups', 'attributes', 'sursa_leads'];
     const typesArray = Array.isArray(widgetTypes)
       ? widgetTypes
       : widgetTypes
@@ -136,13 +140,23 @@ export const Filter = ({
       filters.forEach((f) => activeFilters.add(f));
     });
 
-    return defaultOrder.filter((key) => activeFilters.has(key));
+    // Возвращаем все активные фильтры в правильном порядке
+    const orderedFilters = defaultOrder.filter((key) => activeFilters.has(key));
+    // Добавляем любые дополнительные фильтры, которых нет в defaultOrder
+    activeFilters.forEach((filter) => {
+      if (!defaultOrder.includes(filter)) {
+        orderedFilters.push(filter);
+      }
+    });
+
+    return orderedFilters;
   }, [widgetTypes]);
 
   const showUserFilter = availableFilters.includes('user_ids');
   const showGroupTitlesFilter = availableFilters.includes('group_titles');
   const showUserGroupsFilter = availableFilters.includes('user_groups');
   const showDateFilter = availableFilters.includes('attributes');
+  const showSursaLeadsFilter = availableFilters.includes('sursa_leads');
 
   const handleUsersChange = (val) => {
     // UserGroupMultiSelect уже обрабатывает группы внутри себя
@@ -169,6 +183,7 @@ export const Filter = ({
     if (showUserFilter) setSelectedTechnicians([]);
     if (showUserGroupsFilter) setSelectedUserGroups([]);
     if (showGroupTitlesFilter) setSelectedGroupTitles([]);
+    if (showSursaLeadsFilter) setSelectedSursaLeads([]);
     if (showDateFilter) setDateRange([]);
     onApply?.({});
     onClose?.();
@@ -180,6 +195,7 @@ export const Filter = ({
       selectedUserGroups,
       selectedGroupTitles,
       dateRange,
+      selectedSursaLeads,
     });
     onClose?.();
   };
@@ -243,6 +259,20 @@ export const Filter = ({
               />
             )}
 
+            {/* Фильтр по sursa leads */}
+            {showSursaLeadsFilter && (
+              <MultiSelect
+                data={sourceOfLeadOptions}
+                value={selectedSursaLeads}
+                onChange={(v) => setSelectedSursaLeads(v || [])}
+                searchable
+                clearable
+                maxDropdownHeight={260}
+                nothingFoundMessage={getLanguageByKey("Nimic găsit")}
+                placeholder={getLanguageByKey("Sursă lead")}
+                />
+            )}
+
             {/* Фильтр по датам */}
             {showDateFilter && (
               <Group gap="xs" align="center">
@@ -271,13 +301,13 @@ export const Filter = ({
 
         {/* Футер ВСЕГДА снизу */}
         <Flex justify="end" gap="md" pt={16} pb={8} pr="md" style={{ borderTop: "1px solid var(--mantine-color-gray-3)" }}>
-          <Button variant="outline" onClick={handleReset}>
+          <Button variant="outline" onClick={handleReset} size="xs">
             {getLanguageByKey("Reset")}
           </Button>
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="outline" onClick={onClose} size="xs">
             {getLanguageByKey("Anulează")}
           </Button>
-          <Button onClick={handleApply}>
+          <Button onClick={handleApply} size="xs">
             {getLanguageByKey("Aplică")}
           </Button>
         </Flex>
