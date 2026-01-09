@@ -120,15 +120,15 @@ export const DashboardFilter = ({
       'workflow_from_de_prelucrat': ['user_ids', 'group_titles', 'user_groups', 'attributes'],
       'workflow_duration': ['user_ids', 'group_titles', 'user_groups', 'attributes'],
       'ticket_destination': ['attributes'],
-      'lead_conversion': ['attributes','user_groups','user_ids','group_titles',"sursa_leads"],
+      'lead_conversion': ['attributes', 'user_groups', 'user_ids', 'group_titles', "sursa_leads"],
     };
 
     const defaultOrder = ['user_ids', 'group_titles', 'user_groups', 'attributes'];
     const typesArray = Array.isArray(widgetTypes)
       ? widgetTypes
       : widgetTypes
-      ? [widgetTypes]
-      : [];
+        ? [widgetTypes]
+        : [];
 
     if (!typesArray.length) {
       return defaultOrder;
@@ -227,6 +227,7 @@ export const DashboardFilter = ({
                 label={getLanguageByKey("User")}
                 techniciansData={formattedTechnicians}
                 mode="multi"
+                size="xs"
               />
             )}
 
@@ -242,6 +243,7 @@ export const DashboardFilter = ({
                 placeholder={getLanguageByKey("User group")}
                 nothingFoundMessage={getLanguageByKey("Nimic găsit")}
                 disabled={loadingUserGroups}
+                size="xs"
               />
             )}
 
@@ -256,6 +258,7 @@ export const DashboardFilter = ({
                 maxDropdownHeight={260}
                 nothingFoundMessage={getLanguageByKey("Nimic găsit")}
                 placeholder={getLanguageByKey("Group title")}
+                size="xs"
               />
             )}
 
@@ -270,7 +273,8 @@ export const DashboardFilter = ({
                 maxDropdownHeight={260}
                 nothingFoundMessage={getLanguageByKey("Nimic găsit")}
                 placeholder={getLanguageByKey("Sursă lead")}
-                />
+                size="xs"
+              />
             )}
 
             {/* Фильтр по датам */}
@@ -279,12 +283,14 @@ export const DashboardFilter = ({
                 <Button
                   variant={isToday ? "filled" : "outline"}
                   onClick={() => setDateRange(getStartEndDateRange(new Date()))}
+                  size="xs"
                 >
                   {getLanguageByKey("azi")}
                 </Button>
                 <Button
                   variant={isYesterday ? "filled" : "outline"}
                   onClick={() => setDateRange(getYesterdayDate())}
+                  size="xs"
                 >
                   {getLanguageByKey("ieri")}
                 </Button>

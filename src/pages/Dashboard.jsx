@@ -117,7 +117,7 @@ const WidgetTypeMultiValue = (props) => {
 const WidgetTypeOption = (props) => (
   <selectComponents.Option {...props}>
     <div className="dashboard-widget-select__option">
-      {props.isSelected ? <LuCheck size={16} /> : <span className="dashboard-widget-select__option-placeholder" />}
+      {props.isSelected ? <LuCheck size={14} /> : <span className="dashboard-widget-select__option-placeholder" />}
       <span>{props.label}</span>
     </div>
   </selectComponents.Option>
@@ -311,7 +311,7 @@ export const Dashboard = () => {
       ...base,
       backgroundColor: 'var(--crm-ui-kit-palette-background-primary)',
       borderColor: 'var(--crm-ui-kit-palette-border-default)',
-      minHeight: 36,
+      minHeight: 28,
       boxShadow: 'none',
       '&:hover': {
         borderColor: 'var(--crm-ui-kit-palette-border-primary)',
@@ -381,7 +381,7 @@ export const Dashboard = () => {
   }), []);
 
   const extraInfo = (
-    <Flex gap="sm" align="center">
+    <Flex gap="xs" align="center">
       <ActionIcon
         variant={isFilterActive ? "filled" : "default"}
         size="lg"
@@ -389,10 +389,10 @@ export const Dashboard = () => {
         aria-label="open-filter"
         color={isFilterActive ? "green" : undefined}
       >
-        <LuFilter size={18} />
+        <LuFilter size={14} />
       </ActionIcon>
 
-      <Box style={{ width: 360 }}>
+      <Box style={{ width: 280 }}>
         <Select
           isMulti
           options={WIDGET_TYPE_OPTIONS}
@@ -414,7 +414,7 @@ export const Dashboard = () => {
   );
 
   return (
-    <Stack gap={12} p="12">
+    <Stack gap={8} p="8">
       <div ref={headerRowRef}>
         <PageHeader
           title={getLanguageByKey("Dashboard")}
@@ -425,18 +425,18 @@ export const Dashboard = () => {
       </div>
 
       {isLoading ? (
-        <Flex align="center" justify="center" style={{ flex: 1, minHeight: 240 }}>
+        <Flex align="center" justify="center" style={{ flex: 1, minHeight: 180 }}>
           <Spin />
         </Flex>
       ) : dataError ? (
-        <Flex align="center" justify="center" style={{ flex: 1, minHeight: 240 }}>
+        <Flex align="center" justify="center" style={{ flex: 1, minHeight: 180 }}>
           <Text c="red">{String(dataError)}</Text>
         </Flex>
       ) : (
         <Box
           ref={scrollRef}
           style={{ width: "100%", height: scrollHeight, overflowY: "auto", overflowX: "hidden", scrollbarGutter: "stable" }}
-          pb="200px" pl="50px" pr="50px"
+          pb="100px" pl="20px" pr="20px"
         >
           <DashboardGrid widgets={widgets} dateRange={dateRange} widgetType={widgetTypes?.[0] || "calls"} />
         </Box>
