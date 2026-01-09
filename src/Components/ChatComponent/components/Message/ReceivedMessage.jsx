@@ -90,7 +90,7 @@ export const ReceivedMessage = memo(({ personalInfo, msg, technicians = [] }) =>
               </Text>
               {socialMediaIcons[msg.platform] || null}
             </Flex>
-            <Box mt={4}>
+            <Box mt={4} mb="4">
               {renderContent(msg)}
             </Box>
             <Flex justify="end" align="center" gap={2}>

@@ -79,7 +79,7 @@ export const renderContent = (msg) => {
       return (
         <CheckedImage
           url={mediaUrl}
-          style={{ maxWidth: 500, maxHeight: 500 }}
+          style={{ maxWidth: 300, maxHeight: 300 }}
           renderFallbackImage={() => (
             <Text c="red" size="xs">
               {getLanguageByKey("failToLoadImage")}
@@ -92,7 +92,7 @@ export const renderContent = (msg) => {
       return (
         <video
           controls
-          style={{ borderRadius: 8, maxWidth: 500, maxHeight: 500 }}
+          style={{ borderRadius: 8, maxWidth: 500, maxHeight: 400 }}
         >
           <source src={mediaUrl} type="video/mp4" />
           {getLanguageByKey("Acest browser nu suporta video")}
@@ -115,7 +115,7 @@ export const renderContent = (msg) => {
       return (
         <video
           controls
-          style={{ borderRadius: "8", maxWidth: 500, maxHeight: 500 }}
+          style={{ borderRadius: "8", maxWidth: 300, maxHeight: 300 }}
         >
           <source src={mediaUrl} type="video/mp4" />
           {getLanguageByKey("Acest browser nu suporta video")}
@@ -128,7 +128,7 @@ export const renderContent = (msg) => {
       return isImage ? (
         <CheckedImage
           url={mediaUrl}
-          style={{ maxWidth: 500, maxHeight: 500 }}
+          style={{ maxWidth: 300, maxHeight: 300 }}
           renderFallbackImage={() => (
             <Text c="red" size="xs">
               {getLanguageByKey("failToLoadImage")}
