@@ -31,7 +31,7 @@ export const ReceivedMessage = memo(({ personalInfo, msg, technicians = [] }) =>
     );
 
     return (
-      <Flex w="100%">
+      <Flex w="100%" justify="center">
         <Call
           time={msg.time_sent}
           from={participants.callerId}
@@ -69,32 +69,32 @@ export const ReceivedMessage = memo(({ personalInfo, msg, technicians = [] }) =>
   return (
     <Flex w="100%">
       <Flex w="90%" direction="column" className="chat-message received">
-        <Flex gap="8">
-          <Image 
-            w={36} 
-            h={36} 
-            radius="50%" 
+        <Flex gap="4">
+          <Image
+            w={22}
+            h={22}
+            radius="50%"
             src={clientPhoto}
-            fallbackSrc={DEFAULT_PHOTO} 
+            fallbackSrc={DEFAULT_PHOTO}
           />
           <Flex
-            miw="250px"
+            miw="150px"
             direction="column"
-            p="8"
+            p="4"
             className="text"
             style={{ backgroundColor: "var(--crm-ui-kit-palette-message-received-background)" }}
           >
-            <Flex align="center" gap="4" style={{ color: "var(--crm-ui-kit-palette-text-secondary-dark)" }}>
-              <Text size="sm" fw="bold">
+            <Flex align="center" gap="2" style={{ color: "var(--crm-ui-kit-palette-text-secondary-dark)" }}>
+              <Text size="xs" fw="bold">
                 {senderName}
               </Text>
               {socialMediaIcons[msg.platform] || null}
             </Flex>
-            <Box mt="xs">
+            <Box mt={4}>
               {renderContent(msg)}
             </Box>
-            <Flex justify="end" align="center" gap={4}>
-              <Text size="sm" style={{ color: "var(--crm-ui-kit-palette-text-secondary-dark)" }}>
+            <Flex justify="end" align="center" gap={2}>
+              <Text size="xs" style={{ color: "var(--crm-ui-kit-palette-text-secondary-dark)" }}>
                 {parseServerDate(msg.time_sent).format(HH_mm)}
               </Text>
               {(msg.from_reference || msg.to_reference || msg.seen_by_user_id) && (
@@ -102,19 +102,19 @@ export const ReceivedMessage = memo(({ personalInfo, msg, technicians = [] }) =>
                   title={
                     <Box>
                       {fromPage && (
-                        <Typography fontSize="0.75rem">From: {fromPage.page_name} ({fromPage.page_id})</Typography>
+                        <Typography fontSize="0.65rem">From: {fromPage.page_name} ({fromPage.page_id})</Typography>
                       )}
                       {!fromPage && msg.from_reference && (
-                        <Typography fontSize="0.75rem">From: {msg.from_reference}</Typography>
+                        <Typography fontSize="0.65rem">From: {msg.from_reference}</Typography>
                       )}
                       {toPage && (
-                        <Typography fontSize="0.75rem">To: {toPage.page_name} ({toPage.page_id})</Typography>
+                        <Typography fontSize="0.65rem">To: {toPage.page_name} ({toPage.page_id})</Typography>
                       )}
                       {!toPage && msg.to_reference && (
-                        <Typography fontSize="0.75rem">To: {msg.to_reference}</Typography>
+                        <Typography fontSize="0.65rem">To: {msg.to_reference}</Typography>
                       )}
                       {msg.seen_by_user_id && (
-                        <Typography fontSize="0.75rem">Seen by user ID: {msg.seen_by_user_id}</Typography>
+                        <Typography fontSize="0.65rem">Seen by user ID: {msg.seen_by_user_id}</Typography>
                       )}
                     </Box>
                   }
@@ -127,7 +127,7 @@ export const ReceivedMessage = memo(({ personalInfo, msg, technicians = [] }) =>
                       alignItems: "center",
                     }}
                   >
-                    <InfoOutlineRounded sx={{ fontSize: 24, color: "var(--crm-ui-kit-palette-text-secondary-dark)" }} />
+                    <InfoOutlineRounded sx={{ fontSize: 12, color: "var(--crm-ui-kit-palette-text-secondary-dark)" }} />
                   </Box>
                 </Tooltip>
               )}

@@ -224,50 +224,50 @@ export const MessagesLogItem = ({ log, technicians, isLive = false }) => {
 
     return (
         <Box
-            mb="6px"
+            mb="4px"
             style={{
                 backgroundColor: "transparent",
-                borderRadius: "8px",
+                borderRadius: "6px",
                 position: "relative",
                 overflow: "hidden"
             }}
         >
             <Flex
                 align="flex-start"
-                gap="md"
+                gap="xs"
                 wrap="nowrap"
                 style={{
                     backgroundColor: "transparent",
-                    borderRadius: "8px"
+                    borderRadius: "6px"
                 }}
             >
                 {/* Дата */}
-                <Flex align="center" gap="xs" style={{ minWidth: "120px" }}>
-                    <Text size="sm" fw={600} c="dimmed">
+                <Flex align="center" gap="xs" style={{ minWidth: "100px" }}>
+                    <Text size="xs" fw={600} c="dimmed">
                         {date}
                     </Text>
                 </Flex>
 
                 {/* Стрелка */}
-                <Text size="sm" c="dimmed" fw={500}>
+                <Text size="xs" c="dimmed" fw={500}>
                     →
                 </Text>
 
                 {/* Кто сделал */}
-                <Box style={{ minWidth: "120px" }}>
-                    <Text size="sm" fw={700} c="dark" style={{ lineHeight: 1.2 }}>
+                <Box style={{ minWidth: "100px" }}>
+                    <Text size="xs" fw={700} c="dark" style={{ lineHeight: 1.2 }}>
                         {author}  {log.action?.toUpperCase() || "ACTION"}
                     </Text>
                 </Box>
 
                 {/* Стрелка */}
-                <Text size="sm" c="dimmed" fw={500}>
+                <Text size="xs" c="dimmed" fw={500}>
                     →
                 </Text>
 
                 {/* Что сделал */}
-                <Box style={{ flex: 1, minWidth: "200px" }}>
-                    <Text size="sm" fw={500} c="dark" style={{ lineHeight: 1.4, wordBreak: "break-word" }}>
+                <Box style={{ flex: 1, minWidth: "150px" }}>
+                    <Text size="xs" fw={500} c="dark" style={{ lineHeight: 1.4, wordBreak: "break-word" }}>
                         {changed} {" "} {log.task_id && `Task #${log.task_id}`}
                     </Text>
                 </Box>

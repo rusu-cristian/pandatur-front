@@ -17,10 +17,10 @@ import "./Message.css";
 const DEFAULT_SENDER_NAME = "SYSTEM TECHNICIAN";
 
 const MESSAGE_STATUS_ICONS = {
-  [MESSAGES_STATUS.PENDING]: <IoMdCheckmark size={20} style={{ color: "var(--crm-ui-kit-palette-text-secondary-dark)" }} />,
-  [MESSAGES_STATUS.ERROR]: <ReportRounded sx={{ fontSize: 24, color: "var(--mantine-color-red-6)" }} />,
-  [MESSAGES_STATUS.SUCCESS]: <IoCheckmarkDoneSharp size={20} style={{ color: "var(--crm-ui-kit-palette-link-primary)" }} />,
-  [MESSAGES_STATUS.SEEN]: <IoCheckmarkDoneSharp size={20} style={{ color: "var(--mantine-color-blue-6)" }} />,
+  [MESSAGES_STATUS.PENDING]: <IoMdCheckmark size={12} style={{ color: "var(--crm-ui-kit-palette-text-secondary-dark)" }} />,
+  [MESSAGES_STATUS.ERROR]: <ReportRounded sx={{ fontSize: 14, color: "var(--mantine-color-red-6)" }} />,
+  [MESSAGES_STATUS.SUCCESS]: <IoCheckmarkDoneSharp size={12} style={{ color: "var(--crm-ui-kit-palette-link-primary)" }} />,
+  [MESSAGES_STATUS.SEEN]: <IoCheckmarkDoneSharp size={12} style={{ color: "var(--mantine-color-blue-6)" }} />,
 };
 
 const MESSAGE_STATUS_LABELS = {
@@ -126,7 +126,7 @@ export const SendedMessage = memo(({
     );
 
     return (
-      <Flex w="100%" justify="end">
+      <Flex w="100%" justify="center">
         <Call
           time={msg.time_sent}
           from={participants.callerId}
@@ -144,28 +144,28 @@ export const SendedMessage = memo(({
   return (
     <Flex w="100%" justify="end">
       <Flex w="90%" direction="column" className="chat-message sent">
-        <Flex justify="end" gap="8">
+        <Flex justify="end" gap="4">
           <Flex>
             <Flex
-              miw="250px"
+              miw="150px"
               direction="column"
-              p="8"
+              p="4"
               className="text"
               style={{ backgroundColor: "var(--crm-ui-kit-palette-message-sent-background)" }}
             >
-              <Flex align="center" gap={8}>
-                <Text fw="bold" size="sm">
+              <Flex align="center" gap={4}>
+                <Text fw="bold" size="xs">
                   {senderName}
                 </Text>
                 {socialMediaIcons[msg.platform] || null}
               </Flex>
 
-              <Box mt="xs">
+              <Box mt={4}>
                 {renderContent(msg)}
               </Box>
 
-              <Flex justify="end" align="center" gap={4}>
-                <Flex align="center" gap={3}>
+              <Flex justify="end" align="center" gap={2}>
+                <Flex align="center" gap={2}>
                   <Flex align="center">
                     {messageStatus === MESSAGES_STATUS.ERROR && msg.error_message ? (
                       <Tooltip title={msg.error_message} arrow>
@@ -184,7 +184,7 @@ export const SendedMessage = memo(({
                   )}
                 </Flex>
 
-                <Text size="sm">
+                <Text size="xs">
                   {parseServerDate(msg.time_sent).format(HH_mm)}
                 </Text>
 
@@ -193,16 +193,16 @@ export const SendedMessage = memo(({
                     title={
                       <Box>
                         {fromPage && (
-                          <Typography fontSize="0.75rem">From: {fromPage.page_name} ({fromPage.page_id})</Typography>
+                          <Typography fontSize="0.65rem">From: {fromPage.page_name} ({fromPage.page_id})</Typography>
                         )}
                         {!fromPage && msg.from_reference && (
-                          <Typography fontSize="0.75rem">From: {msg.from_reference}</Typography>
+                          <Typography fontSize="0.65rem">From: {msg.from_reference}</Typography>
                         )}
                         {toPage && (
-                          <Typography fontSize="0.75rem">To: {toPage.page_name} ({toPage.page_id})</Typography>
+                          <Typography fontSize="0.65rem">To: {toPage.page_name} ({toPage.page_id})</Typography>
                         )}
                         {!toPage && msg.to_reference && (
-                          <Typography fontSize="0.75rem">To: {msg.to_reference}</Typography>
+                          <Typography fontSize="0.65rem">To: {msg.to_reference}</Typography>
                         )}
                       </Box>
                     }
@@ -215,7 +215,7 @@ export const SendedMessage = memo(({
                         alignItems: "center",
                       }}
                     >
-                      <InfoOutlineRounded sx={{ fontSize: 24, color: "var(--crm-ui-kit-palette-text-secondary-dark)" }} />
+                      <InfoOutlineRounded sx={{ fontSize: 12, color: "var(--crm-ui-kit-palette-text-secondary-dark)" }} />
                     </Box>
                   </Tooltip>
                 )}
@@ -223,8 +223,8 @@ export const SendedMessage = memo(({
             </Flex>
           </Flex>
           <Image
-            w={36}
-            h={36}
+            w={22}
+            h={22}
             radius="50%"
             src={technicianPhoto}
             fallbackSrc={DEFAULT_PHOTO}

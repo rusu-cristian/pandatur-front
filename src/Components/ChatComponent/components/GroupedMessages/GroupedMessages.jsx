@@ -240,13 +240,13 @@ export const GroupedMessages = memo(({
   const hiddenEmailCount = totalEmailCount - visibleEmailCount;
 
   return (
-    <Flex direction="column" gap="xl" h="100%">
+    <Flex direction="column" gap="xs" h="100%">
       {/* Кнопка загрузки старых сообщений (пагинация) */}
       {hasMoreMessages && allItems.length > 0 && (
         <Flex justify="center">
           <Button
             variant="filled"
-            size="sm"
+            size="xs"
             onClick={onLoadMore}
             loading={loadingMore}
             disabled={loadingMore}
@@ -258,10 +258,10 @@ export const GroupedMessages = memo(({
 
       {/* Кнопка загрузить еще email (если есть скрытые) */}
       {hiddenEmailCount > 0 && (
-        <Flex justify="center" pt="md">
+        <Flex justify="center" pt="xs">
           <Button
             variant="light"
-            size="sm"
+            size="xs"
             onClick={() => setVisibleEmailCount(prev => prev + 10)}
           >
             {getLanguageByKey("Load more emails")} ({hiddenEmailCount})
@@ -276,19 +276,19 @@ export const GroupedMessages = memo(({
             const blocks = createDialogBlocks(dayItems);
 
             return (
-              <Flex pb="xs" direction="column" gap="md" key={date}>
+              <Flex pb="xs" direction="column" gap="xs" key={date}>
                 <Divider
                   color="var(--crm-ui-kit-palette-border-default)"
                   label={
                     <Box
-                      px="sm"
-                      py={4}
+                      px="xs"
+                      py={2}
                       style={{
                         backgroundColor: "var(--crm-ui-kit-palette-background-primary-disabled)",
                         color: "var(--crm-ui-kit-palette-text-primary)",
                         fontWeight: 500,
-                        fontSize: "14px",
-                        borderRadius: "16px",
+                        fontSize: "11px",
+                        borderRadius: "12px",
                         border: "1px solid var(--crm-ui-kit-palette-border-default)"
                       }}
                     >
@@ -332,10 +332,10 @@ export const GroupedMessages = memo(({
                     return (
                       <Box
                         key={`dialog-${date}-${i}`}
-                        p="md"
+                        p="xs"
                         style={{
                           backgroundColor: "var(--crm-ui-kit-palette-background-primary)",
-                          borderRadius: "12px",
+                          borderRadius: "8px",
                           border: "1px solid var(--crm-ui-kit-palette-border-default)",
                           position: "relative",
                         }}
@@ -390,7 +390,7 @@ export const GroupedMessages = memo(({
         </Flex>
       ) : (
         <Flex h="100%" align="center" justify="center">
-          <Text c="dimmed">{getLanguageByKey("noConversationStartedForThisLead")}</Text>
+          <Text size="sm" c="dimmed">{getLanguageByKey("noConversationStartedForThisLead")}</Text>
         </Flex>
       )}
     </Flex>
