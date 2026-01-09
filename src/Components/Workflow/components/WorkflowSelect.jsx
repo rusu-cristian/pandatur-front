@@ -89,7 +89,7 @@ export const WorkflowSelect = ({
           <span
             style={{
               color: "#000000",
-              fontSize: "14px",
+              fontSize: "12px",
             }}
           >
             {getLanguageByKey(selectedWorkflow)}

@@ -5,7 +5,7 @@ import { getLanguageByKey, showServerError } from "../utils";
 import { api } from "../../api";
 import {
   ContractForm,
-  GeneralForm,
+  BasicGeneralForm,
   TicketInfoForm,
   QualityControlForm,
 } from "../TicketForms";
@@ -162,7 +162,7 @@ export const ManageLeadInfoTabs = ({
         </Tabs.List>
 
         <Tabs.Panel value="general_info" pt="xs" style={{ flex: 1, overflowY: "auto", minHeight: 0 }}>
-          <GeneralForm data={generalInfoLightTicket} formInstance={form} />
+          <BasicGeneralForm data={generalInfoLightTicket} formInstance={form} />
         </Tabs.Panel>
 
         <Tabs.Panel value="ticket_info" pt="xs" style={{ flex: 1, overflowY: "auto", minHeight: 0 }}>

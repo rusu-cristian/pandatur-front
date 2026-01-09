@@ -22,7 +22,7 @@ import { PersonalData4ClientForm, Merge, Media } from "./components";
 import {
   ContractForm,
   QualityControlForm,
-  GeneralForm,
+  BasicGeneralForm,
   TicketInfoForm,
 } from "../TicketForms";
 import { InvoiceTab } from "./components";
@@ -418,7 +418,7 @@ const ChatExtraInfo = ({
 
         <Tabs.Panel value="general">
           <Box p="xs">
-            <GeneralForm
+            <BasicGeneralForm
               key={`general-${ticketId}-${JSON.stringify(formData.general)}`}
               data={formData.general}
               formInstance={form}
