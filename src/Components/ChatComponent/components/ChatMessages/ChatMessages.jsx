@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { useUser, useMessagesContext } from "@hooks";
 import { api } from "@api";
 import { getLanguageByKey, MESSAGES_STATUS } from "@utils";
+import { WASENDER_WHATSAPP_PAGE_IDS } from "../../../../constants/webhookPagesConfig";
 import { Spin } from "@components";
 import { YYYY_MM_DD_HH_mm_ss } from "@app-constants";
 import { ChatInput } from "../ChatInput";
@@ -101,7 +102,13 @@ export const ChatMessages = ({
         if (normalizedPlatform === "TELEGRAM") apiUrl = api.messages.send.telegram;
         else if (normalizedPlatform === "VIBER") apiUrl = api.messages.send.viber;
         else if (normalizedPlatform === "VIBER-BOT") apiUrl = api.messages.send.viber_bot;
-        else if (normalizedPlatform === "WHATSAPP") apiUrl = api.messages.send.whatsapp;
+        else if (normalizedPlatform === "WHATSAPP") {
+          // Для определённых номеров используем WaSender API
+          const pageId = metadataMsj.page_id;
+          apiUrl = WASENDER_WHATSAPP_PAGE_IDS.includes(pageId)
+            ? api.messages.send.wasender
+            : api.messages.send.whatsapp;
+        }
 
         // Отправляем на сервер
         const response = await apiUrl(metadataMsj);

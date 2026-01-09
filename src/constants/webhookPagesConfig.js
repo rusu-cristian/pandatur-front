@@ -1,3 +1,9 @@
+// Номера WhatsApp, которые используют WaSender API вместо стандартного
+export const WASENDER_WHATSAPP_PAGE_IDS = [
+  "37360991919", // Chisinau
+  "40721205105", // Brasov
+];
+
 export const WEBHOOK_PAGES_CONFIG = {
   facebooks: [
     {
@@ -442,6 +448,7 @@ export const WEBHOOK_PAGES_CONFIG = {
     }
   ],
   whatsapps: [
+    // aista unu
     {
       page_id: "37360991919",
       page_name: "Chisinau - 37360991919",
@@ -538,6 +545,7 @@ export const WEBHOOK_PAGES_CONFIG = {
       type: "phone",
       group_title: ["RO"]
     },
+    // 40721205105 asta 
     {
       page_id: "40721205105",
       page_name: "Brasov - 40721205105",

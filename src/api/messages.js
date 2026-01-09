@@ -93,6 +93,15 @@ export const messages = {
       return data;
     },
 
+    // Альтернативный API для отправки WhatsApp сообщений (WaSender)
+    wasender: async (body) => {
+      const token = Cookies.get("jwt");
+      const { data } = await baseAxios.post("/messages/send/wasender", body, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return data;
+    },
+
     email: async (body) => {
       const token = Cookies.get("jwt");
       const { data } = await baseAxios.post("/messages/send/email", body, {
