@@ -123,7 +123,7 @@ export const DashboardFilter = ({
       'lead_conversion': ['attributes','user_groups','user_ids','group_titles',"sursa_leads"],
     };
 
-    const defaultOrder = ['user_ids', 'group_titles', 'user_groups', 'attributes', 'sursa_leads'];
+    const defaultOrder = ['user_ids', 'group_titles', 'user_groups', 'attributes'];
     const typesArray = Array.isArray(widgetTypes)
       ? widgetTypes
       : widgetTypes
@@ -142,7 +142,7 @@ export const DashboardFilter = ({
 
     // Возвращаем все активные фильтры в правильном порядке
     const orderedFilters = defaultOrder.filter((key) => activeFilters.has(key));
-    // Добавляем любые дополнительные фильтры, которых нет в defaultOrder
+    // Добавляем любые дополнительные фильтры, которых нет в defaultOrder (например, sursa_leads для lead_conversion)
     activeFilters.forEach((filter) => {
       if (!defaultOrder.includes(filter)) {
         orderedFilters.push(filter);
