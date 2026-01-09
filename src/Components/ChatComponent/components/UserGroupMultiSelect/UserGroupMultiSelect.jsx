@@ -55,22 +55,22 @@ export const UserGroupMultiSelect = ({
       const filtered = techniciansData
         .filter(item => {
           const isGroupItem = item.value.startsWith("__group__");
-          
+
           // Пропускаем скрытые группы (например "Dismissed")
           if (isGroupItem && isHiddenGroup(item.label)) {
             return false;
           }
-          
+
           // Для пользователей: пропускаем тех, кто в скрытой группе
           if (!isGroupItem && isHiddenGroup(item.groupName)) {
             return false;
           }
-          
+
           // Фильтрация по allowedUserIds
           if (allowedUserIds && !isGroupItem) {
             return allowedUserIds.has(item.value);
           }
-          
+
           return true;
         })
         .map(item => {
@@ -120,20 +120,20 @@ export const UserGroupMultiSelect = ({
 
       // Создаем итоговый массив: сначала пользователи без группы, затем группы с пользователями
       const result = [];
-      
+
       // Добавляем пользователей без группы (например, Client и System) в начало
       const usersWithoutGroup = users.filter(user => !user.groupName);
       result.push(...usersWithoutGroup);
-      
+
       groups.forEach(group => {
         // Добавляем группу
         result.push(group);
-        
+
         // Добавляем пользователей этой группы
         const groupUsers = users.filter(user => user.groupName === group.label);
         result.push(...groupUsers);
       });
-      
+
       return result;
     }
 
@@ -147,7 +147,7 @@ export const UserGroupMultiSelect = ({
         }
         return true;
       });
-      
+
       // Собираем все уникальные группы (кроме скрытых)
       const allGroups = new Map();
       allUsers.forEach(user => {
@@ -155,7 +155,7 @@ export const UserGroupMultiSelect = ({
           user.groups.forEach(group => {
             // Пропускаем скрытые группы
             if (isHiddenGroup(group.name)) return;
-            
+
             if (!allGroups.has(group.id)) {
               allGroups.set(group.id, {
                 id: group.id,
@@ -216,13 +216,13 @@ export const UserGroupMultiSelect = ({
     // Fallback: используем данные из UserContext (только группы текущего пользователя)
     if (userGroups && userGroups.length > 0) {
       const options = [];
-      
+
       // Фильтруем группы: убираем скрытые
       const filteredGroups = userGroups.filter(group => !isHiddenGroup(group.name));
-      
+
       // Сортируем группы по алфавиту
       const sortedGroups = filteredGroups.sort((a, b) => a.name.localeCompare(b.name));
-      
+
       sortedGroups.forEach(group => {
         // Добавляем группу
         options.push({
@@ -284,7 +284,7 @@ export const UserGroupMultiSelect = ({
     if (isGroup) {
       // Если выбрана группа, добавляем или убираем всех пользователей из группы
       const groupId = last.replace("__group__", "");
-      
+
       // Находим название группы
       const groupOption = options.find(opt => opt.value === `__group__${groupId}`);
       const groupName = groupOption?.label;
@@ -326,7 +326,7 @@ export const UserGroupMultiSelect = ({
   const renderOption = ({ option, checked }) => {
     const isGroup = option.value.startsWith("__group__");
     const isDisabled = option.disabled;
-    
+
     // Пользователи из скрытых групп уже отфильтрованы в options
 
     return (
@@ -405,7 +405,7 @@ export const UserGroupMultiSelect = ({
           >
             {(() => {
               const groupName = option.label;
-              
+
               // Считаем всех пользователей в группе из options
               const userCount = options.filter(opt => {
                 // Пропускаем группы, берем только пользователей
@@ -413,7 +413,7 @@ export const UserGroupMultiSelect = ({
                 // Проверяем принадлежность к группе
                 return opt.groupName === groupName;
               }).length;
-              
+
               return `${userCount} users`;
             })()}
           </Badge>
@@ -454,7 +454,8 @@ export const UserGroupMultiSelect = ({
             backgroundColor: "var(--crm-ui-kit-palette-background-primary-disabled)",
             color: "var(--crm-ui-kit-palette-text-primary)",
             border: "1px solid var(--crm-ui-kit-palette-border-default)",
-            fontWeight: 600
+            fontWeight: 600,
+            fontSize: 10
           }
         }}
       />
