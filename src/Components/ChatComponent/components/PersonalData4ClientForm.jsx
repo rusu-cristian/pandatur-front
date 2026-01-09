@@ -491,6 +491,7 @@ export const PersonalData4ClientForm = ({
             leftSection={<LuUser size={24} />}
             {...form.getInputProps("name")}
             mb="sm"
+            size="xs"
           />
 
           <TextInput
@@ -499,6 +500,7 @@ export const PersonalData4ClientForm = ({
             leftSection={<LuUser size={24} />}
             {...form.getInputProps("surname")}
             mb="sm"
+            size="xs"
           />
 
           <Group grow>
@@ -506,12 +508,14 @@ export const PersonalData4ClientForm = ({
               variant="outline"
               onClick={handleCancel}
               disabled={isSaving}
+              size="xs"
             >
               {getLanguageByKey("Anulează")}
             </Button>
             <Button
               onClick={handleSaveClient}
               loading={isSaving}
+              size="xs"
             >
               {getLanguageByKey("Adaugǎ clientul")}
             </Button>
@@ -866,6 +870,7 @@ export const PersonalData4ClientForm = ({
                       ]}
                       {...contactForm.getInputProps("contact_type")}
                       mb="sm"
+                      size="xs"
                     />
 
                     <TextInput
@@ -900,6 +905,7 @@ export const PersonalData4ClientForm = ({
                       }
                       value={contactForm.values.contact_value}
                       mb="md"
+                      size="xs"
                     />
 
                     <Group grow>
@@ -907,12 +913,14 @@ export const PersonalData4ClientForm = ({
                         variant="outline"
                         onClick={() => toggleClientExpand(client.id)}
                         disabled={isSavingContact}
+                        size="xs"
                       >
                         {getLanguageByKey("Anulează")}
                       </Button>
                       <Button
                         onClick={() => handleAddContact(client.id)}
                         loading={isSavingContact}
+                        size="xs"
                       >
                         {getLanguageByKey("Adaugă contact")}
                       </Button>

@@ -6,7 +6,6 @@ import dayjs from "dayjs";
 import { getLanguageByKey, parseServerDate } from "../utils";
 import { LabelSwitch } from "../LabelSwitch";
 import { paymentStatusOptions } from "../../FormOptions";
-import { YYYY_MM_DD } from "../../app-constants";
 import { UserContext } from "../../contexts/UserContext";
 import { useWorkflowOptions } from "../../hooks/useWorkflowOptions";
 
@@ -75,6 +74,7 @@ export const ContractForm = ({
         placeholder={getLanguageByKey("Nr de contract")}
         key={formInstance.key("numar_de_contract")}
         {...formInstance.getInputProps("numar_de_contract")}
+        size="xs"
       />
 
       <DatePickerInput
@@ -87,6 +87,7 @@ export const ContractForm = ({
         key={formInstance.key("data_contractului")}
         {...formInstance.getInputProps("data_contractului")}
         getDayProps={getDayPropsWithHighlight}
+        size="xs"
       />
 
       <DatePickerInput
@@ -99,6 +100,7 @@ export const ContractForm = ({
         key={formInstance.key("data_avansului")}
         {...formInstance.getInputProps("data_avansului")}
         getDayProps={getDayPropsWithHighlight}
+        size="xs"
       />
 
       <DatePickerInput
@@ -111,6 +113,7 @@ export const ContractForm = ({
         key={formInstance.key("data_de_plata_integrala")}
         {...formInstance.getInputProps("data_de_plata_integrala")}
         getDayProps={getDayPropsWithHighlight}
+        size="xs"
       />
 
       <LabelSwitch
@@ -121,6 +124,7 @@ export const ContractForm = ({
         {...formInstance.getInputProps("contract_trimis", {
           type: "checkbox",
         })}
+        size="xs"
       />
 
 
@@ -132,6 +136,7 @@ export const ContractForm = ({
         {...formInstance.getInputProps("contract_semnat", {
           type: "checkbox",
         })}
+        size="xs"
       />
 
       <TextInput
@@ -140,6 +145,7 @@ export const ContractForm = ({
         placeholder={getLanguageByKey("Operator turistic")}
         key={formInstance.key("tour_operator")}
         {...formInstance.getInputProps("tour_operator")}
+        size="xs"
       />
 
       <TextInput
@@ -148,6 +154,7 @@ export const ContractForm = ({
         placeholder={getLanguageByKey("Nr cererii de la operator")}
         key={formInstance.key("numarul_cererii_de_la_operator")}
         {...formInstance.getInputProps("numarul_cererii_de_la_operator")}
+        size="xs"
       />
 
       <LabelSwitch
@@ -158,6 +165,7 @@ export const ContractForm = ({
         {...formInstance.getInputProps("achitare_efectuata", {
           type: "checkbox",
         })}
+        size="xs"
       />
 
       <LabelSwitch
@@ -168,6 +176,7 @@ export const ContractForm = ({
         {...formInstance.getInputProps("rezervare_confirmata", {
           type: "checkbox",
         })}
+        size="xs"
       />
 
       <LabelSwitch
@@ -178,6 +187,7 @@ export const ContractForm = ({
         {...formInstance.getInputProps("contract_arhivat", {
           type: "checkbox",
         })}
+        size="xs"
       />
 
       <Select
@@ -189,6 +199,7 @@ export const ContractForm = ({
         key={formInstance.key("statutul_platii")}
         {...formInstance.getInputProps("statutul_platii")}
         searchable
+        size="xs"
       />
 
       <NumberInput
@@ -201,6 +212,7 @@ export const ContractForm = ({
         placeholder={getLanguageByKey("Avans euro")}
         key={formInstance.key("avans_euro")}
         {...formInstance.getInputProps("avans_euro")}
+        size="xs"
       />
 
       <NumberInput
@@ -213,6 +225,7 @@ export const ContractForm = ({
         placeholder={getLanguageByKey("Preț NETTO")}
         key={formInstance.key("pret_netto")}
         {...formInstance.getInputProps("pret_netto")}
+        size="xs"
       />
 
       <NumberInput
@@ -224,6 +237,7 @@ export const ContractForm = ({
         placeholder={getLanguageByKey("Achitat client")}
         key={formInstance.key("achitat_client")}
         {...formInstance.getInputProps("achitat_client")}
+        size="xs"
       />
 
       {!hideDisabledInput && (
@@ -233,6 +247,7 @@ export const ContractForm = ({
           mt="md"
           label={getLanguageByKey("Restanță client")}
           placeholder={getLanguageByKey("Restanță client")}
+          size="xs"
         />
       )}
 
@@ -248,6 +263,7 @@ export const ContractForm = ({
           placeholder={`${getLanguageByKey("Comision companie")} €`}
           key={formInstance.key("comision_companie")}
           {...formInstance.getInputProps("comision_companie")}
+          size="xs"
         />
       )}
 
@@ -257,6 +273,7 @@ export const ContractForm = ({
           mt="md"
           label={getLanguageByKey("Statut achitare")}
           placeholder={getLanguageByKey("Statut achitare")}
+          size="xs"
         />
       )}
 
@@ -267,6 +284,7 @@ export const ContractForm = ({
           label={getLanguageByKey("Control Admin")}
           key={formInstance.key("control")}
           {...formInstance.getInputProps("control", { type: "checkbox" })}
+          size="xs"
         />
       )}
     </Box>

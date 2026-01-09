@@ -35,6 +35,7 @@ export const Merge = ({
         value={value ?? ""}
         placeholder={getLanguageByKey("Introduceți ID vechi")}
         variant="filled"
+        size="xs"
         styles={{
           root: { opacity: 1 },
           input: {
@@ -57,10 +58,11 @@ export const Merge = ({
         label={label}
         placeholder={placeholder}
         {...field.getInputProps()}
+        size="xs"
       />
 
       <Flex justify="end">
-        <Button mt="md" onClick={triggerSubmit} loading={loading}>
+        <Button mt="md" onClick={triggerSubmit} loading={loading} size="xs">
           {buttonText}
         </Button>
       </Flex>

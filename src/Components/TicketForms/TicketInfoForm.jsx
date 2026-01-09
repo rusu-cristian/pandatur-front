@@ -14,7 +14,6 @@ import {
   nameExcursionOptions,
   purchaseProcessingOptions,
 } from "../../FormOptions";
-import { YYYY_MM_DD } from "../../app-constants";
 
 export const TicketInfoForm = ({
   data,
@@ -69,6 +68,7 @@ export const TicketInfoForm = ({
         placeholder={getLanguageByKey("Indicați suma în euro")}
         key={formInstance.key("buget")}
         {...formInstance.getInputProps("buget")}
+        size="xs"
       />
 
       <DatePickerInput
@@ -81,6 +81,7 @@ export const TicketInfoForm = ({
         minDate={setMinDate}
         {...formInstance.getInputProps("data_venit_in_oficiu")}
         getDayProps={getDayPropsWithHighlight}
+        size="xs"
       />
 
       <DatePickerInput
@@ -93,6 +94,7 @@ export const TicketInfoForm = ({
         minDate={setMinDate}
         {...formInstance.getInputProps("data_plecarii")}
         getDayProps={getDayPropsWithHighlight}
+        size="xs"
       />
 
       <DatePickerInput
@@ -105,6 +107,7 @@ export const TicketInfoForm = ({
         minDate={setMinDate}
         {...formInstance.getInputProps("data_intoarcerii")}
         getDayProps={getDayPropsWithHighlight}
+        size="xs"
       />
 
       <DatePickerInput
@@ -117,6 +120,7 @@ export const TicketInfoForm = ({
         minDate={setMinDate}
         {...formInstance.getInputProps("data_cererii_de_retur")}
         getDayProps={getDayPropsWithHighlight}
+        size="xs"
       />
 
       {!hideDisabledInput && (
@@ -128,6 +132,7 @@ export const TicketInfoForm = ({
           data={[]}
           clearable
           searchable
+          size="xs"
         />
       )}
 
@@ -140,6 +145,7 @@ export const TicketInfoForm = ({
         key={formInstance.key("sursa_lead")}
         {...formInstance.getInputProps("sursa_lead")}
         searchable
+        size="xs"
       />
 
       <Select
@@ -151,6 +157,7 @@ export const TicketInfoForm = ({
         key={formInstance.key("promo")}
         {...formInstance.getInputProps("promo")}
         searchable
+        size="xs"
       />
 
       <Select
@@ -162,6 +169,7 @@ export const TicketInfoForm = ({
         key={formInstance.key("marketing")}
         {...formInstance.getInputProps("marketing")}
         searchable
+        size="xs"
       />
 
       <Select
@@ -173,6 +181,7 @@ export const TicketInfoForm = ({
         key={formInstance.key("tipul_serviciului")}
         {...formInstance.getInputProps("tipul_serviciului")}
         searchable
+        size="xs"
       />
 
       <Select
@@ -184,6 +193,7 @@ export const TicketInfoForm = ({
         key={formInstance.key("tara")}
         {...formInstance.getInputProps("tara")}
         searchable
+        size="xs"
       />
 
       <Select
@@ -195,6 +205,7 @@ export const TicketInfoForm = ({
         key={formInstance.key("tip_de_transport")}
         {...formInstance.getInputProps("tip_de_transport")}
         searchable
+        size="xs"
       />
 
       <Select
@@ -206,6 +217,7 @@ export const TicketInfoForm = ({
         key={formInstance.key("denumirea_excursiei_turului")}
         {...formInstance.getInputProps("denumirea_excursiei_turului")}
         searchable
+        size="xs"
       />
 
       <Select
@@ -217,6 +229,7 @@ export const TicketInfoForm = ({
         key={formInstance.key("procesarea_achizitionarii")}
         {...formInstance.getInputProps("procesarea_achizitionarii")}
         searchable
+        size="xs"
       />
     </Box>
   );

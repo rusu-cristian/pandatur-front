@@ -34,6 +34,7 @@ export const QualityControlForm = ({ data, formInstance }) => {
           data={motivulRefuzuluiOptions}
           key={formInstance.key("motivul_refuzului")}
           {...formInstance.getInputProps("motivul_refuzului")}
+          size="xs"
         />
 
         <Select
@@ -45,6 +46,7 @@ export const QualityControlForm = ({ data, formInstance }) => {
           data={evaluareOdihnaOptions}
           key={formInstance.key("evaluare_de_odihna")}
           {...formInstance.getInputProps("evaluare_de_odihna")}
+          size="xs"
         />
 
         <TextInput
@@ -53,6 +55,7 @@ export const QualityControlForm = ({ data, formInstance }) => {
           placeholder={getLanguageByKey("Următoarea vacanță")}
           key={formInstance.key("urmatoarea_vacanta")}
           {...formInstance.getInputProps("urmatoarea_vacanta")}
+          size="xs"
         />
 
         <TextInput
@@ -61,6 +64,7 @@ export const QualityControlForm = ({ data, formInstance }) => {
           placeholder={getLanguageByKey("Manager")}
           key={formInstance.key("manager")}
           {...formInstance.getInputProps("manager")}
+          size="xs"
         />
 
         <TextInput
@@ -69,6 +73,7 @@ export const QualityControlForm = ({ data, formInstance }) => {
           placeholder={getLanguageByKey("Vacanța")}
           key={formInstance.key("vacanta")}
           {...formInstance.getInputProps("vacanta")}
+          size="xs"
         />
       </Box>
     </>
